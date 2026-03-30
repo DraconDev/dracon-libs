@@ -1,0 +1,173 @@
+use crate::stt_contracts::{
+    EngineCapabilities, SpeechToText, TimestampedTranscription, TranscriptionResult,
+};
+use parakeet_rs::{Parakeet, TimestampMode, Transcriber};
+use std::path::Path;
+use std::sync::Arc;
+use tokio::sync::Mutex;
+
+pub struct ParakeetStt {
+    model: Arc<Mutex<Parakeet>>,
+    ready: bool,
+}
+
+impl ParakeetStt {
+    pub fn new(model_dir: &str) -> Self {
+        println!("Initializing STT (Parakeet CTC 0.6B)...");
+
+        let model_path = Path::new(model_dir);
+        let model = if model_path.exists() {
+            let onnx_path = model_path.join("onnx");
+            if onnx_path.exists() {
+                println!("STT: Loading from: {:?}", onnx_path);
+                Parakeet::from_pretrained(&onnx_path, None).expect("Failed to load Parakeet model")
+            } else {
+                println!("STT: Loading from: {:?}", model_path);
+                Parakeet::from_pretrained(model_path, None).expect("Failed to load Parakeet model")
+            }
+        } else {
+            println!(
+                "STT: Model not found at {:?}, checking assets/models/",
+                model_path
+            );
+            let fallback_path = Path::new("assets/models/parakeet-ctc/onnx");
+            if fallback_path.exists() {
+                Parakeet::from_pretrained(fallback_path, None)
+                    .expect("Failed to load Parakeet model")
+            } else {
+                panic!(
+                    "Parakeet model not found. Download from: https://huggingface.co/onnx-community/parakeet-ctc-0.6b-ONNX"
+                );
+            }
+        };
+
+        println!("STT: Parakeet model loaded successfully");
+
+        Self {
+            model: Arc::new(Mutex::new(model)),
+            ready: true,
+        }
+    }
+
+    pub async fn transcribe_audio(&self, audio_data: Vec<f32>) -> Option<String> {
+        println!("STT: Transcribing {} samples...", audio_data.len());
+
+        if audio_data.len() < 16000 {
+            println!("STT: Audio too short, skipping");
+            return None;
+        }
+
+        let rms: f32 =
+            (audio_data.iter().map(|x| x * x).sum::<f32>() / audio_data.len() as f32).sqrt();
+        println!("STT: Audio RMS energy: {:.6}", rms);
+
+        if rms < 0.001 {
+            println!("STT: Audio appears to be silence (RMS too low), skipping");
+            return None;
+        }
+
+        let model = self.model.clone();
+
+        let result = tokio::task::spawn_blocking(move || {
+            let start = std::time::Instant::now();
+            let mut model = model.blocking_lock();
+            let result =
+                model.transcribe_samples(audio_data, 16000, 1, Some(TimestampMode::Sentences));
+            let elapsed = start.elapsed();
+            println!("STT: Parakeet inference: {:.2}s", elapsed.as_secs_f32());
+            result
+        })
+        .await;
+
+        match result {
+            Ok(Ok(transcription)) => {
+                let text = transcription.text.trim().to_string();
+                if text.is_empty() {
+                    println!("STT: Transcription returned empty string");
+                    None
+                } else {
+                    println!("STT: Transcribed: \"{}\"", text);
+                    Some(text)
+                }
+            }
+            Ok(Err(e)) => {
+                eprintln!("STT Error: {}", e);
+                None
+            }
+            Err(e) => {
+                eprintln!("STT Task Error: {:?}", e);
+                None
+            }
+        }
+    }
+}
+
+impl SpeechToText for ParakeetStt {
+    fn transcribe(
+        &self,
+        audio: &[f32],
+        sample_rate: u32,
+    ) -> crate::stt_contracts::SttResult<Option<TranscriptionResult>> {
+        if audio.len() < 16000 {
+            return Ok(None);
+        }
+
+        let rms: f32 = (audio.iter().map(|x| x * x).sum::<f32>() / audio.len() as f32).sqrt();
+        if rms < 0.001 {
+            return Ok(None);
+        }
+
+        let model = self.model.clone();
+        let audio = audio.to_vec();
+
+        let result = std::thread::spawn(move || {
+            let start = std::time::Instant::now();
+            let mut model = model.blocking_lock();
+            let result =
+                model.transcribe_samples(audio, sample_rate, 1, Some(TimestampMode::Sentences));
+            let elapsed = start.elapsed();
+            println!("STT: Parakeet inference: {:.2}s", elapsed.as_secs_f32());
+            result
+        })
+        .join();
+
+        match result {
+            Ok(Ok(transcription)) => {
+                let text = transcription.text.trim().to_string();
+                if text.is_empty() {
+                    Ok(None)
+                } else {
+                    println!("STT: Transcribed: \"{}\"", text);
+                    Ok(Some(TranscriptionResult::new(text)))
+                }
+            }
+            Ok(Err(e)) => Err(anyhow::anyhow!("STT Error: {}", e)),
+            Err(_) => Err(anyhow::anyhow!("STT Task Error")),
+        }
+    }
+
+    fn name(&self) -> &'static str {
+        "Parakeet"
+    }
+
+    fn sample_rate(&self) -> u32 {
+        16000
+    }
+
+    fn is_ready(&self) -> bool {
+        self.ready
+    }
+
+    fn capabilities(&self) -> EngineCapabilities {
+        EngineCapabilities {
+            supports_timestamps: false,
+            supports_streaming: true,
+            supports_language_detection: false,
+        }
+    }
+}
+
+impl TimestampedTranscription for ParakeetStt {}
+
+unsafe impl Send for ParakeetStt {}
+unsafe impl Sync for ParakeetStt {}

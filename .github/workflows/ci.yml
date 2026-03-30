@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  workflow_dispatch:
+
+jobs:
+  kernel:
+    if: "!contains(github.event.head_commit.message, '[wip]')"
+    name: Kernel (default-members)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo fmt --all -- --check
+      - run: cargo clippy -- -D warnings
+      - run: cargo test
+
+  workspace:
+    if: "!contains(github.event.head_commit.message, '[wip]')"
+    name: Workspace (all crates)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+      - uses: Swatinem/rust-cache@v2
+      # Keep clippy strict, but avoid linting examples as part of CI.
+      # Examples are compiled by `cargo test --workspace --all-targets` below.
+      - run: cargo clippy --workspace -- -D warnings
+      - run: cargo test --workspace --all-targets

@@ -1,0 +1,26 @@
+[package]
+name = "dracon-tts-runtime"
+version.workspace = true
+edition.workspace = true
+description = "Text-to-Speech implementations (Kitten, Kokoro) using ONNX runtime"
+
+[features]
+default = ["kitten", "kokoro"]
+kitten = []
+kokoro = []
+
+[dependencies]
+anyhow = { workspace = true }
+tokio = { workspace = true }
+ort = { version = "2.0.0-rc.11", features = ["ndarray"] }
+rodio = { version = "0.19", default-features = false }
+ndarray = "0.17"
+zip = { version = "2", default-features = false, features = ["deflate"] }
+hound = "3.5"
+futures = { workspace = true }
+serde = { workspace = true }
+rubato = "0.14"
+
+[lib]
+name = "dracon_tts_runtime"
+path = "src/lib.rs"

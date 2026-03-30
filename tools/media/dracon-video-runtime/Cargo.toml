@@ -1,0 +1,38 @@
+[package]
+name = "dracon-video-runtime"
+version = "0.1.0"
+edition.workspace = true
+authors = ["DraconDev"]
+description = "Dracon video processing runtime - FFmpeg + Whisper + ML"
+license = "MIT"
+repository = "https://github.com/DraconDev/dracon-libs"
+keywords = ["video", "ffmpeg", "whisper", "ml", "automation"]
+categories = ["multimedia::video", "audio"]
+
+[dependencies]
+anyhow = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+toml = "0.8"
+directories = "5.0"
+hf-hub = "0.5"
+image = "0.25"
+rand = "0.10"
+walkdir = "2.5"
+
+# Candle (ML) - for Whisper and ONNX models
+candle-core = "0.9"
+candle-nn = "0.9"
+candle-transformers = "0.9"
+tokenizers = "0.22"
+tract-onnx = "0.21"
+
+[dev-dependencies]
+tempfile = "3"
+
+[features]
+default = []
+ffmpeg = []

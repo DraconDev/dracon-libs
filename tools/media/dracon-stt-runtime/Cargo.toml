@@ -1,0 +1,27 @@
+[package]
+name = "dracon-stt-runtime"
+version.workspace = true
+edition.workspace = true
+description = "Speech-to-Text implementations (Parakeet, Whisper) - unified STT runtime"
+
+[features]
+default = ["parakeet"]
+parakeet = ["dep:parakeet-rs"]
+whisper = ["dep:candle-core", "dep:candle-nn", "dep:candle-transformers", "dep:hf-hub", "dep:tokenizers"]
+
+[dependencies]
+anyhow = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true }
+tracing = "0.1"
+parakeet-rs = { version = "0.3", optional = true }
+candle-core = { version = "0.9", optional = true }
+candle-nn = { version = "0.9", optional = true }
+candle-transformers = { version = "0.9", optional = true }
+hf-hub = { version = "0.5", optional = true }
+tokenizers = { version = "0.22", optional = true }
+
+[lib]
+name = "dracon_stt_runtime"
+path = "src/lib.rs"
