@@ -388,9 +388,18 @@ impl GitService {
 
                 for rel_path in &protected {
                     let abs = root.join(rel_path);
+                    // Handle deleted files: remove from index instead of adding
+                    if !abs.exists() {
+                        let _ = index.remove_path(Path::new(rel_path));
+                        continue;
+                    }
                     let plaintext = match std::fs::read(&abs) {
                         Ok(b) => b,
-                        Err(_) => continue,
+                        Err(_) => {
+                            // File unreadable - remove from index if it was tracked
+                            let _ = index.remove_path(Path::new(rel_path));
+                            continue;
+                        }
                     };
                     let encrypted = run_clean_filter(rel_path, &plaintext)
                         .unwrap_or_else(|_| plaintext.clone());
