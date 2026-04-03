@@ -1,0 +1,15 @@
+[package]
+name = "ai-routing-runtime"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+anyhow = "1"
+async-trait = "0.1"
+dracon-ai-contracts = { path = "../../../../contracts/crates/ai/dracon-ai-contracts" }
+dracon-ai-runtime-contracts = { path = "../../../../contracts/crates/ai/dracon-ai-runtime-contracts" }
+
+[lib]
+name = "ai_routing_runtime"
+path = "src/lib.rs"
