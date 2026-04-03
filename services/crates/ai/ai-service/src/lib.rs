@@ -3,6 +3,7 @@ use std::sync::Arc;
 
 pub use dracon_ai_runtime_contracts::models::{ChatMessage, ChatRequest};
 pub use dracon_ai_contracts::{RoutingTask, SelectionConstraints};
+pub use ai_routing_runtime::traits::{LeaderboardRequest, LeaderboardResponse, LeaderboardEntry};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LaneModelPolicy {
@@ -56,25 +57,4 @@ impl AiService {
         let (content, _) = provider.ask_and_collect(request).await?;
         Ok(content)
     }
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct LeaderboardRequest {
-    pub task: Option<String>,
-    pub limit: Option<usize>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct LeaderboardResponse {
-    pub models: Vec<LeaderboardEntry>,
-    pub max_quality_score: f32,
-    pub max_coding_score: f32,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct LeaderboardEntry {
-    pub model_id: String,
-    pub quality_score: f32,
-    pub coding_score: f32,
-    pub latency_ms: u64,
 }
