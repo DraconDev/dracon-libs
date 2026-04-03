@@ -1,9 +1,15 @@
+pub mod routing;
+pub mod traits;
+
 use std::collections::HashMap;
 use std::sync::Arc;
 use async_trait::async_trait;
-use dracon_ai_contracts::{RoutingTask, SelectionConstraints};
+use dracon_ai_contracts::RoutingTask;
 use dracon_ai_runtime_contracts::traits::AiProvider;
 use serde::{Deserialize, Serialize};
+
+pub use routing::{RoutingTask as _, SelectionConstraints, ServiceLevel};
+pub use traits::AiModelStore;
 
 #[derive(Debug, Clone)]
 pub struct RoutingMessage {
@@ -65,7 +71,7 @@ impl<T: AiProvider + ?Sized> SmartRouter<T> {
         lane: Option<RoutingTask>,
         _preferred: Option<String>,
         _messages: &[RoutingMessage],
-        _constraints: SelectionConstraints,
+        _constraints: dracon_ai_contracts::SelectionConstraints,
     ) -> anyhow::Result<(Arc<T>, RoutingTrace)> {
         let model_id = self.active_models.first()
             .or_else(|| self.dev_models.first())
