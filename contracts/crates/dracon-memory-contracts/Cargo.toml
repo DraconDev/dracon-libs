@@ -1,0 +1,13 @@
+[package]
+name = "dracon-memory-contracts"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+async-trait = "0.1"
+anyhow = "1"
+
+[lib]
+name = "dracon_memory_contracts"
+path = "src/lib.rs"
