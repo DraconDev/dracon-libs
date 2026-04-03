@@ -12,6 +12,8 @@ tokio = { version = "1", features = ["full"] }
 reqwest = { version = "0.12", features = ["json", "stream"] }
 dracon-ai-contracts = { path = "../../../../contracts/crates/ai/dracon-ai-contracts" }
 dracon-ai-runtime-contracts = { path = "../../../../contracts/crates/ai/dracon-ai-runtime-contracts" }
+ai-routing-runtime = { path = "../ai-routing-runtime" }
+ai-runtime-adapters = { path = "../ai-runtime-adapters" }
 
 [lib]
 name = "ai_service"
