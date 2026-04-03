@@ -9,6 +9,7 @@ anyhow = "1"
 async-trait = "0.1"
 dracon-ai-contracts = { path = "../../../../contracts/crates/ai/dracon-ai-contracts" }
 dracon-ai-runtime-contracts = { path = "../../../../contracts/crates/ai/dracon-ai-runtime-contracts" }
+ai-service = { path = "../ai-service" }
 
 [lib]
 name = "ai_routing_runtime"
