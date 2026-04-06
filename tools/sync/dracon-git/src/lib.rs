@@ -383,7 +383,7 @@ impl GitService {
                 }
 
                 if !normal.is_empty() {
-                    index.add_all(normal.iter(), git2::IndexAddOption::DEFAULT, None)?;
+                    index.add_all(normal.iter(), git2::IndexAddOption::FORCE, None)?;
                 }
 
                 for rel_path in &protected {
