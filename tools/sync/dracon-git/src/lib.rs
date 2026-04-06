@@ -382,6 +382,15 @@ impl GitService {
                     }
                 }
 
+                for rel_path in &normal {
+                    let abs = root.join(rel_path);
+                    // Handle deleted files: remove from index instead of adding
+                    if !abs.exists() {
+                        let _ = index.remove_path(Path::new(rel_path));
+                        continue;
+                    }
+                }
+
                 if !normal.is_empty() {
                     index.add_all(normal.iter(), git2::IndexAddOption::FORCE, None)?;
                 }
