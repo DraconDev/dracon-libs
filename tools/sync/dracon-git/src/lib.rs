@@ -382,26 +382,19 @@ impl GitService {
                     }
                 }
 
+                // Handle deleted files: remove from index instead of adding
+                let mut to_add = Vec::new();
                 for rel_path in &normal {
                     let abs = root.join(rel_path);
-                    // Handle deleted files: remove from index instead of adding
                     if !abs.exists() {
                         let _ = index.remove_path(Path::new(rel_path));
-                        continue;
+                    } else {
+                        to_add.push(rel_path.clone());
                     }
                 }
 
-                for rel_path in &normal {
-                    let abs = root.join(rel_path);
-                    // Handle deleted files: remove from index instead of adding
-                    if !abs.exists() {
-                        let _ = index.remove_path(Path::new(rel_path));
-                        continue;
-                    }
-                }
-
-                if !normal.is_empty() {
-                    index.add_all(normal.iter(), git2::IndexAddOption::FORCE, None)?;
+                if !to_add.is_empty() {
+                    index.add_all(to_add.iter(), git2::IndexAddOption::FORCE, None)?;
                 }
 
                 for rel_path in &protected {
