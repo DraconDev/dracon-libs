@@ -240,8 +240,8 @@ fn extract_focus_summary(description: Option<&str>) -> Option<String> {
     if summary.is_empty() || summary.starts_with('#') {
         return None;
     }
-    if summary.len() > 72 {
-        Some(summary.chars().take(69).collect::<String>() + "...")
+    if summary.len() > 100 {
+        Some(summary.chars().take(97).collect::<String>() + "...")
     } else {
         Some(summary)
     }
