@@ -9,6 +9,7 @@
 .git/
 .venv/
 __pycache__/
+bin/
 build/
 dist/
 node_modules/
@@ -53,6 +54,4 @@ tools/memory/dracon-memory-runtime/assets/bge-small-en-v1.5.onnx
 !flake.nix
 !rust-toolchain.toml
 !rustfmt.toml
-# Large files (auto-added by dracon-sync)
-bin/
 # --- END DRACON MANAGED BLOCK ---
