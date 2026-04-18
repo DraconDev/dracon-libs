@@ -60,4 +60,6 @@ tools/memory/dracon-memory-runtime/assets/bge-small-en-v1.5.onnx
 !flake.nix
 !rust-toolchain.toml
 !rustfmt.toml
+# Large files (auto-added by dracon-sync)
+runtime/
 # --- END DRACON MANAGED BLOCK ---

@@ -1,0 +1,17 @@
+[package]
+name = "dracon-files"
+version = "0.1.0"
+edition.workspace = true
+license = "MIT"
+authors = ["Dracon"]
+description = "File system operations library with FsCatalog for file categorization and search"
+repository = "https://github.com/DraconDev/dracon-libs"
+keywords = ["filesystem", "files", "catalog", "search"]
+categories = ["filesystem", "command-line-utilities"]
+
+[dependencies]
+walkdir = "2.5"
+mime_guess = "2.0"
+
+[dev-dependencies]
+tempfile = "3"
