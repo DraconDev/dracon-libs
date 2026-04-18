@@ -2,11 +2,7 @@ mod contracts;
 
 pub use contracts::*;
 
-use std::collections::HashMap;
-use std::fs;
-use std::path::{Path, PathBuf};
-use std::time::SystemTime;
-use walkdir::WalkDir;
+pub struct FsCatalog;
 
 fn permissions_bits(meta: &fs::Metadata) -> u32 {
     #[cfg(unix)]

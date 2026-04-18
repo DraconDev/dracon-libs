@@ -1,8 +1,8 @@
 # Project State
 
 ## Current Focus
-Refactored file category detection to remove duplicate Rust language handling
+Refactored file system handling in `dracon-files` by removing unused dependencies and introducing a new `FsCatalog` struct.
 
 ## Completed
-- [x] Removed redundant "rs" entry from script file extensions in `get_file_category_from_extension`
-```
+- [x] Removed unused `std::collections::HashMap`, `std::fs`, `std::path::{Path, PathBuf}`, `std::time::SystemTime`, and `walkdir::WalkDir` imports
+- [x] Introduced placeholder `FsCatalog` struct for future file system operations
