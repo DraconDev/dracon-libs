@@ -1,9 +1,8 @@
 # Project State
 
 ## Current Focus
-Updated `dracon-files` crate dependencies and synchronized Cargo.lock
+Refactored file category detection to remove duplicate Rust language handling
 
 ## Completed
-- [x] Updated `dracon-files` crate dependencies
-- [x] Synchronized Cargo.lock with updated dependencies
+- [x] Removed redundant "rs" entry from script file extensions in `get_file_category_from_extension`
 ```

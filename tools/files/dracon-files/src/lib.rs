@@ -37,7 +37,7 @@ fn get_file_category_from_extension(path: &Path) -> FileCategory {
             FileCategory::Image
         }
         "sh" | "bash" | "zsh" | "fish" | "ps1" | "bat" | "cmd" | "py" | "rb" | "js" | "ts"
-        | "rs" | "c" | "cpp" | "h" | "hpp" | "go" | "java" | "rs" | "swift" | "kt" => {
+        | "c" | "cpp" | "h" | "hpp" | "go" | "java" | "swift" | "kt" => {
             FileCategory::Script
         }
         "txt" | "md" | "rst" | "log" | "json" | "xml" | "yaml" | "yml" | "toml" | "ini"
