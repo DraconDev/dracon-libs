@@ -1,8 +1,10 @@
 # Project State
 
 ## Current Focus
-Refactored file system handling in `dracon-files` by adding core filesystem utilities and dependencies
+Updated `.gitignore` to exclude `runtime/` directory and clean up managed block formatting
 
 ## Completed
-- [x] Added filesystem utilities (`std::fs`, `walkdir`, `Path`, `PathBuf`, `SystemTime`) for file operations
-- [x] Removed unused `FsCatalog` struct definition
+- [x] Added `runtime/` to ignored paths
+- [x] Removed duplicate `runtime/` exclusion rule
+- [x] Standardized managed block formatting in `.gitignore`
+```
