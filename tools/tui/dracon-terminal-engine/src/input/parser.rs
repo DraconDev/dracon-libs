@@ -32,7 +32,7 @@ impl Parser {
         }
     }
 
-    /// Feeds a byte into the parser. Returns Option<Event> if a complete event is formed.
+    /// Feeds a byte into the parser. Returns `Option<Event>` if a complete event is formed.
     pub fn advance(&mut self, byte: u8) -> Option<Event> {
         // Safety: Prevent buffer bloat
         if self.buffer.len() > 2048 {
