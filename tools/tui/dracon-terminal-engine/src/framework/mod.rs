@@ -8,15 +8,17 @@
 //! ```no_run
 //! use dracon_terminal_engine::framework::prelude::*;
 //!
-//! App::new()
+//! App::new().unwrap()
 //!     .title("My App")
 //!     .fps(30)
 //!     .run(|ctx| {
 //!         ctx.split_h(|left, right| {
-//!             left.list(vec!["Item 1", "Item 2", "Item 3"], |item| {
-//!                 println!("selected: {item}");
-//!             });
-//!             right.text("Hello, world!");
+//!             // Use the left pane for a list
+//!             let mut list = List::new(vec!["Item 1", "Item 2", "Item 3"]);
+//!             ctx.add_plane(list.render(ctx.compositor().size().into()));
+//!             // Use the right pane for custom content
+//!             let plane = Plane::new(0, ctx.compositor().size().0, ctx.compositor().size().1);
+//!             ctx.add_plane(plane);
 //!         });
 //!     });
 //! ```
