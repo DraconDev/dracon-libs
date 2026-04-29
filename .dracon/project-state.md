@@ -1,7 +1,9 @@
 # Project State
 
 ## Current Focus
-Upgrade dependencies to latest versions (Cargo.lock regeneration)
+Adjust breadcrumbs widget's hit‑zone calculation to accept external width parameter for dynamic sizing.
 
 ## Completed
-- [x] Upgrade dependencies to latest versions
+- [x] Modified `zones` method signature to include `width: u16`.
+- [x] Updated width computation to use `width.saturating_sub(x)` instead of a hard‑coded `80u16`.
+- [x] Maintained existing behavior while enabling responsive sizing based on caller‑provided width.
