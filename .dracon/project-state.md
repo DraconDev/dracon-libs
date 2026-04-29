@@ -1,12 +1,14 @@
 # Project State
 
 ## Current Focus
-Add a full‑featured application entry point and basic UI widgets while refactoring compositor integration.
+Refactor terminal List widget to optionalize selection callback, simplify render output, and harden scroll/selection logic
 
 ## Completed
-- [x] Introduced `App` struct with terminal handle, compositor, input parser, event loop, and control methods (`run`, `stop`, `title`, `fps`, `theme`)
-- [x] Added `Hud` widget for displaying heads‑up‑display status information
-- [x] Added `Modal` widget for overlay dialog handling
-- [x] Added `Split` widget providing pane‑splitting layout capabilities
-- [x] Refactored `Hitzone` to remove `ratatui` `Buffer` and `Rect` imports, using internal compositor types instead
-- [x] Updated the crate root `lib.rs` to re‑export the new framework modules and adjust the public API accordingly
+- [x] Remove generic lifetime parameter from List widget, make on_select selection callback optional (wrapped in Option instead of required)
+- [x] Update List constructor to no longer require on_select closure, add builder-method to set callback post-initialization
+- [x] Switch item rendering from debug format to ToString, update type bound for list items from Clone + 'static to Clone + ToString
+- [x] Simplify List::render to return only Plane, remove HitZoneGroup generation and associated click handling zones
+- [x] Add public set_visible_count method to adjust the number of visible list items at runtime
+- [x] Replace manual scroll and selection boundary checks with saturating arithmetic to prevent underflow/overflow errors
+- [x] Clean up rendering logic to use provided area width for cell fills, add 1-column text offset, set plane z-index to 10
+- [x] Streamline selection callback invocation to directly access optional on_select closure

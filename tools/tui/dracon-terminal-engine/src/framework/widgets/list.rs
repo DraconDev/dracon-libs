@@ -4,29 +4,26 @@ use crate::framework::theme::Theme;
 use crate::compositor::{Cell, Color, Plane, Styles};
 use ratatui::layout::Rect;
 
-pub struct List<'a, T> {
+pub struct List<T> {
     items: Vec<T>,
     selected: usize,
     offset: usize,
     visible_count: usize,
     theme: Theme,
-    on_select: Box<dyn FnMut(&T) + 'a>,
+    on_select: Option<Box<dyn FnMut(&T)>>,
     item_height: u16,
     width: u16,
 }
 
-impl<'a, T: Clone + 'static> List<'a, T> {
-    pub fn new<F>(items: Vec<T>, on_select: F) -> Self
-    where
-        F: FnMut(&T) + 'a,
-    {
+impl<T: Clone + ToString> List<T> {
+    pub fn new(items: Vec<T>) -> Self {
         Self {
             items,
             selected: 0,
             offset: 0,
             visible_count: 10,
             theme: Theme::default(),
-            on_select: Box::new(on_select),
+            on_select: None,
             item_height: 1,
             width: 40,
         }
@@ -47,6 +44,11 @@ impl<'a, T: Clone + 'static> List<'a, T> {
         self
     }
 
+    pub fn on_select(mut self, f: impl FnMut(&T)) -> Self {
+        self.on_select = Some(Box::new(f));
+        self
+    }
+
     pub fn selected_index(&self) -> usize {
         self.selected
     }
@@ -59,67 +61,56 @@ impl<'a, T: Clone + 'static> List<'a, T> {
         }
     }
 
-    pub fn render(&self, area: Rect) -> (Plane, HitZoneGroup<'static, usize>) {
-        let mut plane = Plane::new(0, area.width, area.height);
-        let visible = self.items.iter().skip(self.offset).take(self.visible_count).enumerate();
-
-        let mut group = HitZoneGroup::new();
-
-        for (i, item) in visible {
-            let row = i as u16;
-            let item_rect = Rect::new(area.x, area.y + row, self.width, self.item_height);
-
-            let is_selected = self.offset + i == self.selected;
-            let bg = if is_selected {
-                self.theme.selection_bg
-            } else {
-                self.theme.bg
-            };
-            let fg = if is_selected {
-                self.theme.selection_fg
-            } else {
-                self.theme.fg
-            };
-
-            let text = format!("{:?}", item);
-            let cell = Cell {
-                char: ' ',
-                fg,
-                bg,
-                style: if is_selected { Styles::BOLD } else { Styles::empty() },
-                transparent: false,
-                skip: false,
-            };
-
-            for col in 0..self.width.min(area.width) {
-                let idx = ((row * area.width) + col) as usize;
-                if idx < plane.cells.len() {
-                    plane.cells[idx] = cell.clone();
-                }
-            }
-
-            let label_len = text.len().min(self.width as usize - 1);
-            let char_idx = (row * area.width) as usize;
-            for (j, ch) in text.chars().take(label_len).enumerate() {
-                let idx = char_idx + j + 1;
-                if idx < plane.cells.len() {
-                    plane.cells[idx].char = ch;
-                }
-            }
-
-            let zone = HitZone::new(self.offset + i, item_rect).on_click(move |_| {});
-            group.zones_mut().push(zone);
-        }
-
-        (plane, group)
+    pub fn set_visible_count(&mut self, count: usize) {
+        self.visible_count = count;
     }
 
-    pub fn handle_mouse(
-        &mut self,
-        kind: crate::input::event::MouseEventKind,
-        col: u16,
-        row: u16,
-    ) -> bool {
+    pub fn render(&self, area: Rect) -> Plane {
+        let mut plane = Plane::new(0, area.width, area.height);
+        plane.z_index = 10;
+
+        let visible_items: Vec<_> = self.items.iter()
+            .skip(self.offset)
+            .take(self.visible_count)
+            .collect();
+
+        for (i, item) in visible_items.iter().enumerate() {
+            let row = i as u16;
+            let is_selected = self.offset + i == self.selected;
+            let bg = if is_selected { self.theme.selection_bg } else { self.theme.bg };
+            let fg = if is_selected { self.theme.selection_fg } else { self.theme.fg };
+            let style = if is_selected { Styles::BOLD } else { Styles::empty() };
+
+            for col in 0..area.width {
+                let idx = (row * area.width + col) as usize;
+                if idx < plane.cells.len() {
+                    plane.cells[idx] = Cell {
+                        char: ' ',
+                        fg,
+                        bg,
+                        style: Styles::empty(),
+                        transparent: false,
+                        skip: false,
+                    };
+                }
+            }
+
+            let text = item.to_string();
+            let label_len = text.len().min((area.width as usize).saturating_sub(2));
+            for (j, ch) in text.chars().take(label_len).enumerate() {
+                let idx = (row * area.width + 1 + j as u16) as usize;
+                if idx < plane.cells.len() {
+                    plane.cells[idx].char = ch;
+                    plane.cells[idx].fg = fg;
+                    plane.cells[idx].style = style;
+                }
+            }
+        }
+
+        plane
+    }
+
+    pub fn handle_mouse(&mut self, kind: crate::input::event::MouseEventKind, col: u16, row: u16) -> bool {
         if col >= self.width || row >= self.visible_count as u16 {
             return false;
         }
@@ -130,21 +121,17 @@ impl<'a, T: Clone + 'static> List<'a, T> {
         match kind {
             crate::input::event::MouseEventKind::Down(crate::input::event::MouseButton::Left) => {
                 self.selected = idx;
-                if let Some(f) = (&mut self.on_select).as_mut() {
+                if let Some(f) = self.on_select.as_mut() {
                     f(&self.items[idx]);
                 }
                 true
             }
             crate::input::event::MouseEventKind::ScrollDown => {
-                if self.offset + self.visible_count < self.items.len() {
-                    self.offset += 1;
-                }
+                self.offset = (self.offset + 1).min(self.items.len().saturating_sub(self.visible_count));
                 true
             }
             crate::input::event::MouseEventKind::ScrollUp => {
-                if self.offset > 0 {
-                    self.offset -= 1;
-                }
+                self.offset = self.offset.saturating_sub(1);
                 true
             }
             _ => false,
@@ -161,7 +148,7 @@ impl<'a, T: Clone + 'static> List<'a, T> {
                 if self.selected + 1 < self.items.len() {
                     self.selected += 1;
                     if self.selected >= self.offset + self.visible_count {
-                        self.offset = self.selected - self.visible_count + 1;
+                        self.offset = self.selected.saturating_sub(self.visible_count) + 1;
                     }
                 }
                 true
@@ -198,7 +185,7 @@ impl<'a, T: Clone + 'static> List<'a, T> {
                 true
             }
             KeyCode::Enter => {
-                if let Some(f) = (&mut self.on_select).as_mut() {
+                if let Some(f) = self.on_select.as_mut() {
                     f(&self.items[self.selected]);
                 }
                 true
