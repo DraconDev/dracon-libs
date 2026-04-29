@@ -191,63 +191,100 @@ pub enum ModifierKeyCode {
     IsoLevel5Shift,
 }
 
+/// Bitflags representing active keyboard modifier keys.
 bitflags! {
     #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default, Serialize, Deserialize)]
     pub struct KeyModifiers: u8 {
+        /// Shift modifier key.
         const SHIFT = 0b0000_0001;
+        /// Control modifier key.
         const CONTROL = 0b0000_0010;
+        /// Alt modifier key.
         const ALT = 0b0000_0100;
+        /// Super (Windows/Command) modifier key.
         const SUPER = 0b0000_1000;
+        /// Hyper modifier key.
         const HYPER = 0b0001_0000;
+        /// Meta modifier key.
         const META = 0b0010_0000;
     }
 }
 
+/// Mouse input event with position, type, and active modifiers.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct MouseEvent {
+    /// The type of mouse event.
     pub kind: MouseEventKind,
+    /// Column position where the event occurred.
     pub column: u16,
+    /// Row position where the event occurred.
     pub row: u16,
+    /// Modifier keys active during the event.
     pub modifiers: KeyModifiers,
 }
 
+/// The type of mouse event.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum MouseEventKind {
+    /// Mouse button pressed down.
     Down(MouseButton),
+    /// Mouse button released.
     Up(MouseButton),
+    /// Mouse button dragged while held.
     Drag(MouseButton),
+    /// Mouse moved without button press.
     Moved,
+    /// Scroll wheel moved down.
     ScrollDown,
+    /// Scroll wheel moved up.
     ScrollUp,
+    /// Scroll wheel moved left.
     ScrollLeft,
+    /// Scroll wheel moved right.
     ScrollRight,
 }
 
+/// Mouse button identifiers.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum MouseButton {
+    /// Left mouse button.
     Left,
+    /// Right mouse button.
     Right,
+    /// Middle mouse button.
     Middle,
+    /// Back mouse button.
     Back,
+    /// Forward mouse button.
     Forward,
+    /// Other mouse button with vendor-specific code.
     Other(u8),
 }
 
+/// Trait for rendering the UI state to the terminal.
 pub trait UiRenderer<State> {
+    /// Error type returned when rendering fails.
     type Error;
 
+    /// Renders the given state to the terminal.
     fn render(&mut self, state: &State) -> Result<(), Self::Error>;
 }
 
+/// Trait for polling UI events from the runtime environment.
 pub trait UiEventSource {
+    /// Error type returned when event fetching fails.
     type Error;
 
+    /// Returns the next UI event, or None if no event is available.
     fn next_event(&mut self) -> Result<Option<UiEvent>, Self::Error>;
 }
 
+/// Trait for the main UI runtime loop that coordinates rendering and events.
 pub trait UiRuntime<State> {
+    /// Error type returned when the runtime fails.
     type Error;
 
+    /// Runs the main event loop, rendering the state and processing events.
     fn run<R, E>(
         &mut self,
         renderer: &mut R,

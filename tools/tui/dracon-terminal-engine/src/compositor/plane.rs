@@ -24,12 +24,18 @@ bitflags! {
 /// A single cell in the terminal.
 #[derive(Clone, Debug, PartialEq)]
 pub struct Cell {
+    /// The character displayed in this cell.
     pub char: char,
+    /// Foreground color.
     pub fg: Color,
+    /// Background color.
     pub bg: Color,
+    /// Text styling flags.
     pub style: Styles,
+    /// Whether this cell is transparent (shows content beneath).
     pub transparent: bool,
-    pub skip: bool, // New: if true, this cell is ignored by the renderer (e.g. for wide chars)
+    /// Whether this cell should be skipped by the renderer (e.g., for wide character padding).
+    pub skip: bool,
 }
 
 impl Default for Cell {
@@ -47,20 +53,32 @@ impl Default for Cell {
 
 use crate::compositor::filter::Filter;
 
+/// A 2D plane of cells representing a layer in the terminal compositor.
 pub struct Plane {
+    /// Unique identifier for this plane.
     pub id: usize,
+    /// Z-index determining render order (higher = on top).
     pub z_index: i32,
+    /// X position of the plane origin.
     pub x: u16,
+    /// Y position of the plane origin.
     pub y: u16,
+    /// Width of the plane in cells.
     pub width: u16,
+    /// Height of the plane in cells.
     pub height: u16,
+    /// Grid of cells representing the plane content.
     pub cells: Vec<Cell>,
+    /// Whether the plane is visible.
     pub visible: bool,
-    pub opacity: f32, // 0.0 to 1.0
+    /// Opacity multiplier (0.0 to 1.0).
+    pub opacity: f32,
+    /// Optional filter applied to this plane.
     pub filter: Option<Box<dyn Filter>>,
 }
 
 impl Plane {
+    /// Creates a new plane with the given id and dimensions.
     pub fn new(id: usize, width: u16, height: u16) -> Self {
         Self {
             id,
@@ -76,11 +94,13 @@ impl Plane {
         }
     }
 
+    /// Sets the absolute position of this plane in the compositor.
     pub fn set_absolute_position(&mut self, x: u16, y: u16) {
         self.x = x;
         self.y = y;
     }
 
+    /// Sets the z-index for render ordering.
     pub fn set_z_index(&mut self, z: i32) {
         self.z_index = z;
     }
@@ -104,6 +124,7 @@ impl Plane {
         }
     }
 
+    /// Writes a cell to the specified position.
     pub fn put_cell(&mut self, x: u16, y: u16, mut cell: Cell) {
         if x >= self.width || y >= self.height {
             return;
@@ -114,6 +135,7 @@ impl Plane {
     }
 
     // Helper to set style
+    /// Sets the style (colors and text style) for a cell at the given position.
     pub fn set_style(&mut self, x: u16, y: u16, fg: Color, bg: Color, style: Styles) {
         if x >= self.width || y >= self.height {
             return;
@@ -126,6 +148,7 @@ impl Plane {
         self.cells[idx].skip = false;
     }
 
+    /// Sets the skip flag for a cell at the given position.
     pub fn set_skip(&mut self, x: u16, y: u16, skip: bool) {
         if x >= self.width || y >= self.height {
             return;
@@ -137,6 +160,7 @@ impl Plane {
         }
     }
 
+    /// Writes a string starting at the given position. Returns the x position after writing.
     pub fn put_str(&mut self, mut x: u16, y: u16, text: &str) -> u16 {
         use unicode_width::UnicodeWidthChar;
 
@@ -171,16 +195,19 @@ impl Plane {
         x
     }
 
+    /// Sets the filter for this plane.
     pub fn set_filter(&mut self, filter: Box<dyn Filter>) {
         self.filter = Some(filter);
     }
 
+    /// Sets all cells to the given transparency state.
     pub fn set_transparent(&mut self, transparent: bool) {
         for cell in &mut self.cells {
             cell.transparent = transparent;
         }
     }
 
+    /// Resets all cells to their default state.
     pub fn clear(&mut self) {
         for cell in &mut self.cells {
             *cell = Cell::default();
