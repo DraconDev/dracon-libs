@@ -76,6 +76,6 @@ pub mod widgets;
 
 pub use compositor::{Cell, Color, Compositor, Plane, Styles};
 pub use core::terminal::Terminal;
-pub use framework::prelude;
+pub use framework::prelude; // App, Ctx, List, HitZone, etc.
 pub use input::{InputReader, Parser};
 pub use system::{DiskInfo, ProcessInfo, SystemData, SystemMonitor};

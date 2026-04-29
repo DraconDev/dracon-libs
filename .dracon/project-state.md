@@ -1,8 +1,7 @@
 # Project State
 
 ## Current Focus
-Add `#[allow(missing_docs)]` to silence warnings for the `Styles` enum and bump dependencies in `Cargo.lock`.
+docs: add explanatory comment to framework::prelude import
 
 ## Completed
-- [x] Added `#[allow(missing_docs)]` before the `bitflags!` definition of `Styles` in `tools/tui/dracon-terminal-engine/src/compositor/plane.rs`
-- [x] Updated `Cargo.lock` to reflect the upgrade of `dracon-terminal-engine` and related dependencies to version 26
+- [x] Add explanatory comment to `framework::prelude` import indicating it brings `App`, `Ctx`, `List`, `HitZone`, etc.
