@@ -1,7 +1,9 @@
 # Project State
 
 ## Current Focus
-Clamp fill width calculation to drop enforced minimum width of 1
+Remove unused Cell import and use fully qualified std::cell::Cell type in UI widgets
 
 ## Completed
-- [x] Removed `.max(1)` from `fill_width` calculation in progress bar rendering.
+- [x] Dropped `use std::cell::Cell;` from menu_bar.rs
+- [x] Switched Slider's `last_area_width` field to `std::cell::Cell<u16>` (fully qualified)
+- [x] Dropped `use std::cell::Cell;` from slider.rs

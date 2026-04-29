@@ -6,7 +6,6 @@ use crate::compositor::{Cell, Color, Plane, Styles};
 use crate::framework::theme::Theme;
 use crate::framework::widget::WidgetId;
 use ratatui::layout::Rect;
-use std::cell::Cell;
 
 /// A horizontal slider for selecting a value within a range.
 pub struct Slider {
@@ -16,7 +15,7 @@ pub struct Slider {
     max: f32,
     theme: Theme,
     on_change: Option<Box<dyn FnMut(f32)>>,
-    last_area_width: Cell<u16>,
+    last_area_width: std::cell::Cell<u16>,
 }
 
 impl Slider {
@@ -29,7 +28,7 @@ impl Slider {
             max: 1.0,
             theme: Theme::default(),
             on_change: None,
-            last_area_width: Cell::new(80),
+            last_area_width: std::cell::Cell::new(80),
         }
     }
 

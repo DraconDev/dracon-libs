@@ -3,7 +3,6 @@
 //! A horizontal bar with dropdown menus triggered by clicking.
 
 use unicode_width::UnicodeWidthStr;
-use std::cell::Cell;
 
 use crate::compositor::{Cell, Plane, Styles};
 use crate::framework::theme::Theme;
