@@ -1,7 +1,7 @@
 # Project State
 
 ## Current Focus
-Add `std::cell::Cell` import to menu_bar.rs for future interior mutability needs
+Add a `last_area_width` Cell field to the MenuBar struct for interior mutability in width tracking.
 
 ## Completed
-- [x] Added `use std::cell::Cell;` import to tools/tui/dracon-terminal-engine/src/framework/widgets/menu_bar.rs
+- [x] add `last_area_width: Cell<u16>` field to the `MenuBar` struct

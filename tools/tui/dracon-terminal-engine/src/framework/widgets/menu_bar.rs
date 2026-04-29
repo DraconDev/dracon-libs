@@ -68,6 +68,7 @@ pub struct MenuBar {
     entries: Vec<MenuEntry>,
     active_entry: Option<usize>,
     theme: Theme,
+    last_area_width: Cell<u16>,
 }
 
 impl MenuBar {
