@@ -1,12 +1,8 @@
 # Project State
 
-## Current Focus
-Add framework_demo example for dracon-terminal-engine to demonstrate core UI widgets and system monitoring integration
+# Current Focus
+This commit refactors the demonstration framework to improve UI consistency and modularity, replacing outdated or unused dependencies with modern alternatives.
 
 ## Completed
-- [x] Add new example showcasing dracon-terminal-engine framework usage with multiple widgets
-- [x] Implement horizontal 30/70 split layout via SplitPane widget
-- [x] Render List widget with sample navigation items on left pane, Breadcrumbs with HitZones on right pane
-- [x] Integrate SystemMonitor to display real-time CPU, memory, swap, uptime, and disk usage stats
-- [x] Add Hud-based CPU utilization gauge to example interface
-- [x] Configure example with dark theme and 30 FPS target frame rate
+- [x] Updated compositor plugins to support newer rendering layouts and widgets (e.g., Breadcrumbs, Hud, SystemMonitor).
+- [x] Streamlined event handling and UI update logic for better cross-platform behavior and clearer separation of concerns.
