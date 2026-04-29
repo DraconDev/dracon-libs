@@ -1,18 +1,12 @@
 # Project State
 
 ## Current Focus
-Add compositing engine methods for rendering primitives and layout.
+Add UI widget primitives and input reader infrastructure
 
 ## Completed
-- [x] Added `tick` method to advance compositor state per frame.
-- [x] Added `hit_test` method to query the topmost visible plane at given coordinates.
-- [x] Added `size` method to retrieve the compositor width and height.
-- [x] Added `add_plane` method to insert a plane and automatically sort by z‑index.
-- [x] Added `draw_text` method to render text with foreground, background and style.
-- [x] Added `draw_rect` method to draw filled rectangles with character, colors and style.
-- [x] Added `force_clear` method to clear the terminal and reset the frame buffer.
-- [x] Added `draw_ratatui_line` method to render a ratatui `Line` at a position.
-- [x] Added `resize` method to change compositor dimensions and reset the buffer.
-- [x] Added `render` method to output terminal escape codes via a writer.
-- [x] Added `map_color` utility to convert ratatui colors to compositor colors.
-- [x] Modified `Stack` in layout to support adding child components via `add_child`.
+- [x] Add Button widget with label and active state implementation
+- [x] Add Panel widget with title and border color customization
+- [x] Add HotkeyHint widget for rendering keyboard shortcut hints
+- [x] Add Bounds struct defining component coordinates and dimensions
+- [x] Add InputReader struct with spawn method for background input handling
+- [x] Add deprecated event conversion functions in mapping.rs
