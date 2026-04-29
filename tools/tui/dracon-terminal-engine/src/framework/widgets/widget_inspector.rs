@@ -3,7 +3,7 @@
 //! Shows the tree structure of active widgets with their IDs and states.
 
 use crate::framework::widget::WidgetId;
-use crate::compositor::{Cell, Color, Plane, Styles};
+use crate::compositor::{Cell, Plane, Styles};
 use crate::framework::theme::Theme;
 use ratatui::layout::Rect;
 
@@ -100,7 +100,7 @@ impl crate::framework::widget::Widget for WidgetInspector {
         }
 
         for node in &self.root {
-            render_node(&node, 0, plane, &self.theme, width, &mut row);
+            render_node(node, 0, &mut plane, &self.theme, width, &mut row);
         }
 
         plane
