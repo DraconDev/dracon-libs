@@ -2,6 +2,7 @@ use crate::compositor::plane::{Cell, Color};
 
 /// Applies a visual effect to a cell during compositing.
 pub trait Filter {
+    /// Applies the filter effect to `cell` at position `(x, y)` at the given time.
     fn apply(&self, cell: &mut Cell, x: u16, y: u16, time: f32);
 }
 

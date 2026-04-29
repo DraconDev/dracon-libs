@@ -1,8 +1,10 @@
 # Project State
 
 ## Current Focus
-Expose POSIX terminal backend module (tty) with documentation
+Expose terminal wrapper documentation, expand input module public submodule docs, and add method signature to Filter trait.
 
 ## Completed
-- [x] Added documentation comment describing the tty module's purpose
-- [x] Declared `tty` as a public module in the backend
+- [x] Added documentation comment for the `terminal` module describing its purpose.
+- [x] Added public submodule declarations with doc comments for `event`, `kitty_key`, `mapping`, `parser`, and `reader` in the input module.
+- [x] Added `apply` method signature to the `Filter` trait specifying cell coordinates and time parameter.
+- [x] Updated Cargo.lock to reflect latest dependency versions.
