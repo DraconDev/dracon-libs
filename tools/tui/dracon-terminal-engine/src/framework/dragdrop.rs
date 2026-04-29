@@ -54,9 +54,10 @@ impl DragGhost {
     }
 
     /// Renders the ghost into a `Plane` positioned at `(x, y)` with z-index 9000.
-    pub fn render(&self, _x: u16, _y: u16) -> Plane {
+    pub fn render(&self, x: u16, y: u16) -> Plane {
         let mut plane = Plane::new(9999, self.width, self.height);
         plane.set_z_index(9000);
+        plane.translate(x, y);
 
         let bg = Color::Ansi(236);
         let fg = Color::Ansi(250);

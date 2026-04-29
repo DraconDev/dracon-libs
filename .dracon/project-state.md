@@ -1,9 +1,8 @@
 # Project State
 
 ## Current Focus
-Upgrade dracon-terminal-engine to version 26.0.1 and synchronize dependencies
+feat(dragdrop): translate rendered ghost to specified screen coordinates
 
 ## Completed
-- [x] Bump dracon-terminal-engine version to 26.0.1 in tools/tui/dracon-terminal-engine/Cargo.toml
-- [x] Refresh Cargo.lock to lock updated dependency versions
-- [x] Align project dependencies with the new dracon-terminal-engine release
+- [x] Changed `render` method parameters from `(_x: u16, _y: u16)` to `(x: u16, y: u16)` to use the coordinates.
+- [x] Added `plane.translate(x, y)` call to position the ghost at the provided `(x, y)` location.
