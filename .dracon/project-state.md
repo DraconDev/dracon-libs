@@ -1,11 +1,11 @@
 # Project State
 
 ## Current Focus
-fix(refactor async): Replace poll-based async input handling with blocking reads via spawn_blocking
+Refactor async input handling to eliminate polling and improve responsiveness
 
 ## Completed
-- [x] Eliminate polling in AsyncInputReader::spawn by using spawn_blocking for stdin reads
-- [x] Replace polling in AsyncInputReader::spawn_controlled with blocking read pattern
-- [x] Introduce unified buffer reuse (1024-byte) in both async reader variants
-- [x] Simplify timeout handling to 20ms sleep after processing instead of WouldBlock checks
-- [x] Improve efficiency by removing busy-wait loop and reducing async overhead
+- [x] Replace `stdin.read` with `std::io::Read::read` for consistent error handling and EOF detection
+- [x] Introduce `ShutdownGuard` to encapsulate shutdown mechanism and improve safety
+- [x] Simplify input loop with direct error/EOF handling instead of nested match statements
+- [x] Remove biased polling from `tokio::select!` to prevent starvation
+- [x] Update method signature from `spawn_with_channel` to `spawn_with_shutdown` for clarity

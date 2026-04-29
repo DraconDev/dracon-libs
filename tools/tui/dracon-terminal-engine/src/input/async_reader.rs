@@ -22,23 +22,19 @@ impl AsyncInputReader {
             let mut buffer = [0u8; 1024];
 
             loop {
-                let result = tokio::task::spawn_blocking(move || {
+                let n = tokio::task::spawn_blocking(move || {
                     let mut stdin = std::io::stdin();
-                    stdin.read(&mut buffer)
+                    std::io::Read::read(&mut stdin, &mut buffer)
                 }).await;
 
-                let n = match result {
-                    Ok(n) => n,
-                    Err(_) => break,
-                };
-
-                if n == 0 {
-                    break;
-                }
-
-                for &item in buffer.iter().take(n) {
-                    if let Some(event) = parser.advance(item) {
-                        callback(event);
+                match n {
+                    Ok(0) | Err(_) => break,
+                    Ok(n) => {
+                        for &item in buffer.iter().take(n) {
+                            if let Some(event) = parser.advance(item) {
+                                callback(event);
+                            }
+                        }
                     }
                 }
 
@@ -51,52 +47,64 @@ impl AsyncInputReader {
         })
     }
 
-    pub fn spawn_with_channel<F>(
+    pub fn spawn_with_shutdown<F>(
         mut callback: F,
-    ) -> (tokio::task::JoinHandle<()>, mpsc::Sender<()>)
+    ) -> (tokio::task::JoinHandle<()>, ShutdownGuard)
     where
         F: FnMut(crate::input::event::Event) + Send + 'static,
     {
-        let (tx, mut rx) = mpsc::channel(1);
+        let (tx, rx) = mpsc::channel(1);
         let handle = tokio::spawn(async move {
             let mut parser = crate::input::parser::Parser::new();
             let mut buffer = [0u8; 1024];
+            let mut rx = rx;
 
             loop {
-                let n = tokio::task::spawn_blocking(move || {
+                let read_result = tokio::task::spawn_blocking(move || {
                     let mut stdin = std::io::stdin();
-                    stdin.read(&mut buffer)
+                    std::io::Read::read(&mut stdin, &mut buffer)
                 }).await;
 
-                let n = match n {
-                    Ok(n) => n,
-                    Err(_) => break,
-                };
-
-                tokio::select! {
-                    biased;
-
-                    _ = rx.recv() => {
-                        break;
-                    }
-                    _ = async {} => {
-                        if n == 0 {
-                            break;
-                        }
+                let should_break = match read_result {
+                    Ok(0) | Err(_) => true,
+                    Ok(n) => {
                         for &item in buffer.iter().take(n) {
                             if let Some(event) = parser.advance(item) {
                                 callback(event);
                             }
                         }
+                        false
                     }
+                };
+
+                if should_break {
+                    break;
                 }
 
-                sleep(Duration::from_millis(20)).await;
-                if let Some(evt) = parser.check_timeout() {
-                    callback(evt);
+                tokio::select! {
+                    _ = rx.recv() => {
+                        break;
+                    }
+                    _ = sleep(Duration::from_millis(20)) => {
+                        if let Some(evt) = parser.check_timeout() {
+                            callback(evt);
+                        }
+                    }
                 }
             }
         });
-        (handle, tx)
+        (handle, ShutdownGuard { tx })
+    }
+}
+
+#[cfg(feature = "async")]
+pub struct ShutdownGuard {
+    tx: mpsc::Sender<()>,
+}
+
+#[cfg(feature = "async")]
+impl ShutdownGuard {
+    pub fn shutdown(self) {
+        drop(self.tx);
     }
 }
