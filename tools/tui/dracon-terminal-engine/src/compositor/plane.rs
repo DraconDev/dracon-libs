@@ -11,7 +11,6 @@ pub enum Color {
     Rgb(u8, u8, u8),
 }
 
-/// Terminal styling flags (bold, italic, underline, etc.).
 bitflags! {
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Default)]
     pub struct Styles: u8 {

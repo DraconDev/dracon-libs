@@ -1,7 +1,7 @@
 # Project State
 
 ## Current Focus
-Upgrade dracon-terminal-engine and related dependencies to version 26
+docs(comment): remove redundant comment above Styles enum
 
 ## Completed
-- [x] Updated Cargo.lock with upgraded dependency versions
+- [x] Deleted the comment line “/// Terminal styling flags (bold, italic, underline, etc).” preceding the Styles enum in tools/tui/dracon-terminal-engine/src/compositor/plane.rs.
