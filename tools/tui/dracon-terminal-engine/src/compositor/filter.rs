@@ -1,5 +1,6 @@
 use crate::compositor::plane::{Cell, Color};
 
+/// Applies a visual effect to a cell during compositing.
 pub trait Filter {
     fn apply(&self, cell: &mut Cell, x: u16, y: u16, time: f32);
 }
@@ -26,7 +27,9 @@ fn dim_color(color: Color, factor: f32) -> Color {
     }
 }
 
+/// Dims colors by a given factor.
 pub struct Dim {
+    /// The dimming factor applied to colors (0.0 to 1.0).
     pub factor: f32,
 }
 
@@ -43,6 +46,7 @@ impl Filter for Dim {
     }
 }
 
+/// Swaps foreground and background colors, creating an inverted appearance.
 pub struct Invert;
 
 impl Filter for Invert {
@@ -51,6 +55,7 @@ impl Filter for Invert {
     }
 }
 
+/// Applies scanline effect by dimming every other row.
 pub struct Scanline;
 
 impl Filter for Scanline {
@@ -62,6 +67,7 @@ impl Filter for Scanline {
     }
 }
 
+/// Pulses foreground brightness over time using a sine wave.
 pub struct Pulse;
 
 impl Filter for Pulse {
@@ -71,6 +77,7 @@ impl Filter for Pulse {
     }
 }
 
+/// Applies glitch effect with random character corruption and row distortion.
 pub struct Glitch;
 
 impl Filter for Glitch {

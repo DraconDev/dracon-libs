@@ -1,9 +1,11 @@
 # Project State
 
 ## Current Focus
-Refactor the layout system and add code syntax highlighting support
+Add compositing architecture with Plane composite and filter effects, introduce Stack layout orientation
 
 ## Completed
-- [x] Refactored `Stack` layout to use an `orientation` field, `children` collection, and `spacing` support; removed the legacy `Orientation` enum.
-- [x] Added `highlight_code` function that provides syntax highlighting for 50+ languages with cyberpunk-themed styling.
-- [x] Updated `Cargo.lock` to reflect new dependency versions (binary unchanged).
+- [x] Define Compositor struct with planes vector and new() factory
+- [x] Implement Compositor::new(width, height) method
+- [x] Add Filter trait and concrete filters: Dim, Invert, Scanline, Pulse, Glitch
+- [x] Add Orientation enum and Stack struct with orientation and spacing fields
+- [x] Add Stack::new(orientation) and with_spacing methods

@@ -1,7 +1,9 @@
 use crate::compositor::plane::{Cell, Color, Plane, Styles};
 use std::io::{self, Write};
 
+/// Composites multiple planes into a single render target.
 pub struct Compositor {
+    /// The planes to composite, ordered by z-index.
     pub planes: Vec<Plane>,
     width: u16,
     height: u16,
@@ -9,6 +11,7 @@ pub struct Compositor {
 }
 
 impl Compositor {
+    /// Creates a new Compositor with the given dimensions.
     pub fn new(width: u16, height: u16) -> Self {
         Self {
             planes: Vec::new(),
