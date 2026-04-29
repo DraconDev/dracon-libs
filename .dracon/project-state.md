@@ -1,11 +1,14 @@
 # Project State
 
 ## Current Focus
-Add diagnostic overlay and widget hierarchy inspector for runtime debugging
+Add EventLogger widget to display scrolling input event log
 
 ## Completed
-- [x] Added DebugOverlay widget for rendering diagnostic key‑value pairs.
-- [x] Added WidgetInspector widget for visualizing widget hierarchy.
-- [x] Refactored status_bar.rs to remove unused height variable.
-- [x] Cleaned unused import in tooltip.rs.
-- [x] Renamed unused label_len variable in tree.rs to _label_len.
+- [x] Added new file `tools/tui/dracon-terminal-engine/src/framework/widgets/event_logger.rs`
+- [x] Defined `LoggedEvent` struct for timestamp and description
+- [x] Implemented `EventLogger` struct with `id`, `max_events`, `events` queue, and `theme`
+- [x] Added configuration methods `new()`, `with_theme()`, and `with_max_events()`
+- [x] Implemented `log()` to append events with timestamp/description and manage size
+- [x] Implemented `clear()` to reset the event queue
+- [x] Implemented `Widget` trait with `id()` and `render()` methods
+- [x] Render method scrolls recent events and applies theme styling
