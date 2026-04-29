@@ -1,12 +1,11 @@
 # Project State
 
 ## Current Focus
-Update dracon-terminal-engine dependency to v26.0.0 for improved features or bug fixes
+Introduce convenience split methods and fix minor index handling in modal rendering.
 
 ## Completed
-- [x] Refactor widget modules by removing unused parameters and simplifying table cell handling
-- [x] Refactor mouse handling to use full button codes and add release functionality
-- [x] Add private `source_row_from_visual` helper for text editor navigation
-- [x] Introduce scoped hit-zone system for UI elements
-- [x] Add convenience methods for viewport handling and scrolling in List widget
-- [x] Bump dracon-terminal-engine to v26.0.0 (crate metadata optimization included)
+- [x] Add `Ctx::split_h` and `Ctx::split_v` to allow horizontal/vertical pane splitting with a closure on each pane.
+- [x] Implement `SplitPane::from_rect` to create a split based on a `Rect` orientation automatically.
+- [x] Correct modal drawing index calculations by casting to `usize` to avoid overflow warnings.
+- [x] Update widget imports to include `Color` and `Styles` for consistent compositor usage.
+- [x] Adjust `TabBar` imports to match the updated compositor API.

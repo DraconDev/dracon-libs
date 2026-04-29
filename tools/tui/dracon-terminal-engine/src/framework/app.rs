@@ -6,6 +6,7 @@ use crate::framework::theme::Theme;
 use crate::input::event::Event;
 use crate::input::parser::Parser;
 use crate::Terminal;
+use ratatui::layout::Rect;
 use std::io::{self, Read, Write};
 use std::os::fd::AsFd;
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
@@ -178,5 +179,29 @@ impl<'a> Ctx<'a> {
 
     pub fn theme(&self) -> &Theme {
         self.theme
+    }
+
+    pub fn split_h<F>(&mut self, f: F)
+    where
+        F: FnOnce(&mut SplitPane, &mut SplitPane),
+    {
+        let (w, h) = self.compositor.size();
+        let split = SplitPane::new(crate::framework::widgets::split::Orientation::Horizontal).ratio(0.5);
+        let (r1, r2) = split.split(Rect::new(0, 0, w, h));
+        let mut left = SplitPane::from_rect(r1);
+        let mut right = SplitPane::from_rect(r2);
+        f(&mut left, &mut right);
+    }
+
+    pub fn split_v<F>(&mut self, f: F)
+    where
+        F: FnOnce(&mut SplitPane, &mut SplitPane),
+    {
+        let (w, h) = self.compositor.size();
+        let split = SplitPane::new(crate::framework::widgets::split::Orientation::Vertical).ratio(0.5);
+        let (r1, r2) = split.split(Rect::new(0, 0, w, h));
+        let mut left = SplitPane::from_rect(r1);
+        let mut right = SplitPane::from_rect(r2);
+        f(&mut left, &mut right);
     }
 }

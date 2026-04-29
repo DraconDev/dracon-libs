@@ -1,6 +1,6 @@
 use crate::framework::hitzone::HitZone;
 use crate::framework::theme::Theme;
-use crate::compositor::{Cell, Plane};
+use crate::compositor::{Cell, Color, Plane, Styles};
 use ratatui::layout::Rect;
 
 pub struct TabBar {

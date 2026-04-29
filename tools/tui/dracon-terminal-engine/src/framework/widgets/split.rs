@@ -1,4 +1,4 @@
-use crate::compositor::{Plane, Styles};
+use crate::compositor::{Cell, Color, Plane, Styles};
 use ratatui::layout::Rect;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -16,6 +16,20 @@ pub struct SplitPane {
 
 impl SplitPane {
     pub fn new(orientation: Orientation) -> Self {
+        Self {
+            ratio: 0.5,
+            orientation,
+            divider_char: '│',
+            min_size: 10,
+        }
+    }
+
+    pub fn from_rect(rect: Rect) -> Self {
+        let orientation = if rect.width >= rect.height {
+            Orientation::Horizontal
+        } else {
+            Orientation::Vertical
+        };
         Self {
             ratio: 0.5,
             orientation,

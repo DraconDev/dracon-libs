@@ -1,6 +1,6 @@
 use crate::framework::hitzone::HitZone;
 use crate::framework::theme::Theme;
-use crate::compositor::Plane;
+use crate::compositor::{Cell, Color, Plane, Styles};
 use ratatui::layout::Rect;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -69,7 +69,7 @@ impl<'a> Modal<'a> {
         for row in 1..self.height.saturating_sub(1) {
             let idx = (row * self.width) as usize;
             if idx < plane.cells.len() { plane.cells[idx].char = '│'; }
-            let idx = row * self.width + self.width - 1;
+            let idx = (row * self.width + self.width - 1) as usize;
             if idx < plane.cells.len() { plane.cells[idx].char = '│'; }
         }
 
