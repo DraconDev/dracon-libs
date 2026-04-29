@@ -1,10 +1,9 @@
-# Project State
-This commit modifies the Cargo.lock file, updates example code files (framework_file_manager.rs, list.rs), refactors a terminal widgets list. The lock size stayed stable, with minor bug fixes and refactorings introduced. Documentation and UI components were updated to match new API behavior. All changes aimed to improve code clarity, maintainability, and feature completeness.
+#Project State
+
+## Current Focus
+Update framework_demo example to use owned String types for breadcrumb data following refactored API changes
 
 ## Completed
-- Updated file structure and documentation in the Cargo.lock example
-- Refactored list widget implementation for better state and UI separation
-- Fixed logic issues in context menus and rating tables
-- Improved string handling in builder pattern for UI components
-- Added new UI widgets and removed deprecated attributes from terminal API
-- Cleaned up legacy documentation to reflect current functionality
+- [x] Refactor example code to use `String` instead of string literals for breadcrumb items, making example code more explicit and avoiding implicit conversions
+- [x] Adjust string creation to be more verbose in example, improving clarity for developers reading the demonstration
+- [x] Maintain functional equivalence while updating string handling patterns to match latest API implementation
