@@ -1,11 +1,10 @@
 //! The main application entry point.
 
 use crate::backend::tty;
-use crate::compositor::{Cell, Color, Compositor, Plane, Styles};
+use crate::compositor::{Compositor, Plane};
 use crate::framework::theme::Theme;
 use crate::input::event::Event;
 use crate::input::parser::Parser;
-use crate::input::reader::InputReader;
 use crate::Terminal;
 use std::io::{self, Read, Write};
 use std::os::fd::AsFd;

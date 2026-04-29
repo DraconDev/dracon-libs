@@ -563,8 +563,9 @@ impl Parser {
         let x: u16 = parts[1].parse::<u16>().ok()?.saturating_sub(1);
         let y: u16 = parts[2].parse::<u16>().ok()?.saturating_sub(1);
 
-        let base = b & 0b0000_0011;
+        let last_char = *self.buffer.last()?;
         let is_release = last_char == b'm';
+        let base = b & 0b0000_0011;
 
         let mut modifiers = KeyModifiers::empty();
         if (b & 4) != 0 {
@@ -596,14 +597,18 @@ impl Parser {
             }));
         }
 
-        let button = match b {
-            0 => MouseButton::Left,
-            1 => MouseButton::Middle,
-            2 => MouseButton::Right,
-            3 => MouseButton::Left,
-            8 | 128 => MouseButton::Back,
-            9 | 129 => MouseButton::Forward,
-            _ => MouseButton::Other(b as u8),
+        let button = if b >= 8 && b <= 9 {
+            match b {
+                8 | 128 => MouseButton::Back,
+                _ => MouseButton::Forward,
+            }
+        } else {
+            match base {
+                0 => MouseButton::Left,
+                1 => MouseButton::Middle,
+                2 => MouseButton::Right,
+                _ => MouseButton::Other(base as u8),
+            }
         };
 
         let kind = if is_release {

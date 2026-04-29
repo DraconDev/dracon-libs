@@ -1,6 +1,6 @@
 use crate::framework::hitzone::HitZone;
 use crate::framework::theme::Theme;
-use crate::compositor::{Cell, Color, Plane, Styles};
+use crate::compositor::{Plane, Styles};
 use std::path::Path;
 use ratatui::layout::Rect;
 

@@ -3,7 +3,7 @@
 //! Provides `DragSource`, `DropTarget`, `DragGhost`, and `DragManager` for
 //! declarative drag-and-drop with visual ghost rendering.
 
-use crate::compositor::{Color, Plane, Styles};
+use crate::compositor::{Color, Plane};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum DragPhase {
