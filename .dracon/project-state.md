@@ -1,8 +1,9 @@
 # Project State
 
 ## Current Focus
-Added module‑level documentation comments to the `input` and `visuals` modules.
+Add module‑level documentation and public re‑exports for the compositor and plane components.
 
 ## Completed
-- [x] Added a module‑level doc comment to `tools/tui/dracon-terminal-engine/src/input/mod.rs` describing its purpose.
-- [x] Added a module‑level doc comment to `tools/tui/dracon-terminal-engine/src/visuals/mod.rs` describing its purpose.
+- [x] Added descriptive module‑level doc comment for the compositor module.
+- [x] Re‑exported engine::Compositor for external use.
+- [x] Re‑exported plane::{Cell, Color, Plane, Styles} types for external access.
