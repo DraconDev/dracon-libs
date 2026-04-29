@@ -18,7 +18,6 @@ pub struct Column {
 pub struct TableRow<T> {
     /// The underlying row data.
     pub data: T,
-    cells: Vec<String>,
 }
 
 /// A sortable, selectable table with header and row hit zones.
@@ -26,13 +25,10 @@ pub struct Table<T> {
     columns: Vec<Column>,
     rows: Vec<TableRow<T>>,
     selected: usize,
-    sort_col: Option<usize>,
-    sort_asc: bool,
     offset: usize,
     visible_count: usize,
     theme: Theme,
     on_select: Option<Box<dyn FnMut(&T)>>,
-    on_sort: Option<Box<dyn FnMut(&T, &T) -> std::cmp::Ordering>>,
 }
 
 impl<T: Clone + ToString> Table<T> {

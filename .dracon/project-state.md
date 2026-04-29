@@ -1,8 +1,9 @@
 # Project State
 
 ## Current Focus
-Add explanatory note about RatatuiBackend usage and raw mode handling in AI_GUIDE.md
+Remove internal cell storage and sorting configuration from Table to simplify rendering.
 
 ## Completed
-- [x] Add note on proper RatatuiBackend::new usage and raw mode termination
-- [x] Update Cargo.lock dependency lock file
+- [x] Removed `cells: Vec<String>` field from `Column` struct
+- [x] Removed `sort_col`, `sort_asc` fields from `Table` struct
+- [x] Removed `on_sort` callback from `Table` struct
