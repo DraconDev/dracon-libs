@@ -194,8 +194,8 @@ mod tests {
             Constraint::Ratio(2, 3),
         ]);
         let rects = layout.layout(Rect::new(0, 0, 100, 20));
-        assert_eq!(rects[0].width, 25);
-        assert_eq!(rects[1].width, 75);
+        assert_eq!(rects[0].width, 33);
+        assert_eq!(rects[1].width, 66);
     }
 
     #[test]

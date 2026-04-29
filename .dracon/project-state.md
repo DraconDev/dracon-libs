@@ -1,8 +1,8 @@
 # Project State
 
 ## Current Focus
-Replace mouse press with down event in dispatcher to align with expected event kind
+Adjusted test assertions to reflect the new proportional layout widths (33 and 66).
 
 ## Completed
-- [x] Updated Cargo.lock (dependency lockfile change)
-- [x] Modified event_dispatcher.rs to use MouseEventKind::Down instead of MouseEventKind::Press for left button
+- [x] Updated assert_eq! values for rect widths from 25/75 to 33/66 in layout.rs test
+- [x] Modified test to match the revised 1:2 width ratio after layout changes
