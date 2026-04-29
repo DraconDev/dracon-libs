@@ -1,11 +1,14 @@
 # Project State
 
 ## Current Focus
-Introduce new UI widgets (Breadcrumbs and ContextMenu) and expose drag state in the framework prelude.
+refactor(context-menu): simplify ContextMenu widget by removing submenu support, adopting owned String labels, dynamic height calculation, and index-based hit zones
 
 ## Completed
-- [x] Export `DragState` in the framework prelude for broader use.
-- [x] Add a fully functional `Breadcrumbs` widget with path rendering, theming, hit‑zone generation, and click navigation callbacks.
-- [x] Add a `ContextMenu` widget (implementation details omitted) providing a selectable list of actions with theming and hit‑zone support.
-- [x] Update widgets module to include the new widget modules.
-- [x] Adjust table widget imports to align with the updated prelude changes.
+- [x] Remove unused Color import from context_menu compositor imports
+- [x] Drop Submenu variant from ContextAction enum
+- [x] Change ContextMenu items to use owned String labels instead of &'static str references
+- [x] Remove stored height field from ContextMenu, compute height dynamically as item count
+- [x] Update render_at to return HitZone<usize> tracking item indices instead of HitZone<ContextAction>
+- [x] Simplify rendering loop by removing per-action Separator handling logic
+- [x] Simplify handle_click to use direct index lookup for selected items
+- [x] Update Cargo.lock with dependency lockfile changes

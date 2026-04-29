@@ -1,6 +1,6 @@
 use crate::framework::hitzone::HitZone;
 use crate::framework::theme::Theme;
-use crate::compositor::{Cell, Color, Plane, Styles};
+use crate::compositor::{Cell, Plane, Styles};
 use ratatui::layout::Rect;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -13,23 +13,20 @@ pub enum ContextAction {
     Cut,
     Paste,
     Separator,
-    Submenu(Vec<(String, ContextAction)>),
 }
 
 pub struct ContextMenu {
-    items: Vec<(&'static str, ContextAction)>,
+    items: Vec<(String, ContextAction)>,
     theme: Theme,
     width: u16,
-    height: u16,
 }
 
 impl ContextMenu {
     pub fn new(items: Vec<(&'static str, ContextAction)>) -> Self {
         Self {
-            items,
+            items: items.into_iter().map(|(s, a)| (s.to_string(), a)).collect(),
             theme: Theme::default(),
             width: 20,
-            height: items.len() as u16,
         }
     }
 
@@ -43,18 +40,19 @@ impl ContextMenu {
         self
     }
 
-    pub fn render_at(&self, screen: Rect, anchor_x: u16, anchor_y: u16) -> (Plane, Vec<HitZone<ContextAction>>, u16, u16) {
+    pub fn render_at(&self, screen: Rect, anchor_x: u16, anchor_y: u16) -> (Plane, Vec<HitZone<usize>>, u16, u16) {
+        let height = self.items.len() as u16;
         let mut x = anchor_x;
         let mut y = anchor_y;
 
         if x + self.width > screen.width {
             x = screen.width.saturating_sub(self.width);
         }
-        if y + self.height > screen.height {
-            y = screen.height.saturating_sub(self.height);
+        if y + height > screen.height {
+            y = screen.height.saturating_sub(height);
         }
 
-        let mut plane = Plane::new(0, self.width, self.height);
+        let mut plane = Plane::new(0, self.width, height);
         plane.x = x;
         plane.y = y;
         plane.z_index = 200;
@@ -65,57 +63,36 @@ impl ContextMenu {
         }
 
         let mut zones = Vec::new();
-        let mut row: u16 = 0;
 
-        for (label, action) in &self.items {
-            match action {
-                ContextAction::Separator => {
-                    if row < self.height {
-                        let idx = (row * self.width) as usize;
-                        if idx < plane.cells.len() {
-                            for c in 0..self.width {
-                                plane.cells[idx + c as usize].char = '─';
-                                plane.cells[idx + c as usize].fg = self.theme.border;
-                                plane.cells[idx + c as usize].bg = self.theme.bg;
-                            }
-                        }
-                    }
+        for (i, (label, action)) in self.items.iter().enumerate() {
+            let row = i as u16;
+            let zone = HitZone::new(i, x, y + row, self.width, 1);
+            zones.push(zone);
+
+            let idx = (row * self.width) as usize;
+            if idx < plane.cells.len() {
+                plane.cells[idx].char = ' ';
+            }
+
+            for (j, ch) in label.chars().enumerate() {
+                if j as u16 >= self.width - 1 {
+                    break;
                 }
-                _ => {
-                    if row < self.height {
-                        let rect = Rect::new(x, y + row, self.width, 1);
-                        let zone = HitZone::new(*action, x, y + row, self.width, 1);
-                        zones.push(zone);
-
-                        let idx = (row * self.width) as usize;
-                        if idx < plane.cells.len() {
-                            plane.cells[idx].char = ' ';
-                            plane.cells[idx].bg = self.theme.bg;
-                        }
-
-                        for (j, ch) in label.chars().enumerate() {
-                            if j as u16 >= self.width - 1 {
-                                break;
-                            }
-                            let idx = (row * self.width + 2 + j as u16) as usize;
-                            if idx < plane.cells.len() {
-                                plane.cells[idx].char = ch;
-                                plane.cells[idx].fg = self.theme.fg;
-                            }
-                        }
-                    }
+                let idx = (row * self.width + 2 + j as u16) as usize;
+                if idx < plane.cells.len() {
+                    plane.cells[idx].char = ch;
+                    plane.cells[idx].fg = self.theme.fg;
                 }
             }
-            row += 1;
         }
 
         for col in 0..self.width {
             let top_idx = col as usize;
             if top_idx < plane.cells.len() { plane.cells[top_idx].char = '─'; }
-            let bot_idx = ((self.height - 1) * self.width + col) as usize;
+            let bot_idx = ((height - 1) * self.width + col) as usize;
             if bot_idx < plane.cells.len() { plane.cells[bot_idx].char = '─'; }
         }
-        for r in 1..self.height.saturating_sub(1) {
+        for r in 1..height.saturating_sub(1) {
             let left_idx = (r * self.width) as usize;
             if left_idx < plane.cells.len() { plane.cells[left_idx].char = '│'; }
             let right_idx = (r * self.width + self.width - 1) as usize;
@@ -133,21 +110,17 @@ impl ContextMenu {
         anchor_x: u16,
         anchor_y: u16,
     ) -> Option<ContextAction> {
-        if col < anchor_x || col >= anchor_x + self.width || row < anchor_y || row >= anchor_y + self.height {
+        if col < anchor_x || col >= anchor_x + self.width || row < anchor_y || row >= anchor_y + self.items.len() as u16 {
             return None;
         }
 
-        let local_row = row - anchor_y;
+        let idx = (row - anchor_y) as usize;
+        if idx >= self.items.len() {
+            return None;
+        }
 
-        let mut r: u16 = 0;
-        for (_, action) in &self.items {
-            if r == local_row {
-                if let crate::input::event::MouseEventKind::Down(_) = kind {
-                    return Some(*action);
-                }
-                return None;
-            }
-            r += 1;
+        if let crate::input::event::MouseEventKind::Down(_) = kind {
+            return Some(self.items[idx].1.clone());
         }
         None
     }
