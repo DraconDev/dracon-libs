@@ -11,7 +11,6 @@ pub enum Color {
     Rgb(u8, u8, u8),
 }
 
-/// Text styling flags for terminal cells.
 bitflags! {
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Default)]
     pub struct Styles: u8 {
