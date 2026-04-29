@@ -71,6 +71,26 @@ impl Default for TextEditor {
 }
 
 impl TextEditor {
+    fn finish_nav_move(&mut self, has_shift: bool, area: Rect) {
+        if has_shift {
+            self.update_selection_end();
+        } else {
+            self.clear_selection();
+        }
+        self.ensure_cursor_visible(area);
+    }
+
+    macro_rules! nav_move {
+        ($self:ident, $has_shift:expr, $area:expr, $move:expr) => {{
+            if $has_shift {
+                $self.maybe_start_selection();
+            }
+            $move;
+            $self.finish_nav_move($has_shift, $area);
+            return true;
+        }};
+    }
+
     pub fn set_filter(&mut self, query: &str) {
         if self.filter_query == query {
             return;
