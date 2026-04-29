@@ -146,11 +146,11 @@ impl<T: Clone + ToString> Table<T> {
             let bg = if is_selected { self.theme.selection_bg } else { self.theme.bg };
             let fg = if is_selected { self.theme.selection_fg } else { self.theme.fg };
 
-            x = 0;
+            let y_off = 1u16 + i as u16;
+                x = 0;
             for (j, col) in self.columns.iter().enumerate() {
                 let w = col.width.min(area.width.saturating_sub(x));
-                let rect = Rect::new(x, area.y + y, w, row_height);
-                row_zones.push(HitZone::new(self.offset + i, x, area.y + y, w, row_height));
+                row_zones.push(HitZone::new(self.offset + i, x, area.y + y_off, w, row_height));
 
                 for col_idx in 0..w {
                     let idx = ((y as usize) * (area.width as usize) + (x as usize) + col_idx as usize);

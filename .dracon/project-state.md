@@ -1,11 +1,11 @@
 # Project State
 
 ## Current Focus
-Add a full‑featured Table widget with sortable columns, selection callbacks, theme support, and interaction hooks.
+Introduce new UI widgets (Breadcrumbs and ContextMenu) and expose drag state in the framework prelude.
 
 ## Completed
-- [x] Implemented `Table<T>` struct with columns, rows, selection, sorting, offset, theme, and on_select/on_sort callbacks.
-- [x] Added column header rendering with highlighted sort column and centered labels.
-- [x] Integrated row rendering with selection highlighting and HitZone generation for event handling.
-- [x] Exposed the new `Table` widget via `pub use table::Table` in the widgets module.
-- [x] Updated the module registry to include the new `table` module and remove obsolete `modal` duplicate declarations.
+- [x] Export `DragState` in the framework prelude for broader use.
+- [x] Add a fully functional `Breadcrumbs` widget with path rendering, theming, hit‑zone generation, and click navigation callbacks.
+- [x] Add a `ContextMenu` widget (implementation details omitted) providing a selectable list of actions with theming and hit‑zone support.
+- [x] Update widgets module to include the new widget modules.
+- [x] Adjust table widget imports to align with the updated prelude changes.
