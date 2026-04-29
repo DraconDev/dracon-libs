@@ -247,7 +247,7 @@ fn connect_session(
     let mut sess = ssh2::Session::new().context("failed to create ssh session")?;
     sess.set_tcp_stream(tcp);
     sess.set_blocking(true);
-    sess.set_timeout(timeout.as_millis() as u64);
+    sess.set_timeout(timeout.as_millis() as u32);
     sess.handshake().context("ssh handshake failed")?;
 
     if let Ok(mut agent) = sess.agent() {
