@@ -1,9 +1,10 @@
 # Project State
 
 ## Current Focus
-adjust breadcrumbs hit‑zone calculation to use external width parameter
+Add UI color configurations for error, success, warning, and disabled states to the Theme struct.
 
 ## Completed
-- [x] Modified `Breadcrumbs::column` to accept a `width: u16` argument and pass it to `self.zones(width)`.
-- [x] Updated version comment in `src/lib.rs` from `v26.0.1` to `v26.0.2`.
-- [x] Regenerated `Cargo.lock` and `tools/tui/dracon-terminal-engine/Cargo.toml` to reflect the new version.
+- [x] Added error_fg field to Theme with default Color::Rgb(255, 80, 80)
+- [x] Added success_fg field to Theme with default Color::Rgb(80, 255, 120)
+- [x] Added warning_fg field to Theme with default Color::Rgb(255, 180, 80)
+- [x] Added disabled_fg field to Theme with default Color::Rgb(80, 80, 100)

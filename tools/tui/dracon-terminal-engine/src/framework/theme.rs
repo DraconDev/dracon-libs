@@ -33,6 +33,14 @@ pub struct Theme {
     pub input_fg: Color,
     /// Width of scrollbars in pixels.
     pub scrollbar_width: u16,
+    /// Foreground color for error states (validation failures, critical alerts).
+    pub error_fg: Color,
+    /// Foreground color for success states (confirmations, completed actions).
+    pub success_fg: Color,
+    /// Foreground color for warning states (cautions, important notices).
+    pub warning_fg: Color,
+    /// Foreground color for disabled/inactive interactive elements.
+    pub disabled_fg: Color,
 }
 
 impl Theme {
@@ -54,6 +62,10 @@ impl Theme {
             input_bg: Color::Rgb(20, 20, 30),
             input_fg: Color::Rgb(220, 220, 240),
             scrollbar_width: 1,
+            error_fg: Color::Rgb(255, 80, 80),
+            success_fg: Color::Rgb(80, 255, 120),
+            warning_fg: Color::Rgb(255, 180, 80),
+            disabled_fg: Color::Rgb(80, 80, 100),
         }
     }
 
