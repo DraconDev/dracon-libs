@@ -4,18 +4,21 @@
 //! Mouse: click to select, right-click for context menu, scroll to browse.
 
 use dracon_terminal_engine::framework::prelude::*;
-use dracon_terminal_engine::framework::widgets::{ContextMenu, SplitPane};
+use dracon_terminal_engine::framework::widgets::SplitPane;
 use std::path::PathBuf;
+use ratatui::layout::Rect;
 
+#[derive(Clone)]
 struct FileEntry {
     name: String,
     is_dir: bool,
     size: u64,
 }
 
-impl std::fmt::Display for FileEntry {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{} ({})", self.name, if self.is_dir { "dir" } else { "file" })
+impl ToString for FileEntry {
+    fn to_string(&self) -> String {
+        let icon = if self.is_dir { ">" } else { "-" };
+        format!("{} {} ({})", icon, self.name, self.size)
     }
 }
 
@@ -37,22 +40,11 @@ fn read_dir(path: &PathBuf) -> Vec<FileEntry> {
         .unwrap_or_default()
 }
 
-fn file_icon(entry: &FileEntry) -> &'static str {
-    if entry.is_dir { ">" } else { "-" }
-}
-
-fn format_size(size: u64) -> String {
-    if size < 1024 { format!("{}B", size) }
-    else if size < 1024 * 1024 { format!("{}KB", size / 1024) }
-    else if size < 1024 * 1024 * 1024 { format!("{}MB", size / 1024 / 1024) }
-    else { format!("{}GB", size / 1024 / 1024 / 1024) }
-}
-
 fn main() -> std::io::Result<()> {
     let theme = Theme::dark();
 
     let current_dir = std::env::current_dir().unwrap_or_else(|_| PathBuf::from("."));
-    let mut crumbs: Vec<String> = current_dir
+    let crumbs: Vec<String> = current_dir
         .components()
         .map(|c| c.as_os_str().to_string_lossy().into_owned())
         .collect();
@@ -78,18 +70,12 @@ fn main() -> std::io::Result<()> {
                 ctx.add_plane(Plane::new(zone.id, 1, 1));
             }
 
-            let selection = list.selection();
-            let selected_str = if let Some(idx) = selection {
-                entries.get(*idx).map(|e| e.name.clone())
-            } else {
-                None
-            };
-
+            let sel_idx = list.selected_index();
             let mut info_plane = Plane::new(1, side_rect.width, side_rect.height);
             info_plane.z_index = 5;
 
             let mut y = 1u16;
-            let print = |plane: &mut Plane, text: &str, fg: Color| {
+            let mut print = |plane: &mut Plane, text: &str, fg: Color| {
                 for (i, c) in text.chars().take(side_rect.width as usize - 2).enumerate() {
                     let idx = ((y * side_rect.width) + 1 + i as u16) as usize;
                     if idx < plane.cells.len() {
@@ -104,14 +90,21 @@ fn main() -> std::io::Result<()> {
             print(&mut info_plane, "INFORMATION", Color::Rgb(0, 255, 136));
             print(&mut info_plane, &format!("Items: {}", entries.len()), Color::Rgb(180, 180, 180));
 
-            if let Some(name) = &selected_str {
-                print(&mut info_plane, &format!("Name: {}", name), Color::White);
-                if let Some(entry) = entries.iter().find(|e| &e.name == name) {
-                    if entry.is_dir {
-                        print(&mut info_plane, "Type: Directory", Color::Rgb(100, 200, 255));
+            if let Some(entry) = list.get_selected() {
+                print(&mut info_plane, &format!("Name: {}", entry.name), Color::Rgb(255, 255, 255));
+                if entry.is_dir {
+                    print(&mut info_plane, "Type: Directory", Color::Rgb(100, 200, 255));
+                } else {
+                    let size_str = if entry.size < 1024 {
+                        format!("{}B", entry.size)
+                    } else if entry.size < 1024 * 1024 {
+                        format!("{}KB", entry.size / 1024)
+                    } else if entry.size < 1024 * 1024 * 1024 {
+                        format!("{}MB", entry.size / 1024 / 1024)
                     } else {
-                        print(&mut info_plane, &format!("Size: {}", format_size(entry.size)), Color::Rgb(200, 150, 100));
-                    }
+                        format!("{}GB", entry.size / 1024 / 1024 / 1024)
+                    };
+                    print(&mut info_plane, &format!("Size: {}", size_str), Color::Rgb(200, 150, 100));
                 }
             }
 

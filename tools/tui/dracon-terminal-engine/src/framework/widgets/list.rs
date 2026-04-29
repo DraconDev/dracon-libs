@@ -53,6 +53,10 @@ impl<T: Clone + ToString> List<T> {
         self.selected
     }
 
+    pub fn get_selected(&self) -> Option<&T> {
+        self.items.get(self.selected)
+    }
+
     pub fn scroll_state(&self) -> ScrollState {
         ScrollState {
             offset: self.offset,

@@ -1,8 +1,15 @@
 # Project State
 
-## Current Focus
-Add a file‑manager demo showcasing List, Breadcrumbs, SplitPane, and ContextMenu widgets.
+## CurrentFocus
+Refactor file‑manager example to use SplitPane, simplify FileEntry display, and add a `get_selected` helper to the List widget.
 
 ## Completed
-- [x] feat(demo): added `framework_file_manager.rs` example that implements a navigable file manager with keyboard and mouse support, displaying file info and context menu actions.
-- [x] chore(lock): updated `Cargo.lock` to reflect new dependencies introduced by the demo.
+- [x] Dropped `ContextMenu` import and replaced it with `SplitPane` import
+- [x] Changed `FileEntry` formatting from `Display` to `ToString` with icon and size formatting
+- [x] Removed `file_icon` and `format_size` helper functions
+- [x] Renamed `crumbs` collection to store breadcrumb strings
+- [x] Added `ratatui::layout::Rect` import for layout calculations
+- [x] Replaced `selection` and `selected_str` logic with `selected_index` and `list.get_selected()`
+- [x] Updated information pane printing to use the selected `FileEntry` directly, computing size inline
+- [x] Added `pub fn get_selected(&self) -> Option<&T>` method to `List` implementation
+- [x] Updated Cargo.lock (binary unchanged, reflected in diff)
