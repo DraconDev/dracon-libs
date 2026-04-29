@@ -98,9 +98,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         .borders(Borders::ALL)
                         .border_style(Style::default().fg(Color::Yellow)),
                 )
-                .style(Style::default().fg(Color::Yellow))
-                .data(data1.iter().map(|v| *v as u64).collect::<Vec<u64>>());
-            f.render_widget(spark, right_chunks[1]);
+                .style(Style::default().fg(Color::Yellow));
+            let spark_data: Vec<u64> = data1.iter().map(|v| *v as u64).collect();
+            f.render_widget(spark.data(&spark_data), right_chunks[1]);
         })?;
 
         let backend = terminal.backend_mut();

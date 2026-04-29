@@ -32,10 +32,15 @@ impl InputReader {
                     }
                 }
 
-                // 2. Poll with 20ms timeout
-                // Need to borrow stdin's FD
+                // 2. Poll with 20ms timeout (retry on EINTR)
                 let stdin_fd = stdin.as_fd();
-                let polled = tty::poll_input(stdin_fd, 20);
+                let polled = loop {
+                    match tty::poll_input(stdin_fd, 20) {
+                        Ok(p) => break Ok(p),
+                        Err(e) if e.kind() == std::io::ErrorKind::Interrupted => continue,
+                        Err(e) => break Err(e),
+                    }
+                };
 
                 match polled {
                     Ok(true) => {

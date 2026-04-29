@@ -1,10 +1,9 @@
 # Project State
 
-## Current Focus One line
-
-Updated input parsing logic for terminal UI to handle specific key combinations and mouse events more effectively.
+## Current Focus
+Fix terminal input polling EINTR retry, refactor TUI spark widget data handling, update Cargo.lock
 
 ## Completed
-- [x] Changed Ctrl+. to Ctrl+_ (ASCII 31/Unit Separator) handling, modifying char output from '.' to '_' in key event generation
-- [x] Refactored ANSI escape sequence parsing by removing '2' from conditional checks for sequence validation (e.g., function keys), potentially expanding handled cases
-- [x] Simplified mouse button detection by reducing bitmask from 0b1100_1011 to 0b0000_0011, focusing detection on lower two bits for standard left/right/middle click handling
+- [x] Fix terminal input polling to retry on EINTR (interrupted system call) errors, avoiding failures when poll is interrupted by signals
+- [x] Refactor TUI example spark widget configuration to separate data collection into a dedicated variable and pass data by reference, rather than chaining data assignment during widget builder setup
+- [x] Update Cargo.lock dependency lockfile
