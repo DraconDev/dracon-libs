@@ -62,6 +62,7 @@ impl<'a> Stack<'a> {
         self
     }
 
+    /// Adds a child component to the stack.
     pub fn add_child(&mut self, child: &'a mut dyn Component) {
         self.children.push(child);
     }
