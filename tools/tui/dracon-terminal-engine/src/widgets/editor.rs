@@ -14,27 +14,49 @@ use std::cell::RefCell;
 /// A tactical multiline text editor widget for quick edits.
 #[derive(Clone, Debug)]
 pub struct TextEditor {
+    /// All lines of text in the editor.
     pub lines: Vec<String>,
-    pub cursor_row: usize, // Visual Row Index
-    pub cursor_col: usize, // Byte index
+    /// Current cursor row (visual row index, accounts for word-wrap).
+    pub cursor_row: usize,
+    /// Current cursor column (byte index within the line).
+    pub cursor_col: usize,
+    /// Vertical scroll offset in rows.
     pub scroll_row: usize,
-    pub scroll_col: usize, // Visual column index
+    /// Horizontal scroll offset in visual columns.
+    pub scroll_col: usize,
+    /// Default style for text in the editor.
     pub style: Style,
+    /// Style applied to the cursor block.
     pub cursor_style: Style,
+    /// Whether the content has unsaved changes.
     pub modified: bool,
+    /// Whether to render line numbers in the gutter.
     pub show_line_numbers: bool,
+    /// Undo history stack (each entry is a snapshot of all lines).
     pub history: Vec<Vec<String>>,
+    /// Redo stack for undone changes.
     pub redo_stack: Vec<Vec<String>>,
+    /// Current filter query string.
     pub filter_query: String,
+    /// Line indices that match the current filter.
     pub filtered_indices: Vec<usize>,
+    /// If true, text cannot be edited.
     pub read_only: bool,
-    pub selection_start: Option<(usize, usize)>, // (row, byte_col)
+    /// Starting position of the current selection `(row, byte_col)`.
+    pub selection_start: Option<(usize, usize)>,
+    /// Ending position of the current selection `(row, byte_col)`.
     pub selection_end: Option<(usize, usize)>,
+    /// Whether a selection is actively being made.
     pub is_selecting: bool,
+    /// Whether a mouse drag is extending the selection.
     pub is_dragging_selection: bool,
+    /// Language identifier for syntax highlighting (e.g. "rust", "python").
     pub language: String,
+    /// Whether long lines wrap to the next visual row.
     pub wrap: bool,
+    /// Cached highlighted lines, invalidated when content changes.
     pub highlighted_cache: RefCell<Vec<Line<'static>>>,
+    /// First line number that needs re-highlighting (None = all valid).
     pub first_invalid_line: RefCell<Option<usize>>,
 }
 
@@ -171,6 +193,7 @@ impl TextEditor {
         line[..byte_col].width()
     }
 
+    /// Converts a visual (display) column position back to a byte index within the line.
     pub fn get_byte_index_from_visual(&self, row: usize, visual_x: usize) -> usize {
         if row >= self.effective_len() {
             return 0;
@@ -186,10 +209,12 @@ impl TextEditor {
         line.len()
     }
 
+    /// Creates a new empty `TextEditor` with one blank line.
     pub fn new() -> Self {
         Self::default()
     }
 
+    /// Marks all lines from `row` onward as needing re-highlighting.
     pub fn invalidate_from(&self, row: usize) {
         let mut first = self.first_invalid_line.borrow_mut();
         if let Some(current) = *first {
@@ -201,12 +226,12 @@ impl TextEditor {
         }
     }
 
+    /// Creates a `TextEditor` pre-populated with the given text content.
     pub fn with_content(content: &str) -> Self {
         let mut lines: Vec<String> = content.lines().map(|s| s.to_string()).collect();
         if lines.is_empty() {
             lines.push(String::new());
         }
-        // Always ensure a trailing empty line for "extra line after everything"
         if !lines.last().map(|l| l.is_empty()).unwrap_or(false) {
             lines.push(String::new());
         }
@@ -216,10 +241,12 @@ impl TextEditor {
         }
     }
 
+    /// Returns the full editor content joined by newlines.
     pub fn get_content(&self) -> String {
         self.lines.join("\n")
     }
 
+    /// Replaces all occurrences of `find` with `replace` across every line.
     pub fn replace_all(&mut self, find: &str, replace: &str) {
         if find.is_empty() {
             return;
@@ -231,12 +258,12 @@ impl TextEditor {
         self.invalidate_from(0);
     }
 
+    /// Replaces the next occurrence of `find` after the cursor with `replace`.
+    /// Returns `true` if a replacement was made.
     pub fn replace_next(&mut self, find: &str, replace: &str) -> bool {
         if find.is_empty() {
             return false;
         }
-
-        // Search from current cursor position
         let start_row = self.cursor_row;
         let start_col = self.cursor_col;
 
@@ -263,15 +290,17 @@ impl TextEditor {
         false
     }
 
+    /// Returns the width of the line-number gutter in cells (including separator).
     pub fn gutter_width(&self) -> usize {
         if !self.show_line_numbers {
             return 0;
         }
         let total_lines = self.lines.len();
         let digits = total_lines.to_string().len();
-        digits + 2 // +1 for left padding, +1 for vertical separator
+        digits + 2
     }
 
+    /// Handles a keyboard or mouse event. Returns `true` if the event was consumed.
     pub fn handle_event(&mut self, event: &Event, area: Rect) -> bool {
         // If filtered OR Read-Only, allow only navigation
         if !self.filter_query.is_empty() || self.read_only {

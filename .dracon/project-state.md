@@ -1,17 +1,16 @@
 # Project State
 
 ## Current Focus
-Introduce a selectable list widget with builder methods and a sortable, selectable table widget with header and row hit zones.
+Introduce extensive TextEditor enhancements including undo/redo, filtering, syntax highlighting cache, and richer event handling.
 
 ## Completed
-- [x] Added builder methods to `List<T>`: `with_theme`, `with_item_height`, `with_width`, `on_select`, `selected_index`, `get_selected`, `len`, `viewport`, `scroll_to`, `scroll_state`, `set_visible_count`, `render`, `handle_mouse`, `handle_key`.
-- [x] Implemented theming support using `Theme` for `List<T>`.
-- [x] Added configurable item height and width for `List<T>`.
-- [x] Added selection callback registration (`on_select`) and methods to retrieve selected index/item.
-- [x] Provided viewport and scroll‑state queries plus programmatic scrolling (`scroll_to`).
-- [x] Added `Column` and `TableRow<T>` structs to define table columns and rows.
-- [x] Added `with_rows` builder to populate `Table<T>` with data rows.
-- [x] Added sortable column registration via `on_sort` callback and selection callback (`on_select`) for `Table<T>`.
-- [x] Added selection index getter and related methods for `Table<T>`.
-- [x] Implemented rendering and mouse handling methods for both widgets.
-- [x] Updated imports and added documentation comments for the new functionality.
+- [x] Added numerous struct fields: `cursor_row`, `cursor_col`, `scroll_row`, `scroll_col`, `style`, `cursor_style`, `modified`, `show_line_numbers`, `history`, `redo_stack`, `filter_query`, `filtered_indices`, `read_only`, `selection_start`, `selection_end`, `is_selecting`, `is_dragging_selection`, `language`, `wrap`, `highlighted_cache`, `first_invalid_line`.
+- [x] Implemented `new()` as alias for `default()`.
+- [x] Added `with_content(&str)` to create editors pre‑populated with user‑provided text.
+- [x] Added `get_content()` to retrieve the full editor content as a newline‑joined string.
+- [x] Added `replace_all(&mut self, find, replace)` to globally replace all occurrences.
+- [x] Added `replace_next(&mut self, find, replace)` to replace the next match after the cursor.
+- [x] Added `invalidate_from(row)` to mark lines needing re‑highlighting.
+- [x] Added `gutter_width()` to compute line‑number gutter width.
+- [x] Added `handle_event(&mut self, event, area)` method to process input events.
+- [x] Modified `get_byte_index_from_visual` to safely handle out‑of‑bounds rows.
