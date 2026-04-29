@@ -1,9 +1,8 @@
 # Project State
 
 ## Current Focus
-Fix terminal input polling EINTR retry, refactor TUI spark widget data handling, update Cargo.lock
+Cargo.toml file size increased due to updated dependencies.
 
 ## Completed
-- [x] Fix terminal input polling to retry on EINTR (interrupted system call) errors, avoiding failures when poll is interrupted by signals
-- [x] Refactor TUI example spark widget configuration to separate data collection into a dedicated variable and pass data by reference, rather than chaining data assignment during widget builder setup
-- [x] Update Cargo.lock dependency lockfile
+- [x] Update dependency versions in Cargo.toml
+- [x] Ensure updated dependencies resolve to version 828 matching current codebase needs
