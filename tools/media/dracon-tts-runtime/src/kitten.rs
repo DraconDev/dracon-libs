@@ -1,4 +1,5 @@
 use crate::contracts::{Gender, TextToSpeech, VoiceInfo, VoiceProvider};
+use anyhow::Context;
 use anyhow::Result;
 use ort::session::Session;
 use rodio::{OutputStream, Sink, Source};
@@ -153,55 +154,38 @@ impl KittenTTS {
         Self::new_with_voice(model_path, voices_path, DEFAULT_VOICE).await
     }
 
-    pub async fn new_with_voice(model_path: &str, voices_path: &str, voice: &str) -> Self {
-        println!("Initializing Kitten TTS...");
-
-        let (stream, handle) = OutputStream::try_default().expect("Failed to init audio output");
-        let sink = Arc::new(Sink::try_new(&handle).expect("Failed to create audio sink"));
+    pub async fn new_with_voice(model_path: &str, voices_path: &str, voice: &str) -> Result<Self> {
+        let (stream, handle) = OutputStream::try_default()
+            .context("failed to initialize audio output")?;
+        let sink = Arc::new(Sink::try_new(&handle)
+            .context("failed to create audio sink")?);
         sink.set_volume(1.0);
         sink.play();
         std::mem::forget(stream);
 
         let session = if std::path::Path::new(model_path).exists() {
-            println!("Loading Kitten model from: {}", model_path);
             match Session::builder() {
                 Ok(builder) => match builder
                     .with_intra_threads(4)
                     .and_then(|b| b.commit_from_file(model_path))
                 {
-                    Ok(s) => {
-                        println!("✓ Kitten ONNX session created");
-                        Some(Arc::new(Mutex::new(s)))
-                    }
+                    Ok(s) => Some(Arc::new(Mutex::new(s))),
                     Err(e) => {
-                        eprintln!("✗ Failed to load Kitten ONNX: {}", e);
-                        None
+                        return Err(anyhow::anyhow!("failed to load Kitten ONNX model: {}", e));
                     }
                 },
                 Err(e) => {
-                    eprintln!("✗ Failed to create session builder: {}", e);
-                    None
+                    return Err(anyhow::anyhow!("failed to create session builder: {}", e));
                 }
             }
         } else {
-            eprintln!("Kitten model not found at: {}", model_path);
-            None
+            return Err(anyhow::anyhow!("Kitten model not found at: {}", model_path));
         };
 
         let voices = if std::path::Path::new(voices_path).exists() {
-            match Self::load_voices_npz(voices_path) {
-                Ok(v) => {
-                    println!("✓ Loaded {} Kitten voices", v.len());
-                    v
-                }
-                Err(e) => {
-                    eprintln!("✗ Failed to load Kitten voices: {}", e);
-                    HashMap::new()
-                }
-            }
+            Self::load_voices_npz(voices_path).context("failed to load Kitten voices")?
         } else {
-            eprintln!("Kitten voices not found at: {}", voices_path);
-            HashMap::new()
+            return Err(anyhow::anyhow!("Kitten voices not found at: {}", voices_path));
         };
 
         let voice_names: Vec<String> = voices.keys().cloned().collect();
@@ -210,13 +194,8 @@ impl KittenTTS {
         } else {
             DEFAULT_VOICE.to_string()
         };
-        println!(
-            "✓ Voice: {} ({})",
-            current_voice,
-            Self::voice_description(&current_voice)
-        );
 
-        Self {
+        Ok(Self {
             sink,
             state: Arc::new(AsyncMutex::new(KittenState::Idle)),
             speaking: Arc::new(AtomicBool::new(false)),
@@ -224,7 +203,7 @@ impl KittenTTS {
             voices,
             voice_names,
             current_voice: Arc::new(Mutex::new(current_voice)),
-        }
+        })
     }
 
     pub fn set_voice(&self, voice: &str) -> bool {

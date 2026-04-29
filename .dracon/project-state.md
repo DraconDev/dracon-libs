@@ -1,8 +1,9 @@
 # Project State
-
-## Current Focus
-Remove redundant input-event mapping layer and unify event types in the terminal engine.
+Initializing project for documenting tooling changes in Dracon-tts-runtime
 
 ## Completed
-- [x] Deprecate `from_runtime_event` and `to_runtime_event` as identity functions; eliminate 50 lines of bidirectional mapping code.
-- [x] Simplify `to_ui_event` and downstream input handling by relying on a single `Event` type.
+- Updated dependencies and integration patterns around audio rendering with Kitten TTS
+- Refined asynchronous lifecycle management and error handling
+- Added robust logging and contextual messages for clarity during startup and setup
+- Improved module organization by grouping audio session and voice management responsibilities
+No features added or documentation refactored beyond core functionality updates.
