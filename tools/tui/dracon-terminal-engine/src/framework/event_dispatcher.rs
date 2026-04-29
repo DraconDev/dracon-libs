@@ -14,6 +14,7 @@ struct DispatchEntry {
     capture: bool,
 }
 
+/// Routes input events to widgets based on hit zones and focus.
 pub struct EventDispatcher {
     groups: Vec<HitZoneGroup<WidgetId>>,
     entries: Vec<DispatchEntry>,
@@ -27,6 +28,7 @@ impl Default for EventDispatcher {
 }
 
 impl EventDispatcher {
+    /// Creates a new `EventDispatcher` without focus management.
     pub fn new() -> Self {
         Self {
             groups: Vec::new(),
@@ -35,6 +37,7 @@ impl EventDispatcher {
         }
     }
 
+    /// Creates a new `EventDispatcher` with focus management.
     pub fn with_focus(fm: std::sync::Mutex<FocusManager>) -> Self {
         Self {
             groups: Vec::new(),
@@ -43,10 +46,12 @@ impl EventDispatcher {
         }
     }
 
+    /// Adds a hit zone to the dispatcher with capture or bubble behavior.
     pub fn add_zone(&mut self, zone: HitZone<WidgetId>, capture: bool) {
         self.entries.push(DispatchEntry { zone, capture });
     }
 
+    /// Builds the capture and bubble groups from added zones.
     pub fn build_groups(&mut self) {
         self.groups.clear();
         let mut capture_group = HitZoneGroup::new();
@@ -64,6 +69,7 @@ impl EventDispatcher {
         self.groups.push(bubble_group);
     }
 
+    /// Dispatches a mouse event to the first matching zone.
     pub fn dispatch_mouse(
         &mut self,
         kind: MouseEventKind,
@@ -81,6 +87,7 @@ impl EventDispatcher {
         }
     }
 
+    /// Dispatches a keyboard event to the focused widget or tab navigation.
     pub fn dispatch_key<F>(&mut self, key: KeyEvent, handler: &mut F) -> bool
     where
         F: FnMut(WidgetId, KeyEvent) -> bool,
