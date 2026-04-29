@@ -20,6 +20,7 @@ pub struct RatatuiBackend<W: io::Write + std::os::fd::AsFd> {
 }
 
 impl<W: io::Write + std::os::fd::AsFd> RatatuiBackend<W> {
+    /// Creates a new `RatatuiBackend` wrapping the given writer.
     pub fn new(writer: W) -> io::Result<Self> {
         let size = crate::backend::tty::get_window_size(writer.as_fd()).unwrap_or((80, 24));
         let mut compositor = Compositor::new(size.0, size.1);
@@ -34,6 +35,7 @@ impl<W: io::Write + std::os::fd::AsFd> RatatuiBackend<W> {
         })
     }
 
+    /// Returns a mutable reference to the underlying compositor.
     pub fn compositor_mut(&mut self) -> &mut Compositor {
         &mut self.compositor
     }
