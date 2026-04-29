@@ -22,11 +22,13 @@ pub struct App {
     fps: u32,
     theme: Theme,
     running: Arc<AtomicBool>,
-    frame_count: Arc<AtomicU64>,
+frame_count: Arc<AtomicU64>,
     last_frame_time: Instant,
+    last_tick_time: Instant,
     tick_interval: Duration,
     resize_flag: Arc<AtomicBool>,
-    on_tick: Option<Box<dyn FnMut(&mut Ctx, u64)>>,
+    tick_count: u64,
+    on_tick: RefCell<Option<Box<dyn FnMut(&mut Ctx, u64)>>>,
 }
 
 impl App {
@@ -43,10 +45,12 @@ impl App {
             theme: Theme::default(),
             running: Arc::new(AtomicBool::new(true)),
             frame_count: Arc::new(AtomicU64::new(0)),
-last_frame_time: Instant::now(),
+            last_frame_time: Instant::now(),
             last_tick_time: Instant::now(),
+            tick_interval: Duration::from_millis(250),
             resize_flag: Arc::new(AtomicBool::new(false)),
-            on_tick: None,
+            tick_count: 0,
+            on_tick: RefCell::new(None),
         })
     }
 
@@ -66,11 +70,16 @@ last_frame_time: Instant::now(),
         self
     }
 
-    pub fn on_tick<F>(mut self, f: F) -> Self
+    pub fn on_tick<F>(self, f: F) -> Self
     where
         F: FnMut(&mut Ctx, u64) + 'static,
     {
-        self.on_tick = Some(Box::new(f));
+        *self.on_tick.borrow_mut() = Some(Box::new(f));
+        self
+    }
+
+    pub fn tick_interval(mut self, ms: u64) -> Self {
+        self.tick_interval = Duration::from_millis(ms);
         self
     }
 
@@ -128,6 +137,15 @@ last_frame_time: Instant::now(),
                 frame_count: frame_count.load(Ordering::SeqCst),
                 last_frame: &self.last_frame_time,
             };
+
+            if self.last_tick_time.elapsed() >= self.tick_interval {
+                if let Some(ref mut tick_fn) = *self.on_tick.borrow_mut() {
+                    tick_fn(&mut ctx, self.tick_count);
+                }
+                self.tick_count += 1;
+                self.last_tick_time = Instant::now();
+            }
+
             f(&mut ctx);
 
             self.compositor.render(&mut self.terminal)?;

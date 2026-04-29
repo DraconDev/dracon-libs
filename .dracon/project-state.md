@@ -1,10 +1,10 @@
 # Project State
 
 ## Current Focus
-feat(tick): expose a hook registration API via `on_tick` and internal tick‑time tracking
+Expose a configurable tick hook with interval control and internal tick counting for the terminal engine.
 
 ## Completed
-- [x] Added `RefCell` import and `on_tick` field to `App` to store the tick callback
-- [x] Added `last_tick_time` field to record tick timestamps
-- [x] Implemented `on_tick` method that sets the callback and returns `Self` for chaining
-- [x] Updated `App::new` initialization to set `last_tick_time` and initialize `on_tick` as `None`
+- [x] Refactored `on_tick` registration to use `RefCell` and return the modified `App` instance.
+- [x] Added `tick_interval` method to configure tick frequency in milliseconds.
+- [x] Implemented internal tick timing (`last_tick_time`, `tick_interval`) and tick counting (`tick_count`).
+- [x] Integrated tick callback execution into the main loop, invoking it when the interval has elapsed.
