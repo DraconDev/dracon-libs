@@ -271,6 +271,8 @@ let mut terminal = Terminal::new(backend)?;
 terminal.backend_mut().compositor_mut().add_plane(my_plane);
 ```
 
+Note: `RatatuiBackend` wraps the raw-mode Terminal. When `terminal` is dropped, raw mode exits. Use `RatatuiBackend::new(writer)?` directly (no separate `Terminal::new()` call).
+
 ---
 
 ## 10. Sync Mode 2026 (Visual Polish)
