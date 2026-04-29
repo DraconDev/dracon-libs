@@ -1,8 +1,11 @@
 # Project State
 
 ## Current Focus
-Rename documentation reference from `Editor` to `TextEditor` in the built‑in widgets description and upgrade dependencies
+Rename widget references to `TextEditor` and `TextInput`, simplify on_tick, and update module path syntax in documentation comments.
 
 ## Completed
-- [x] Updated doc comment in `tools/tui/dracon-terminal-engine/src/lib.rs` to use “TextEditor” instead of “Editor”
-- [x] Upgraded dracon-terminal-engine to version 26.0.1 (Cargo.lock updated)
+- [x] rename `Editor` to `TextEditor` and `Input` to `TextInput` in documentation comments
+- [x] replace bracket notation `[`osc`]` and `[`icons`]` with `visuals::osc` and `visuals::icons`
+- [x] update backend reference from `[`tty`]` to `backend::tty`
+- [x] simplify `.on_tick(|_ctx, _tick| {...})` by removing unused parameters
+- [x] adjust description of `begin_sync`/`end_sync` to remove bracket syntax
