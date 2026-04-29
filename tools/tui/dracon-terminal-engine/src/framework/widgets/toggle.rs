@@ -19,6 +19,7 @@ pub struct Toggle {
 }
 
 impl Toggle {
+    /// Creates a new toggle switch with the given id and label.
     pub fn new(id: WidgetId, label: &str) -> Self {
         Self {
             id,
@@ -29,20 +30,24 @@ impl Toggle {
         }
     }
 
+    /// Sets the theme for this toggle switch.
     pub fn with_theme(mut self, theme: Theme) -> Self {
         self.theme = theme;
         self
     }
 
+    /// Sets the callback for when the toggle state changes.
     pub fn on_change(mut self, f: impl FnMut(bool) + 'static) -> Self {
         self.on_change = Some(Box::new(f));
         self
     }
 
+    /// Toggles the switch state.
     pub fn toggle(&mut self) {
         self.state = !self.state;
     }
 
+    /// Returns whether the toggle is on.
     pub fn is_on(&self) -> bool {
         self.state
     }

@@ -18,6 +18,7 @@ pub struct Spinner {
 }
 
 impl Spinner {
+    /// Creates a new spinner with the given id.
     pub fn new(id: WidgetId) -> Self {
         Self {
             id,
@@ -28,11 +29,13 @@ impl Spinner {
         }
     }
 
+    /// Sets the theme for this spinner.
     pub fn with_theme(mut self, theme: Theme) -> Self {
         self.theme = theme;
         self
     }
 
+    /// Sets the frames for this spinner.
     pub fn with_frames(mut self, frames: Vec<char>) -> Self {
         if !frames.is_empty() {
             self.frames = frames;
@@ -40,6 +43,7 @@ impl Spinner {
         self
     }
 
+    /// Advances the spinner to the next frame.
     pub fn tick(&mut self) {
         let now = Instant::now();
         if now.duration_since(self.last_update) >= Duration::from_millis(100) {
@@ -48,6 +52,7 @@ impl Spinner {
         }
     }
 
+    /// Returns the current frame character.
     pub fn current_frame(&self) -> char {
         self.frames[self.current_frame]
     }

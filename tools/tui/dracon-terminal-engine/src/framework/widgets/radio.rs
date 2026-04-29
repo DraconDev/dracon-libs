@@ -19,6 +19,7 @@ pub struct Radio {
 }
 
 impl Radio {
+    /// Creates a new radio button with the given id and label.
     pub fn new(id: WidgetId, label: &str) -> Self {
         Self {
             id,
@@ -29,24 +30,29 @@ impl Radio {
         }
     }
 
+    /// Sets the theme for this radio button.
     pub fn with_theme(mut self, theme: Theme) -> Self {
         self.theme = theme;
         self
     }
 
+    /// Sets the callback for when the radio button state changes.
     pub fn on_change(mut self, f: impl FnMut(bool) + 'static) -> Self {
         self.on_change = Some(Box::new(f));
         self
     }
 
+    /// Selects the radio button.
     pub fn select(&mut self) {
         self.selected = true;
     }
 
+    /// Deselects the radio button.
     pub fn deselect(&mut self) {
         self.selected = false;
     }
 
+    /// Returns whether the radio button is selected.
     pub fn is_selected(&self) -> bool {
         self.selected
     }
