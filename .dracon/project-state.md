@@ -1,15 +1,14 @@
 # Project State
 
 ## Current Focus
-Introduced UI resize handling and expanded input event enums to model terminal resize, key events, and modifiers.
+Add parser initialization and timeout handling, and implement system monitoring data structures and refresh logic
 
 ## Completed
-- [x ] Added `UiResize` struct to store terminal width and height.
-- [x ] Added `UiEvent::Resize` variant to signal terminal resizing.
-- [x ] Extended `Event` enum with `Resize(u16, u16)` variant.
-- [x ] Created `KeyEvent` struct containing code, modifiers, and event kind.
-- [x ] Defined `KeyEventKind` enum for press, repeat, and release semantics.
-- [x ] Added exhaustive `KeyCode` enum covering common keys and characters.
-- [x ] Added `MediaKeyCode` enum for media playback controls.
-- [x ] Added `ModifierKeyCode` enum for modifier keys.
-- [x ] Implemented `KeyModifiers` bitflags for active modifier keys.
+- [x] Add `Parser::new` method that creates a parser with an empty buffer of capacity 32
+- [x] Add `Parser::check_timeout` method that emits an `Esc` key event when an incomplete escape sequence times out
+- [x] Define `DiskInfo` struct with disk name, device path, used/available/total space, and mount status
+- [x] Define `ProcessInfo` struct with PID, name, CPU usage, memory usage, owner, and status
+- [x] Define `SystemData` struct aggregating CPU, memory, disk, process, network, uptime, OS, kernel, and hostname data
+- [x] Implement `SystemMonitor::new` to create a monitor and refresh all system data on construction
+- [x] Implement `SystemMonitor::get_data` to refresh metrics and return a `SystemData` snapshot
+- [x] Add `Serialize`/`Deserialize` derives to all data structures for serialization
