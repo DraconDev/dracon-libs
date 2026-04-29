@@ -5,6 +5,8 @@ pub use dracon_ai_runtime_contracts::models::{ChatMessage, ChatRequest};
 pub use dracon_ai_contracts::{RoutingTask, SelectionConstraints};
 pub use ai_routing_runtime::traits::{LeaderboardRequest, LeaderboardResponse, LeaderboardEntry};
 
+pub const DEFAULT_PROVIDER: &str = "default";
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LaneModelPolicy {
     pub enabled: bool,
@@ -44,16 +46,26 @@ impl ProviderRegistry {
 pub struct AiService {
     registry: ProviderRegistry,
     policy: LaneModelPolicy,
+    default_provider: String,
 }
 
 impl AiService {
     pub fn new(registry: ProviderRegistry, policy: LaneModelPolicy) -> Self {
-        Self { registry, policy }
+        Self {
+            registry,
+            policy,
+            default_provider: DEFAULT_PROVIDER.to_string(),
+        }
+    }
+
+    pub fn with_default_provider(mut self, provider: impl Into<String>) -> Self {
+        self.default_provider = provider.into();
+        self
     }
 
     pub async fn ask(&self, request: ChatRequest) -> anyhow::Result<String> {
-        let provider: Arc<crate::GenericOpenAIAdapter> = self.registry.get("default")
-            .ok_or_else(|| anyhow::anyhow!("No provider found"))?;
+        let provider: Arc<crate::GenericOpenAIAdapter> = self.registry.get(&self.default_provider)
+            .ok_or_else(|| anyhow::anyhow!("No provider found for '{}'", self.default_provider))?;
         let (content, _) = provider.ask_and_collect(request).await?;
         Ok(content)
     }

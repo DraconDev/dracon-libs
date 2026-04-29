@@ -4,8 +4,6 @@
 use std::io::{self, stdout};
 use std::time::{Duration, Instant};
 
-// Since this is inside the crate, we can use `crate::` or `dracon_terminal_engine::` if linked.
-// Using `crate::` allows us to strict bind to the library sources.
 use dracon_terminal_engine::{compositor::plane::Plane, integration::ratatui::RatatuiBackend};
 use ratatui::{
     layout::{Constraint, Direction, Layout},
@@ -17,11 +15,9 @@ use ratatui::{
 };
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Print Launch Banner
     println!("Starting Engine Cyberpunk Dashboard...");
     std::thread::sleep(Duration::from_millis(500));
 
-    // Initialize
     let mut terminal = Terminal::new(RatatuiBackend::new(stdout())?)?;
     let _stdin = io::stdin();
 

@@ -1,10 +1,13 @@
-# Project State## Current Focus
-Refactor TUI widget cursor handling, improve error handling, and remove CI workflow
+# Project State
+
+## Current Focus
+Add default provider configuration and refactor example file
 
 ## Completed
-- [x] Removed unused `ChatMessage` import from `services/crates/ai/ai-runtime-adapters/src/lib.rs`
-- [x] Deleted `.github/workflows/ci.yml` file
-- [x] Changed `pub mod system;` to `pub(crate) mod system;` in `tools/tui/dracon-terminal-engine/src/lib.rs`
-- [x] Added safe `Option` handling in `highlight_code` to prevent panics in `tools/tui/dracon-terminal-engine/src/utils.rs`
-- [x] Refactored cursor positioning logic in `editor.rs` to use `Option` instead of `unwrap`
-- [x] Updated `input.rs` to use `Option` for character iteration, preventing panics
+- [x] Added `pub const DEFAULT_PROVIDER: &str = "default";` to `services/crates/ai/ai-service/src/lib.rs`
+- [x] Added `default_provider: String` field to `AiService` struct and updated its constructor to initialize it
+- [x] Implemented `with_default_provider` method to allow runtime override of the default provider
+- [x] Modified `AiService::ask` to use `self.default_provider` instead of hardcoded `"default"` and updated error message
+- [x] Renamed `tools/tui/dracon-terminal-engine/src/main.rs` to `tools/tui/dracon-terminal-engine/examples/demo.rs`
+- [x] Removed launch banner printing and initialization snippet from the demo example
+- [x] Added `#![warn(missing_docs)]` attribute to `tools/tui/dracon-terminal-engine/src/lib.rs`
