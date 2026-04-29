@@ -9,7 +9,6 @@ pub struct Compositor {
 }
 
 impl Compositor {
-    #[allow(dead_code)]
     pub fn new(width: u16, height: u16) -> Self {
         Self {
             planes: Vec::new(),
@@ -23,7 +22,6 @@ impl Compositor {
     pub fn tick(&mut self, _delta: f32) {
     }
 
-    #[allow(dead_code)]
     pub fn hit_test(&self, x: u16, y: u16) -> Option<&Plane> {
         for plane in self.planes.iter().rev() {
             if !plane.visible {
