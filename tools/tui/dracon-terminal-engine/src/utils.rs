@@ -1,3 +1,5 @@
+//! Utility functions for terminal UI rendering, file operations, and system interactions.
+
 use chrono::{DateTime, Local};
 use ratatui::{
     style::{Color, Modifier, Style},
@@ -7,19 +9,29 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
 use std::time::SystemTime;
 
+/// Icon rendering mode based on terminal capabilities.
 #[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
 pub enum IconMode {
+    /// Nerd Font icons (e.g.,  nf-fa-file)
     Nerd,
+    /// Unicode box-drawing andmiscellaneous symbols
     Unicode,
+    /// Plain ASCII characters
     ASCII,
 }
 
+/// File listing column types for display configuration.
 #[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
 pub enum FileColumn {
+    /// File name
     Name,
+    /// File size in bytes
     Size,
+    /// Last modified timestamp
     Modified,
+    /// Creation timestamp
     Created,
+    /// Unix-style permissions (rwxrwxrwx)
     Permissions,
 }
 
@@ -58,47 +70,58 @@ pub fn guess_icon_mode() -> IconMode {
     IconMode::ASCII
 }
 
+/// Tracks file selection state in a list or grid view.
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct SelectionState {
+    /// Currently focused/anchored item index
     pub selected: Option<usize>,
+    /// Anchor point for shift-click range selection
     pub anchor: Option<usize>,
+    /// Set of indices selected in multi-select mode
     pub multi: HashSet<usize>,
 }
 
 impl SelectionState {
+    /// Creates a new empty selection state.
     pub fn new() -> Self {
         Self::default()
     }
 
+    /// Clears all selection state including multi-select.
     pub fn clear(&mut self) {
         self.multi.clear();
         self.selected = None;
         self.anchor = None;
     }
 
+    /// Clears only multi-selection, keeping anchor and single selection.
     pub fn clear_multi(&mut self) {
         self.multi.clear();
     }
 
+    /// Returns true if no items are multi-selected.
     pub fn is_empty(&self) -> bool {
         self.multi.is_empty()
     }
 
+    /// Returns the set of indices that are currently multi-selected.
     pub fn multi_selected_indices(&self) -> &HashSet<usize> {
         &self.multi
     }
 
+    /// Adds an index to the multi-selection set.
     pub fn add(&mut self, idx: usize) {
         self.multi.insert(idx);
     }
 
+    /// Selects all items from 0 to len-1.
     pub fn select_all(&mut self, len: usize) {
         self.multi = (0..len).collect();
     }
 
+    /// Handles a click event at the given index with modifier keys.
     pub fn handle_click(&mut self, idx: usize, is_shift: bool, is_ctrl: bool, is_sticky: bool) {
         if is_ctrl || is_sticky {
-            // Ensure the primary selection is part of multi before we start toggling others
             if let Some(s) = self.selected {
                 self.multi.insert(s);
             }
@@ -126,6 +149,7 @@ impl SelectionState {
         }
     }
 
+    /// Handles keyboard navigation to the next index.
     pub fn handle_move(&mut self, next: usize, is_shift: bool) {
         let prev = self.selected;
         self.selected = Some(next);
@@ -142,6 +166,7 @@ impl SelectionState {
         }
     }
 
+    /// Toggles the selection state of the given index.
     pub fn toggle(&mut self, idx: usize) {
         if self.multi.contains(&idx) {
             self.multi.remove(&idx);

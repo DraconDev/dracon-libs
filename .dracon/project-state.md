@@ -1,8 +1,12 @@
 # Project State
 
 ## Current Focus
-Introduce full‑featured Theme struct and expand TextInput with cursor handling, placeholder, and styling methods
+Added IconMode enum, FileColumn enum, and SelectionState struct with comprehensive selection handling methods to the terminal UI utilities.
 
 ## Completed
-- [x] Added Theme with background, foreground, accent, selection, border, scrollbar, hover, active, inactive, input bg/fg colors and factory methods for dark, light, cyberpunk themes
-- [x] Extended TextInput to include cursor position, text and cursor styles, placeholder text and styles, plus methods: with_value, with_placeholder, set_value, clear
+- [x] Add IconMode enum defining Nerd, Unicode, and ASCII icon rendering modes
+- [x] Add FileColumn enum defining display columns Name, Size, Modified, Created, Permissions
+- [x] Add SelectionState struct with selected, anchor, and multi fields
+- [x] Implement SelectionState methods: new, clear, clear_multi, is_empty, multi_selected_indices, add, select_all, handle_click, handle_move, toggle
+- [x] Update SelectionState.handle_click to manage shift/ctrl modifiers without redundant comment
+- [x] Implement SelectionState.handle_move for keyboard navigation handling
