@@ -1,3 +1,26 @@
+#![warn(missing_docs)]
+
+//! Dracon TTS Runtime — text-to-speech with Kitten and Kokoro backends.
+//!
+//! ## Engines
+//!
+//! - [`KittenTTS`] — espeak-ng-based TTS (lightweight, no GPU required)
+//! - [`KokoroTts`] — ONNX-based neural TTS (higher quality, GPU preferred)
+//! - [`TtsEngine`] — enum dispatching to either engine
+//!
+//! ## Feature Flags
+//!
+//! - `kitten` — enable Kitten TTS (default)
+//! - `kokoro` — enable Kokoro TTS (requires ort ONNX runtime)
+//!
+//! ## Example
+//!
+//! ```ignore
+//! use dracon_tts_runtime::{TtsEngine, KokoroTts};
+//! let tts = KokoroTts::new(model_path, voices_dir). await?;
+//! tts.speak("Hello world").await;
+//! ```
+
 pub mod contracts;
 pub mod kitten;
 pub mod kokoro;

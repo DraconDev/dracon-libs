@@ -1,13 +1,17 @@
 # Project State
 
 ## Current Focus
-Refactor and strip down the terminal visual subsystem, removing legacy image handling and simplifying the icon set while updating Cargo metadata across multiple crates.
+Add new runtime crates and feature flags for memory, file handling, speech‑to‑text, text‑to‑speech, system utilities, and streamline the terminal visual subsystem.
 
 ## Completed
-- [x] Removed the root `lib.rs` from the workspace, eliminating unused module declarations.
-- [x] Strip the terminal engine of all image, shape, and complex widget modules (`image.rs`, `shapes.rs`, `slicer.rs`, `tiles.rs`, `rich_widgets/mod.rs`), keeping only minimal assets handling.
-- [x] Reduced the `Icon` enum by dropping button slice variants and the associated slice generation logic.
-- [x] Consolidated visual logic in `assets.rs` to generate simple sprite data for remaining icons.
-- [x] Updated Cargo.toml files for several AI, memory, and services crates to reflect new binary sizes and dependencies.
-- [x] Adjusted terminal engine Cargo.toml to match the new, slimmer visual implementation.
-- [x] Removed obsolete imports and modules from `mod.rs` in the terminal engine visuals directory.
+- [x] Added memory contracts and runtime implementation with ONNX embeddings and SQLite backing.
+- [x] Implemented file system operations crate with categorization, search, and recursive copy features.
+- [x] Added speech‑to‑text runtime supporting Parakeet and Whisper back‑ends.
+- [x] Added text‑to‑speech runtime supporting Kitten and Kokoro engines via feature flags.
+- [x] Refactored memory system runtime to use SQLite for persistent stores.
+- [x] Enhanced Git service with asynchronous API and libgit2 + CLI fallback, plus new integration tests.
+- [x] Added system utilities crate with diagnostics, SSH remote execution, and notification support.
+- [x] Stripped down terminal visual subsystem: removed image, shape, slicer, tiles, and rich widget modules; reduced `Icon` enum and simplified asset generation.
+- [x] Updated Cargo.toml files across AI, memory, and service crates to reflect new binary sizes, dependencies, and feature flags.
+- [x] Revised README to describe new workspace structure, crate purposes, feature flags, and usage examples.
+- [x] Added comprehensive README files for the new `dracon-files`, `dracon-stt-runtime`, `dracon-tts-runtime`, `dracon-memory-runtime`, and `dracon-git` crates.

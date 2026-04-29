@@ -6,7 +6,6 @@ authors = ["Dracon <dracon@void>"]
 repository = "https://github.com/DraconDev/dracon-libs"
 description = "System diagnostics, SSH remote execution, and notification adapters"
 edition.workspace = true
-description = "System diagnostics and remote execution capability adapters"
 
 [dependencies]
 anyhow = { workspace = true }

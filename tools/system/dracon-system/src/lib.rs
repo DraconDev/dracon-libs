@@ -1,3 +1,25 @@
+#![warn(missing_docs)]
+
+//! Dracon System Runtime — system diagnostics, SSH remote execution, and notifications.
+//!
+//! ## Crates
+//!
+//! - [`SystemSnapshotProvider`] — snapshot-based CPU, memory, and process info
+//! - [`ProcessController`] — process control and listing
+//! - [`SshRemoteConnector`], [`SshRemoteExecProvider`], [`SshRemoteFsProvider`] — SSH remoting
+//! - [`WorkspaceStorageReport`] — workspace disk usage analysis
+//!
+//! ## Example
+//!
+//! ```ignore
+//! use dracon_system::SystemSnapshotProvider;
+//! let snap = provider.get_snapshot().await?;
+//! ```
+//!
+//! ## Feature Flags
+//!
+//! - `notify` — enables desktop notification support via `notify-rust`
+
 use crate::notification::NotificationConfig;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;

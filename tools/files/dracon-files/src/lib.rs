@@ -1,3 +1,23 @@
+#![warn(missing_docs)]
+
+//! Dracon Files — file system operations with FsCatalog for categorization and search.
+//!
+//! ## Crates
+//!
+//! - [`FsCatalog`] — main entry point implementing all file contracts
+//! - [`FileInspectContract`] — file type detection by extension
+//! - [`FileSearchContract`] — recursive directory search with metadata
+//! - [`FileCopyContract`] — recursive copy
+//! - [`FileSuitabilityContract`] — binary/large-file detection
+//!
+//! ## Example
+//!
+//! ```ignore
+//! use dracon_files::FsCatalog;
+//! let catalog = FsCatalog;
+//! let category = catalog.get_file_category(path);
+//! ```
+
 mod contracts;
 
 pub use contracts::*;

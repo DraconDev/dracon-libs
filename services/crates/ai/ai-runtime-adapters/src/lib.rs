@@ -1,3 +1,22 @@
+#![warn(missing_docs)]
+
+//! AI Runtime Adapters — adapter implementations for AI backend protocols.
+//!
+//! Currently provides:
+//! - [`GenericOpenAIAdapter`] — OpenAI Chat Completions API adapter with
+//!   timeout, retries, and configurable auth headers
+//!
+//! ## Example
+//!
+//! ```ignore
+//! use ai_runtime_adapters::GenericOpenAIAdapter;
+//! let adapter = GenericOpenAIAdapter::new_with_auth(
+//!     api_key, endpoint, model,
+//!     "Authorization", "Bearer",
+//! );
+//! let (content, _) = adapter.ask_and_collect(request).await?;
+//! ```
+
 use std::time::Duration;
 
 use async_trait::async_trait;

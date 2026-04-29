@@ -1,3 +1,23 @@
+#![warn(missing_docs)]
+
+//! AI Service — provider registry and routing for AI backends.
+//!
+//! ## Key Types
+//!
+//! - [`ProviderRegistry`] — type-erased provider registry for runtime registration
+//! - [`AiService`] — high-level service combining registry + policy
+//! - [`LaneModelPolicy`] — routing lane policy configuration
+//! - [`DEFAULT_PROVIDER`] — constant for the default provider name ("default")
+//!
+//! ## Example
+//!
+//! ```ignore
+//! use ai_service::{AiService, ProviderRegistry, DEFAULT_PROVIDER};
+//! let registry = ProviderRegistry::new();
+//! registry.register(DEFAULT_PROVIDER, Arc::new(adapter));
+//! let svc = AiService::new(registry, LaneModelPolicy::default());
+//! ```
+
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 

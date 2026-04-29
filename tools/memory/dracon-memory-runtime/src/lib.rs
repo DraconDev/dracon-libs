@@ -1,3 +1,28 @@
+#![warn(missing_docs)]
+
+//! Dracon Memory Runtime — SQLite + ONNX embeddings for conversation storage and semantic search.
+//!
+//! ## Crates
+//!
+//! - [`MemorySystem`] — main struct combining DB + embedder
+//! - [`MemoryDb`] — SQLite persistence (in-memory or file-backed)
+//! - [`OnnxEmbedder`] — ONNX-based text embedding via BGE model
+//! - [`MemoryStore`] trait — storage contract
+//! - [`TextEmbedder`] trait — embedding contract
+//!
+//! ## Environment Variables
+//!
+//! - `DRACON_MODEL_PATH` — path to ONNX model (default: `assets/bge-small-en-v1.5.onnx`)
+//! - `DRACON_TOKENIZER_PATH` — path to tokenizer (default: `assets/tokenizer.json`)
+//!
+//! ## Example
+//!
+//! ```ignore
+//! use dracon_memory_runtime::MemorySystem;
+//! let mem = MemorySystem::new(":memory:")?;
+//! mem.store_conversation(Role::User, "Hello").await?;
+//! ```
+
 pub mod db;
 pub mod embedder;
 pub mod memory_contracts;

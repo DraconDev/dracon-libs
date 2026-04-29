@@ -1,3 +1,24 @@
+#![warn(missing_docs)]
+
+//! AI Routing Runtime — SmartRouter and ProviderRegistry for model selection.
+//!
+//! ## Key Types
+//!
+//! - [`SmartRouter<T>`] — routes requests to the best available model
+//! - [`ProviderRegistry<T>`] — generic, type-safe provider registry
+//! - [`RoutingMessage`] — message envelope for routing
+//! - [`RoutingTrace`] — routing decision trace for observability
+//!
+//! ## Example
+//!
+//! ```ignore
+//! use ai_routing_runtime::{SmartRouter, ProviderRegistry};
+//! let registry = ProviderRegistry::new();
+//! registry.register("gpt-4", Arc::new(provider));
+//! let router = SmartRouter::new(registry, dev_models, active_models, None);
+//! let (provider, trace) = router.route_with_trace(...).await?;
+//! ```
+
 pub mod routing;
 pub mod traits;
 

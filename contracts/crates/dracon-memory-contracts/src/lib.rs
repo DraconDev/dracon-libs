@@ -1,3 +1,22 @@
+#![warn(missing_docs)]
+
+//! Dracon Memory Contracts — trait contracts for the memory runtime.
+//!
+//! Defines the public-facing traits for the memory system. The runtime
+//! (`dracon-memory-runtime`) implements these; consumers should depend on
+//! this crate to get the traits without pulling in heavy ONNX/SQLite deps.
+//!
+//! ## Traits
+//!
+//! - [`MemoryStore`] — async conversation storage and recall
+//! - [`TextEmbedder`] — async text embedding
+//!
+//! ## Types
+//!
+//! - [`Role`] — User / Assistant / System conversation roles
+//! - [`Conversation`] — stored conversation entry
+//! - [`UserFact`] — key-value fact with confidence score
+
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 

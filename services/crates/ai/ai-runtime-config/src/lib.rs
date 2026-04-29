@@ -1,3 +1,16 @@
+#![warn(missing_docs)]
+
+//! AI Runtime Config — configuration types for AI runtime providers.
+//!
+//! Defines how provider specs (models, endpoints, auth) are structured
+//! and how runtime configuration is resolved.
+//!
+//! ## Types
+//!
+//! - [`OpenAIProviderSpec`] — OpenAI-compatible provider definition
+//! - [`AiRuntimeConfig`] — top-level runtime config combining provider specs
+//! - `resolve_ai_runtime_config()` — resolves config from environment or file
+
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

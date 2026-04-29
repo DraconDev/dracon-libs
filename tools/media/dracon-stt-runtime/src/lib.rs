@@ -1,3 +1,18 @@
+#![warn(missing_docs)]
+
+//! Dracon STT Runtime — speech-to-text with Parakeet and Whisper backends.
+//!
+//! ## Engines
+//!
+//! - [`ParakeetStt`] — Parakeet-CTC model (default, CPU-friendly)
+//! - [`WhisperStt`] — Whisper model via Candle (enable with `whisper` feature)
+//! - [`VadStateMachine`] — voice activity detection state machine
+//!
+//! ## Feature Flags
+//!
+//! - `parakeet` — enable Parakeet-STT (default)
+//! - `whisper` — enable Whisper backend (requires candle-core, candle-nn, candle-transformers)
+
 pub mod parakeet;
 pub mod stt_contracts;
 pub mod vad_state;

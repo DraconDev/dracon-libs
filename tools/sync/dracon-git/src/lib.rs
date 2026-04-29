@@ -1,3 +1,27 @@
+#![warn(missing_docs)]
+
+//! Dracon Git — Git operations with libgit2 and CLI fallback for robustness.
+//!
+//! ## Crates
+//!
+//! - [`GitService`] — async git operations (status, pull, push, commit)
+//! - [`CliGitSnapshotProvider`] — git log/history via CLI
+//! - [`extract_intent`] — intent extraction from branch name or task board
+//! - [`build_commit_message`] — semantic commit message generation
+//!
+//! ## Example
+//!
+//! ```ignore
+//! use dracon_git::GitService;
+//! let git = GitService::new("/path/to/repo")?;
+//! let status = git.get_status().await?;
+//! ```
+//!
+//! ## Feature Flags
+//!
+//! - Default: uses libgit2 with CLI fallback for binary files
+//! - CLI fallback is automatic when libgit2 encounters nul-bytes
+
 pub mod cli;
 pub mod contracts;
 pub mod dracon_sync_commit;
