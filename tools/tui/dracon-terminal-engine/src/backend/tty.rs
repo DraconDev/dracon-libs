@@ -2,6 +2,9 @@ use std::io;
 use std::os::fd::AsRawFd;
 use std::os::fd::BorrowedFd;
 
+#[cfg(feature = "async")]
+use std::os::fd::AsFd;
+
 pub use libc::termios as Termios;
 
 /// Get the current terminal attributes.
@@ -54,4 +57,33 @@ pub fn poll_input(fd: BorrowedFd, timeout_ms: i32) -> io::Result<bool> {
         }
         Ok(ret > 0 && (fds.revents & libc::POLLIN) != 0)
     }
+}
+
+#[cfg(feature = "async")]
+pub async fn poll_input_async<F: AsFd>(fd: F, timeout_ms: u32) -> io::Result<bool> {
+    use tokio::io::PollEvented;
+    use std::time::Duration;
+
+    let fd = fd.as_fd();
+    let mut pe = PollEvented::new(fd)?;
+
+    let timeout = if timeout_ms == 0 {
+        None
+    } else {
+        Some(Duration::from_millis(timeout_ms as u64))
+    };
+
+    pe.readable().await?;
+
+    let mut fds = libc::pollfd {
+        fd: fd.as_raw_fd(),
+        events: libc::POLLIN,
+        revents: 0,
+    };
+
+    let ret = unsafe { libc::poll(&mut fds, 1, timeout_ms as i32) };
+    if ret < 0 {
+        return Err(io::Error::last_os_error());
+    }
+    Ok(ret > 0 && (fds.revents & libc::POLLIN) != 0)
 }

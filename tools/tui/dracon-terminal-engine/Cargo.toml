@@ -26,5 +26,19 @@ syntect = "5.2"
 default = []
 async = ["tokio/sync", "tokio/time", "tokio/io-util"]
 
+[dependencies]
+libc = "0.2"
+bitflags = { version = "2.4", features = ["serde"] }
+ratatui = { version = "0.29", default-features = false }
+unicode-width = "0.1"
+rand = "0.8"
+log = "0.4"
+chrono = { workspace = true, features = ["serde", "clock"] }
+signal-hook = "0.3"
+serde = { workspace = true }
+sysinfo = "0.32"
+syntect = "5.2"
+tokio = { version = "1.38", features = ["sync", "time", "io-util"], optional = true }
+
 [target.'cfg(not(target_os = "windows"))'.dependencies]
 libc = "0.2"
