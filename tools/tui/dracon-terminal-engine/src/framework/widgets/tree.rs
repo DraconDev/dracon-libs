@@ -74,7 +74,7 @@ impl Tree {
         if path.len() == 1 {
             return Some((&nodes[idx], idx));
         }
-        Self::get_selected_node(&nodes[idx].children, &path[1..])
+        Self::get_selected_node(self, &nodes[idx].children, &path[1..])
     }
 
     fn toggle_expand(&mut self, path: &[usize]) {
