@@ -1253,6 +1253,24 @@ impl TextEditor {
         visual_row
     }
 
+    fn source_row_from_visual(&self, visual_row: usize, width: usize) -> Option<(usize, usize, usize)> {
+        let mut current = 0usize;
+        for i in 0..self.effective_len() {
+            let line = self.get_effective_line(i);
+            let w = line.width();
+            let segments = if w == 0 || width == 0 {
+                1
+            } else {
+                (w.saturating_sub(1) / width) + 1
+            };
+            if visual_row >= current && visual_row < current + segments {
+                return Some((i, visual_row - current, segments));
+            }
+            current += segments;
+        }
+        None
+    }
+
     pub fn ensure_cursor_visible(&mut self, area: Rect) {
         let height = area.height as usize;
         let gutter = self.gutter_width();
