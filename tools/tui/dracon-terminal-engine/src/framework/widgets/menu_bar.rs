@@ -67,7 +67,7 @@ pub struct MenuBar {
     entries: Vec<MenuEntry>,
     active_entry: Option<usize>,
     theme: Theme,
-    last_area_width: Cell<u16>,
+    last_area_width: std::cell::Cell<u16>,
 }
 
 impl MenuBar {
@@ -78,7 +78,7 @@ impl MenuBar {
             entries: Vec::new(),
             active_entry: None,
             theme: Theme::default(),
-            last_area_width: Cell::new(80),
+            last_area_width: std::cell::Cell::new(80),
         }
     }
 

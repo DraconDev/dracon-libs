@@ -1,9 +1,8 @@
 # Project State
 
 ## Current Focus
-Remove unused Cell import and use fully qualified std::cell::Cell type in UI widgets
+Switch `last_area_width` to fully qualified `std::cell::Cell<u16>` type and update its initialization.
 
 ## Completed
-- [x] Dropped `use std::cell::Cell;` from menu_bar.rs
-- [x] Switched Slider's `last_area_width` field to `std::cell::Cell<u16>` (fully qualified)
-- [x] Dropped `use std::cell::Cell;` from slider.rs
+- [x] Updated `MenuBar` struct to use `std::cell::Cell<u16>` for `last_area_width`
+- [x] Updated struct initialization to use `std::cell::Cell::new(80)`
