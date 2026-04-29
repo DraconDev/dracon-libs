@@ -1,10 +1,8 @@
 # Project State
 
 ## Current Focus
-Refactor terminal cursor tracking logic in GUI widgets
+Fix bounds handling in the compositor and improve parsing of system disk information.
 
 ## Completed
-- [x] Remove redundant cursor style tracking that applied cursor formatting to both text and empty cells
-- [x] Eliminate unused logic for maintaining cursor position state in text buffer cells
-- [x] Simplify cursor rendering behavior to only activate on non-empty characters
-- [x] Ensure empty cell cursor handling defaults to terminal-native empty cell representation
+- [x] refactor(compositor): replace direct addition with `saturating_add` to prevent overflow when computing plane boundaries and pixel coordinates, ensuring safe bounds checks during rendering.
+- [x] refactor(system_monitor): change disk info parsing to split on null characters (`'\x00'`), filter out empty segments, enforce a minimum number of fields, and safely unwrap optional values, eliminating crashes on malformed output.

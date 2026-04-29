@@ -27,9 +27,9 @@ impl Compositor {
                 continue;
             }
             if x >= plane.x
-                && x < plane.x + plane.width
+                && x < plane.x.saturating_add(plane.width)
                 && y >= plane.y
-                && y < plane.y + plane.height
+                && y < plane.y.saturating_add(plane.height)
             {
                 let lx = x - plane.x;
                 let ly = y - plane.y;
@@ -201,8 +201,8 @@ impl Compositor {
             }
             for py in 0..plane.height {
                 for px in 0..plane.width {
-                    let abs_x = plane.x + px;
-                    let abs_y = plane.y + py;
+                    let abs_x = plane.x.saturating_add(px);
+                    let abs_y = plane.y.saturating_add(py);
                     if abs_x >= self.width || abs_y >= self.height {
                         continue;
                     }

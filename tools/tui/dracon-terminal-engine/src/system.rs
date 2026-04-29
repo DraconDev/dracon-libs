@@ -198,13 +198,15 @@ impl SystemMonitor {
         {
             let stdout = String::from_utf8_lossy(&output.stdout);
             for line in stdout.lines() {
-                let parts: Vec<&str> = line.split(' ').collect();
-                if parts.len() >= 3 {
-                    let name = parts[0];
-                    let fstype = parts[1];
-                    let size_str = parts[2];
-                    let mountpoint = parts.get(3).cloned().unwrap_or("");
-                    let label = parts.get(4).cloned().unwrap_or("");
+                let parts: Vec<&str> = line.split('\x00').filter(|s| !s.is_empty()).collect();
+                if parts.len() < 4 {
+                    continue;
+                }
+                let name = parts[0];
+                let fstype = parts[1];
+                let size_str = parts[2];
+                let mountpoint = parts.get(3).unwrap_or(&"");
+                let label = parts.get(4).unwrap_or(&"");
 
                     if !fstype.is_empty() && mountpoint.is_empty() {
                         if let Ok(size) = size_str.parse::<f64>() {
