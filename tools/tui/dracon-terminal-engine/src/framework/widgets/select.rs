@@ -70,7 +70,7 @@ impl crate::framework::widget::Widget for Select {
             "(select)".to_string()
         };
 
-        let cell_width = display.width().min(width);
+        let _cell_width = display.width().min(width);
         let fg = if self.expanded { self.theme.accent } else { self.theme.fg };
 
         for (i, c) in display.chars().take(width).enumerate() {

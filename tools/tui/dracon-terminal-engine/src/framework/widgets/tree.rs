@@ -77,9 +77,20 @@ impl Tree {
         self.get_selected_node(&nodes[idx].children, &path[1..])
     }
 
-    fn toggle_expand(&mut self, path: &[usize]) {
-        if let Some((node, _)) = self.get_selected_node(&self.root, path) {
-            node.expanded = !node.expanded;
+    fn toggle_expand_at(&mut self, path: &[usize]) {
+        if path.is_empty() {
+            return;
+        }
+        let mut current = &mut self.root;
+        for i in 0..path.len() - 1 {
+            if path[i] >= current.len() {
+                return;
+            }
+            current = &mut current[path[i]].children;
+        }
+        let last_idx = *path.last().unwrap();
+        if last_idx < current.len() {
+            current[last_idx].expanded = !current[last_idx].expanded;
         }
     }
 }
@@ -144,7 +155,7 @@ impl crate::framework::widget::Widget for Tree {
         match key.code {
             KeyCode::Enter => {
                 if !self.selected_path.is_empty() {
-                    self.toggle_expand(&self.selected_path);
+                    self.toggle_expand_at(&self.selected_path);
                 }
                 true
             }

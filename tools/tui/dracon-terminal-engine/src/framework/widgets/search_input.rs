@@ -56,7 +56,7 @@ impl crate::framework::widget::Widget for SearchInput {
         plane.z_index = 10;
 
         let width = plane.cells.len() / plane.height as usize;
-        let height = plane.height as usize;
+        let _height = plane.height as usize;
 
         let display = if self.query.is_empty() {
             "Search...".to_string()
