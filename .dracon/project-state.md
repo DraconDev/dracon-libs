@@ -1,9 +1,8 @@
-Project State
+# Project State
 
 ## Current Focus
-The protocol is updated for Cargo Lock handling.
+Implement a secure process‑kill controller that validates ownership before terminating a process.
 
 ## Completed
-- Cargo.lock removal
-- sys/dracon-git lib updated
-- sys/dracon-system lib revised
+- [x] Added `ProcessController` implementing `ProcessControlContract` with UID verification and safe kill execution.
+- [x] Introduced helper functions `get_process_uid` and `current_uid` to fetch process owner IDs and enforce permission checks.
