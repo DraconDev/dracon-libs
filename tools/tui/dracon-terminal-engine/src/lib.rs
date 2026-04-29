@@ -71,7 +71,7 @@ pub mod system;
 pub mod utils;
 #[doc = "Visual helpers: icons, OSC strings (clipboard, hyperlink, bell), sync mode 2026."]
 pub mod visuals;
-#[doc = "Built-in widgets (Editor with syntect highlighting, TextInput)."]
+#[doc = "Built-in widgets (TextEditor with syntect highlighting, TextInput)."]
 pub mod widgets;
 
 pub use compositor::{Cell, Color, Compositor, Plane, Styles};

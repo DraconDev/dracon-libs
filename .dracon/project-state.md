@@ -1,8 +1,8 @@
 # Project State
 
 ## Current Focus
-Add import of Cell, Plane, Styles from compositor in tabbar widget
+Rename documentation reference from `Editor` to `TextEditor` in the built‑in widgets description and upgrade dependencies
 
 ## Completed
-- [x] Added `use crate::compositor::{Cell, Plane, Styles};` to bring compositor types into scope
-- [x] Updated project dependencies in Cargo.lock (version bump to 26.0.1)
+- [x] Updated doc comment in `tools/tui/dracon-terminal-engine/src/lib.rs` to use “TextEditor” instead of “Editor”
+- [x] Upgraded dracon-terminal-engine to version 26.0.1 (Cargo.lock updated)
