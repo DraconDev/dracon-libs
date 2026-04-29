@@ -11,12 +11,16 @@ bitflags! {
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Default)]
     pub struct Styles: u8 {
         const BOLD          = 1 << 0;
+        #[allow(dead_code)]
         const DIM           = 1 << 1;
         const ITALIC        = 1 << 2;
         const UNDERLINE     = 1 << 3;
+        #[allow(dead_code)]
         const BLINK         = 1 << 4;
         const REVERSE       = 1 << 5;
+        #[allow(dead_code)]
         const HIDDEN        = 1 << 6;
+        #[allow(dead_code)]
         const STRIKETHROUGH = 1 << 7;
     }
 }
@@ -49,6 +53,7 @@ use crate::compositor::filter::Filter;
 
 /// A layer in the "God Mode" Compositor.
 /// Planes are Z-indexed and can be moved efficiently.
+#[allow(dead_code)]
 pub struct Plane {
     pub id: usize,
     pub z_index: i32,

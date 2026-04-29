@@ -1,10 +1,9 @@
 # Project State
-##Current Focus
-Add positioning, z-index, cell placement, filtering, and refined transparency handling to the Plane compositor.
+
+## Current Focus
+Enable visual filters and synchronized rendering features while suppressing dead code warnings for unused text style constants
 
 ## Completed
-- [x] Added method to set absolute X/Y coordinates
-- [x] Added method to set Z‑index- [x] Added method to place a cell at given coordinates
-- [x] Added method to set a rendering filter (e.g., Dim, Invert)
-- [x] Modified transparency handling to overwrite per‑cell transparency
-- [x] Updated string‑output method to return the new X position after Unicode width processing
+- [x] Add `#[allow(dead_code)]` attributes to DIM, BLINK, HIDDEN, and STRIKETHROUGH style constants to suppress compiler warnings for planned styling features
+- [x] Add `#[allow(dead_code)]` to Plane struct to allow definition without immediate usage
+- [x] Update README documentation to reflect current visual capabilities: TrueColor ANSI SGR support, visual filters (Dim, Invert, Scanline, Pulse, Glitch), and synchronized terminal output via mode 2026

@@ -39,9 +39,9 @@ Think in **layers**, not rows/columns. Spawn a `Plane`, set its Z-Index, float i
 
 ### 3. Visuals
 
-- **Images**: High-res PNG/JPG via Kitty protocol
-- **Procedural geometry**: Rounded rects, circles, gradients
-- **TrueColor**: 24-bit by default
+- **TrueColor**: 24-bit ANSI SGR color support
+- **Visual filters**: Dim, Invert, Scanline, Pulse, Glitch
+- **Synchronized output**: Terminal mode 2026 for tear-free rendering
 
 ### 4. Editor Widget
 
