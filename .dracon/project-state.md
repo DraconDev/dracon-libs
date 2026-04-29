@@ -1,11 +1,9 @@
 # Project State
 
 ## Current Focus
-Refactor Tree widget's expand toggle naming and add safe traversal logic, and clean unused variables across widgets
+Refactor Tree widget's path handling to use an owned clone for safe traversal and toggle operations.
 
 ## Completed
-- [x] Rename `toggle_expand` to `toggle_expand_at` and implement safe path traversal in Tree
-- [x] Remove unused `height` variable in SearchInput
-- [x] Remove unused `cell_width` variable in Select
-- [x] Add explicit casts and parentheses for index checks in Slider
-- [x] Update Cargo.lock version
+- [x] Cloned and used an owned `path` variable in the Enter key handler to avoid borrowing issues
+- [x] Applied the same cloning in the Down key handler before calling `get_selected_node`
+- [x] Updated the Cargo.lock file with the new dependency resolutions (binary change)
