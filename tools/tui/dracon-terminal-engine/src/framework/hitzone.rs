@@ -15,7 +15,7 @@ pub enum DragState {
     Ended { x: u16, y: u16 },
 }
 
-pub struct HitZone<T = ()> {
+pub struct HitZone<T> {
     pub id: T,
     pub x: u16,
     pub y: u16,
@@ -54,30 +54,28 @@ impl<T: Clone + 'static> HitZone<T> {
         }
     }
 
-    pub fn on_click<F>(mut self, f: F) -> Self
-    where
-        F: FnMut(ClickKind) + 'static,
-    {
+    pub fn on_click(mut self, f: impl FnMut(ClickKind) + 'static) -> Self {
         self.on_click = Some(Box::new(f));
         self
     }
 
-    pub fn on_right_click<F>(mut self, f: F) -> Self
-    where
-        F: FnMut() + 'static,
-    {
+    pub fn on_right_click(mut self, f: impl FnMut() + 'static) -> Self {
         self.on_right_click = Some(Box::new(f));
         self
     }
 
-    pub fn on_drag<F>(mut self, f: F) -> Self
-    where
-        F: FnMut(DragState) + 'static,
-    {
-        let mut cb = f;
-        self.on_drag_start = Some(Box::new(move |s| cb(s)));
-        self.on_drag_move = Some(Box::new(move |s| cb(s)));
-        self.on_drag_end = Some(Box::new(move |s| cb(s)));
+    pub fn on_drag_start(mut self, f: impl FnMut(DragState) + 'static) -> Self {
+        self.on_drag_start = Some(Box::new(f));
+        self
+    }
+
+    pub fn on_drag_move(mut self, f: impl FnMut(DragState) + 'static) -> Self {
+        self.on_drag_move = Some(Box::new(f));
+        self
+    }
+
+    pub fn on_drag_end(mut self, f: impl FnMut(DragState) + 'static) -> Self {
+        self.on_drag_end = Some(Box::new(f));
         self
     }
 
@@ -86,13 +84,7 @@ impl<T: Clone + 'static> HitZone<T> {
             && row >= self.y && row < self.y.saturating_add(self.height)
     }
 
-    pub fn handle_mouse(
-        &mut self,
-        kind: MouseEventKind,
-        col: u16,
-        row: u16,
-        _modifiers: KeyModifiers,
-    ) {
+    pub fn handle_mouse(&mut self, kind: MouseEventKind, col: u16, row: u16, _modifiers: KeyModifiers) {
         if !self.contains(col, row) {
             return;
         }
@@ -158,13 +150,7 @@ impl<T: Clone + 'static> HitZone<T> {
         }
     }
 
-    pub fn dispatch_mouse(
-        &mut self,
-        kind: MouseEventKind,
-        col: u16,
-        row: u16,
-        modifiers: KeyModifiers,
-    ) -> Option<T> {
+    pub fn dispatch_mouse(&mut self, kind: MouseEventKind, col: u16, row: u16, modifiers: KeyModifiers) -> Option<T> {
         if !self.contains(col, row) {
             return None;
         }
@@ -173,7 +159,7 @@ impl<T: Clone + 'static> HitZone<T> {
     }
 }
 
-pub struct HitZoneGroup<T = ()> {
+pub struct HitZoneGroup<T> {
     zones: Vec<HitZone<T>>,
 }
 
@@ -200,13 +186,7 @@ impl<T: Clone + 'static> HitZoneGroup<T> {
         &mut self.zones
     }
 
-    pub fn dispatch_mouse(
-        &mut self,
-        kind: MouseEventKind,
-        col: u16,
-        row: u16,
-        modifiers: KeyModifiers,
-    ) -> Option<T> {
+    pub fn dispatch_mouse(&mut self, kind: MouseEventKind, col: u16, row: u16, modifiers: KeyModifiers) -> Option<T> {
         for zone in self.zones.iter_mut() {
             if zone.contains(col, row) {
                 zone.handle_mouse(kind, col, row, modifiers);

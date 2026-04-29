@@ -1,11 +1,11 @@
 # Project State
 
 ## Current Focus
-refactor(tabbar): simplify TabBar widget by removing lifetime parameters and width configuration
+Simplify HitZone API by removing default generic parameters and splitting drag callbacks
 
 ## Completed
-- [x] Remove lifetime parameter from TabBar struct, converting tabs from Vec<&str> to Vec<String>
-- [x] Simplify constructor to accept Vec<&str> and internally convert to owned Strings
-- [x] Remove width field and with_width method, using hardcoded 80 for mouse handling and area.width for rendering
-- [x] Simplify render and handle_mouse methods by consolidating tab count calculations
-- [x] Fix HitZone return type from HitZone<'static, usize> to HitZone<usize>
+- [x] Removed default generic parameter from `HitZone`, making `T` required.
+- [x] Simplified `on_click` and `on_right_click` to use `impl FnMut` without explicit where bound.
+- [x] Replaced single `on_drag` with three dedicated methods: `on_drag_start`, `on_drag_move`, `on_drag_end`.
+- [x] Removed default generic parameter from `HitZoneGroup`.
+- [x] Dropped return of `zone.id` from `dispatch_mouse`, returning `None` instead.
