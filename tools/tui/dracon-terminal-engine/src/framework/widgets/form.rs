@@ -2,7 +2,9 @@
 //!
 //! A vertical layout of labeled form fields with validation support.
 
-use crate::compositor::{Cell, Color, Plane, Styles};
+use unicode_width::UnicodeWidthStr;
+
+use crate::compositor::{Cell, Plane, Styles};
 use crate::framework::theme::Theme;
 use crate::framework::widget::WidgetId;
 use ratatui::layout::Rect;
