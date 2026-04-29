@@ -1,9 +1,9 @@
 # Project State
 
 ## Current Focus
-Refactor compositor module by removing unused `#[allow(dead_code)]` annotations to tidy the codebase.
+Clean up compositor plane module by removing unnecessary `#[allow(dead_code)]` annotations now that the previously-unused methods are being utilized.
 
 ## Completed
-- [x] Removed unnecessary `#[allow(dead_code)]` from `Compositor::tick`, `draw_text`, and `draw_rect` in engine.rs
-- [x] Eliminated redundant `#[allow(dead_code)]` and comment blocks from Plane struct definition in plane.rs
-- [x] Cleaned up unused Clippy allow attributes from draw_rect signature in engine.rs
+- [x] Remove `#[allow(dead_code)]` from `set_absolute_position`, `set_z_index`, `put_cell`, `put_str`, `set_filter`, and `set_transparent` methods in Plane
+- [x] Remove `#[allow(dead_code)]` from `DIM`, `BLINK`, and `HIDDEN` style constants in Styles bitflags
+- [x] Remove documentation comment from `put_str` method (cleanup)
