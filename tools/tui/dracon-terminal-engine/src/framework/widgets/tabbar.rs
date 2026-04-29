@@ -91,9 +91,9 @@ impl TabBar {
     }
 
     /// Handles a mouse event. Returns `true` if the event was consumed.
-    pub fn handle_mouse(&mut self, kind: crate::input::event::MouseEventKind, col: u16, _row: u16) -> bool {
+    pub fn handle_mouse(&mut self, kind: crate::input::event::MouseEventKind, col: u16, _row: u16, width: u16) -> bool {
         let tab_count = self.tabs.len().max(1);
-        let tab_width = (80u16 / tab_count as u16).max(1);
+        let tab_width = (width / tab_count as u16).max(1);
         let idx = col / tab_width;
         if idx >= tab_count as u16 {
             return false;

@@ -1,8 +1,9 @@
 # Project State
 
 ## Current Focus
-feat(dragdrop): translate rendered ghost to specified screen coordinates
+Dynamically calculate tab width using the provided widget width instead of a fixed 80.
 
 ## Completed
-- [x] Changed `render` method parameters from `(_x: u16, _y: u16)` to `(x: u16, y: u16)` to use the coordinates.
-- [x] Added `plane.translate(x, y)` call to position the ghost at the provided `(x, y)` location.
+- [x] Added `width: u16` parameter to `handle_mouse` method signature
+- [x] Replaced `80u16` with `width` when computing `tab_width`
+- [x] Used the computed `tab_width` to determine tab index based on column position
