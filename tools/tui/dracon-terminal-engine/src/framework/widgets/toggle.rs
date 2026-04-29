@@ -75,7 +75,14 @@ impl crate::framework::widget::Widget for Toggle {
         for (i, c) in full_text.chars().take(width).enumerate() {
             let idx = (start_y as u16 * plane.width + (start_x as u16 + i as u16)) as usize;
             if idx < plane.cells.len() {
-                plane.cells[idx] = Cell::new(c, Styles::default().with_bg(bg).with_fg(self.theme.fg));
+                plane.cells[idx] = Cell {
+                        char: c,
+                        fg: self.theme.fg,
+                        bg,
+                        style: Styles::empty(),
+                        transparent: false,
+                        skip: false,
+                    };
             }
         }
 

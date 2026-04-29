@@ -58,21 +58,25 @@ impl crate::framework::widget::Widget for Spinner {
     }
 
     fn render(&self, area: Rect) -> Plane {
-        let width = area.width.max(1) as usize;
-        let height = area.height.max(1) as usize;
-        let mut plane = Plane::new(width, height);
+        let mut plane = Plane::new(0, area.width, area.height);
+        plane.z_index = 10;
+
+        let width = plane.cells.len() / plane.height as usize;
+        let height = plane.height as usize;
 
         let frame = self.frames[self.current_frame];
         let center_x = width / 2;
         let center_y = height / 2;
 
-        let cell = Cell::new(
-            frame,
-            Styles::default()
-                .with_fg(self.theme.primary_fg)
-                .with_bg(self.theme.bg),
-        );
-        plane.set_cell(center_x as i32, center_y as i32, cell);
+        let idx = (center_y as u16 * plane.width + center_x as u16) as usize;
+        if idx < plane.cells.len() {
+            plane.cells[idx] = Cell::new(
+                frame,
+                Styles::default()
+                    .with_fg(self.theme.primary_fg)
+                    .with_bg(self.theme.bg),
+            );
+        }
 
         plane
     }

@@ -54,7 +54,14 @@ impl crate::framework::widget::Widget for ProgressBar {
         for x in 1..fill_width + 1 {
             let idx = ((height / 2) as u16 * plane.width + x as u16) as usize;
             if idx < plane.cells.len() {
-                plane.cells[idx] = Cell::new(' ', Styles::default().with_bg(self.theme.primary_fg));
+                plane.cells[idx] = Cell {
+                        char: ' ',
+                        fg: Color::Default,
+                        bg: self.theme.primary_fg,
+                        style: Styles::empty(),
+                        transparent: false,
+                        skip: false,
+                    };
             }
         }
 

@@ -83,7 +83,14 @@ impl crate::framework::widget::Widget for Checkbox {
         for (i, c) in full_text.chars().take(width).enumerate() {
             let idx = (start_y as u16 * plane.width + (start_x as u16 + i as u16)) as usize;
             if idx < plane.cells.len() {
-                plane.cells[idx] = Cell::new(c, Styles::default().with_fg(fg).with_bg(self.theme.bg));
+                plane.cells[idx] = Cell {
+                        char: c,
+                        fg,
+                        bg: self.theme.bg,
+                        style: Styles::empty(),
+                        transparent: false,
+                        skip: false,
+                    };
             }
         }
 
