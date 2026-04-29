@@ -391,6 +391,17 @@ impl GitService {
             // Resolve glob patterns (e.g. "*") to concrete file paths.
             let concrete = resolve_concrete_paths(&root, &paths);
 
+            // SECURITY: Validate all paths are within the repo root to prevent
+            // path traversal attacks (e.g. "../etc/passwd" or absolute paths).
+            let root_canon = std::fs::canonicalize(&root).map_err(|_| GitError::Other("Failed to canonicalize repo root".into()))?;
+            for rel_path in &concrete {
+                let abs = root.join(rel_path);
+                let abs_canon = std::fs::canonicalize(&abs).map_err(|_| GitError::Other(format!("Path escapes repo root: {}", rel_path)))?;
+                if !abs_canon.starts_with(&root_canon) {
+                    return Err(GitError::Other(format!("Path traversal attempt blocked: {}", rel_path)));
+                }
+            }
+
             // Try libgit2 first
             let libgit2_result = (|| -> std::result::Result<(), git2::Error> {
                 let repo = git2::Repository::open(&root)?;

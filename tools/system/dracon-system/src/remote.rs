@@ -193,7 +193,7 @@ impl RemoteExecContract for SshRemoteExecProvider {
             .channel_session()
             .map_err(|e| io::Error::other(format!("open channel failed: {e}")))?;
         channel
-            .exec(&format!("{} {}", program, args.iter().map(|a| shell_escape(a)).collect::<Vec<_>>().join(" ")))
+            .exec(&format!("{} {}", shell_escape(program), args.iter().map(|a| shell_escape(a)).collect::<Vec<_>>().join(" ")))
             .map_err(|e| io::Error::other(format!("exec failed: {e}")))?;
 
         let mut stdout = String::new();

@@ -146,6 +146,17 @@ impl SystemAgent {
         Ok(info)
     }
 
+    /// Execute an arbitrary command with arbitrary arguments.
+    ///
+    /// # Security Warning
+    ///
+    /// This method executes any command passed to it without restrictions.
+    /// **Never** call this with untrusted user input — it allows arbitrary
+    /// code execution. Prefer using specific methods like [`install_package()`]
+    /// or SSH-based remote execution instead.
+    ///
+    /// If you must use this, ensure the `command` and all `args` are validated
+    /// against a strict allowlist before calling.
     pub async fn run_command(
         &self,
         command: &str,
@@ -215,10 +226,20 @@ impl SystemAgent {
         Ok(String::from_utf8_lossy(&output.stdout).to_string())
     }
 
+    /// Install a package via nix profile.
+    ///
+    /// The package name is sanitized: only alphanumeric characters and hyphens
+    /// are allowed, with a maximum length of 100 characters.
     pub async fn install_package(
         &self,
         name: &str,
     ) -> anyhow::Result<String> {
+        if name.is_empty() || name.len() > 100 {
+            return Err(anyhow::anyhow!("Invalid package name: length must be 1-100"));
+        }
+        if !name.chars().all(|c| c.is_alphanumeric() || c == '-') {
+            return Err(anyhow::anyhow!("Invalid package name: only alphanumeric and hyphen allowed"));
+        }
         let output = Command::new("nix")
             .args(["profile", "install", &format!("nixpkgs#{}", name)])
             .output()
