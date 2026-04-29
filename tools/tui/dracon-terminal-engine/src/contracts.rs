@@ -5,73 +5,125 @@ use std::borrow::Cow;
 use bitflags::bitflags;
 use serde::{Deserialize, Serialize};
 
+/// Terminal UI resize event containing the new dimensions.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct UiResize {
+    /// New terminal width in columns.
     pub width: u16,
+    /// New terminal height in rows.
     pub height: u16,
 }
 
+/// Terminal UI events from the runtime environment.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum UiEvent {
+    /// Periodic tick event for rendering updates.
     Tick,
+    /// Keyboard key event.
     Key { key: Cow<'static, str> },
+    /// Terminal resize event with new dimensions.
     Resize(UiResize),
+    /// Request to quit the application.
     QuitRequested,
 }
 
+/// Input events from user interaction with the terminal.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum InputEvent {
+    /// Keyboard input event.
     Key(KeyEvent),
+    /// Mouse input event.
     Mouse(MouseEvent),
+    /// Terminal resize event with width and height.
     Resize(u16, u16),
+    /// Pasted text content.
     Paste(String),
+    /// Terminal gained focus.
     FocusGained,
+    /// Terminal lost focus.
     FocusLost,
+    /// Unsupported input event raw bytes.
     Unsupported(Vec<u8>),
 }
 
+/// Keyboard input event with key code, modifiers, and event kind.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct KeyEvent {
+    /// The key code that was pressed or released.
     pub code: KeyCode,
+    /// Modifier keys active during the event.
     pub modifiers: KeyModifiers,
+    /// The kind of key event (press, repeat, release).
     pub kind: KeyEventKind,
 }
 
+/// The type of keyboard event.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum KeyEventKind {
+    /// Key was pressed down.
     Press,
+    /// Key was held and auto-repeated.
     Repeat,
+    /// Key was released.
     Release,
 }
 
+/// The key code representing which key was pressed.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum KeyCode {
+    /// Backspace key.
     Backspace,
+    /// Enter key.
     Enter,
+    /// Left arrow key.
     Left,
+    /// Right arrow key.
     Right,
+    /// Up arrow key.
     Up,
+    /// Down arrow key.
     Down,
+    /// Home key.
     Home,
+    /// End key.
     End,
+    /// Page Up key.
     PageUp,
+    /// Page Down key.
     PageDown,
+    /// Tab key.
     Tab,
+    /// Backward Tab key (Shift+Tab).
     BackTab,
+    /// Delete key.
     Delete,
+    /// Insert key.
     Insert,
+    /// Function key F followed by number (0-12).
     F(u8),
+    /// Printable character key.
     Char(char),
+    /// Null key.
     Null,
+    /// Escape key.
     Esc,
+    /// Caps Lock key.
     CapsLock,
+    /// Scroll Lock key.
     ScrollLock,
+    /// Num Lock key.
     NumLock,
+    /// Print Screen key.
     PrintScreen,
+    /// Pause key.
     Pause,
+    /// Menu key.
     Menu,
+    /// Keypad begin key.
     KeypadBegin,
+    /// Media key with specific media key code.
     Media(MediaKeyCode),
+    /// Modifier key with specific modifier key code.
     Modifier(ModifierKeyCode),
 }
 
