@@ -23,6 +23,7 @@ use async_trait::async_trait;
 use dracon_ai_runtime_contracts::models::ChatRequest;
 use dracon_ai_runtime_contracts::traits::AiProvider;
 
+/// Adapter for OpenAI-compatible Chat Completions API endpoints.
 pub struct GenericOpenAIAdapter {
     api_key: String,
     endpoint: String,
@@ -33,6 +34,7 @@ pub struct GenericOpenAIAdapter {
 }
 
 impl GenericOpenAIAdapter {
+    /// Create a new adapter with the given auth header configuration.
     pub fn new_with_auth(
         api_key: String,
         endpoint: String,
