@@ -183,25 +183,25 @@ impl<'a> Ctx<'a> {
 
     pub fn split_h<F>(&mut self, f: F)
     where
-        F: FnOnce(&mut SplitPane, &mut SplitPane),
+        F: FnOnce(&mut crate::framework::widgets::split::SplitPane, &mut crate::framework::widgets::split::SplitPane),
     {
         let (w, h) = self.compositor.size();
-        let split = SplitPane::new(crate::framework::widgets::split::Orientation::Horizontal).ratio(0.5);
+        let split = crate::framework::widgets::split::SplitPane::new(crate::framework::widgets::split::Orientation::Horizontal).ratio(0.5);
         let (r1, r2) = split.split(Rect::new(0, 0, w, h));
-        let mut left = SplitPane::from_rect(r1);
-        let mut right = SplitPane::from_rect(r2);
+        let mut left = crate::framework::widgets::split::SplitPane::from_rect(r1);
+        let mut right = crate::framework::widgets::split::SplitPane::from_rect(r2);
         f(&mut left, &mut right);
     }
 
     pub fn split_v<F>(&mut self, f: F)
     where
-        F: FnOnce(&mut SplitPane, &mut SplitPane),
+        F: FnOnce(&mut crate::framework::widgets::split::SplitPane, &mut crate::framework::widgets::split::SplitPane),
     {
         let (w, h) = self.compositor.size();
-        let split = SplitPane::new(crate::framework::widgets::split::Orientation::Vertical).ratio(0.5);
+        let split = crate::framework::widgets::split::SplitPane::new(crate::framework::widgets::split::Orientation::Vertical).ratio(0.5);
         let (r1, r2) = split.split(Rect::new(0, 0, w, h));
-        let mut left = SplitPane::from_rect(r1);
-        let mut right = SplitPane::from_rect(r2);
+        let mut left = crate::framework::widgets::split::SplitPane::from_rect(r1);
+        let mut right = crate::framework::widgets::split::SplitPane::from_rect(r2);
         f(&mut left, &mut right);
     }
 }

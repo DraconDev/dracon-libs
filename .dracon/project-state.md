@@ -1,11 +1,8 @@
 # Project State
 
 ## Current Focus
-Introduce convenience split methods and fix minor index handling in modal rendering.
+Upgrade dracon-terminal-engine to v26.0.0 and use fully qualified SplitPane imports
 
 ## Completed
-- [x] Add `Ctx::split_h` and `Ctx::split_v` to allow horizontal/vertical pane splitting with a closure on each pane.
-- [x] Implement `SplitPane::from_rect` to create a split based on a `Rect` orientation automatically.
-- [x] Correct modal drawing index calculations by casting to `usize` to avoid overflow warnings.
-- [x] Update widget imports to include `Color` and `Styles` for consistent compositor usage.
-- [x] Adjust `TabBar` imports to match the updated compositor API.
+- [x] Bump dracon-terminal-engine dependency to version 26.0.0
+- [x] Replace ambiguous SplitPane usage with explicit `crate::framework::widgets::split::SplitPane` in `split_h` and `split_v` methods
