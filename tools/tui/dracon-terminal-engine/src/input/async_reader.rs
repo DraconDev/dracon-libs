@@ -19,20 +19,30 @@ impl AsyncInputReader {
     {
         tokio::spawn(async move {
             let mut parser = crate::input::parser::Parser::new();
-            let mut buffer = [0u8; 1024];
 
             loop {
-                let n = tokio::task::spawn_blocking(move || {
+                let n = tokio::task::block_in_place(|| {
                     let mut stdin = std::io::stdin();
-                    std::io::Read::read(&mut stdin, &mut buffer)
-                }).await;
+                    let mut buf = [0u8; 1024];
+                    stdin.read(&mut buf)
+                });
 
                 match n {
                     Ok(0) | Err(_) => break,
                     Ok(n) => {
-                        for &item in buffer.iter().take(n) {
-                            if let Some(event) = parser.advance(item) {
-                                callback(event);
+                        let mut buf = [0u8; 1024];
+                        let read_n = tokio::task::block_in_place(|| {
+                            let mut stdin = std::io::stdin();
+                            stdin.read(&mut buf)
+                        });
+                        match read_n {
+                            Ok(0) | Err(_) => break,
+                            Ok(read_n) => {
+                                for &item in buf.iter().take(read_n) {
+                                    if let Some(event) = parser.advance(item) {
+                                        callback(event);
+                                    }
+                                }
                             }
                         }
                     }
@@ -56,29 +66,34 @@ impl AsyncInputReader {
         let (tx, rx) = mpsc::channel(1);
         let handle = tokio::spawn(async move {
             let mut parser = crate::input::parser::Parser::new();
-            let mut buffer = [0u8; 1024];
             let mut rx = rx;
 
             loop {
-                let read_result = tokio::task::spawn_blocking(move || {
+                let n = tokio::task::block_in_place(|| {
                     let mut stdin = std::io::stdin();
-                    std::io::Read::read(&mut stdin, &mut buffer)
-                }).await;
+                    let mut buf = [0u8; 1024];
+                    stdin.read(&mut buf)
+                });
 
-                let should_break = match read_result {
-                    Ok(0) | Err(_) => true,
+                match n {
+                    Ok(0) | Err(_) => break,
                     Ok(n) => {
-                        for &item in buffer.iter().take(n) {
-                            if let Some(event) = parser.advance(item) {
-                                callback(event);
+                        let mut buf = [0u8; 1024];
+                        let read_n = tokio::task::block_in_place(|| {
+                            let mut stdin = std::io::stdin();
+                            stdin.read(&mut buf)
+                        });
+                        match read_n {
+                            Ok(0) | Err(_) => break,
+                            Ok(read_n) => {
+                                for &item in buf.iter().take(read_n) {
+                                    if let Some(event) = parser.advance(item) {
+                                        callback(event);
+                                    }
+                                }
                             }
                         }
-                        false
                     }
-                };
-
-                if should_break {
-                    break;
                 }
 
                 tokio::select! {
