@@ -1,13 +1,10 @@
 # Project State
 
 ## Current Focus
-Add an EventDispatcher to route keyboard/mouse events via hit zones, supporting capture/bubble phases and focus‑aware tab navigation.
+Add WidgetContainer and WidgetRegistry to manage ownership and delegation of widgets, providing registration, retrieval, and event handling infrastructure.
 
 ## Completed
-- [x] Added new file `src/framework/event_dispatcher.rs` defining `EventDispatcher`, `DispatchEntry`, and associated structs.
-- [x] Implemented logic for grouping hit zones into capture and bubble phases.
-- [x] Provided `dispatch_mouse` and `dispatch_key` methods that route events to registered widgets.
-- [x] Integrated `FocusManager` for tab‑navigation handling and focus routing.
-- [x] Added `Default` trait impl and `with_focus` constructor for focus manager injection.
-- [x] Added unit tests verifying mouse capture ordering, tab navigation, and zone registration.
-- [x] Modified `src/framework/mod.rs` to import and expose the new dispatcher functionality.
+- [x] define WidgetContainer that wraps Box<dyn Widget> and forwards id, render, handle_key, handle_mouse, etc.
+- [x] define WidgetRegistry to store containers, assign unique IDs, register/unregister, and iterate over widgets
+- [x] implement Default for WidgetRegistry and provide helper methods like next_id and iter
+- [x] add unit tests covering container creation, registry registration/get/unregister, and dummy widget behavior
