@@ -1,11 +1,9 @@
 # Project State
 
 ## Current Focus
-Add explicit Cell properties to the progress bar and restrict activation to Enter key in checkbox, radio, and toggle widgets.
+Remove ProgressBar widget implementation and drop unused Color import in Toggle
 
 ## Completed
-- [x] Removed Space key handling from Checkbox, leaving only Enter to trigger toggle.
-- [x] Removed Space key handling from Radio, leaving only Enter to select an option.
-- [x] Removed Space key handling from Toggle, leaving only Enter to activate the toggle.
-- [x] Implemented a full ProgressBar widget with explicit Cell rendering using plane width/height and theme styling.
-- [x] Updated Cargo.lock to reflect the new dependency versions (binary change).
+- [x] Removed entire ProgressBar struct, impl, and related Theme usage from progress_bar.rs
+- [x] Deleted progress bar rendering logic and associated helper methods
+- [x] Removed unnecessary `Color` import from toggle.rs
