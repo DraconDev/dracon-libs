@@ -1,10 +1,10 @@
 # Project State
 
 ## Current Focus
-Refactor event dispatcher to use thread‑safe focus manager and correct percentage‑based sizing calculations
+Remove unnecessary mutability and dereference iterator items in layout calculation to fix borrow warnings and improve code clarity
 
 ## Completed
-- [x] Replaced unsafe mutable focus‑manager access with thread‑safe read‑lock and explicit mutable lock acquisition
-- [x] Fixed Constraint::Min handling to apply `min` correctly via explicit dereference
-- [x] Updated percentage distribution loop to use iterator semantics and compute divisor from length
-- [x] Changed size assignment to use explicit indexed sizing to ensure correct constraint indexing
+- [x] Removed `mut` from `remaining` variable, making it immutable
+- [x] Added dereference (`*p`) to use the actual percentage value in percentage‑based sizing
+- [x] Added dereference (`*n`) to use the actual ratio numerator in ratio‑based sizing
+- [x] Updated Cargo.lock with refreshed dependency versions
