@@ -87,6 +87,10 @@ impl Theme {
             input_bg: Color::Rgb(255, 255, 255),
             input_fg: Color::Rgb(30, 30, 40),
             scrollbar_width: 1,
+            error_fg: Color::Rgb(200, 40, 40),
+            success_fg: Color::Rgb(40, 160, 40),
+            warning_fg: Color::Rgb(200, 140, 40),
+            disabled_fg: Color::Rgb(150, 150, 150),
         }
     }
 
@@ -108,6 +112,10 @@ impl Theme {
             input_bg: Color::Rgb(10, 10, 20),
             input_fg: Color::Rgb(0, 255, 136),
             scrollbar_width: 1,
+            error_fg: Color::Rgb(255, 0, 80),
+            success_fg: Color::Rgb(0, 255, 180),
+            warning_fg: Color::Rgb(255, 200, 0),
+            disabled_fg: Color::Rgb(0, 80, 50),
         }
     }
 }
