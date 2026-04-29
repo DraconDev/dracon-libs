@@ -20,7 +20,9 @@
 //!     });
 //! ```
 
+pub mod animation;
 pub mod app;
+pub mod dirty_regions;
 pub mod dragdrop;
 pub mod event_dispatcher;
 pub mod focus;
