@@ -38,7 +38,7 @@ impl EventDispatcher {
     }
 
     /// Creates a new `EventDispatcher` with focus management.
-    pub fn with_focus(fm: std::sync::Mutex<FocusManager>) -> Self {
+    pub fn with_focus(fm: FocusManager) -> Self {
         Self {
             groups: Vec::new(),
             entries: Vec::new(),

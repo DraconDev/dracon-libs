@@ -1,11 +1,7 @@
 # Project State
 
 ## Current Focus
-Switch focus_manager to direct ownership and update MenuBar width calculations using `last_area_width`
+Remove Mutex wrapper from with_focus parameter, taking FocusManager directly for ownership simplification
 
 ## Completed
-- [x] Replace `focus_manager` field from `Option<std::sync::Mutex<FocusManager>>` to `Option<FocusManager>`
-- [x] Update `EventDispatcher` struct definition accordingly
-- [x] Derive width from `self.last_area_width.get()` instead of a fixed `80`
-- [x] Recalculate entry width as `(width / total_entries.max(1)).max(1)`
-- [x] Recalculate entry index using `(col as usize / entry_width).min(total_entries.saturating_sub(1))` and clamp to a valid range
+- [x] Change function signature of with_focus from `with_focus(fm: Mutex<FocusManager>) -> Self` to `with_focus(fm: FocusManager) -> Self`
