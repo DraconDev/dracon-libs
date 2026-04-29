@@ -1,8 +1,10 @@
 # Project State
 
 ## Current Focus
-chore(deps): upgrade dependencies to latest versions
+Add periodic process refresh to limit updates to every 2 seconds, reducing overhead.
 
 ## Completed
-- [x] upgrade dracon-terminal-engine and related dependencies to version 26
-- [x] regenerate Cargo.lock with updated dependency versions
+- [x] added `use std::time::{Duration, Instant};` import
+- [x] added `last_process_refresh: Instant` and `process_refresh_interval: Duration` fields to `SystemMonitor`
+- [x] initialized those fields in `Default::default()`
+- [x] implemented conditional process refresh in `get_data` using elapsed time check
