@@ -1,7 +1,8 @@
 # Project State
 
 ## Current Focus
-Synchronize Cargo.lock with updated dependency versions for recent feature additions
+Add POSIX terminal backend (tty) and expose compositor sub‑modules with documentation
 
 ## Completed
-- [x] Update dependency lock file to reflect new crates for color handling, UI widgets, compositing engine, and protocol parsers introduced in recent commits
+- [x] Add `pub mod tty;` and a top‑level doc comment describing POSIX tty ioctl backend
+- [x] Add public `engine`, `filter`, and `plane` modules with documentation comments in compositor
