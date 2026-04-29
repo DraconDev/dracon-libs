@@ -1,12 +1,9 @@
 # Project State
 
 ## Current Focus
-Adds range, theme, and change‑callback support to the Slider widget while simplifying mouse handling.
+Add status bar widget with segment handling, transient toast notification system, and tooltip widget for hover information.
 
 ## Completed
-- [x] Added `with_range` method to configure minimum and maximum values
-- [x] Added `with_theme` method to attach a theme
-- [x] Added `on_change` method for registering a value‑change callback
-- [x] Added `set_value` and `value` methods for mutable and read access to the slider value
-- [x] Added `min` and `max` fields to store the slider’s range
-- [x] Modified `handle_mouse` to drop the unused `row` parameter
+- [x] Added `StatusBar` widget supporting customizable text segments, foreground/background colors, and theme integration via `add_segment` and `with_theme`.
+- [x] Added `Toast` widget implementing transient notifications with severity levels, configurable display duration, and automatic expiration checking via `is_expired`.
+- [x] Added `Tooltip` widget providing hover‑triggered text display with styling options.
