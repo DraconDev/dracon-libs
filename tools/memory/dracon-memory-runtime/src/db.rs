@@ -14,6 +14,9 @@ pub struct MemoryDb {
 impl MemoryDb {
     pub fn new(path: &str) -> Result<Self> {
         let init_fn: unsafe extern "C" fn() = sqlite3_vec_init;
+        // SAFETY: sqlite3_vec_init is a C function pointer with the correct signature
+        // for sqlite3_auto_extension. It registers a valid SQLite extension and does not
+        // aliased mutable state or perform any operations requiring a specific runtime.
         unsafe {
             rusqlite::ffi::sqlite3_auto_extension(Some(std::mem::transmute(init_fn)));
         }

@@ -9,7 +9,7 @@ fn main() -> anyhow::Result<()> {
         "gpt-4o-mini".into(),
         "Authorization".into(),
         "Bearer ".into(),
-    );
+    )?;
 
     println!("GenericOpenAIAdapter initialized");
     println!("  model: gpt-4o-mini");

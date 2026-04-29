@@ -11,7 +11,7 @@ async fn main() -> anyhow::Result<()> {
         "gpt-4o-mini".into(),
         "Authorization".into(),
         "Bearer ".into(),
-    );
+    )?;
 
     let mut registry = ProviderRegistry::new();
     registry.register(DEFAULT_PROVIDER, Arc::new(adapter));

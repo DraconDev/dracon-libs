@@ -13,12 +13,13 @@
 //! let adapter = GenericOpenAIAdapter::new_with_auth(
 //!     api_key, endpoint, model,
 //!     "Authorization", "Bearer",
-//! );
+//! )?;
 //! let (content, _) = adapter.ask_and_collect(request).await?;
 //! ```
 
 use std::time::Duration;
 
+use anyhow::Context;
 use async_trait::async_trait;
 use dracon_ai_runtime_contracts::models::ChatRequest;
 use dracon_ai_runtime_contracts::traits::AiProvider;
@@ -41,20 +42,20 @@ impl GenericOpenAIAdapter {
         model: String,
         auth_header_name: String,
         auth_header_prefix: String,
-    ) -> Self {
+    ) -> anyhow::Result<Self> {
         let client = reqwest::Client::builder()
             .timeout(Duration::from_secs(60))
             .connect_timeout(Duration::from_secs(10))
             .build()
-            .expect("reqwest client should build");
-        Self {
+            .context("reqwest client should build")?;
+        Ok(Self {
             api_key,
             endpoint,
             model,
             auth_header_name,
             auth_header_prefix,
             client,
-        }
+        })
     }
 }
 
