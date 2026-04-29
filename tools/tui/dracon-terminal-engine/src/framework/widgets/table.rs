@@ -1,6 +1,6 @@
 use crate::framework::hitzone::HitZone;
 use crate::framework::theme::Theme;
-use crate::compositor::{Cell, Color, Plane, Styles};
+use crate::compositor::{Plane, Styles};
 use ratatui::layout::Rect;
 
 pub struct Column {
@@ -112,7 +112,7 @@ impl<T: Clone + ToString> Table<T> {
         self.visible_count = count;
     }
 
-    fn cell_text(&self, row: &TableRow<T>, col: usize) -> String {
+    fn cell_text(&self, row: &TableRow<T>, _col: usize) -> String {
         row.data.to_string()
     }
 

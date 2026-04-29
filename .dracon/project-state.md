@@ -1,11 +1,9 @@
 # Project State
-##Current Focus
-Refactor and clean up unused imports while streamlining mouse event parsing logic
+
+## Current Focus
+Refactor widget modules to remove unused imports and simplify table cell rendering logic.
 
 ## Completed
-- [x] Refactor app.rs: Remove unused imports (Cell, Color, Compositor, Plane, Styles, InputReader, Terminal) to reduce dependencies and improve code clarity
-- [x] Refactor dragdrop.rs: Remove unused `Styles` import from compositor
-- [x] Refactor scroll.rs: Replace `Instant` with `Duration` for time tracking, maintaining core functionality
-- [x] Refactor breadcrumbs.rs: Remove unused `Cell` import while preserving necessary compositor dependencies
-- [x] Refactor list.rs: Clean up unused imports by removing `HitZoneGroup` and streamlining compositor dependencies
-- [x] Refactor parser.rs: Refactor mouse button parsing to use full button codes and add release detection logic
+- [x] Remove obsolete `Cell`, `Color`, and `Styles` imports from context menu, modal, split, and tabbar widgets.
+- [x] Adjust split widget import to only include needed `Plane` and `Styles`.
+- [x] Update table widget to import only `Plane` and `Styles`, and simplify `cell_text` by dropping unused column index parameter.

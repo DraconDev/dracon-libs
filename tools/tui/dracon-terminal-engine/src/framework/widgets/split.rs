@@ -1,4 +1,4 @@
-use crate::compositor::{Cell, Color, Plane, Styles};
+use crate::compositor::{Plane, Styles};
 use ratatui::layout::Rect;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
