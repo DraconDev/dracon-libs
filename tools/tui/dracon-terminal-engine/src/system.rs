@@ -237,8 +237,6 @@ impl SystemMonitor {
                 }
             }
         }
-        #[cfg(not(target_os = "linux"))]
-        let _ = final_disks;
         final_disks
     }
 }
