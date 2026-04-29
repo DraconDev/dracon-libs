@@ -118,6 +118,7 @@ impl Compositor {
         }
     }
 
+    #[allow(dead_code)]
     pub fn draw_ratatui_line(&mut self, line: &ratatui::text::Line, x: u16, y: u16) {
         let total_len: usize = line.spans.iter().map(|s| s.content.len()).sum();
         if total_len == 0 {
