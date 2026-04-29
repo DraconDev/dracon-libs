@@ -22,6 +22,7 @@
 
 pub mod app;
 pub mod dragdrop;
+pub mod focus;
 pub mod hitzone;
 pub mod scroll;
 /// The theme module.
