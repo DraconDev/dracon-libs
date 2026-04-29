@@ -2,8 +2,6 @@
 //!
 //! A single-line text input optimized for search queries.
 
-use unicode_width::{UnicodeWidthChar, UnicodeWidthStr};
-
 use crate::compositor::{Cell, Plane, Styles};
 use crate::framework::theme::Theme;
 use crate::framework::widget::WidgetId;

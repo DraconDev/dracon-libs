@@ -83,7 +83,7 @@ impl crate::framework::widget::Widget for Slider {
         for x in 0..track_width {
             let idx = (height / 2) as u16 * plane.width + (x + 1) as u16;
             let is_filled = x <= thumb_pos;
-            if idx < plane.cells.len() {
+            if idx as usize < plane.cells.len() {
                 plane.cells[idx as usize] = Cell {
                     char: fill_char,
                     fg: if is_filled { self.theme.accent } else { self.theme.inactive_fg },
@@ -118,7 +118,7 @@ impl crate::framework::widget::Widget for Slider {
         plane.cells[right_idx as usize] = right_bracket;
 
         let thumb_idx = (height / 2) as u16 * plane.width + (1 + thumb_pos as u16);
-        if thumb_idx < plane.cells.len() as u16 {
+        if thumb_idx as usize < plane.cells.len() {
             plane.cells[thumb_idx as usize] = Cell {
                 char: 'O',
                 fg: self.theme.bg,
