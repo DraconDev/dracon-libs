@@ -1,14 +1,33 @@
-use crate::compositor::plane::Cell;
+use crate::compositor::plane::{Cell, Color};
 
-/// A trait for visual effects that can be applied to a Plane's cells.
 pub trait Filter {
     fn apply(&self, cell: &mut Cell, x: u16, y: u16, time: f32);
 }
 
-/// A filter that dims the foreground and background colors.
-/// Useful for "Modal Backgrounds".
+fn dim_rgb(r: u8, g: u8, b: u8, factor: f32) -> Color {
+    Color::Rgb(
+        (r as f32 * factor).clamp(0.0, 255.0) as u8,
+        (g as f32 * factor).clamp(0.0, 255.0) as u8,
+        (b as f32 * factor).clamp(0.0, 255.0) as u8,
+    )
+}
+
+fn dim_color(color: Color, factor: f32) -> Color {
+    match color {
+        Color::Rgb(r, g, b) => dim_rgb(r, g, b, factor),
+        Color::Ansi(c) => {
+            if c > 8 {
+                Color::Ansi(8)
+            } else {
+                color
+            }
+        }
+        Color::Reset => color,
+    }
+}
+
 pub struct Dim {
-    pub factor: f32, // 0.0 to 1.0
+    pub factor: f32,
 }
 
 impl Default for Dim {
@@ -19,28 +38,11 @@ impl Default for Dim {
 
 impl Filter for Dim {
     fn apply(&self, cell: &mut Cell, _x: u16, _y: u16, _time: f32) {
-        let dim = |color: crate::compositor::plane::Color| match color {
-            crate::compositor::plane::Color::Rgb(r, g, b) => crate::compositor::plane::Color::Rgb(
-                (r as f32 * self.factor) as u8,
-                (g as f32 * self.factor) as u8,
-                (b as f32 * self.factor) as u8,
-            ),
-            crate::compositor::plane::Color::Ansi(c) => {
-                if c > 8 {
-                    crate::compositor::plane::Color::Ansi(8)
-                } else {
-                    color
-                }
-            }
-            crate::compositor::plane::Color::Reset => color,
-        };
-
-        cell.fg = dim(cell.fg);
-        cell.bg = dim(cell.bg);
+        cell.fg = dim_color(cell.fg, self.factor);
+        cell.bg = dim_color(cell.bg, self.factor);
     }
 }
 
-/// Invert colors filter
 pub struct Invert;
 
 impl Filter for Invert {
@@ -49,48 +51,26 @@ impl Filter for Invert {
     }
 }
 
-/// A filter that adds a scanline effect by dimming alternate rows.
 pub struct Scanline;
 
 impl Filter for Scanline {
     fn apply(&self, cell: &mut Cell, _x: u16, y: u16, _time: f32) {
-        if y.is_multiple_of(2) {
-            let dim = |color: crate::compositor::plane::Color| match color {
-                crate::compositor::plane::Color::Rgb(r, g, b) => {
-                    crate::compositor::plane::Color::Rgb(
-                        (r as f32 * 0.8) as u8,
-                        (g as f32 * 0.8) as u8,
-                        (b as f32 * 0.8) as u8,
-                    )
-                }
-                _ => color,
-            };
-            cell.fg = dim(cell.fg);
-            cell.bg = dim(cell.bg);
+        if y % 2 == 0 {
+            cell.fg = dim_color(cell.fg, 0.8);
+            cell.bg = dim_color(cell.bg, 0.8);
         }
     }
 }
 
-/// A filter that pulses the brightness of the cell over time.
 pub struct Pulse;
 
 impl Filter for Pulse {
-    #[allow(clippy::redundant_closure_call)]
     fn apply(&self, cell: &mut Cell, _x: u16, _y: u16, time: f32) {
         let factor = (time.sin() * 0.2 + 0.8).clamp(0.0, 1.0);
-        let dim = |color: crate::compositor::plane::Color| match color {
-            crate::compositor::plane::Color::Rgb(r, g, b) => crate::compositor::plane::Color::Rgb(
-                (r as f32 * factor) as u8,
-                (g as f32 * factor) as u8,
-                (b as f32 * factor) as u8,
-            ),
-            _ => color,
-        };
-        cell.fg = dim(cell.fg);
+        cell.fg = dim_color(cell.fg, factor);
     }
 }
 
-/// A filter that randomly glitches cells based on time and position.
 pub struct Glitch;
 
 impl Filter for Glitch {
@@ -100,9 +80,8 @@ impl Filter for Glitch {
 
         if rand > 0.98 {
             cell.char = if rand > 0.99 { '█' } else { '░' };
-            cell.fg = crate::compositor::plane::Color::Rgb(255, 0, 85); // Neon Pink
+            cell.fg = Color::Rgb(255, 0, 85);
         } else if rand > 0.95 {
-            // Horizontal shift look
             let shift = (time * 10.0).sin() * 5.0;
             if (y as f32 - shift.abs()).abs() < 1.0 {
                 cell.style.insert(crate::compositor::plane::Styles::REVERSE);

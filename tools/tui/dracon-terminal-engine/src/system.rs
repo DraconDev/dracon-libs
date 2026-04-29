@@ -236,7 +236,6 @@ impl SystemMonitor {
                             }
                         }
                     }
-                }
             }
         }
         final_disks
