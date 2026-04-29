@@ -1,10 +1,10 @@
 # Project State
 
 ## Current Focus
-enhance cursor positioning using Unicode width calculation and simplify text rendering
+Improve cursor positioning by using Unicode character width for accurate visual placement in the input widget
 
 ## Completed
-- [x] added import of `unicode_width::UnicodeWidthStr`
-- [x] replaced cursor drawing logic with visual offset calculation based on Unicode widths
-- [x] removed scrolling logic and associated comments
-- [x] simplified cursor position computation and style application
+- [x] Switched import from `unicode_width::UnicodeWidthStr` to `unicode_width::UnicodeWidthChar`
+- [x] Updated navigation (Ctrl+f, Ctrl+b, arrow keys) to move cursor by character byte length using `.len_utf8()`
+- [x] Recalculated visual offset using character width via `.width()`
+- [x] Added bounds check before setting cursor symbol in the buffer
