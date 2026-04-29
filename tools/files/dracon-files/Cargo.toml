@@ -2,17 +2,17 @@
 name = "dracon-files"
 version.workspace = true
 edition.workspace = true
-license = "MIT"
-authors = ["Dracon"]
-description = "File system operations library with FsCatalog for file categorization and search"
-repository = "https://github.com/DraconDev/dracon-libs"
+license.workspace = true
+authors.workspace = true
+description.workspace = true
+repository.workspace = true
 keywords = ["filesystem", "files", "catalog", "search"]
 categories = ["filesystem", "command-line-utilities"]
 
 [dependencies]
 walkdir = "2.5"
 mime_guess = "2.0"
-serde = { version = "1.0", features = ["derive"] }
+serde = { workspace = true }
 
 [dev-dependencies]
 tempfile = "3"

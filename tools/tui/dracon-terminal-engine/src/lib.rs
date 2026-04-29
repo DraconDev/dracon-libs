@@ -51,17 +51,27 @@
 //!
 //! v19.2.2
 
+//! Terminal backend (POSIX tty ioctls, raw mode setup).
 pub mod backend;
+//! Z-indexed layer compositor (Plane, Compositor, Cell, Color, Styles, filters).
 pub mod compositor;
+//! Input contract types (UiRenderer, UiRuntime traits — used internally).
 pub mod contracts;
+//! Core terminal wrapper (RAII raw mode + alt screen).
 pub mod core;
+//! Input reader (InputReader) + SGR mouse / chord parser.
 pub mod input;
+//! Ratatui integration bridge.
 pub mod integration;
+//! Layout helpers (grid, border, padding utilities).
 pub mod layout;
 pub(crate) mod system;
 
+//! General utilities (visual width, truncate, formatting helpers).
 pub mod utils;
+//! Visual helpers: icons, OSC strings (clipboard, hyperlink, bell), sync mode 2026.
 pub mod visuals;
+//! Built-in widgets (Editor with syntect highlighting, TextInput).
 pub mod widgets;
 
 pub use compositor::{Cell, Color, Compositor, Plane, Styles};

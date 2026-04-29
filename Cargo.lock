@@ -33,7 +33,7 @@ dependencies = [
 
 [[package]]
 name = "ai-routing-runtime"
-version = "20.0.4"
+version = "20.0.6"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -44,7 +44,7 @@ dependencies = [
 
 [[package]]
 name = "ai-runtime-adapters"
-version = "20.0.4"
+version = "20.0.6"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -56,7 +56,7 @@ dependencies = [
 
 [[package]]
 name = "ai-runtime-config"
-version = "20.0.4"
+version = "20.0.6"
 dependencies = [
  "anyhow",
  "serde",
@@ -65,7 +65,7 @@ dependencies = [
 
 [[package]]
 name = "ai-service"
-version = "20.0.4"
+version = "20.0.6"
 dependencies = [
  "ai-routing-runtime",
  "ai-runtime-adapters",
@@ -1213,14 +1213,14 @@ checksum = "75b325c5dbd37f80359721ad39aca5a29fb04c89279657cffdda8736d0c0b9d2"
 
 [[package]]
 name = "dracon-ai-contracts"
-version = "20.0.4"
+version = "20.0.6"
 dependencies = [
  "serde",
 ]
 
 [[package]]
 name = "dracon-ai-runtime-contracts"
-version = "20.0.4"
+version = "20.0.6"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -1231,7 +1231,7 @@ dependencies = [
 
 [[package]]
 name = "dracon-files"
-version = "20.0.4"
+version = "20.0.6"
 dependencies = [
  "mime_guess",
  "serde",
@@ -1241,7 +1241,7 @@ dependencies = [
 
 [[package]]
 name = "dracon-git"
-version = "20.0.4"
+version = "20.0.6"
 dependencies = [
  "anyhow",
  "git2",
@@ -1253,7 +1253,7 @@ dependencies = [
 
 [[package]]
 name = "dracon-memory-contracts"
-version = "20.0.4"
+version = "20.0.6"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -1262,7 +1262,7 @@ dependencies = [
 
 [[package]]
 name = "dracon-memory-runtime"
-version = "20.0.4"
+version = "20.0.6"
 dependencies = [
  "anyhow",
  "chrono",
@@ -1277,7 +1277,7 @@ dependencies = [
 
 [[package]]
 name = "dracon-stt-runtime"
-version = "20.0.4"
+version = "20.0.6"
 dependencies = [
  "anyhow",
  "candle-core",
@@ -1294,7 +1294,7 @@ dependencies = [
 
 [[package]]
 name = "dracon-system"
-version = "20.0.4"
+version = "20.0.6"
 dependencies = [
  "anyhow",
  "dirs",
@@ -1312,7 +1312,7 @@ dependencies = [
 
 [[package]]
 name = "dracon-terminal-engine"
-version = "20.0.4"
+version = "20.0.6"
 dependencies = [
  "bitflags 2.11.0",
  "chrono",
@@ -1329,7 +1329,7 @@ dependencies = [
 
 [[package]]
 name = "dracon-tts-runtime"
-version = "20.0.4"
+version = "20.0.6"
 dependencies = [
  "anyhow",
  "futures",
@@ -1345,7 +1345,7 @@ dependencies = [
 
 [[package]]
 name = "dracon-video-runtime"
-version = "20.0.4"
+version = "20.0.6"
 dependencies = [
  "anyhow",
  "candle-core",
