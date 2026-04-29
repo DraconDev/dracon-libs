@@ -89,13 +89,21 @@ impl Plane {
 
     /// Safe write char to local plane coordinates
     pub fn put_char(&mut self, x: u16, y: u16, c: char) {
+        use unicode_width::UnicodeWidthChar;
         if x >= self.width || y >= self.height {
             return;
         }
+        let width = c.width().unwrap_or(0);
         let idx = (y * self.width + x) as usize;
         self.cells[idx].char = c;
         self.cells[idx].transparent = false;
         self.cells[idx].skip = false;
+        if width == 2 && x + 1 < self.width {
+            let next_idx = idx + 1;
+            self.cells[next_idx].char = ' ';
+            self.cells[next_idx].transparent = false;
+            self.cells[next_idx].skip = true;
+        }
     }
 
     pub fn put_cell(&mut self, x: u16, y: u16, mut cell: Cell) {

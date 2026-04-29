@@ -21,6 +21,7 @@
 //! - `notify` — enables desktop notification support via `notify-rust`
 
 use crate::notification::NotificationConfig;
+use anyhow::Context;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 use tokio::process::Command;
@@ -79,7 +80,7 @@ impl SystemAgent {
     pub async fn send_notification(
         &self,
         notification: AppNotification,
-    ) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    ) -> anyhow::Result<()> {
         if !self.notification_config.enabled {
             return Ok(());
         }
@@ -159,8 +160,7 @@ impl SystemAgent {
         filter: Option<String>,
     ) -> anyhow::Result<String> {
         let _ = filter;
-        tokio::task::spawn_blocking(
-            move || -> std::result::Result<String, Box<dyn std::error::Error + Send + Sync>> {
+        tokio::task::spawn_blocking(move || -> anyhow::Result<String> {
                 use sysinfo::{ProcessRefreshKind, ProcessesToUpdate, RefreshKind, System};
                 let mut sys = System::new_with_specifics(
                     RefreshKind::new().with_processes(ProcessRefreshKind::everything()),
@@ -178,7 +178,8 @@ impl SystemAgent {
             },
         )
         .await
-        .map_err(|e| Box::new(e) as Box<dyn std::error::Error + Send + Sync>)?
+        .map_err(|e| anyhow::anyhow!("spawn blocking failed: {}", e))
+        .and_then(|r| r)
     }
 
     pub async fn read_config(
@@ -186,10 +187,10 @@ impl SystemAgent {
         name: &str,
     ) -> anyhow::Result<String> {
         if name == "home.nix" {
-            let path = self.home_nix_path.as_ref().ok_or("home.nix not found")?;
+            let path = self.home_nix_path.as_ref().context("home.nix not found")?;
             Ok(tokio::fs::read_to_string(path).await?)
         } else {
-            Err("Unknown config name".into())
+            Err(anyhow::anyhow!("Unknown config name"))
         }
     }
 
@@ -197,13 +198,13 @@ impl SystemAgent {
         &self,
         name: &str,
         content: &str,
-    ) -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    ) -> anyhow::Result<()> {
         if name == "home.nix" {
-            let path = self.home_nix_path.as_ref().ok_or("home.nix not found")?;
+            let path = self.home_nix_path.as_ref().context("home.nix not found")?;
             tokio::fs::write(path, content).await?;
             Ok(())
         } else {
-            Err("Unknown config name".into())
+            Err(anyhow::anyhow!("Unknown config name"))
         }
     }
 

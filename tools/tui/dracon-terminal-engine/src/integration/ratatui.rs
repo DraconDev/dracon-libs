@@ -5,6 +5,7 @@ use ratatui::backend::Backend;
 use ratatui::layout::{Position, Size};
 use std::io::{self, Write};
 use std::os::fd::AsFd;
+use unicode_width::UnicodeWidthStr;
 
 pub struct RatatuiBackend<W: io::Write + std::os::fd::AsFd> {
     inner: Terminal<W>,

@@ -24,12 +24,11 @@ pub mod traits;
 
 use std::collections::HashMap;
 use std::sync::Arc;
-use async_trait::async_trait;
-use dracon_ai_contracts::RoutingTask;
 use dracon_ai_runtime_contracts::traits::AiProvider;
 use serde::{Deserialize, Serialize};
 
-pub use routing::{RoutingTask as _, SelectionConstraints, ServiceLevel};
+pub use dracon_ai_contracts::{RoutingTask, SelectionConstraints};
+pub use routing::ServiceLevel;
 pub use traits::AiModelStore;
 
 #[derive(Debug, Clone)]

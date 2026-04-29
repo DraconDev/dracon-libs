@@ -14,6 +14,15 @@ pub enum IconMode {
     ASCII,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
+pub enum FileColumn {
+    Name,
+    Size,
+    Modified,
+    Created,
+    Permissions,
+}
+
 /// Guesses the appropriate icon rendering mode based on terminal environment variables.
 ///
 /// Checks `TERM`, `TERM_PROGRAM`, `TERMINAL_EMULATOR`, and `KONSOLE_VERSION`
@@ -335,7 +344,6 @@ pub fn spawn_detached(cmd: &str, args: Vec<String>) {
         .spawn();
 }
 
-/// Formats a byte size into a human-readable string (B, KB, MB, GB, TB).
 /// Formats a byte size into a human-readable string (B, KB, MB, GB, TB).
 pub fn format_size(size: u64) -> String {
     if size >= 1073741824 {

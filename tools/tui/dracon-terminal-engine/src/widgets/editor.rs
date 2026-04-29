@@ -680,20 +680,6 @@ impl TextEditor {
                         self.ensure_cursor_visible(area);
                         return true;
                     }
-                    /*
-                    KeyCode::Char('b') if has_control => {
-                        if has_shift { self.maybe_start_selection(); }
-                        self.move_cursor_left();
-                        if has_shift { self.update_selection_end(); } else { self.clear_selection(); }
-                        self.ensure_cursor_visible(area); return true;
-                    }
-                    KeyCode::Char('f') if has_control => {
-                        if has_shift { self.maybe_start_selection(); }
-                        self.move_cursor_right();
-                        if has_shift { self.update_selection_end(); } else { self.clear_selection(); }
-                        self.ensure_cursor_visible(area); return true;
-                    }
-                    */
                     KeyCode::Up | KeyCode::Char('p') if has_control => {
                         // Ctrl+p is Up
                         if has_shift {

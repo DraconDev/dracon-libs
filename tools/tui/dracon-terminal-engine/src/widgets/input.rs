@@ -69,18 +69,7 @@ impl TextInput {
                     if c == '\x1b' {
                         return false;
                     }
-                    if self.cursor_position >= self.value.len() {
-                        self.value.push(c);
-                    } else {
-                        let mut new_val = String::with_capacity(self.value.len() + 1);
-                        for (i, ch) in self.value.chars().enumerate() {
-                            if i == self.cursor_position {
-                                new_val.push(c);
-                            }
-                            new_val.push(ch);
-                        }
-                        self.value = new_val;
-                    }
+                    self.value.insert(self.cursor_position, c);
                     self.cursor_position += 1;
                     return true;
                 }

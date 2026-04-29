@@ -250,11 +250,13 @@ impl Parser {
                 0 => MouseButton::Left,
                 1 => MouseButton::Middle,
                 2 => MouseButton::Right,
-                3 => MouseButton::Left, // Release fallback
+                3 => MouseButton::Left,
                 _ => MouseButton::Other(b),
             };
 
-            let kind = if is_motion {
+            let kind = if b & 0b11 == 3 {
+                MouseEventKind::Up(button)
+            } else if is_motion {
                 MouseEventKind::Drag(button)
             } else {
                 MouseEventKind::Down(button)

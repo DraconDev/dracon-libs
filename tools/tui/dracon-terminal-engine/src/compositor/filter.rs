@@ -60,7 +60,7 @@ impl Filter for Scanline {
                     crate::compositor::plane::Color::Rgb(
                         (r as f32 * 0.8) as u8,
                         (g as f32 * 0.8) as u8,
-                        (b as f32 * 0.8) as u16 as u8,
+                        (b as f32 * 0.8) as u8,
                     )
                 }
                 _ => color,

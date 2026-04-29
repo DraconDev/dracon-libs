@@ -1,5 +1,4 @@
 use crate::compositor::plane::{Cell, Color, Plane, Styles};
-use std::collections::HashSet;
 use std::io::{self, Write};
 
 pub struct Compositor {

@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-pub use dracon_ai_contracts::{RoutingTask, SelectionConstraints};
+pub use dracon_ai_contracts::SelectionConstraints;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum ServiceLevel {
