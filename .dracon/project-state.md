@@ -1,8 +1,7 @@
 # Project State
 
 ## Current Focus
-Add integration tests for core UI widgets and update dependency lock file
+Update Cargo.lock to newer dependency versions
 
 ## Completed
-- [x] Updated Cargo.lock to newer dependency versions
-- [x] Added comprehensive widget integration test suite in tools/tui/dracon-terminal-engine/tests/phase1_widget_test.rs
+- [x] Update Cargo.lock with revised dependency versions
