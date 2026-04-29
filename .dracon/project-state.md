@@ -1,7 +1,17 @@
 # Project State
 
 ## Current Focus
-Dependency lock file (Cargo.lock) updated to reflect new crate versions.
+Add Color enum variants and Styles bitflags for richer text styling
 
 ## Completed
-- [x] Updated Cargo.lock with new dependency versions
+- [x] Added Reset variant to Color enum
+- [x] Added Ansi(u8) variant to Color enum
+- [x] Added Rgb(u8,u8,u8) variant to Color enum
+- [x] Added BOLD constant to Styles bitflags
+- [x] Added DIM constant to Styles bitflags
+- [x] Added ITALIC constant to Styles bitflags
+- [x] Added UNDERLINE constant to Styles bitflags
+- [x] Added BLINK constant to Styles bitflags
+- [x] Added REVERSE constant to Styles bitflags
+- [x] Added HIDDEN constant to Styles bitflags
+- [x] Added STRIKETHROUGH constant to Styles bitflags

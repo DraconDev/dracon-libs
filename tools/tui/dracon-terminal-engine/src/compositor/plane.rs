@@ -3,22 +3,34 @@ use bitflags::bitflags;
 /// Terminal color representation.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Color {
+    /// Default terminal foreground/background color.
     Reset,
+    /// ANSI 256-color palette entry (0–255).
     Ansi(u8),
+    /// 24-bit RGB color.
     Rgb(u8, u8, u8),
 }
 
 /// Text styling flags for terminal cells.
 bitflags! {
+    /// Text styling flags for terminal cells.
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Default)]
     pub struct Styles: u8 {
+        /// Bold text.
         const BOLD       = 1 << 0;
+        /// Dimmed text.
         const DIM        = 1 << 1;
+        /// Italic text.
         const ITALIC     = 1 << 2;
+        /// Underlined text.
         const UNDERLINE  = 1 << 3;
+        /// Blinking text.
         const BLINK      = 1 << 4;
+        /// Reversed foreground/background colors.
         const REVERSE    = 1 << 5;
+        /// Hidden text (invisible).
         const HIDDEN     = 1 << 6;
+        /// Strikethrough text.
         const STRIKETHROUGH = 1 << 7;
     }
 }
