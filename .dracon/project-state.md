@@ -1,14 +1,12 @@
 # Project State
 
 ## Current Focus
-Refactor widget modules by removing unused parameters, simplifying index calculations, and adding missing imports.
+Update dracon-terminal-engine dependency to v26.0.0 for improved features or bug fixes
 
 ## Completed
-- [x] Update `DragGhost::render` signature to ignore `x` and `y` parameters in `dragdrop.rs`.
-- [x] Remove parentheses from index calculation in `breadcrumbs.rs`.
-- [x] Remove parentheses from index calculation in `modal.rs`.
-- [x] Remove parentheses from column index in `tabbar.rs`.
-- [x] Add `Cell` and `Color` to the compositor import list in `table.rs`.
-- [x] Simplify index calculation `start + j` in `table.rs`.
-- [x] Simplify index calculation involving `y`, `x`, and `col_idx` in `table.rs`.
-- [x] Simplify index calculation involving `y`, `x`, and `k` in `table.rs`.
+- [x] Refactor widget modules by removing unused parameters and simplifying table cell handling
+- [x] Refactor mouse handling to use full button codes and add release functionality
+- [x] Add private `source_row_from_visual` helper for text editor navigation
+- [x] Introduce scoped hit-zone system for UI elements
+- [x] Add convenience methods for viewport handling and scrolling in List widget
+- [x] Bump dracon-terminal-engine to v26.0.0 (crate metadata optimization included)
