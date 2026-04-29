@@ -1,7 +1,10 @@
 # Project State
 
 ## Current Focus
-Add import of `Widget` from `dracon_terminal_engine::framework::widget` in example to enable its usage
+feat(toast): expose `message()` method and adjust example usage
 
 ## Completed
-- [x] Added `Widget` to the import path alongside `WidgetId`
+- [x] Added `pub fn message(&self) -> &str` to `Toast` returning its stored message field
+- [x] Modified example to call `toast.message()` instead of the removed `toast.text()`
+- [x] Updated debug output to print render dimensions of the Checkbox widget
+- [x] Updated `Cargo.lock` with newer dependency versions

@@ -16,7 +16,8 @@ fn main() {
     let theme = Theme::dark();
 
     let cb = Checkbox::new(WidgetId::new(1), "Enable feature");
-    println!("Checkbox rendered: {:?}", cb.render(ratatui::layout::Rect::new(0, 0, 40, 3)));
+    let plane = cb.render(ratatui::layout::Rect::new(0, 0, 40, 3));
+    println!("Checkbox rendered (width={}, height={})", plane.width, plane.height);
 
     let mut toggle = Toggle::new(WidgetId::new(2), "Mode");
     toggle.toggle();
@@ -45,7 +46,7 @@ fn main() {
     println!("Select label: {:?}", select.selected_label());
 
     let toast = Toast::new(WidgetId::new(10), "Operation complete").with_kind(ToastKind::Success);
-    println!("Toast message: '{}'", toast.text());
+    println!("Toast message: '{}'", toast.message());
 
     let tooltip = Tooltip::new(WidgetId::new(11), "Help text here");
     println!("Tooltip text: '{}'", tooltip.text());

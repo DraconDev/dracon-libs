@@ -57,6 +57,11 @@ impl Toast {
         self
     }
 
+    /// Returns the toast message text.
+    pub fn message(&self) -> &str {
+        &self.message
+    }
+
     /// Returns true if this toast has expired and should be removed.
     pub fn is_expired(&self) -> bool {
         Instant::now().duration_since(self.created_at) > self.duration
