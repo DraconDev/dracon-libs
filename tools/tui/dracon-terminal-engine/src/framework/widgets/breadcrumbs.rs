@@ -96,7 +96,7 @@ impl Breadcrumbs {
                 if j as u16 >= seg_width - 2 {
                     break;
                 }
-                let idx = (x as usize + j);
+                let idx = x as usize + j;
                 if idx < plane.cells.len() {
                     plane.cells[idx].char = ch;
                     plane.cells[idx].fg = fg;

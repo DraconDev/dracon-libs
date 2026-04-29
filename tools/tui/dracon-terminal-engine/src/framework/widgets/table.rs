@@ -1,6 +1,6 @@
 use crate::framework::hitzone::HitZone;
 use crate::framework::theme::Theme;
-use crate::compositor::{Plane, Styles};
+use crate::compositor::{Cell, Color, Plane, Styles};
 use ratatui::layout::Rect;
 
 pub struct Column {
@@ -142,7 +142,7 @@ impl<T: Clone + ToString> Table<T> {
             let label_len = col.header.len().min(w as usize - 2);
             let start = (w.saturating_sub(label_len as u16)) / 2;
             for (j, ch) in col.header.chars().take(label_len).enumerate() {
-                let idx = (start as usize + j);
+                let idx = start as usize + j;
                 if idx < plane.cells.len() {
                     plane.cells[idx].char = ch;
                     plane.cells[idx].fg = if self.sort_col == Some(i) {
@@ -179,7 +179,7 @@ impl<T: Clone + ToString> Table<T> {
                 row_zones.push(HitZone::new(self.offset + i, x, area.y + y_off, w, row_height));
 
                 for col_idx in 0..w {
-                    let idx = ((y as usize) * (area.width as usize) + (x as usize) + col_idx as usize);
+                    let idx = y as usize * area.width as usize + x as usize + col_idx as usize;
                     if idx < plane.cells.len() {
                         plane.cells[idx].bg = bg;
                         plane.cells[idx].fg = fg;
@@ -190,7 +190,7 @@ impl<T: Clone + ToString> Table<T> {
                 let text = self.cell_text(row, j);
                 let label_len = text.len().min(w as usize - 1).saturating_sub(1);
                 for (k, ch) in text.chars().take(label_len).enumerate() {
-                    let idx = ((y as usize) * (area.width as usize) + (x as usize) + 1 + k);
+                    let idx = y as usize * area.width as usize + x as usize + 1 + k;
                     if idx < plane.cells.len() {
                         plane.cells[idx].char = ch;
                         plane.cells[idx].fg = fg;
