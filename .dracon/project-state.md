@@ -1,9 +1,8 @@
-# Project State
+#Project State
 
 ## Current Focus
-Upgrade TTS contracts to surface errors via TtsResult for reliable failure handling and propagation.
+Introduce async error handling for TTS speak_nowait and add a chat UI example.
 
 ## Completed
-- [x] Modify TextToSpeech::speak and TextToSpeech::stop to return TtsResult<()> so callers can detect and handle synthesis or interruption failures.
-- [x] Adjust VoiceProvider::set_voice and VoiceProvider::current_voice to return TtsResult<bool> and TtsResult<VoiceInfo>, replacing silent bool fallbacks with explicit error reporting.
-- [x] Update DynTtsEngine::speak and DynTtsEngine::stop to propagate results from the inner implementation rather than discarding them.
+- [x] Added `anyhow` import and changed `speak_nowait` return type to `TtsResult<()>` with proper error propagation.
+- [x] Added new example `framework_chat.rs` implementing a chat UI with list, input, theme, and timestamp logic.

@@ -1,3 +1,4 @@
+use anyhow;
 use serde::{Deserialize, Serialize};
 use std::fmt;
 use std::sync::Arc;
@@ -160,17 +161,18 @@ impl DynTtsEngine {
         self.inner.sample_rate()
     }
 
-    pub async fn speak_nowait(&self, text: &str) {
+    pub async fn speak_nowait(&self, text: &str) -> TtsResult<()> {
         if let Some(f) = &self.speak_nowait_fn {
             f(text);
+            Ok(())
         } else {
             let text = text.to_string();
             let inner = self.inner.clone();
             tokio::task::spawn_blocking(move || {
-                inner.speak(&text);
+                inner.speak(&text)
             })
             .await
-            .ok();
+            .map_err(|e| anyhow::anyhow!("join error: {}", e))?
         }
     }
 
