@@ -22,7 +22,7 @@ impl OnnxEmbedder {
         let tokenizer_bytes = std::fs::read(&tokenizer_path)
             .map_err(|e| anyhow::anyhow!("Failed to read tokenizer from {}: {}", tokenizer_path, e))?;
 
-        let session = Session::builder()?.commit_from_memory(model_bytes)?;
+        let session = Session::builder()?.commit_from_memory(&model_bytes)?;
 
         let tokenizer = Tokenizer::from_bytes(tokenizer_bytes)
             .map_err(|e| anyhow::anyhow!("Failed to load tokenizer: {}", e))?;

@@ -179,4 +179,28 @@ mod tests {
             FileCategory::Text
         );
     }
+
+    #[test]
+    #[should_panic]
+    fn test_copy_recursive_source_not_found() {
+        let catalog = FsCatalog;
+        catalog.copy_recursive(Path::new("/nonexistent/path"), Path::new("/tmp/dest")).unwrap();
+    }
+
+    #[test]
+    fn test_global_search_nonexistent_root() {
+        let catalog = FsCatalog;
+        let result = catalog.global_search(Path::new("/nonexistent/root"), "query");
+        assert!(result.is_ok());
+        let (files, _meta) = result.unwrap();
+        assert!(files.is_empty());
+    }
+
+    #[test]
+    fn test_file_suitability_nonexistent_file() {
+        let catalog = FsCatalog;
+        let result = catalog.check_file_suitability(Path::new("/nonexistent/file.txt"), 1024);
+        assert!(result.is_too_large);
+        assert!(!result.is_binary);
+    }
 }

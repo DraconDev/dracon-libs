@@ -1,10 +1,10 @@
 # Project State
 
 ## Current Focus
-Added integration tests for `OnnxEmbedder` and updated `GitService` tests with async functionality.
+Added edge case tests for file operations and optimized memory handling in embedder
 
 ## Completed
-- [x] Added test cases for `OnnxEmbedder` error handling related to missing model and tokenizer files.
-- [x] Updated `GitService` tests to work with async runtime, modifying test functions and adding new tests for path validity and repository status.
-- [x] Included functionality to test empty string embedding with near-zero norm.
-- [x] Improved handling of test data for `GitService` to verify functionality when paths are not valid repositories.
+- [x] Added tests for copy operation panic when source path doesn't exist
+- [x] Added test verifying empty results for global search with non-existent root directory
+- [x] Added test checking file suitability flags for non-existent files
+- [x] Optimized OnnxEmbedder by passing reference to model bytes to avoid data copying
