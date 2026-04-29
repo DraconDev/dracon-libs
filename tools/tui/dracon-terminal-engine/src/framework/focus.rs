@@ -209,7 +209,7 @@ mod tests {
         fm.register(id1, true);
         fm.register(id2, true);
 
-        fm.set_focus(id1).unwrap();
+        assert!(fm.set_focus(id1));
         let next = fm.tab_next().unwrap();
         assert_eq!(next, id2);
 
@@ -225,7 +225,7 @@ mod tests {
         fm.register(id1, true);
         fm.register(id2, true);
 
-        fm.set_focus(id2).unwrap();
+        assert!(fm.set_focus(id2));
         let prev = fm.tab_prev().unwrap();
         assert_eq!(prev, id1);
     }
@@ -248,7 +248,7 @@ mod tests {
         fm.register(id1, true);
         fm.register(id2, true);
 
-        fm.set_focus(id1).unwrap();
+        assert!(fm.set_focus(id1));
         fm.enter_trap();
         assert!(fm.is_trapped());
 
@@ -262,7 +262,7 @@ mod tests {
         let mut fm = FocusManager::new();
         let id = WidgetId::new(1);
         fm.register(id, true);
-        fm.set_focus(id).unwrap();
+        assert!(fm.set_focus(id));
         fm.unregister(id);
 
         assert_eq!(fm.focused(), None);
@@ -277,11 +277,12 @@ mod tests {
         fm.register(id2, true);
 
         let mut changes = Vec::new();
+        let changes_ref = &mut changes;
         fm.on_focus_change(move |new, old| {
-            changes.push((new, old));
+            changes_ref.push((new, old));
         });
 
-        fm.set_focus(id1).unwrap();
+        assert!(fm.set_focus(id1));
         fm.tab_next();
 
         assert_eq!(changes.len(), 2);

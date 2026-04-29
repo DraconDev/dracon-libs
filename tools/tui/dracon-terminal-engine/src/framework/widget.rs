@@ -48,7 +48,7 @@ pub trait Widget {
 
     /// Handles a mouse event within the widget's bounds.
     /// Returns `true` if the event was consumed.
-    fn handle_mouse(&mut self, kind: MouseEventKind, col: u16, row: u16) -> bool {
+    fn handle_mouse(&mut self, _kind: MouseEventKind, _col: u16, _row: u16) -> bool {
         false
     }
 }

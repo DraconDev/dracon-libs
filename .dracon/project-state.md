@@ -1,8 +1,10 @@
 # Project State
 
 ## Current Focus
-Refactor default widget event handlers to remove unused mouse handling and simplify key handling
+Replace unwrap with assert! on FocusManager set_focus and adjust focus change tracking; simplify Widget.handle_mouse signature.
 
 ## Completed
-- [x] Removed the `handle_mouse` method from the `Widget` trait implementation
-- [x] Simplified `handle_key` to retain only the no‑op implementation
+- [x] Replace `.unwrap()` with `assert!(fm.set_focus(...))` in focus tests
+- [x] Modify focus change closure to capture `changes_ref` and push via it
+- [x] Update `Widget::handle_mouse` to ignore parameters and always return `false`
+- [x] Update Cargo.lock dependency snapshot
