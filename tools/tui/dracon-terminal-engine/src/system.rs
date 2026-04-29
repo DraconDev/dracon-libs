@@ -189,7 +189,8 @@ impl SystemMonitor {
             }
         }
 
-        // 2. Supplement with unmounted drives from lsblk
+        // 2. Supplement with unmounted drives from lsblk (Linux only)
+        #[cfg(target_os = "linux")]
         if let Ok(output) = std::process::Command::new("lsblk")
             .arg("-rnbo")
             .arg("NAME,FSTYPE,SIZE,MOUNTPOINT,LABEL")
@@ -236,6 +237,8 @@ impl SystemMonitor {
                 }
             }
         }
+        #[cfg(not(target_os = "linux"))]
+        let _ = final_disks;
         final_disks
     }
 }
