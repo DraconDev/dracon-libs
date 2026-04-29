@@ -217,3 +217,39 @@ mod tests {
         }
     }
 }
+
+#[cfg(test)]
+mod error_path_tests {
+    use super::*;
+
+    #[test]
+    fn test_embedder_new_fails_on_missing_model() {
+        std::env::set_var("DRACON_MODEL_PATH", "/nonexistent/model.onnx");
+        std::env::set_var("DRACON_TOKENIZER_PATH", "/nonexistent/tokenizer.json");
+        let result = OnnxEmbedder::new();
+        std::env::remove_var("DRACON_MODEL_PATH");
+        std::env::remove_var("DRACON_TOKENIZER_PATH");
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_embedder_new_fails_on_missing_tokenizer() {
+        let temp_dir = tempfile::TempDir::new().unwrap();
+        std::fs::write(temp_dir.path().join("model.onnx"), b"fake").unwrap();
+        std::env::set_var("DRACON_MODEL_PATH", temp_dir.path().join("model.onnx").to_str().unwrap());
+        std::env::set_var("DRACON_TOKENIZER_PATH", "/nonexistent/tokenizer.json");
+        let result = OnnxEmbedder::new();
+        std::env::remove_var("DRACON_MODEL_PATH");
+        std::env::remove_var("DRACON_TOKENIZER_PATH");
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_embed_empty_string_returns_normalized_zeros() {
+        let mut embedder = OnnxEmbedder::new().unwrap();
+        let embedding = embedder.embed("");
+        assert_eq!(embedding.len(), 384);
+        let norm: f32 = embedding.iter().map(|x| x * x).sum::<f32>().sqrt();
+        assert!((norm - 0.0).abs() < 0.001, "empty embed should be near-zero");
+    }
+}
