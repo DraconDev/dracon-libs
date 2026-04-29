@@ -538,111 +538,28 @@ impl TextEditor {
                         }
                     }
                     KeyCode::Left if has_control || has_alt => {
-                        if has_shift {
-                            self.maybe_start_selection();
-                        }
-                        self.move_cursor_word_left();
-                        if has_shift {
-                            self.update_selection_end();
-                        } else {
-                            self.clear_selection();
-                        }
-                        self.ensure_cursor_visible(area);
-                        return true;
+                        self.nav_move(has_shift, area, |s| s.move_cursor_word_left());
                     }
                     KeyCode::Left => {
-                        if has_shift {
-                            self.maybe_start_selection();
-                        }
-                        self.move_cursor_left();
-                        if has_shift {
-                            self.update_selection_end();
-                        } else {
-                            self.clear_selection();
-                        }
-                        self.ensure_cursor_visible(area);
-                        return true;
+                        self.nav_move(has_shift, area, |s| s.move_cursor_left());
                     }
                     KeyCode::Right if has_control || has_alt => {
-                        if has_shift {
-                            self.maybe_start_selection();
-                        }
-                        self.move_cursor_word_right();
-                        if has_shift {
-                            self.update_selection_end();
-                        } else {
-                            self.clear_selection();
-                        }
-                        self.ensure_cursor_visible(area);
-                        return true;
+                        self.nav_move(has_shift, area, |s| s.move_cursor_word_right());
                     }
                     KeyCode::Right => {
-                        if has_shift {
-                            self.maybe_start_selection();
-                        }
-                        self.move_cursor_right();
-                        if has_shift {
-                            self.update_selection_end();
-                        } else {
-                            self.clear_selection();
-                        }
-                        self.ensure_cursor_visible(area);
-                        return true;
+                        self.nav_move(has_shift, area, |s| s.move_cursor_right());
                     }
-                    // Emacs bindings
                     KeyCode::Char('b') if has_alt => {
-                        if has_shift {
-                            self.maybe_start_selection();
-                        }
-                        self.move_cursor_word_left();
-                        if has_shift {
-                            self.update_selection_end();
-                        } else {
-                            self.clear_selection();
-                        }
-                        self.ensure_cursor_visible(area);
-                        return true;
+                        self.nav_move(has_shift, area, |s| s.move_cursor_word_left());
                     }
                     KeyCode::Char('f') if has_alt => {
-                        if has_shift {
-                            self.maybe_start_selection();
-                        }
-                        self.move_cursor_word_right();
-                        if has_shift {
-                            self.update_selection_end();
-                        } else {
-                            self.clear_selection();
-                        }
-                        self.ensure_cursor_visible(area);
-                        return true;
+                        self.nav_move(has_shift, area, |s| s.move_cursor_word_right());
                     }
                     KeyCode::Up | KeyCode::Char('p') if has_control => {
-                        // Ctrl+p is Up
-                        if has_shift {
-                            self.maybe_start_selection();
-                        }
-                        self.move_cursor_up();
-                        if has_shift {
-                            self.update_selection_end();
-                        } else {
-                            self.clear_selection();
-                        }
-                        self.ensure_cursor_visible(area);
-                        return true;
+                        self.nav_move(has_shift, area, |s| s.move_cursor_up());
                     }
                     KeyCode::Down | KeyCode::Char('n') if has_control => {
-                        // Ctrl+n is Down
-                        if has_shift {
-                            self.maybe_start_selection();
-                        }
-                        self.move_cursor_down();
-                        if has_shift {
-                            self.update_selection_end();
-                        } else {
-                            self.clear_selection();
-                        }
-                        self.ensure_cursor_visible(area);
-                        return true;
+                        self.nav_move(has_shift, area, |s| s.move_cursor_down());
                     }
                     KeyCode::Up => {
                         if has_alt {
@@ -650,17 +567,7 @@ impl TextEditor {
                             self.ensure_cursor_visible(area);
                             return true;
                         }
-                        if has_shift {
-                            self.maybe_start_selection();
-                        }
-                        self.move_cursor_up();
-                        if has_shift {
-                            self.update_selection_end();
-                        } else {
-                            self.clear_selection();
-                        }
-                        self.ensure_cursor_visible(area);
-                        return true;
+                        self.nav_move(has_shift, area, |s| s.move_cursor_up());
                     }
                     KeyCode::Down => {
                         if has_alt {
@@ -668,17 +575,7 @@ impl TextEditor {
                             self.ensure_cursor_visible(area);
                             return true;
                         }
-                        if has_shift {
-                            self.maybe_start_selection();
-                        }
-                        self.move_cursor_down();
-                        if has_shift {
-                            self.update_selection_end();
-                        } else {
-                            self.clear_selection();
-                        }
-                        self.ensure_cursor_visible(area);
-                        return true;
+                        self.nav_move(has_shift, area, |s| s.move_cursor_down());
                     }
 
                     KeyCode::Home if has_control => {

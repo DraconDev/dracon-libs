@@ -1,10 +1,9 @@
 # Project State
 
 ## Current Focus
-Consolidate navigation key handling by delegating selection updates to `finish_nav_move`
+Refactor text editor navigation by consolidating duplicated cursor movement and selection logic into a single `nav_move` helper method
 
 ## Completed
-- [x] Removed redundant selection update logic for UpArrow, PageUp, PageDown, Home, and End keys
-- [x] Replaced multiple `if has_shift { update_selection_end() } else { clear_selection() }` blocks with a single `finish_nav_move(has_shift, area)` call
-- [x] Eliminated repeated `ensure_cursor_visible(area)` and early `return true` statements
-- [x] Centralized shift‑handling and selection endpoint updates across all navigation cases
+- [x] Consolidate navigation key handling by delegating selection updates to `nav_move` helper
+- [x] Reduce code duplication across arrow keys, word navigation, and Emacs bindings (Ctrl+p/n, Alt+b/f)
+- [x] Simplify cursor movement implementations from ~113 lines of repetitive code to ~10 lines using closure-based abstraction
