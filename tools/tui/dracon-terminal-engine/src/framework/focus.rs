@@ -6,7 +6,6 @@
 use crate::framework::widget::WidgetId;
 use std::collections::HashMap;
 use std::sync::Arc;
-use std::sync::atomic::{AtomicBool, Ordering};
 
 /// Callback invoked when focus changes to a new widget.
 pub type FocusCallback = Box<dyn Fn(WidgetId, Option<WidgetId>) + Send + Sync>;
@@ -170,7 +169,7 @@ impl FocusManager {
     where
         F: Fn(WidgetId, Option<WidgetId>) + Send + Sync + 'static,
     {
-        self.on_focus_change.push(Arc::new(f));
+        self.on_focus_change.push(Arc::new(Box::new(f)));
     }
 
     /// Registers a callback invoked when focus trapping state changes.
@@ -178,7 +177,7 @@ impl FocusManager {
     where
         F: Fn(bool) + Send + Sync + 'static,
     {
-        self.on_trap_change.push(Arc::new(f));
+        self.on_trap_change.push(Arc::new(Box::new(f)));
     }
 
     fn notify_focus_change(&self, new: WidgetId, old: Option<WidgetId>) {

@@ -4,7 +4,6 @@
 //! focus management, and event routing.
 
 use crate::compositor::Plane;
-use crate::framework::hitzone::HitZone;
 use crate::input::event::{KeyEvent, MouseEventKind};
 use ratatui::layout::Rect;
 
@@ -19,6 +18,7 @@ impl Default for WidgetId {
 }
 
 impl WidgetId {
+    /// Creates a new `WidgetId` with the given numeric value.
     pub fn new(id: usize) -> Self {
         Self(id)
     }
@@ -42,7 +42,11 @@ pub trait Widget {
 
     /// Handles a keyboard event.
     /// Returns `true` if the event was consumed, `false` if it should bubble.
-    fn handle_key(&mut self, key: KeyEvent) -> bool {
+fn handle_key(&mut self, _key: KeyEvent) -> bool {
+        false
+    }
+
+    fn handle_mouse(&mut self, _kind: MouseEventKind, _col: u16, _row: u16) -> bool {
         false
     }
 
