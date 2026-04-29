@@ -1,9 +1,8 @@
 # Project State
 
 ## Current Focus
-Refactor example code to simplify bounds calculation and clean unused imports
+Upgrade dracon-terminal-engine and related dependencies to version 26.0.1, updating Cargo.lock
 
 ## Completed
-- [x] Remove saturating subtraction in display_text iteration bounds calculation
-- [x] Remove unused HitZone import from framework_demo example
-- [x] Rename selected index variable to underscore prefix indicating it is unused
+- [x] Upgrade dracon-terminal-engine to v26.0.1
+- [x] Synchronize Cargo.lock with updated dependency versions
