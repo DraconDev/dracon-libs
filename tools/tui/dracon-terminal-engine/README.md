@@ -128,10 +128,11 @@ std::thread::sleep(std::time::Duration::from_secs(2));
 ## Examples
 
 ```bash
-cargo run --example basic_raw    # minimal Terminal usage
-cargo run --example framework_demo  # App + List + Breadcrumbs + SplitPane + Hud
-cargo run --example god_mode     # Ratatui + compositor overlay
-cargo run --example input_debug # SGR mouse + keyboard parsing
+cargo run --example basic_raw             # minimal Terminal usage
+cargo run --example framework_demo        # App + List + Breadcrumbs + SplitPane + Hud
+cargo run --example framework_file_manager # File browser with List + Breadcrumbs + SplitPane
+cargo run --example god_mode              # Ratatui + compositor overlay
+cargo run --example input_debug           # SGR mouse + keyboard parsing
 ```
 
 ## Version

@@ -1,9 +1,8 @@
-#Project State
+# Project State
 
 ## Current Focus
-Update framework_demo example to use owned String types for breadcrumb data following refactored API changes
+Added a new `framework_file_manager` example to showcase the file‑manager UI.
 
 ## Completed
-- [x] Refactor example code to use `String` instead of string literals for breadcrumb items, making example code more explicit and avoiding implicit conversions
-- [x] Adjust string creation to be more verbose in example, improving clarity for developers reading the demonstration
-- [x] Maintain functional equivalence while updating string handling patterns to match latest API implementation
+- [x] Inserted the `framework_file_manager` command into the README example list
+- [x] Updated the README formatting to include the new command and its description
