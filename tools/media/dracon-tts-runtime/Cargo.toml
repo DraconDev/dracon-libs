@@ -2,7 +2,10 @@
 name = "dracon-tts-runtime"
 version.workspace = true
 edition.workspace = true
-description = "Text-to-Speech implementations (Kitten, Kokoro) using ONNX runtime"
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+description.workspace = true
 
 [features]
 default = ["kitten", "kokoro"]
