@@ -1,8 +1,10 @@
 # Project State
 
 ## Current Focus
-feat(tests): add unit tests for compositor, plane, color, styles, and related functionality
+Added explicit sizing to compositor tests and introduced new List widget unit tests.
 
 ## Completed
-- [x] Add new test suite `tools/tui/dracon-terminal-engine/tests/compositor_test.rs` containing 14 comprehensive tests covering Plane creation, positioning, Z‑index, cell initialization, char placement, clearing, Color variants, Styles composition, and Compositor operations
-- [x] Update dependency metadata in `Cargo.lock` (binary revision reflecting updated crate resolutions)
+- [x] Updated `test_compositor_new` to instantiate `Compositor` with width 80 and height 24 and assert the size.
+- [x] Updated `test_compositor_add_plane` to use a sized compositor and verify plane addition.
+- [x] Updated `test_compositor_plane_ordering` to use a sized compositor.
+- [x] Added `widget_test.rs` containing unit tests for `List` (new, render, selected index, theme, visible count).

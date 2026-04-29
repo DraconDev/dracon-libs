@@ -103,14 +103,14 @@ fn test_styles_combined() {
 
 #[test]
 fn test_compositor_new() {
-    let comp = Compositor::new();
-    assert_eq!(comp.size(), (0, 0));
+    let comp = Compositor::new(80, 24);
+    assert_eq!(comp.size(), (80, 24));
     assert!(comp.planes.is_empty());
 }
 
 #[test]
 fn test_compositor_add_plane() {
-    let mut comp = Compositor::new();
+    let mut comp = Compositor::new(80, 24);
     let plane = Plane::new(1, 80, 24);
     comp.add_plane(plane);
     assert_eq!(comp.planes.len(), 1);
@@ -118,7 +118,7 @@ fn test_compositor_add_plane() {
 
 #[test]
 fn test_compositor_plane_ordering() {
-    let mut comp = Compositor::new();
+    let mut comp = Compositor::new(80, 24);
     let low = Plane::new(1, 10, 10);
     let high = Plane::new(2, 10, 10);
     comp.add_plane(high);
