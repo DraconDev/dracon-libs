@@ -1,8 +1,10 @@
 # Project State
 
 ## Current Focus
-Upgrade dependencies via Cargo.lock regeneration
+enhance cursor positioning using Unicode width calculation and simplify text rendering
 
 ## Completed
-- [x] Upgrade dracon-terminal-engine and related dependencies to version 26
-- [x] Bump Cargo.lock dependencies
+- [x] added import of `unicode_width::UnicodeWidthStr`
+- [x] replaced cursor drawing logic with visual offset calculation based on Unicode widths
+- [x] removed scrolling logic and associated comments
+- [x] simplified cursor position computation and style application

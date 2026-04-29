@@ -1,3 +1,5 @@
+use unicode_width::UnicodeWidthStr;
+
 use crate::input::event::{Event, KeyCode, KeyEventKind, KeyModifiers};
 use ratatui::buffer::Buffer;
 use ratatui::layout::Rect;
@@ -249,19 +251,9 @@ impl Widget for &TextInput {
 
         buf.set_string(area.x, area.y, display_text, style);
 
-        // Draw Cursor
-        // Only if focused/active? Assuming this widget is only rendered when active or we rely on caller.
-        // We'll draw cursor if it's within bounds.
-        // If text exceeds width, we should scroll. Implementing basic scrolling:
-
-        let cursor_x = area.x + self.cursor_position as u16;
-
-        // Simple horizontal scrolling logic (viewport follows cursor)
-        // This is complex for a stateless render if we don't store "scroll_offset".
-        // For simplicity, let's assume we render from the start, or we need to add `scroll_offset` to state.
-
-        // To keep it simple for now: No scrolling, just clamp cursor.
-        if cursor_x < area.x + area.width {
+        // Compute visual column: sum of unicode widths of chars before cursor
+        let visual_offset = self.value.chars().take(self.cursor_position).map(|c| c.width().unwrap_or(1)).sum::<usize>();
+        let cursor_x = area.x + visual_offset as u16;
             if let Some(cell) = buf.cell_mut((cursor_x, area.y)) {
                 cell.set_style(self.cursor_style);
                 if self.cursor_position < self.value.len() {
