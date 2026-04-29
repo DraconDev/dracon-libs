@@ -79,6 +79,7 @@ impl MenuBar {
             entries: Vec::new(),
             active_entry: None,
             theme: Theme::default(),
+            last_area_width: Cell::new(80),
         }
     }
 
