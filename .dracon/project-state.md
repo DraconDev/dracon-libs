@@ -1,14 +1,12 @@
 # Project State
 
 ## Current Focus
-refactor(context-menu): simplify ContextMenu widget by removing submenu support, adopting owned String labels, dynamic height calculation, and index-based hit zones
+Add framework_demo example for dracon-terminal-engine to demonstrate core UI widgets and system monitoring integration
 
 ## Completed
-- [x] Remove unused Color import from context_menu compositor imports
-- [x] Drop Submenu variant from ContextAction enum
-- [x] Change ContextMenu items to use owned String labels instead of &'static str references
-- [x] Remove stored height field from ContextMenu, compute height dynamically as item count
-- [x] Update render_at to return HitZone<usize> tracking item indices instead of HitZone<ContextAction>
-- [x] Simplify rendering loop by removing per-action Separator handling logic
-- [x] Simplify handle_click to use direct index lookup for selected items
-- [x] Update Cargo.lock with dependency lockfile changes
+- [x] Add new example showcasing dracon-terminal-engine framework usage with multiple widgets
+- [x] Implement horizontal 30/70 split layout via SplitPane widget
+- [x] Render List widget with sample navigation items on left pane, Breadcrumbs with HitZones on right pane
+- [x] Integrate SystemMonitor to display real-time CPU, memory, swap, uptime, and disk usage stats
+- [x] Add Hud-based CPU utilization gauge to example interface
+- [x] Configure example with dark theme and 30 FPS target frame rate
