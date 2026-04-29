@@ -100,7 +100,7 @@ impl crate::framework::widget::Widget for Checkbox {
     fn handle_key(&mut self, key: crate::input::event::KeyEvent) -> bool {
         use crate::input::event::KeyCode;
         match key.code {
-            KeyCode::Enter | KeyCode::Space => {
+            KeyCode::Enter => {
                 self.toggle();
                 if let Some(ref mut cb) = self.on_change {
                     cb(self.checked);

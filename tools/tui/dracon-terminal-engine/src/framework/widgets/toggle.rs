@@ -4,7 +4,7 @@
 
 use unicode_width::UnicodeWidthStr;
 
-use crate::compositor::{Cell, Plane, Styles};
+use crate::compositor::{Cell, Color, Plane, Styles};
 use crate::framework::theme::Theme;
 use crate::framework::widget::WidgetId;
 use ratatui::layout::Rect;
@@ -92,7 +92,7 @@ impl crate::framework::widget::Widget for Toggle {
     fn handle_key(&mut self, key: crate::input::event::KeyEvent) -> bool {
         use crate::input::event::KeyCode;
         match key.code {
-            KeyCode::Enter | KeyCode::Space => {
+            KeyCode::Enter => {
                 self.toggle();
                 if let Some(ref mut cb) = self.on_change {
                     cb(self.state);

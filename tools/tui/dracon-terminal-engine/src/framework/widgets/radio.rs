@@ -79,7 +79,14 @@ impl crate::framework::widget::Widget for Radio {
         for (i, c) in full_text.chars().take(width).enumerate() {
             let idx = (start_y as u16 * plane.width + (start_x as u16 + i as u16)) as usize;
             if idx < plane.cells.len() {
-                plane.cells[idx] = Cell::new(c, Styles::default().with_fg(fg).with_bg(self.theme.bg));
+                plane.cells[idx] = Cell {
+                        char: c,
+                        fg,
+                        bg: self.theme.bg,
+                        style: Styles::empty(),
+                        transparent: false,
+                        skip: false,
+                    };
             }
         }
 
@@ -89,7 +96,7 @@ impl crate::framework::widget::Widget for Radio {
     fn handle_key(&mut self, key: crate::input::event::KeyEvent) -> bool {
         use crate::input::event::KeyCode;
         match key.code {
-            KeyCode::Enter | KeyCode::Space => {
+            KeyCode::Enter => {
                 if !self.selected {
                     self.selected = true;
                     if let Some(ref mut cb) = self.on_change {
