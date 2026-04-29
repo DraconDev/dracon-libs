@@ -1,7 +1,11 @@
 # Project State
 
 ## Current Focus
-Remove unused `#[allow(dead_code)]` attribute from `draw_ratatui_line` function in the compositor engine, indicating the function is now in active use.
+Add a full‑featured Table widget with sortable columns, selection callbacks, theme support, and interaction hooks.
 
 ## Completed
-- [x] Remove dead_code annotation from `draw_ratatui_line` in compositor engine (the function is now used)
+- [x] Implemented `Table<T>` struct with columns, rows, selection, sorting, offset, theme, and on_select/on_sort callbacks.
+- [x] Added column header rendering with highlighted sort column and centered labels.
+- [x] Integrated row rendering with selection highlighting and HitZone generation for event handling.
+- [x] Exposed the new `Table` widget via `pub use table::Table` in the widgets module.
+- [x] Updated the module registry to include the new `table` module and remove obsolete `modal` duplicate declarations.
