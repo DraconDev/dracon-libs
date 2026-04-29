@@ -49,47 +49,7 @@ pub fn guess_icon_mode() -> IconMode {
     IconMode::ASCII
 }
 
-/// Returns true if the current terminal supports the Kitty Graphics Protocol.
-///
-/// Only certain terminals (Kitty, WezTerm, Ghostty) support this protocol.
-/// Others like Konsole, gnome-terminal, and Alacritty do NOT.
-pub fn supports_kitty_graphics() -> bool {
-    let term = std::env::var("TERM").unwrap_or_default().to_lowercase();
-    let term_program = std::env::var("TERM_PROGRAM")
-        .unwrap_or_default()
-        .to_lowercase();
-
-    // Kitty sets TERM=xterm-kitty
-    if term.contains("kitty") {
-        return true;
-    }
-
-    // WezTerm sets TERM_PROGRAM=WezTerm
-    if term_program.contains("wezterm") {
-        return true;
-    }
-
-    // Ghostty sets TERM_PROGRAM=ghostty (when it matures)
-    if term_program.contains("ghostty") {
-        return true;
-    }
-
-    // Check for the KITTY_WINDOW_ID env var (definitive proof)
-    if std::env::var("KITTY_WINDOW_ID").is_ok() {
-        return true;
-    }
-
-    false
-}
-
-#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
-pub enum FileColumn {
-    Name,
-    Size,
-    Modified,
-    Created,
-    Permissions,
-}
+/// Guesses the appropriate icon rendering mode based on terminal environment variables.
 
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct SelectionState {

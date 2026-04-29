@@ -132,7 +132,7 @@ impl SystemAgent {
 
     pub async fn get_system_info(
         &self,
-    ) -> std::result::Result<String, Box<dyn std::error::Error + Send + Sync>> {
+    ) -> anyhow::Result<String> {
         let mut info = String::new();
         if let Ok(os) = tokio::fs::read_to_string("/etc/os-release").await {
             if let Some(name) = os.lines().find(|l| l.starts_with("PRETTY_NAME=")) {
@@ -149,7 +149,7 @@ impl SystemAgent {
         &self,
         command: &str,
         args: &[String],
-    ) -> std::result::Result<String, Box<dyn std::error::Error + Send + Sync>> {
+    ) -> anyhow::Result<String> {
         let output = Command::new(command).args(args).output().await?;
         Ok(String::from_utf8_lossy(&output.stdout).to_string())
     }
@@ -157,7 +157,7 @@ impl SystemAgent {
     pub async fn list_processes(
         &self,
         filter: Option<String>,
-    ) -> std::result::Result<String, Box<dyn std::error::Error + Send + Sync>> {
+    ) -> anyhow::Result<String> {
         let _ = filter;
         tokio::task::spawn_blocking(
             move || -> std::result::Result<String, Box<dyn std::error::Error + Send + Sync>> {
@@ -184,7 +184,7 @@ impl SystemAgent {
     pub async fn read_config(
         &self,
         name: &str,
-    ) -> std::result::Result<String, Box<dyn std::error::Error + Send + Sync>> {
+    ) -> anyhow::Result<String> {
         if name == "home.nix" {
             let path = self.home_nix_path.as_ref().ok_or("home.nix not found")?;
             Ok(tokio::fs::read_to_string(path).await?)
@@ -209,7 +209,7 @@ impl SystemAgent {
 
     pub async fn apply_config(
         &self,
-    ) -> std::result::Result<String, Box<dyn std::error::Error + Send + Sync>> {
+    ) -> anyhow::Result<String> {
         let output = Command::new("home-manager").arg("switch").output().await?;
         Ok(String::from_utf8_lossy(&output.stdout).to_string())
     }
@@ -217,7 +217,7 @@ impl SystemAgent {
     pub async fn install_package(
         &self,
         name: &str,
-    ) -> std::result::Result<String, Box<dyn std::error::Error + Send + Sync>> {
+    ) -> anyhow::Result<String> {
         let output = Command::new("nix")
             .args(["profile", "install", &format!("nixpkgs#{}", name)])
             .output()
