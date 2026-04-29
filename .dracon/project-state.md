@@ -1,11 +1,8 @@
 # Project State
 
 ## Current Focus
-Added Sixel image rendering support with a new `SixelRenderer` widget and related tests.
+Add integration tests for core UI widgets and update dependency lock file
 
 ## Completed
-- [x] Added `pub mod sixel;` to `framework/mod.rs` to expose the new sixel module.
-- [x] Implemented `SixelImage` struct and basic utilities in the new `sixel.rs` file.
-- [x] Implemented `SixelRenderer` widget that renders sixel‑encoded images using ratatui.
-- [x] Updated the animation test to check for the presence of a value (`is_some()`) rather than exact equality.
-- [x] Integrated necessary imports and widget traits for the sixel functionality.
+- [x] Updated Cargo.lock to newer dependency versions
+- [x] Added comprehensive widget integration test suite in tools/tui/dracon-terminal-engine/tests/phase1_widget_test.rs
