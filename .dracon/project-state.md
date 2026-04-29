@@ -1,10 +1,15 @@
 # Project State
 
 ## Current Focus
-Expose a configurable tick hook with interval control and internal tick counting for the terminal engine.
+Introduced UI resize handling and expanded input event enums to model terminal resize, key events, and modifiers.
 
 ## Completed
-- [x] Refactored `on_tick` registration to use `RefCell` and return the modified `App` instance.
-- [x] Added `tick_interval` method to configure tick frequency in milliseconds.
-- [x] Implemented internal tick timing (`last_tick_time`, `tick_interval`) and tick counting (`tick_count`).
-- [x] Integrated tick callback execution into the main loop, invoking it when the interval has elapsed.
+- [x ] Added `UiResize` struct to store terminal width and height.
+- [x ] Added `UiEvent::Resize` variant to signal terminal resizing.
+- [x ] Extended `Event` enum with `Resize(u16, u16)` variant.
+- [x ] Created `KeyEvent` struct containing code, modifiers, and event kind.
+- [x ] Defined `KeyEventKind` enum for press, repeat, and release semantics.
+- [x ] Added exhaustive `KeyCode` enum covering common keys and characters.
+- [x ] Added `MediaKeyCode` enum for media playback controls.
+- [x ] Added `ModifierKeyCode` enum for modifier keys.
+- [x ] Implemented `KeyModifiers` bitflags for active modifier keys.
