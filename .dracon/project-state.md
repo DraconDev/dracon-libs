@@ -1,8 +1,7 @@
 # Project State
 
 ## Current Focus
-Analyze modified source files to understand the structural and functional updates in the dracon terminal editor.
+Bump dracon-terminal-engine dependency to version 26.0.0
 
 ## Completed
-- [ ] Addressed implementation inconsistency in cursor mapping and source tracking logic.
-- [ ] Refactored navigation-related helper methods for cleaner code.
+- [x] Updated Cargo.lock to reference dracon-terminal-engine v26.0.0
