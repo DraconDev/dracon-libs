@@ -1,8 +1,8 @@
 # Project State
 
 ## Current Focus
-Adds a Tokio‑based async input reader that spawns a task to read stdin and invoke a callback for each input event.
+feat(async): add async reader spawning with graceful shutdown via guard
 
 ## Completed
-- [x] Add comment documenting the purpose of AsyncInputReader
-- [x] Define AsyncInputReader struct with a spawn method that starts the async reader task
+- [x] Introduce `spawn_with_shutdown` method that spawns the async reader task and returns a handle plus a guard.
+- [x] Add `ShutdownGuard` struct with a `shutdown` method that drops the internal channel to terminate the task.
