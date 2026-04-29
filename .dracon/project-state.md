@@ -1,9 +1,9 @@
 # Project State
 
 ## Current Focus
-Synchronized dependencies in `dracon-system` crate after recent security and feature additions
+Synchronized dependencies across core crates after recent security updates
 
 ## Completed
-- [x] Updated `dracon-system` crate dependencies
-- [x] Synchronized `Cargo.lock` with latest dependency versions
-```
+- [x] Updated `dracon-files` crate dependencies to align with security patches
+- [x] Synchronized `dracon-system` crate dependencies with recent security updates
+- [x] Refreshed `dracon-terminal-engine` crate dependencies to maintain consistency
