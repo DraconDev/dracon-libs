@@ -1,10 +1,12 @@
 # Project State
 
 ## Current Focus
-Simplify the Table widget by removing its internal sorting configuration and related styling logic.
+Use Unicode width to calculate display‑limited string lengths in breadcrumbs, modal, and tabbar widgets.
 
 ## Completed
-- [x] Removed the `on_sort` method and its associated callback field from the `Table` implementation.
-- [x] Simplified row mapping to directly create `TableRow { data }` without allocating empty cells.
-- [x] Eliminated conditional styling that highlighted the sort column, now always applying `theme.fg` and `Styles::empty`.
-- [x] Updated `Cargo.lock` to reflect the latest dependency version changes.
+- [x] Added `unicode_width::UnicodeWidthStr` import to `breadcrumbs.rs`.
+- [x] Replaced `title.len()` with `title.width()` and applied `saturating_sub` in Modal title length calculation.
+- [x] Replaced `label.len()` with `label.width()` and applied `saturating_sub` for button label length in Modal.
+- [x] Added `unicode_width::UnicodeWidthStr` import to `modal.rs`.
+- [x] Added `unicode_width::UnicodeWidthStr` import to `tabbar.rs`.
+- [x] Replaced `tab.len()` with `tab.width()` and applied `saturating_sub` for label length in TabBar.

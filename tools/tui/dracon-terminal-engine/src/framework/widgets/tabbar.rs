@@ -1,6 +1,6 @@
 //! Tab bar widget.
 
-use crate::compositor::{Cell, Plane, Styles};
+use unicode_width::UnicodeWidthStr;
 use crate::framework::hitzone::HitZone;
 use crate::framework::theme::Theme;
 use ratatui::layout::Rect;
@@ -71,7 +71,7 @@ impl TabBar {
                 }
             }
 
-            let label_len = tab.len().min(tab_width as usize - 2);
+            let label_len = tab.width().min((tab_width as usize).saturating_sub(2));
             let start_col = if tab_width > 2 { 1 } else { 0 };
             for (j, ch) in tab.chars().take(label_len).enumerate() {
                 let idx = (start_col + j) as usize;

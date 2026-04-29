@@ -1,5 +1,7 @@
 //! Breadcrumb navigation widget.
 
+use unicode_width::UnicodeWidthStr;
+
 use crate::compositor::{Plane, Styles};
 use crate::framework::hitzone::HitZone;
 use crate::framework::theme::Theme;
