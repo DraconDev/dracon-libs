@@ -161,5 +161,12 @@ impl SpeechToText for ParakeetStt {
 
 impl TimestampedTranscription for ParakeetStt {}
 
+// SAFETY: ParakeetStt is Send because the Parakeet model is wrapped in Arc<Mutex<Parakeet>>,
+// which provides shared ownership and interior mutability. All access is gated by the Mutex,
+// ensuring synchronized access from any thread.
+//
+// SAFETY: ParakeetStt is Sync because Parakeet operations are behind Arc<Mutex<Parakeet>>.
+// The Mutex ensures only one thread accesses the model at a time, and the model itself
+// is thread-safe for concurrent reads via its internal synchronization.
 unsafe impl Send for ParakeetStt {}
 unsafe impl Sync for ParakeetStt {}

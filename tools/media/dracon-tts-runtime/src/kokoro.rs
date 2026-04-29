@@ -1,4 +1,5 @@
 use crate::contracts::{Gender, TextToSpeech, VoiceInfo, VoiceProvider};
+use anyhow::Context;
 use ort::session::Session;
 use rodio::{OutputStream, Sink, Source};
 use std::collections::HashMap;
@@ -122,11 +123,11 @@ impl KokoroTts {
         Self::new_with_voice(model_path, voices_dir, DEFAULT_VOICE).await
     }
 
-    pub async fn new_with_voice(model_path: &str, voices_dir: &str, voice: &str) -> Self {
-        println!("Initializing Kokoro TTS...");
-
-        let (stream, handle) = OutputStream::try_default().expect("Failed to init audio output");
-        let sink = Arc::new(Sink::try_new(&handle).expect("Failed to create audio sink"));
+    pub async fn new_with_voice(model_path: &str, voices_dir: &str, voice: &str) -> anyhow::Result<Self> {
+        let (stream, handle) = OutputStream::try_default()
+            .context("failed to initialize audio output")?;
+        let sink = Arc::new(Sink::try_new(&handle)
+            .context("failed to create audio sink")?);
         let sink_volume = std::env::var("REMI_TTS_SINK_VOLUME")
             .ok()
             .and_then(|v| v.parse::<f32>().ok())
@@ -135,60 +136,36 @@ impl KokoroTts {
         sink.set_volume(sink_volume);
         sink.play();
         std::mem::forget(stream);
-        println!("[Kokoro] Sink volume: {:.2}", sink_volume);
+
         let output_channels = if std::env::var_os("REMI_TTS_FORCE_STEREO").is_some() {
             2
         } else {
             1
         };
-        if output_channels == 2 {
-            println!("[Kokoro] Output mode: forced stereo (L/R duplicated)");
-        }
 
         let queue_debug = std::env::var_os("REMI_TTS_QUEUE_DEBUG").is_some();
-        if queue_debug {
-            println!("[Kokoro] Queue debug enabled");
-        }
 
         let chunk_dump_dir = std::env::var("REMI_TTS_DUMP_CHUNKS_DIR")
             .ok()
             .map(PathBuf::from);
-        if let Some(dir) = &chunk_dump_dir {
-            if let Err(e) = std::fs::create_dir_all(dir) {
-                eprintln!(
-                    "[Kokoro] Failed to create chunk dump dir {}: {}",
-                    dir.display(),
-                    e
-                );
-            } else {
-                println!("[Kokoro] Dumping processed chunks to {}", dir.display());
-            }
-        }
 
         let session = if std::path::Path::new(model_path).exists() {
-            println!("Loading Kokoro model from: {}", model_path);
             match Session::builder() {
                 Ok(builder) => match builder
                     .with_intra_threads(4)
                     .and_then(|b| b.commit_from_file(model_path))
                 {
-                    Ok(s) => {
-                        println!("✓ Kokoro ONNX session created");
-                        Some(Arc::new(Mutex::new(s)))
-                    }
+                    Ok(s) => Some(Arc::new(Mutex::new(s))),
                     Err(e) => {
-                        eprintln!("✗ Failed to load Kokoro ONNX: {}", e);
-                        None
+                        return Err(anyhow::anyhow!("failed to load Kokoro ONNX model: {}", e));
                     }
                 },
                 Err(e) => {
-                    eprintln!("✗ Failed to create session builder: {}", e);
-                    None
+                    return Err(anyhow::anyhow!("failed to create session builder: {}", e));
                 }
             }
         } else {
-            eprintln!("Kokoro model not found at: {}", model_path);
-            None
+            return Err(anyhow::anyhow!("Kokoro model not found at: {}", model_path));
         };
 
         let voices = Self::load_voices_from_dir(voices_dir);
@@ -198,10 +175,6 @@ impl KokoroTts {
         let current_voice = if voices.contains_key(resolved_voice) {
             resolved_voice.to_string()
         } else {
-            eprintln!(
-                "[Kokoro] Voice '{}' not found, using first available",
-                resolved_voice
-            );
             voices
                 .keys()
                 .next()
@@ -209,19 +182,7 @@ impl KokoroTts {
                 .unwrap_or_else(|| DEFAULT_VOICE.to_string())
         };
 
-        println!(
-            "[Kokoro] Using voice: {} ({})",
-            current_voice,
-            voice_info(&current_voice).1
-        );
-
-        if !voices.is_empty() {
-            println!("✓ Loaded {} Kokoro voices", voices.len());
-        } else {
-            eprintln!("✗ No Kokoro voices found in: {}", voices_dir);
-        }
-
-        Self {
+        Ok(Self {
             sink,
             speaking: Arc::new(AtomicBool::new(false)),
             active_playbacks: Arc::new(AtomicUsize::new(0)),
@@ -233,7 +194,7 @@ impl KokoroTts {
             output_channels,
             queue_debug,
             chunk_dump_dir,
-        }
+        })
     }
 
     fn load_voices_from_dir(dir: &str) -> HashMap<String, Vec<f32>> {
@@ -297,28 +258,22 @@ impl KokoroTts {
         Ok(data)
     }
 
-    pub fn set_voice(&self, voice: &str) -> bool {
+    pub fn set_voice(&self, voice: &str) -> anyhow::Result<bool> {
         let resolved = resolve_voice(voice);
         if self.voices.contains_key(resolved) {
-            let mut current = self.current_voice.lock().expect("mutex poisoned");
+            let mut current = self.current_voice.lock()
+                .map_err(|e| anyhow::anyhow!("mutex poisoned: {}", e))?;
             *current = resolved.to_string();
-            println!(
-                "[Kokoro] Voice changed to: {} ({})",
-                resolved,
-                voice_info(resolved).1
-            );
-            true
+            Ok(true)
         } else {
-            eprintln!(
-                "[Kokoro] Voice not found: {}. Available: {:?}",
-                voice, self.voice_names
-            );
-            false
+            Ok(false)
         }
     }
 
-    pub fn get_voice(&self) -> String {
-        self.current_voice.lock().expect("mutex poisoned").clone()
+    pub fn get_voice(&self) -> anyhow::Result<String> {
+        self.current_voice.lock()
+            .map_err(|e| anyhow::anyhow!("mutex poisoned: {}", e))
+            .map(|guard| guard.clone())
     }
 
     fn begin_playback(&self) {

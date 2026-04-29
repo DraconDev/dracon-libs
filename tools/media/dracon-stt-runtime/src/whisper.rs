@@ -52,6 +52,10 @@ impl WhisperStt {
             .map_err(anyhow::Error::msg)
             .context("failed to load tokenizer")?;
 
+        // SAFETY: from_mmaped_safetensors reads binary weight files and maps them into memory.
+        // The mmap is read-only and dropped immediately after VarBuilder construction, so there
+        // is no risk of aliased mutation. The caller guarantees weights_filename is a valid
+        // safetensors file compatible with the model definition.
         let vb = unsafe {
             candle_nn::VarBuilder::from_mmaped_safetensors(
                 &[weights_filename],
