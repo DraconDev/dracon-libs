@@ -42,11 +42,7 @@ pub trait Widget {
 
     /// Handles a keyboard event.
     /// Returns `true` if the event was consumed, `false` if it should bubble.
-fn handle_key(&mut self, _key: KeyEvent) -> bool {
-        false
-    }
-
-    fn handle_mouse(&mut self, _kind: MouseEventKind, _col: u16, _row: u16) -> bool {
+    fn handle_key(&mut self, _key: KeyEvent) -> bool {
         false
     }
 
