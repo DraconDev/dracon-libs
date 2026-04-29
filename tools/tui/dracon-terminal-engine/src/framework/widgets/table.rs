@@ -58,10 +58,7 @@ impl<T: Clone + ToString> Table<T> {
     {
         self.rows = rows
             .into_iter()
-            .map(|data| {
-                let cells = vec![];
-                TableRow { data, cells }
-            })
+            .map(|data| TableRow { data })
             .collect();
         self
     }
@@ -72,15 +69,6 @@ impl<T: Clone + ToString> Table<T> {
         F: FnMut(&T) + 'static,
     {
         self.on_select = Some(Box::new(f));
-        self
-    }
-
-    /// Registers a callback for sorting rows by comparing two items.
-    pub fn on_sort<F>(mut self, f: F) -> Self
-    where
-        F: FnMut(&T, &T) -> std::cmp::Ordering + 'static,
-    {
-        self.on_sort = Some(Box::new(f));
         self
     }
 
@@ -159,16 +147,8 @@ impl<T: Clone + ToString> Table<T> {
                 let idx = start as usize + j;
                 if idx < plane.cells.len() {
                     plane.cells[idx].char = ch;
-                    plane.cells[idx].fg = if self.sort_col == Some(i) {
-                        self.theme.accent
-                    } else {
-                        self.theme.fg
-                    };
-                    plane.cells[idx].style = if self.sort_col == Some(i) {
-                        Styles::BOLD
-                    } else {
-                        Styles::empty()
-                    };
+                    plane.cells[idx].fg = self.theme.fg;
+                    plane.cells[idx].style = Styles::empty();
                 }
             }
 
