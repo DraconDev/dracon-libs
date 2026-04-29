@@ -3,11 +3,13 @@
 //! A compact widget showing the currently selected item with a dropdown.
 
 use unicode_width::UnicodeWidthStr;
+
 use crate::compositor::{Cell, Plane, Styles};
 use crate::framework::theme::Theme;
 use crate::framework::widget::WidgetId;
 use ratatui::layout::Rect;
 
+/// A dropdown select widget for choosing from a list of options.
 pub struct Select {
     id: WidgetId,
     options: Vec<String>,
@@ -18,6 +20,7 @@ pub struct Select {
 }
 
 impl Select {
+    /// Creates a new select dropdown with the given ID.
     pub fn new(id: WidgetId) -> Self {
         Self {
             id,
@@ -29,25 +32,30 @@ impl Select {
         }
     }
 
+    /// Sets the list of options in the dropdown.
     pub fn with_options(mut self, options: Vec<String>) -> Self {
         self.options = options;
         self
     }
 
+    /// Sets the theme for this widget.
     pub fn with_theme(mut self, theme: Theme) -> Self {
         self.theme = theme;
         self
     }
 
+    /// Registers a callback when the selection changes.
     pub fn on_change(mut self, f: impl FnMut(&str) + 'static) -> Self {
         self.on_change = Some(Box::new(f));
         self
     }
 
+    /// Returns the index of the currently selected option.
     pub fn selected_index(&self) -> usize {
         self.selected
     }
 
+    /// Returns the label of the currently selected option, if any.
     pub fn selected_label(&self) -> Option<&str> {
         self.options.get(self.selected).map(|s| s.as_str())
     }

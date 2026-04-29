@@ -9,12 +9,17 @@ use crate::framework::theme::Theme;
 use crate::framework::widget::WidgetId;
 use ratatui::layout::Rect;
 
+/// A single field within a form with a label, value, and optional error.
 pub struct FormField {
+    /// The label text displayed before the input.
     pub label: String,
+    /// The current value of the field.
     pub value: String,
+    /// An optional error message shown below the field.
     pub error: Option<String>,
 }
 
+/// A form widget that displays a vertical list of labeled input fields.
 pub struct Form {
     id: WidgetId,
     fields: Vec<FormField>,
@@ -23,6 +28,7 @@ pub struct Form {
 }
 
 impl Form {
+    /// Creates a new form with the given ID.
     pub fn new(id: WidgetId) -> Self {
         Self {
             id,
@@ -32,6 +38,7 @@ impl Form {
         }
     }
 
+    /// Adds a new field with the given label and returns self for chaining.
     pub fn add_field(mut self, label: &str) -> Self {
         self.fields.push(FormField {
             label: label.to_string(),
@@ -41,17 +48,20 @@ impl Form {
         self
     }
 
+    /// Sets the theme for this widget.
     pub fn with_theme(mut self, theme: Theme) -> Self {
         self.theme = theme;
         self
     }
 
+    /// Sets the value of a field by index.
     pub fn set_field_value(&mut self, index: usize, value: &str) {
         if let Some(ref mut field) = self.fields.get_mut(index) {
             field.value = value.to_string();
         }
     }
 
+    /// Sets an error message on a field by index.
     pub fn set_field_error(&mut self, index: usize, error: &str) {
         if let Some(ref mut field) = self.fields.get_mut(index) {
             field.error = Some(error.to_string());
