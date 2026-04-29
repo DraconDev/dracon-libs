@@ -42,26 +42,33 @@ impl crate::framework::widget::Widget for ProgressBar {
     }
 
     fn render(&self, area: Rect) -> Plane {
-        let width = area.width.max(4) as usize;
-        let height = area.height.max(1) as usize;
-        let mut plane = Plane::new(width, height);
+        let mut plane = Plane::new(0, area.width, area.height);
+        plane.z_index = 10;
+
+        let width = plane.cells.len() / plane.height as usize;
+        let height = plane.height as usize;
 
         let fill_width = (self.progress * width as f32).round() as usize;
         let fill_width = fill_width.min(width.saturating_sub(2)).max(1);
 
         for x in 1..fill_width + 1 {
-            plane.set_cell(
-                x as i32,
-                (height / 2) as i32,
-                Cell::new(' ', Styles::default().with_bg(self.theme.primary_fg)),
-            );
+            let idx = ((height / 2) as u16 * plane.width + x as u16) as usize;
+            if idx < plane.cells.len() {
+                plane.cells[idx] = Cell::new(' ', Styles::default().with_bg(self.theme.primary_fg));
+            }
         }
 
         let left_bracket = Cell::new('[', Styles::default().with_fg(self.theme.fg));
         let right_bracket = Cell::new(']', Styles::default().with_fg(self.theme.fg));
 
-        plane.set_cell(0, (height / 2) as i32, left_bracket);
-        plane.set_cell((width - 1) as i32, (height / 2) as i32, right_bracket);
+        let left_idx = ((height / 2) as u16 * plane.width) as usize;
+        let right_idx = ((height / 2) as u16 * plane.width + (width - 1) as u16) as usize;
+        if left_idx < plane.cells.len() {
+            plane.cells[left_idx] = left_bracket;
+        }
+        if right_idx < plane.cells.len() {
+            plane.cells[right_idx] = right_bracket;
+        }
 
         plane
     }
