@@ -1,9 +1,7 @@
 # Project State
 
 ## Current Focus
-Dynamically calculate tab width using the provided widget width instead of a fixed 80.
+Restrict quick path for ASCII handling to 7-bit printable characters by adding a byte < 128 check.
 
 ## Completed
-- [x] Added `width: u16` parameter to `handle_mouse` method signature
-- [x] Replaced `80u16` with `width` when computing `tab_width`
-- [x] Used the computed `tab_width` to determine tab index based on column position
+- [x] Added `byte < 128` condition to limit ASCII processing to 7-bit printable characters.

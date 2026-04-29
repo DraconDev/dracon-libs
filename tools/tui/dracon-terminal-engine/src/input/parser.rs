@@ -65,8 +65,8 @@ impl Parser {
                 return None;
             }
             ParserState::Normal => {
-                // Quick path for ASCII only if buffer empty
-                if self.buffer.is_empty() && byte >= 0x20 && byte != 0x7F {
+                // Quick path for ASCII printable only (7-bit clean)
+                if self.buffer.is_empty() && byte < 128 && byte >= 0x20 && byte != 0x7F {
                     return Some(Event::Key(KeyEvent {
                         code: KeyCode::Char(byte as char),
                         modifiers: KeyModifiers::empty(),
