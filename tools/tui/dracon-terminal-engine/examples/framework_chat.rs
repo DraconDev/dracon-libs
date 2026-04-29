@@ -97,7 +97,7 @@ fn main() -> std::io::Result<()> {
                 x += 1;
             }
 
-            let mut text_color = Color::Rgb(200, 200, 200);
+            let text_color = Color::Rgb(200, 200, 200);
             if input_text.is_empty() {
                 text_color = Color::Rgb(100, 100, 100);
             }
