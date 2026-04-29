@@ -1,7 +1,6 @@
 # Project State
-
-## Current Focus
-One line: The code refactors event handling logic for unified interaction management.
+##Current Focus
+Implement a tab bar widget for UI navigation with mouse and keyboard interactions
 
 ## Completed
-- [x] Refactored input_event processing pipeline
+- [x] Added tab bar component (`TabBar`) to handle interactive tab switching via click/keyboard events with customizable styling
