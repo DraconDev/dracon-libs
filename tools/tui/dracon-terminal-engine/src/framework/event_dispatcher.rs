@@ -131,7 +131,7 @@ mod tests {
         fm.register(WidgetId::new(1), true);
         fm.register(WidgetId::new(2), true);
 
-        let mut dispatcher = EventDispatcher::with_focus(&mut fm);
+        let mut dispatcher = EventDispatcher::with_focus(std::sync::Mutex::new(fm));
 
         let key = KeyEvent {
             code: crate::input::event::KeyCode::Tab,
