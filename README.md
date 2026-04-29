@@ -5,7 +5,7 @@ Vertical Rust libraries — a collection of reusable tools and runtimes for AI, 
 ## What's here
 
 ```
-dracon-libs (workspace root, version 13.6.0)
+dracon-libs (workspace root, version 29.1.0)
 ├── tools/
 │   ├── sync/dracon-git              # Git operations (libgit2 + CLI fallback)
 │   ├── tui/dracon-terminal-engine  # Terminal compositor with z-index layers
@@ -136,6 +136,34 @@ cargo fmt --all -- --check
 - Public APIs must be documented; `#![warn(missing_docs)]` is enabled on all library crates
 - Add `#[should_panic]` tests for error paths
 - Integration tests live in `tests/` directories (not inline `#[cfg(test)]` modules)
+
+## Breaking Changes (v29.0.0+)
+
+### P1 Reliability — Result-Based APIs
+
+All methods that can fail now return `Result` types instead of panicking on error:
+
+- **`TextToSpeech::speak()`** and **`TextToSpeech::stop()`** now return `TtsResult<()>` (previously `()`)
+- **`VoiceProvider::set_voice()`** now returns `TtsResult<bool>` (previously `bool`)
+- **`VoiceProvider::current_voice()`** now returns `TtsResult<VoiceInfo>` (previously `VoiceInfo`)
+- **`GenericOpenAIAdapter::new_with_auth()`** now returns `anyhow::Result<Self>` (previously `Self`)
+- **`ParakeetStt::new()`** now returns `anyhow::Result<Self>` (previously `Self`)
+- **`KittenTTS::new_with_voice()`** and **`KokoroTts::new_with_voice()`** constructors now return `Result`
+- **`KittenTTS::set_voice()`**, **`KittenTTS::get_voice()`**, **`KokoroTts::set_voice()`**, **`KokoroTts::get_voice()`** now return `Result`
+
+Updated callers must handle `Result` types:
+
+```rust
+// Before
+tts.speak("hello");
+
+// After
+tts.speak("hello")?;
+```
+
+### P0 Security — `run_command()` now requires explicit approval
+
+`SystemAgent::run_command()` is marked `unsafe` and requires callers to first call `approve_command()` to whitelist the specific command. See `dracon-system/README.md` for details.
 
 ## License
 
