@@ -102,7 +102,7 @@ impl crate::framework::widget::Widget for SearchInput {
         }
     }
 
-    fn handle_mouse(&mut self, kind: crate::input::event::MouseEventKind, col: u16, row: u16) -> bool {
+    fn handle_mouse(&mut self, _kind: crate::input::event::MouseEventKind, col: u16, _row: u16) -> bool {
         if col < self.query.len() as u16 {
             self.cursor_pos = col as usize;
             true
