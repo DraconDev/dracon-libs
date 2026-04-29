@@ -1,6 +1,8 @@
 //! Tab bar widget.
 
 use unicode_width::UnicodeWidthStr;
+
+use crate::compositor::{Cell, Plane, Styles};
 use crate::framework::hitzone::HitZone;
 use crate::framework::theme::Theme;
 use ratatui::layout::Rect;
