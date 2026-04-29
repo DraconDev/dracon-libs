@@ -1815,15 +1815,9 @@ impl Widget for &TextEditor {
                         })
                         .collect();
                 } else {
-                    // INCREMENTAL: Only highlight from start_line to end
-                    // Actually, syntect highlight_line maintains state. To do it right we need to store state per line.
-                    // For now, let's just re-highlight everything if anything changed, BUT
-                    // only if the cache size changed or we are forced.
-
-                    // PERFORMANCE SHORTCUT: If we are just typing on one line, and it's not a filtered view,
-                    // we can try to just re-highlight the entire file but it's still fast enough if we don't do it 60fps.
-                    // The REAL lag usually comes from syntect being called too often.
-
+                    // syntect's HighlightLines maintains state per file;
+                    // to truly do incremental we'd need per-line state machine.
+                    // Full re-highlight is acceptable for typical usage.
                     let h_lines = highlight_code(&content_string, &self.language);
                     *cache = h_lines
                         .into_iter()
