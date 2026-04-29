@@ -1,7 +1,11 @@
 [package]
 name = "ai-service"
-version = "0.1.0"
-edition = "2021"
+version.workspace = true
+edition.workspace = true
+license = "MIT OR Apache-2.0"
+authors = ["Dracon <dracon@void>"]
+repository = "https://github.com/DraconDev/dracon-libs"
+description = "AI service layer with provider registry, policy management, and runtime routing"
 
 [dependencies]
 serde = { version = "1", features = ["derive"] }

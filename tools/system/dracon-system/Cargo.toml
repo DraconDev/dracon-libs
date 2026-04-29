@@ -1,6 +1,10 @@
 [package]
 name = "dracon-system"
-version = "12.0.0"
+version.workspace = true
+license = "MIT OR Apache-2.0"
+authors = ["Dracon <dracon@void>"]
+repository = "https://github.com/DraconDev/dracon-libs"
+description = "System diagnostics, SSH remote execution, and notification adapters"
 edition.workspace = true
 description = "System diagnostics and remote execution capability adapters"
 
