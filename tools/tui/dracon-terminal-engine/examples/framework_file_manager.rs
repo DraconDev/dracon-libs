@@ -44,12 +44,9 @@ fn main() -> std::io::Result<()> {
     let theme = Theme::dark();
 
     let current_dir = std::env::current_dir().unwrap_or_else(|_| PathBuf::from("."));
-    let crumbs: Vec<&str> = current_dir
+    let crumbs: Vec<String> = current_dir
         .components()
-        .map(|c| {
-            let s = c.as_os_str().to_string_lossy().into_owned();
-            Box::leak(s.into_boxed_str())
-        })
+        .map(|c| c.as_os_str().to_string_lossy().into_owned())
         .collect();
 
     App::new()?
@@ -91,7 +88,7 @@ fn main() -> std::io::Result<()> {
             };
 
             print(&mut info_plane, "INFORMATION", Color::Rgb(0, 255, 136));
-            print(&mut info_plane, &format!("Items: {}", entries.len()), Color::Rgb(180, 180, 180));
+            print(&mut info_plane, &format!("Items: {}", list.len()), Color::Rgb(180, 180, 180));
 
             if let Some(entry) = list.get_selected() {
                 print(&mut info_plane, &format!("Name: {}", entry.name), Color::Rgb(255, 255, 255));

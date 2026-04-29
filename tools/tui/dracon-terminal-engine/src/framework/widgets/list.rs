@@ -57,6 +57,10 @@ impl<T: Clone + ToString> List<T> {
         self.items.get(self.selected)
     }
 
+    pub fn len(&self) -> usize {
+        self.items.len()
+    }
+
     pub fn scroll_state(&self) -> ScrollState {
         ScrollState {
             offset: self.offset,
