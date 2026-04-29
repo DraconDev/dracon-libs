@@ -156,7 +156,7 @@ impl<T: Clone + 'static> DragManager<T> {
     }
 }
 
-impl<T: Clone> Default for DragManager<T> {
+impl<T: Clone + 'static> Default for DragManager<T> {
     fn default() -> Self {
         Self::new()
     }
