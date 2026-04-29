@@ -1,16 +1,12 @@
 # Project State
 
 ## Current Focus
-Add configurable builder methods to `SplitPane` widget for orientation inference, ratio, divider character, min size, and interactive resize handling.
+Implement interactive breadcrumb navigation, HUD overlay, and tab bar widgets with configurable builders and click handling.
 
 ## Completed
-- [x] Added `Orientation` enum with `Horizontal` and `Vertical` variants.
-- [x] Added `SplitPane::new` for default 50/50 split.
-- [x] Added `SplitPane::from_rect` to infer orientation from rect dimensions.
-- [x] Added `ratio(...)` method to set split ratio with clamping.
-- [x] Added `with_divider(char)` method to configure divider character.
-- [x] Added `with_min_size(u16)` method to set minimum pane size.
-- [x] Added `split(&self, Rect)` -> `(Rect, Rect)` to compute pane rectangles.
-- [x] Added `divider_rect(&self, Rect)` -> `Rect` to get divider rectangle.
-- [x] Added `render_divider(&self, Rect)` -> `Plane` to render divider.
-- [x] Added `handle_resize(...)` method for interactive mouse drag resizing.
+- [x] Added `Breadcrumbs` struct with `from_path`, `with_theme`, `on_navigate`, and `render`/`handle_mouse` methods that return plane and hit zones for each segment
+- [x] Added `Hud` struct with size configuration, position/visibility helpers, `render_text`, and `render_gauge` for progress rendering
+- [x] Added `TabBar` struct with `with_theme`, `set_active`, and `render` method that returns plane and hit zones for each tab
+- [x] Introduced builder‑style methods for theme and configuration in all three widgets
+- [x] Implemented hit‑zone handling to enable click/tap interaction on breadcrumb segments and tabs
+- [x] Provided rendering APIs that integrate with the existing `Plane` and `HitZone` framework
