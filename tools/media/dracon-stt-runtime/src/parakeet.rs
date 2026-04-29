@@ -12,41 +12,33 @@ pub struct ParakeetStt {
 }
 
 impl ParakeetStt {
-    pub fn new(model_dir: &str) -> Self {
-        println!("Initializing STT (Parakeet CTC 0.6B)...");
-
+    pub fn new(model_dir: &str) -> anyhow::Result<Self> {
         let model_path = Path::new(model_dir);
         let model = if model_path.exists() {
             let onnx_path = model_path.join("onnx");
             if onnx_path.exists() {
-                println!("STT: Loading from: {:?}", onnx_path);
-                Parakeet::from_pretrained(&onnx_path, None).expect("Failed to load Parakeet model")
+                Parakeet::from_pretrained(&onnx_path, None)
+                    .map_err(|e| anyhow::anyhow!("Failed to load Parakeet model from {:?}: {}", onnx_path, e))?
             } else {
-                println!("STT: Loading from: {:?}", model_path);
-                Parakeet::from_pretrained(model_path, None).expect("Failed to load Parakeet model")
+                Parakeet::from_pretrained(model_path, None)
+                    .map_err(|e| anyhow::anyhow!("Failed to load Parakeet model from {:?}: {}", model_path, e))?
             }
         } else {
-            println!(
-                "STT: Model not found at {:?}, checking assets/models/",
-                model_path
-            );
             let fallback_path = Path::new("assets/models/parakeet-ctc/onnx");
             if fallback_path.exists() {
                 Parakeet::from_pretrained(fallback_path, None)
-                    .expect("Failed to load Parakeet model")
+                    .map_err(|e| anyhow::anyhow!("Failed to load Parakeet model from {:?}: {}", fallback_path, e))?
             } else {
-                panic!(
+                return Err(anyhow::anyhow!(
                     "Parakeet model not found. Download from: https://huggingface.co/onnx-community/parakeet-ctc-0.6b-ONNX"
-                );
+                ));
             }
         };
 
-        println!("STT: Parakeet model loaded successfully");
-
-        Self {
+        Ok(Self {
             model: Arc::new(Mutex::new(model)),
             ready: true,
-        }
+        })
     }
 
     pub async fn transcribe_audio(&self, audio_data: Vec<f32>) -> Option<String> {
