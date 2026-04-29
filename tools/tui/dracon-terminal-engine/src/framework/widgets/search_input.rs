@@ -95,8 +95,7 @@ impl crate::framework::widget::Widget for SearchInput {
             }
             KeyCode::Backspace => {
                 if self.cursor_pos > 0 && !self.query.is_empty() {
-                    let char_width = self.query.chars().nth(self.cursor_pos - 1).map(|c| c.width().unwrap_or(1)).unwrap_or(1);
-                    self.query.truncate(self.query.len().saturating_sub(char_width.max(1)));
+                    self.query.pop();
                     self.cursor_pos = self.cursor_pos.saturating_sub(1);
                 }
                 true
