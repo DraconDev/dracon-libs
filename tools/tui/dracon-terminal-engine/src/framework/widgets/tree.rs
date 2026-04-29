@@ -130,7 +130,7 @@ impl crate::framework::widget::Widget for Tree {
                 return;
             }
             let line = format!("{}{}", prefix, if node.expanded { "- " } else { "+ " });
-            let label_len = line.width().min(width);
+            let _label_len = line.width().min(width);
             for (i, c) in line.chars().take(width).enumerate() {
                 let idx = (*row as u16 * plane.width + i as u16) as usize;
                 if idx < plane.cells.len() {

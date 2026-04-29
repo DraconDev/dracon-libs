@@ -2,7 +2,7 @@
 //!
 //! A small overlay that appears near a widget with descriptive text.
 
-use crate::compositor::{Cell, Color, Plane, Styles};
+use crate::compositor::{Cell, Plane, Styles};
 use crate::framework::theme::Theme;
 use crate::framework::widget::WidgetId;
 use ratatui::layout::Rect;

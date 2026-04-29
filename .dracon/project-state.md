@@ -1,8 +1,11 @@
 # Project State
 
 ## Current Focus
-Fix menu bar entry width calculation and clean up unused import
+Add diagnostic overlay and widget hierarchy inspector for runtime debugging
 
 ## Completed
-- [x] Remove unused `Color` import from compositor
-- [x] Adjust entry width calculation to use u16 division and proper max(1) handling
+- [x] Added DebugOverlay widget for rendering diagnostic key‑value pairs.
+- [x] Added WidgetInspector widget for visualizing widget hierarchy.
+- [x] Refactored status_bar.rs to remove unused height variable.
+- [x] Cleaned unused import in tooltip.rs.
+- [x] Renamed unused label_len variable in tree.rs to _label_len.

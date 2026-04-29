@@ -77,7 +77,7 @@ impl crate::framework::widget::Widget for StatusBar {
         plane.z_index = 50;
 
         let width = plane.cells.len() / plane.height as usize;
-        let height = plane.height as usize;
+        let _height = plane.height as usize;
 
         if self.segments.is_empty() {
             let default_text = "Ready";
