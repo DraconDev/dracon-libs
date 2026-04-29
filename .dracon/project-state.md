@@ -1,8 +1,7 @@
 # Project State
 
 ## Current Focus
-Add derives to Styles bitflags for richer text styling
+Remove unused Rect creation in Breadcrumbs widget
 
 ## Completed
-- [x] Added Clone, Copy, Debug, PartialEq, Eq, Default derives to the Styles struct
-- [x] Enabled rich text styling via bitflags for terminal cells
+- [x] Remove unused Rect creation in breadcrumbs.rs

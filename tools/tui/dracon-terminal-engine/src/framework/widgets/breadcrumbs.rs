@@ -78,7 +78,6 @@ impl Breadcrumbs {
                 break;
             }
 
-            let rect = Rect::new(x, area.y, seg_width, self.height);
             zones.push(HitZone::new(i, x, area.y, seg_width, self.height));
 
             let fg = if is_last {
