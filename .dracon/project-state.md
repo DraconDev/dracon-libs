@@ -1,8 +1,7 @@
 # Project State
 
 ## Current Focus
-refactor: remove unused Cell import from modal and table widgets
+Synchronize Cargo.lock with updated dependency versions
 
 ## Completed
-- [x] removed `Cell` import from tools/tui/dracon-terminal-engine/src/framework/widgets/modal.rs
-- [x] removed `Cell` import from tools/tui/dracon-terminal-engine/src/framework/widgets/table.rs
+- [x] Updated Cargo.lock to reflect the latest dependency versions
