@@ -21,32 +21,25 @@ impl AsyncInputReader {
             let mut parser = crate::input::parser::Parser::new();
 
             loop {
-                let n = tokio::task::block_in_place(|| {
+                let bytes = tokio::task::block_in_place(|| {
                     use std::io::Read;
                     let mut stdin = std::io::stdin();
                     let mut buf = [0u8; 1024];
-                    stdin.read(&mut buf)
+                    stdin.read(&mut buf).map(|n| buf[..n].to_vec())
                 });
 
-                match n {
-                    Ok(0) | Err(_) => break,
-                    Ok(n) => {
-                        let n2 = tokio::task::block_in_place(|| {
-                            use std::io::Read;
-                            let mut stdin = std::io::stdin();
-                            let mut buf = [0u8; 1024];
-                            stdin.read(&mut buf)
-                        });
-                        match n2 {
-                            Ok(0) | Err(_) => break,
-                            Ok(n2) => {
-                                for i in 0..n2 {
-                                    if let Some(event) = parser.advance(i) {
-                                        callback(event);
-                                    }
-                                }
-                            }
-                        }
+                let bytes = match bytes {
+                    Ok(b) => b,
+                    Err(_) => break,
+                };
+
+                if bytes.is_empty() {
+                    break;
+                }
+
+                for &byte in &bytes {
+                    if let Some(event) = parser.advance(byte) {
+                        callback(event);
                     }
                 }
 
@@ -71,32 +64,25 @@ impl AsyncInputReader {
             let mut rx = rx;
 
             loop {
-                let n = tokio::task::block_in_place(|| {
+                let bytes = tokio::task::block_in_place(|| {
                     use std::io::Read;
                     let mut stdin = std::io::stdin();
                     let mut buf = [0u8; 1024];
-                    stdin.read(&mut buf)
+                    stdin.read(&mut buf).map(|n| buf[..n].to_vec())
                 });
 
-                match n {
-                    Ok(0) | Err(_) => break,
-                    Ok(n) => {
-                        let n2 = tokio::task::block_in_place(|| {
-                            use std::io::Read;
-                            let mut stdin = std::io::stdin();
-                            let mut buf = [0u8; 1024];
-                            stdin.read(&mut buf)
-                        });
-                        match n2 {
-                            Ok(0) | Err(_) => break,
-                            Ok(n2) => {
-                                for i in 0..n2 {
-                                    if let Some(event) = parser.advance(i) {
-                                        callback(event);
-                                    }
-                                }
-                            }
-                        }
+                let bytes = match bytes {
+                    Ok(b) => b,
+                    Err(_) => break,
+                };
+
+                if bytes.is_empty() {
+                    break;
+                }
+
+                for &byte in &bytes {
+                    if let Some(event) = parser.advance(byte) {
+                        callback(event);
                     }
                 }
 

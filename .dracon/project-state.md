@@ -1,8 +1,10 @@
 # Project State
 
 ## Current Focus
-Refactor async stdin parsing to remove duplicate reads and index-based event advancement for correctness.
+Refactor async stdin reading to eliminate duplicated reads and simplify byte handling.
 
 ## Completed
-- [x] Removed redundant buffer re-read inside the Ok(n) branch and use a single read per loop iteration.
-- [x] Replaced `iter().take(n)` with `0..n` indexing and advance the parser on actual byte values to fix event dispatch.
+- [x] Refactor async input reader to perform a single `read` per loop iteration, returning a `Vec<u8>` of the read bytes.
+- [x] Remove redundant second read and index‑based processing; now iterate directly over the byte slice.
+- [x] Add proper handling for read errors and empty buffers, breaking the loop when appropriate.
+- [x] Simplify parser invocation by passing each byte to `parser.advance` without manual indexing.
