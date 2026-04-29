@@ -1,8 +1,14 @@
 use crate::framework::hitzone::HitZone;
 use crate::framework::theme::Theme;
 use crate::compositor::{Cell, Color, Plane, Styles};
-use ratatui::layout::{Rect, Layout};
-use ratatui::widgets::Block;
+use ratatui::layout::Rect;
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ModalResult {
+    Confirm,
+    Cancel,
+    Custom(u8),
+}
 
 pub struct Modal<'a> {
     title: &'a str,
@@ -10,13 +16,6 @@ pub struct Modal<'a> {
     height: u16,
     theme: Theme,
     buttons: Vec<(&'a str, ModalResult)>,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum ModalResult {
-    Confirm,
-    Cancel,
-    Custom(u8),
 }
 
 impl<'a> Modal<'a> {
@@ -46,22 +45,24 @@ impl<'a> Modal<'a> {
         self
     }
 
-    pub fn render(&self, screen: Rect) -> (Plane, Vec<HitZone<'static, ModalResult>>) {
+    pub fn render(&self, screen: Rect) -> (Plane, Vec<HitZone<ModalResult>>) {
         let x = (screen.width.saturating_sub(self.width)) / 2;
         let y = (screen.height.saturating_sub(self.height)) / 2;
-        let rect = Rect::new(x, y, self.width, self.height);
 
         let mut plane = Plane::new(0, self.width, self.height);
+        plane.x = x;
+        plane.y = y;
+        plane.z_index = 100;
 
         for cell in &mut plane.cells {
             cell.bg = self.theme.bg;
             cell.fg = self.theme.fg;
         }
 
-        let border_char = |b: bool| if b { '─' } else { ' ' };
+        let border_char: char = '─';
         for col in 0..self.width {
             let idx = col as usize;
-            if idx < plane.cells.len() { plane.cells[idx].char = border_char(true); }
+            if idx < plane.cells.len() { plane.cells[idx].char = border_char; }
             let idx = ((self.height - 1) * self.width + col) as usize;
             if idx < plane.cells.len() { plane.cells[idx].char = '─'; }
         }
@@ -83,9 +84,9 @@ impl<'a> Modal<'a> {
             }
         }
 
-        let btn_width = 8u16;
+        let btn_width: u16 = 8;
         let total_btn_width = btn_width * self.buttons.len() as u16 + (self.buttons.len() as u16 - 1);
-        let btn_start = (self.width - total_btn_width) / 2;
+        let btn_start = (self.width.saturating_sub(total_btn_width)) / 2;
         let btn_y = self.height - 2;
 
         let mut zones = Vec::new();
@@ -96,7 +97,7 @@ impl<'a> Modal<'a> {
             let bg = self.theme.active_bg;
             let fg = self.theme.fg;
             for col in 0..btn_width {
-                let idx = (btn_y * self.width + bx + col) as usize;
+                let idx = ((btn_y * self.width) + bx as usize + col as usize) as usize;
                 if idx < plane.cells.len() {
                     plane.cells[idx].bg = bg;
                     plane.cells[idx].fg = fg;
@@ -107,51 +108,38 @@ impl<'a> Modal<'a> {
             let label_len = label.len().min(btn_width as usize - 2);
             let label_start = (btn_width as usize - label_len) / 2;
             for (j, ch) in label.chars().take(label_len).enumerate() {
-                let idx = (btn_y * self.width + bx + label_start as u16 + j) as usize;
+                let idx = ((btn_y * self.width + bx + label_start as u16 + j) as usize);
                 if idx < plane.cells.len() {
                     plane.cells[idx].char = ch;
                     plane.cells[idx].style = Styles::BOLD;
                 }
             }
 
-            let mut zone = HitZone::new(*result, btn_rect);
-            zone.on_click = Some(Box::new(move |_| {}));
-            zones.push(zone);
+            zones.push(HitZone::new(*result, bx, btn_y, btn_width, 1));
         }
-
-        plane.x = x;
-        plane.y = y;
 
         (plane, zones)
     }
 
-    pub fn handle_mouse(
-        &mut self,
-        kind: crate::input::event::MouseEventKind,
-        col: u16,
-        row: u16,
-        screen: Rect,
-    ) -> Option<ModalResult> {
+    pub fn handle_mouse(&mut self, kind: crate::input::event::MouseEventKind, col: u16, row: u16, screen: Rect) -> Option<ModalResult> {
         let x = (screen.width.saturating_sub(self.width)) / 2;
         let y = (screen.height.saturating_sub(self.height)) / 2;
 
-        let local_col = col.saturating_sub(x);
-        let local_row = row.saturating_sub(y);
-
-        if local_col >= self.width || local_row >= self.height {
+        if col < x || col >= x + self.width || row < y || row >= y + self.height {
             return None;
         }
 
-        let btn_width = 8u16;
+        let local_col = col - x;
+        let local_row = row - y;
+
+        let btn_width: u16 = 8;
         let total_btn_width = btn_width * self.buttons.len() as u16 + (self.buttons.len() as u16 - 1);
-        let btn_start = (self.width - total_btn_width) / 2;
+        let btn_start = (self.width.saturating_sub(total_btn_width)) / 2;
         let btn_y = self.height - 2;
 
         for (i, (_, result)) in self.buttons.iter().enumerate() {
             let bx = btn_start + (i as u16) * (btn_width + 1);
-            let in_btn = local_col >= bx
-                && local_col < bx + btn_width
-                && local_row == btn_y;
+            let in_btn = local_col >= bx && local_col < bx + btn_width && local_row == btn_y;
 
             if in_btn {
                 if let crate::input::event::MouseEventKind::Down(_) = kind {

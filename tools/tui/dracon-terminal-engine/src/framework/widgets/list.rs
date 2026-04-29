@@ -44,7 +44,7 @@ impl<T: Clone + ToString> List<T> {
         self
     }
 
-    pub fn on_select(mut self, f: impl FnMut(&T)) -> Self {
+    pub fn on_select(mut self, f: impl FnMut(&T) + 'static) -> Self {
         self.on_select = Some(Box::new(f));
         self
     }
