@@ -1,8 +1,8 @@
 # Project State
 
 ## Current Focus
-Upgrade dracon-terminal-engine and related dependencies to version 26.0.1, updating Cargo.lock
+Make `text_color` mutable and simplify index calculation in UI rendering.
 
 ## Completed
-- [x] Upgrade dracon-terminal-engine to v26.0.1
-- [x] Synchronize Cargo.lock with updated dependency versions
+- [x] Mark `text_color` as mutable to allow later modifications
+- [x] Remove redundant parentheses in index calculation for clarity
