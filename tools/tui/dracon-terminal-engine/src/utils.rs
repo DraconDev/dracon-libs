@@ -502,7 +502,9 @@ pub fn highlight_code<'a>(content: &'a str, extension: &str) -> Vec<Line<'a>> {
     let is_markdown = syntax.name.contains("Markdown");
 
     for line in LinesWithEndings::from(content) {
-        let ranges: Vec<(syntect::highlighting::Style, &str)> = h.highlight_line(line, ps).unwrap();
+        let Ok(ranges) = h.highlight_line(line, ps) else {
+            continue;
+        };
         let mut spans = Vec::new();
 
         for (style, text) in ranges {

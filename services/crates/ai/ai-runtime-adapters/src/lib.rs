@@ -1,7 +1,7 @@
 use std::time::Duration;
 
 use async_trait::async_trait;
-use dracon_ai_runtime_contracts::models::{ChatMessage, ChatRequest};
+use dracon_ai_runtime_contracts::models::ChatRequest;
 use dracon_ai_runtime_contracts::traits::AiProvider;
 
 pub struct GenericOpenAIAdapter {

@@ -80,8 +80,8 @@ impl TextEditor {
         if query.is_empty() && !self.filter_query.is_empty() {
             if self.cursor_row < self.filtered_indices.len() {
                 self.cursor_row = self.filtered_indices[self.cursor_row];
-            } else if !self.filtered_indices.is_empty() {
-                self.cursor_row = *self.filtered_indices.last().unwrap();
+            } else if let Some(&last) = self.filtered_indices.last() {
+                self.cursor_row = last;
             } else {
                 self.cursor_row = 0;
             }

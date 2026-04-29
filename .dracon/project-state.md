@@ -1,12 +1,10 @@
-# Project State
-This commit addresses code refactoring, dependency updates, and security enhancements across multiple Rust crates. Key actions include synchronizing dependencies, improving error handling, adding secure remote execution patterns, and expanding file and category management functionality.
+# Project State## Current Focus
+Refactor TUI widget cursor handling, improve error handling, and remove CI workflow
 
-## Modified Files Summary
-- **Cargo.toml**: Bin size increased, likely for added dependencies.
-- **ai-runtime-adapters/lib.rs**: Updated async TAI contracts for better async compatibility.
-- **dracon-tts-runtime/src/**: Modified spaCy integration and tokenization methods.
-- **kokoro.rs**: Introduced `speak-ng` for text-to-tokenization, enhanced phoneme processing.
-- **dracon-memory-runtime/src/db.rs**: Improved memory interaction with safer initialization.
-- **draconsystem/src/remote.rs**: Updated remote execution patterns for enhanced security.
-- **tools/**: Memory and system utilities were updated for better integration and security.
-- Added files: `.gitignore` updates, doc comments, and documentation sync improvements.
+## Completed
+- [x] Removed unused `ChatMessage` import from `services/crates/ai/ai-runtime-adapters/src/lib.rs`
+- [x] Deleted `.github/workflows/ci.yml` file
+- [x] Changed `pub mod system;` to `pub(crate) mod system;` in `tools/tui/dracon-terminal-engine/src/lib.rs`
+- [x] Added safe `Option` handling in `highlight_code` to prevent panics in `tools/tui/dracon-terminal-engine/src/utils.rs`
+- [x] Refactored cursor positioning logic in `editor.rs` to use `Option` instead of `unwrap`
+- [x] Updated `input.rs` to use `Option` for character iteration, preventing panics

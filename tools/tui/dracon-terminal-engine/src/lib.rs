@@ -5,7 +5,7 @@ pub mod core;
 pub mod input;
 pub mod integration;
 pub mod layout;
-pub mod system;
+pub(crate) mod system;
 
 pub mod utils;
 pub mod visuals;

@@ -32,6 +32,52 @@ dependencies = [
 ]
 
 [[package]]
+name = "ai-routing-runtime"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "async-trait",
+ "dracon-ai-contracts",
+ "dracon-ai-runtime-contracts",
+ "serde",
+]
+
+[[package]]
+name = "ai-runtime-adapters"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "async-trait",
+ "dracon-ai-runtime-contracts",
+ "reqwest",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "ai-runtime-config"
+version = "0.1.0"
+dependencies = [
+ "serde",
+]
+
+[[package]]
+name = "ai-service"
+version = "0.1.0"
+dependencies = [
+ "ai-routing-runtime",
+ "ai-runtime-adapters",
+ "anyhow",
+ "async-trait",
+ "dracon-ai-contracts",
+ "dracon-ai-runtime-contracts",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "tokio",
+]
+
+[[package]]
 name = "aligned"
 version = "0.4.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1164,6 +1210,24 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "75b325c5dbd37f80359721ad39aca5a29fb04c89279657cffdda8736d0c0b9d2"
 
 [[package]]
+name = "dracon-ai-contracts"
+version = "0.1.0"
+dependencies = [
+ "serde",
+]
+
+[[package]]
+name = "dracon-ai-runtime-contracts"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "async-trait",
+ "dracon-ai-contracts",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "dracon-files"
 version = "12.0.0"
 dependencies = [
@@ -1175,7 +1239,7 @@ dependencies = [
 
 [[package]]
 name = "dracon-git"
-version = "12.6.0"
+version = "13.0.0"
 dependencies = [
  "anyhow",
  "git2",
@@ -1186,8 +1250,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "dracon-memory-contracts"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "async-trait",
+ "serde",
+]
+
+[[package]]
 name = "dracon-memory-runtime"
-version = "12.6.0"
+version = "13.0.0"
 dependencies = [
  "anyhow",
  "chrono",
@@ -1202,7 +1275,7 @@ dependencies = [
 
 [[package]]
 name = "dracon-stt-runtime"
-version = "12.6.0"
+version = "13.0.0"
 dependencies = [
  "anyhow",
  "candle-core",
@@ -1255,7 +1328,7 @@ dependencies = [
 
 [[package]]
 name = "dracon-tts-runtime"
-version = "12.6.0"
+version = "13.0.0"
 dependencies = [
  "anyhow",
  "futures",

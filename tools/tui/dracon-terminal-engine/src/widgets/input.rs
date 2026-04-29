@@ -191,18 +191,16 @@ impl TextInput {
         }
         let mut i = self.cursor_position;
 
-        // Skip trailing whitespace
         while i > 0 {
-            let prev = self.value[..i].chars().next_back().unwrap();
+            let Some(prev) = self.value[..i].chars().next_back() else { break };
             if prev.is_whitespace() {
                 i -= prev.len_utf8();
             } else {
                 break;
             }
         }
-        // Skip the word
         while i > 0 {
-            let prev = self.value[..i].chars().next_back().unwrap();
+            let Some(prev) = self.value[..i].chars().next_back() else { break };
             if !prev.is_whitespace() {
                 i -= prev.len_utf8();
             } else {
@@ -223,18 +221,16 @@ impl TextInput {
         }
         let mut i = self.cursor_position;
 
-        // Skip trailing whitespace
         while i < self.value.len() {
-            let next = self.value[i..].chars().next().unwrap();
+            let Some(next) = self.value[i..].chars().next() else { break };
             if next.is_whitespace() {
                 i += next.len_utf8();
             } else {
                 break;
             }
         }
-        // Skip the word
         while i < self.value.len() {
-            let next = self.value[i..].chars().next().unwrap();
+            let Some(next) = self.value[i..].chars().next() else { break };
             if !next.is_whitespace() {
                 i += next.len_utf8();
             } else {
