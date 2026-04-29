@@ -132,6 +132,7 @@ impl RemoteFsContract for SshRemoteFsProvider {
 }
 
 impl RemoteExecContract for SshRemoteExecProvider {
+    #[allow(deprecated)]
     fn run_command(&self, connection: &RemoteConnection, command: &str) -> io::Result<String> {
         let bookmark = crate::contracts::RemoteBookmark {
             name: connection.name.clone(),
@@ -149,6 +150,57 @@ impl RemoteExecContract for SshRemoteExecProvider {
             .map_err(|e| io::Error::other(format!("open channel failed: {e}")))?;
         channel
             .exec(command)
+            .map_err(|e| io::Error::other(format!("exec failed: {e}")))?;
+
+        let mut stdout = String::new();
+        channel.read_to_string(&mut stdout)?;
+
+        let mut stderr = String::new();
+        if let Ok(err) = channel.stderr().read_to_string(&mut stderr)
+            && err > 0
+        {}
+
+        channel.wait_close().ok();
+        let status = channel.exit_status().unwrap_or(1);
+        if status == 0 {
+            Ok(stdout)
+        } else {
+            Err(io::Error::other(format!(
+                "remote command failed (exit {status}): {}",
+                stderr.trim()
+            )))
+        }
+    }
+
+    fn exec_program(
+        &self,
+        connection: &RemoteConnection,
+        program: &str,
+        args: &[&str],
+    ) -> io::Result<String> {
+        let bookmark = crate::contracts::RemoteBookmark {
+            name: connection.name.clone(),
+            host: connection.host.clone(),
+            user: connection.user.clone(),
+            port: connection.port,
+            key_path: connection.key_path.clone(),
+        };
+        let timeout = Duration::from_millis(12_000);
+        let (session, _) = connect_session(&bookmark, timeout)
+            .map_err(|e| io::Error::other(format!("remote connect failed: {e}")))?;
+
+        let cmd = if args.is_empty() {
+            program.to_string()
+        } else {
+            let args_str = args.join(" ");
+            format!("{program} {args_str}")
+        };
+
+        let mut channel = session
+            .channel_session()
+            .map_err(|e| io::Error::other(format!("open channel failed: {e}")))?;
+        channel
+            .exec(&cmd)
             .map_err(|e| io::Error::other(format!("exec failed: {e}")))?;
 
         let mut stdout = String::new();
