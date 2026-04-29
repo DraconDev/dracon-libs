@@ -1,7 +1,7 @@
 //! Demonstrates framework widgets working together.
 
 use std::time::Duration;
-use dracon_terminal_engine::framework::widget::WidgetId;
+use dracon_terminal_engine::framework::widget::{Widget, WidgetId};
 use dracon_terminal_engine::framework::widgets::{
     Checkbox, Form, ProgressBar, Radio, Slider, Spinner,
     SearchInput, Select, Toast, ToastKind, Toggle, Tooltip,
