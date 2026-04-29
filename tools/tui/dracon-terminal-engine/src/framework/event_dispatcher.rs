@@ -8,7 +8,6 @@ use crate::framework::focus::FocusManager;
 use crate::framework::hitzone::{HitZone, HitZoneGroup};
 use crate::framework::widget::WidgetId;
 use crate::input::event::{KeyEvent, KeyModifiers, MouseEventKind};
-use std::collections::HashMap;
 
 struct DispatchEntry {
     zone: HitZone<WidgetId>,
