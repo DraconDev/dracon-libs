@@ -1,10 +1,9 @@
 # Project State
 
 ## Current Focus
-Added stateful methods and theme callback to Checkbox widget; updated color usage in Radio and Spinner.
+Adds theme configuration and progress value management to the ProgressBar widget.
 
 ## Completed
-- [x] Exposed `with_theme`, `on_change`, `check`, `uncheck`, `toggle`, and `is_checked` methods on Checkbox
-- [x] Modified Radio to use `theme.accent` for selected state instead of `primary_fg`
-- [x] Modified Spinner to use `theme.accent` for spinner characters instead of `primary_fg`
-- [x] Introduced ProgressBar widget implementation.
+- [x] Added `with_theme` method to set the widget's theme.
+- [x] Added `set_progress` method to set and clamp progress value (0.0–1.0).
+- [x] Added `progress` method to retrieve the current progress value.

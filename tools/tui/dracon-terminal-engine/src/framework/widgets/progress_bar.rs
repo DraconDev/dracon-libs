@@ -15,6 +15,7 @@ pub struct ProgressBar {
 }
 
 impl ProgressBar {
+    /// Creates a new progress bar with the given id.
     pub fn new(id: WidgetId) -> Self {
         Self {
             id,
@@ -23,15 +24,18 @@ impl ProgressBar {
         }
     }
 
+    /// Sets the theme for this progress bar.
     pub fn with_theme(mut self, theme: Theme) -> Self {
         self.theme = theme;
         self
     }
 
+    /// Sets the progress value (0.0 to 1.0).
     pub fn set_progress(&mut self, value: f32) {
         self.progress = value.clamp(0.0, 1.0);
     }
 
+    /// Returns the current progress value.
     pub fn progress(&self) -> f32 {
         self.progress
     }
