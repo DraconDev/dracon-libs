@@ -61,9 +61,11 @@ impl crate::framework::widget::Widget for Checkbox {
     }
 
     fn render(&self, area: Rect) -> Plane {
-        let width = area.width.max(4) as usize;
-        let height = area.height.max(1) as usize;
-        let mut plane = Plane::new(width, height);
+        let mut plane = Plane::new(0, area.width, area.height);
+        plane.z_index = 10;
+
+        let width = plane.cells.len() / plane.height as usize;
+        let height = plane.height as usize;
 
         let check_str = if self.checked { "[x]" } else { "[ ]" };
         let full_text = format!("{} {}", check_str, self.label);
@@ -79,11 +81,10 @@ impl crate::framework::widget::Widget for Checkbox {
         };
 
         for (i, c) in full_text.chars().take(width).enumerate() {
-            plane.set_cell(
-                (start_x + i) as i32,
-                start_y as i32,
-                Cell::new(c, Styles::default().with_fg(fg).with_bg(self.theme.bg)),
-            );
+            let idx = (start_y as u16 * plane.width + (start_x as u16 + i as u16)) as usize;
+            if idx < plane.cells.len() {
+                plane.cells[idx] = Cell::new(c, Styles::default().with_fg(fg).with_bg(self.theme.bg));
+            }
         }
 
         plane

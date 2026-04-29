@@ -1,6 +1,6 @@
-//! Toggle switch widget.
+//! Radio button widget.
 //!
-//! A toggle switch is a two-state on/off control.
+//! A radio button for mutually exclusive selection within a group.
 
 use unicode_width::UnicodeWidthStr;
 
@@ -9,19 +9,19 @@ use crate::framework::theme::Theme;
 use crate::framework::widget::WidgetId;
 use ratatui::layout::Rect;
 
-pub struct Toggle {
+pub struct Radio {
     id: WidgetId,
-    state: bool,
+    selected: bool,
     label: String,
     theme: Theme,
     on_change: Option<Box<dyn FnMut(bool)>>,
 }
 
-impl Toggle {
+impl Radio {
     pub fn new(id: WidgetId, label: &str) -> Self {
         Self {
             id,
-            state: false,
+            selected: false,
             label: label.to_string(),
             theme: Theme::default(),
             on_change: None,
@@ -38,45 +38,48 @@ impl Toggle {
         self
     }
 
-    pub fn toggle(&mut self) {
-        self.state = !self.state;
+    pub fn select(&mut self) {
+        self.selected = true;
     }
 
-    pub fn is_on(&self) -> bool {
-        self.state
+    pub fn deselect(&mut self) {
+        self.selected = false;
+    }
+
+    pub fn is_selected(&self) -> bool {
+        self.selected
     }
 }
 
-impl crate::framework::widget::Widget for Toggle {
+impl crate::framework::widget::Widget for Radio {
     fn id(&self) -> WidgetId {
         self.id
     }
 
     fn render(&self, area: Rect) -> Plane {
-        let mut plane = Plane::new(0, area.width, area.height);
-        plane.z_index = 10;
+        let width = area.width.max(4) as usize;
+        let height = area.height.max(1) as usize;
+        let mut plane = Plane::new(width, height);
 
-        let width = plane.cells.len() / plane.height as usize;
-        let height = plane.height as usize;
-
-        let on_text = if self.state { "[*]" } else { "[ ]" };
-        let full_text = format!("{} {}", on_text, self.label);
+        let radio_str = if self.selected { "(o)" } else { "( )" };
+        let full_text = format!("{} {}", radio_str, self.label);
 
         let cell_width = full_text.width().min(width);
         let start_x = (width.saturating_sub(cell_width)) / 2;
         let start_y = height.saturating_sub(1) / 2;
 
-        let bg = if self.state {
-            self.theme.success_fg
+        let fg = if self.selected {
+            self.theme.primary_fg
         } else {
-            self.theme.inactive_fg
+            self.theme.fg
         };
 
         for (i, c) in full_text.chars().take(width).enumerate() {
-            let idx = (start_y as u16 * plane.width + (start_x as u16 + i as u16)) as usize;
-            if idx < plane.cells.len() {
-                plane.cells[idx] = Cell::new(c, Styles::default().with_bg(bg).with_fg(self.theme.fg));
-            }
+            plane.set_cell(
+                (start_x + i) as i32,
+                start_y as i32,
+                Cell::new(c, Styles::default().with_fg(fg).with_bg(self.theme.bg)),
+            );
         }
 
         plane
@@ -86,9 +89,11 @@ impl crate::framework::widget::Widget for Toggle {
         use crate::input::event::KeyCode;
         match key.code {
             KeyCode::Enter | KeyCode::Space => {
-                self.toggle();
-                if let Some(ref mut cb) = self.on_change {
-                    cb(self.state);
+                if !self.selected {
+                    self.selected = true;
+                    if let Some(ref mut cb) = self.on_change {
+                        cb(true);
+                    }
                 }
                 true
             }
