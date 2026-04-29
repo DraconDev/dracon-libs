@@ -22,7 +22,7 @@ members = [
 ]
 
 [workspace.package]
-version = "37.0.2"
+version = "37.1.0"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 authors = ["Dracon <dracon@void>"]

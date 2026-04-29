@@ -57,7 +57,7 @@ impl DragGhost {
     pub fn render(&self, x: u16, y: u16) -> Plane {
         let mut plane = Plane::new(9999, self.width, self.height);
         plane.set_z_index(9000);
-        plane.translate(x, y);
+        plane.set_absolute_position(x, y);
 
         let bg = Color::Ansi(236);
         let fg = Color::Ansi(250);
