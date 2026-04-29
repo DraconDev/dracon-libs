@@ -85,9 +85,8 @@ impl EventDispatcher {
     where
         F: FnMut(WidgetId, KeyEvent) -> bool,
     {
-        let fm = self.focus_manager.as_mut().map(|p| unsafe { &mut *p });
-
-        if let Some(fm) = fm {
+        if let Some(fm) = self.focus_manager.as_ref() {
+            let mut fm = fm.lock().unwrap();
             if key.code == crate::input::event::KeyCode::Tab {
                 if key.modifiers.contains(KeyModifiers::SHIFT) {
                     if let Some(id) = fm.tab_prev() {

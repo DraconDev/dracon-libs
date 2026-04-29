@@ -98,7 +98,7 @@ impl Layout {
         for (i, c) in self.constraints.iter().enumerate() {
             match c {
                 Constraint::Fixed(f) => sizes[i] = *f,
-                Constraint::Min(m) => sizes[i] = m.min(remaining),
+                Constraint::Min(m) => sizes[i] = (*m).min(remaining),
                 Constraint::Max(max) => {
                     if let Some(idx) = percentages.iter().position(|(j, _)| *j == i) {
                         let p = percentages[idx].1;
@@ -118,20 +118,21 @@ impl Layout {
         }
 
         let percentage_total: u16 = percentages.iter().map(|(_, p)| p).sum();
-        for (i, p) in percentages {
+        let pct_len = percentages.len();
+        for (i, p) in percentages.iter() {
             let size = if percentage_total > 0 {
                 (remaining as u32 * p as u32 / percentage_total as u32) as u16
             } else {
-                remaining.saturating_div(percentages.len() as u16)
+                remaining.saturating_div(pct_len as u16)
             };
-            sizes[i] = sizes[i].max(size);
+            sizes[*i] = sizes[*i].max(size);
         }
 
         let ratio_total: u32 = ratios.iter().map(|(_, n, _)| *n as u32).sum();
-        for (i, n, d) in ratios {
-            if d > 0 && ratio_total > 0 {
+        for (i, n, d) in ratios.iter() {
+            if *d > 0 && ratio_total > 0 {
                 let size = (remaining as u32 * n as u32 / ratio_total as u32) as u16;
-                sizes[i] = sizes[i].max(size);
+                sizes[*i] = sizes[*i].max(size);
             }
         }
 
