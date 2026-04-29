@@ -1,9 +1,9 @@
 # Project State
 
 ## Current Focus
-Add status bar widget with segment handling, transient toast notification system, and tooltip widget for hover information.
+feat(menu bar): introduce MenuBar widget with dropdown capabilities and module registration
 
 ## Completed
-- [x] Added `StatusBar` widget supporting customizable text segments, foreground/background colors, and theme integration via `add_segment` and `with_theme`.
-- [x] Added `Toast` widget implementing transient notifications with severity levels, configurable display duration, and automatic expiration checking via `is_expired`.
-- [x] Added `Tooltip` widget providing hover‑triggered text display with styling options.
+- [x] Added `tools/tui/dracon-terminal-engine/src/framework/widgets/menu_bar.rs` containing MenuBar, MenuEntry, and MenuItem definitions and rendering logic
+- [x] Modified `tools/tui/dracon-terminal-engine/src/framework/widgets/mod.rs` to export `menu_bar` (and `status_bar`) modules
+- [x] Updated `Cargo.lock` reflecting dependency changes
