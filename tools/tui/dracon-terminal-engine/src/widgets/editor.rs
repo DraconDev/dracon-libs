@@ -1842,11 +1842,8 @@ impl Widget for &TextEditor {
         }
 
         let mut screen_lines: Vec<(usize, Line)> = Vec::new();
-        let _cursor_screen_pos: Option<(u16, u16)> = None;
 
         for (line_idx, line) in highlighted.iter().enumerate() {
-            let _real_line_idx = self.get_real_line_idx(line_idx);
-
             if self.wrap {
                 let mut current_spans = Vec::new();
                 let mut current_width = 0;
@@ -1883,19 +1880,6 @@ impl Widget for &TextEditor {
 
                         let part = &text[..break_idx];
                         current_spans.push(Span::styled(part, span.style));
-
-                        // Check if cursor is in this part
-                        if line_idx == self.cursor_row {
-                            let line_ref = self.get_effective_line(line_idx);
-                            let _byte_offset = line_ref
-                                .char_indices()
-                                .filter(|(i, _)| *i < self.cursor_col)
-                                .map(|(_, c)| c.len_utf8())
-                                .sum::<usize>();
-                            // Cursor detection in wrapped lines is hard.
-                            // Simpler: if we just rendered the part containing self.cursor_col.
-                            // We need to know the byte offset of 'part' within 'line'.
-                        }
 
                         current_width += break_width;
                         text = &text[break_idx..];
@@ -2089,12 +2073,6 @@ impl Widget for &TextEditor {
                                 && (current_byte_offset + break_idx == line.width()
                                     || text.len() == break_idx)
                             {
-                                // Special case: cursor at end of line/segment
-                                // If it's the absolute end of the source line, or it's the end of a wrap segment but NOT the last segment?
-                                // Actually if it's the end of a segment that IS the end of the line.
-                                let _is_last_segment = text.len() == break_idx; // This span is done
-                                                                                // Wait, we need to know if there are MORE spans.
-                                                                                // Simplification: if cursor_col == line.len() and we are at the last segment of the last span.
                             }
                         }
 

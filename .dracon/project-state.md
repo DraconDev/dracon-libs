@@ -1,8 +1,10 @@
 # Project State
 
 ## Current Focus
-Cargo.toml file size increased due to updated dependencies.
+refactor(editor): remove unused cursor position tracking code in TextEditor widget
 
 ## Completed
-- [x] Update dependency versions in Cargo.toml
-- [x] Ensure updated dependencies resolve to version 828 matching current codebase needs
+- [x] removed unused `_cursor_screen_pos` variable that was never assigned or used
+- [x] removed unused `_real_line_idx` variable call in line iteration loop
+- [x] removed dead code block for cursor detection in wrapped lines (commented as "hard")
+- [x] removed unused `_is_last_segment` variable and related incomplete cursor logic in terminal engine editor widget
