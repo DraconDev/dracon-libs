@@ -1,6 +1,6 @@
 //! Modal dialog widget.
 
-use crate::compositor::{Cell, Plane, Styles};
+use crate::compositor::{Plane, Styles};
 use crate::framework::theme::Theme;
 use ratatui::layout::Rect;
 

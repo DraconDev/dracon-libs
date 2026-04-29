@@ -1,7 +1,8 @@
 # Project State
 
 ## Current Focus
-Remove unused `is_last` variable from Breadcrumbs widget rendering loop
+refactor: remove unused Cell import from modal and table widgets
 
 ## Completed
-- [x] Remove unused `is_last` variable from breadcrumbs rendering loop
+- [x] removed `Cell` import from tools/tui/dracon-terminal-engine/src/framework/widgets/modal.rs
+- [x] removed `Cell` import from tools/tui/dracon-terminal-engine/src/framework/widgets/table.rs
