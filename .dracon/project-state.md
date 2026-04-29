@@ -1,9 +1,14 @@
 # Project State
 
 ## Current Focus
-Refactor Tree widget's path handling to use an owned clone for safe traversal and toggle operations.
+Add SearchInput with theming and submit callback, and Tree widget with expand/collapse and selection callback.
 
 ## Completed
-- [x] Cloned and used an owned `path` variable in the Enter key handler to avoid borrowing issues
-- [x] Applied the same cloning in the Down key handler before calling `get_selected_node`
-- [x] Updated the Cargo.lock file with the new dependency resolutions (binary change)
+- [x] Introduced SearchInput struct with query handling and theming support
+- [x] Added on_submit callback registration for Enter key
+- [x] Implemented clear() and query() helper methods
+- [x] Refactored layout code by removing unused height variable
+- [x] Defined TreeNode with label, expanded flag, and children vector
+- [x] Added add_child method to dynamically attach child nodes
+- [x] Created Tree widget with root vector and theme configuration
+- [x] Implemented on_select callback for node selection events

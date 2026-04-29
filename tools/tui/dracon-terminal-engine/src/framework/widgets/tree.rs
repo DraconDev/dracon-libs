@@ -9,13 +9,18 @@ use crate::framework::theme::Theme;
 use crate::framework::widget::WidgetId;
 use ratatui::layout::Rect;
 
+/// A node in the tree hierarchy with a label and optional children.
 pub struct TreeNode {
+    /// The display label for this node.
     pub label: String,
+    /// Whether this node is expanded (children visible).
     pub expanded: bool,
+    /// Child nodes beneath this one.
     pub children: Vec<TreeNode>,
 }
 
 impl TreeNode {
+    /// Creates a new tree node with the given label.
     pub fn new(label: &str) -> Self {
         Self {
             label: label.to_string(),
@@ -24,11 +29,13 @@ impl TreeNode {
         }
     }
 
+    /// Adds a child node to this tree node.
     pub fn add_child(&mut self, child: TreeNode) {
         self.children.push(child);
     }
 }
 
+/// A widget that displays hierarchical data as a collapsible tree.
 pub struct Tree {
     id: WidgetId,
     root: Vec<TreeNode>,
@@ -38,6 +45,7 @@ pub struct Tree {
 }
 
 impl Tree {
+    /// Creates a new tree widget with the given ID.
     pub fn new(id: WidgetId) -> Self {
         Self {
             id,
@@ -48,16 +56,19 @@ impl Tree {
         }
     }
 
+    /// Sets the root nodes of the tree.
     pub fn with_root(mut self, root: Vec<TreeNode>) -> Self {
         self.root = root;
         self
     }
 
+    /// Sets the theme for this widget.
     pub fn with_theme(mut self, theme: Theme) -> Self {
         self.theme = theme;
         self
     }
 
+    /// Registers a callback when a node is selected.
     pub fn on_select(mut self, f: impl FnMut(&str) + 'static) -> Self {
         self.on_select = Some(Box::new(f));
         self
