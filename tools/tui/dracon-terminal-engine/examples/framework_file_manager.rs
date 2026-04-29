@@ -44,9 +44,12 @@ fn main() -> std::io::Result<()> {
     let theme = Theme::dark();
 
     let current_dir = std::env::current_dir().unwrap_or_else(|_| PathBuf::from("."));
-    let crumbs: Vec<String> = current_dir
+    let crumbs: Vec<&str> = current_dir
         .components()
-        .map(|c| c.as_os_str().to_string_lossy().into_owned())
+        .map(|c| {
+            let s = c.as_os_str().to_string_lossy().into_owned();
+            Box::leak(s.into_boxed_str())
+        })
         .collect();
 
     App::new()?
