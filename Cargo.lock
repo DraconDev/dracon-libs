@@ -1317,7 +1317,6 @@ dependencies = [
  "bitflags 2.11.0",
  "chrono",
  "libc",
- "log",
  "rand 0.8.5",
  "ratatui",
  "serde",
