@@ -1,9 +1,9 @@
 # Project State
 
 ## Current Focus
-Adjust breadcrumbs widget's hit‑zone calculation to accept external width parameter for dynamic sizing.
+adjust breadcrumbs hit‑zone calculation to use external width parameter
 
 ## Completed
-- [x] Modified `zones` method signature to include `width: u16`.
-- [x] Updated width computation to use `width.saturating_sub(x)` instead of a hard‑coded `80u16`.
-- [x] Maintained existing behavior while enabling responsive sizing based on caller‑provided width.
+- [x] Modified `Breadcrumbs::column` to accept a `width: u16` argument and pass it to `self.zones(width)`.
+- [x] Updated version comment in `src/lib.rs` from `v26.0.1` to `v26.0.2`.
+- [x] Regenerated `Cargo.lock` and `tools/tui/dracon-terminal-engine/Cargo.toml` to reflect the new version.
