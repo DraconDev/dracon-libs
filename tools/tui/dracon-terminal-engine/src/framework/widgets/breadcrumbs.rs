@@ -75,7 +75,7 @@ impl Breadcrumbs {
             let is_last = i == self.segments.len() - 1;
             let is_first = i == 0;
 
-            let seg_width = (segment.len() as u16 + 2).min(area.width.saturating_sub(x));
+            let seg_width = (segment.width() as u16 + 2).min(area.width.saturating_sub(x));
             if seg_width < 3 {
                 break;
             }

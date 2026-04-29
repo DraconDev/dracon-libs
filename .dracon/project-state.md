@@ -1,12 +1,8 @@
 # Project State
 
 ## Current Focus
-Use Unicode width to calculate display‑limited string lengths in breadcrumbs, modal, and tabbar widgets.
+Replace segment length‑based width calculation with actual segment width in the breadcrumbs widget
 
 ## Completed
-- [x] Added `unicode_width::UnicodeWidthStr` import to `breadcrumbs.rs`.
-- [x] Replaced `title.len()` with `title.width()` and applied `saturating_sub` in Modal title length calculation.
-- [x] Replaced `label.len()` with `label.width()` and applied `saturating_sub` for button label length in Modal.
-- [x] Added `unicode_width::UnicodeWidthStr` import to `modal.rs`.
-- [x] Added `unicode_width::UnicodeWidthStr` import to `tabbar.rs`.
-- [x] Replaced `tab.len()` with `tab.width()` and applied `saturating_sub` for label length in TabBar.
+- [x] Switch from `segment.len()` to `segment.width()` when computing `seg_width` in breadcrumbs
+- [x] Use the segment's rendered width to ensure accurate width limits and proper handling of wide characters
