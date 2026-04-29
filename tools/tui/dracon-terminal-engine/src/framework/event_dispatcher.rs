@@ -8,19 +8,17 @@ use crate::framework::focus::FocusManager;
 use crate::framework::hitzone::{HitZone, HitZoneGroup};
 use crate::framework::widget::WidgetId;
 use crate::input::event::{KeyEvent, KeyModifiers, MouseEventKind};
-use ratatui::layout::Rect;
 use std::collections::HashMap;
 
 struct DispatchEntry {
-    zone: HitZone,
-    widget_id: WidgetId,
+    zone: HitZone<WidgetId>,
     capture: bool,
 }
 
 pub struct EventDispatcher {
-    groups: Vec<HitZoneGroup>,
+    groups: Vec<HitZoneGroup<WidgetId>>,
     entries: Vec<DispatchEntry>,
-    focus_manager: Option<&'static mut FocusManager>,
+    focus_manager: Option<*mut FocusManager>,
 }
 
 impl Default for EventDispatcher {
@@ -38,73 +36,60 @@ impl EventDispatcher {
         }
     }
 
-    pub fn with_focus(fm: &'static mut FocusManager) -> Self {
+    pub fn with_focus(fm: &mut FocusManager) -> Self {
         Self {
             groups: Vec::new(),
             entries: Vec::new(),
-            focus_manager: Some(fm),
+            focus_manager: Some(fm as *mut FocusManager),
         }
     }
 
-    pub fn add_zone(&mut self, zone: HitZone, widget_id: WidgetId, capture: bool) {
-        self.entries.push(DispatchEntry {
-            zone,
-            widget_id,
-            capture,
-        });
+    pub fn add_zone(&mut self, zone: HitZone<WidgetId>, capture: bool) {
+        self.entries.push(DispatchEntry { zone, capture });
     }
 
     pub fn build_groups(&mut self) {
         self.groups.clear();
-        let mut capture_zones = HitZoneGroup::new("capture");
-        let mut bubble_zones = HitZoneGroup::new("bubble");
+        let mut capture_group = HitZoneGroup::new();
+        let mut bubble_group = HitZoneGroup::new();
 
         for entry in self.entries.drain(..) {
             if entry.capture {
-                capture_zones.add_zone(entry.zone, entry.widget_id);
+                capture_group.zones_mut().push(entry.zone);
             } else {
-                bubble_zones.add_zone(entry.zone, entry.widget_id);
+                bubble_group.zones_mut().push(entry.zone);
             }
         }
 
-        self.groups.push(capture_zones);
-        self.groups.push(bubble_zones);
+        self.groups.push(capture_group);
+        self.groups.push(bubble_group);
     }
 
     pub fn dispatch_mouse(
-        &self,
+        &mut self,
         kind: MouseEventKind,
         col: u16,
         row: u16,
-        handler: &mut dyn FnMut(WidgetId, MouseEventKind, u16, u16) -> bool,
+        modifiers: KeyModifiers,
+        handler: &mut dyn FnMut(WidgetId, MouseEventKind, u16, u16, KeyModifiers) -> bool,
     ) {
-        for group in &self.groups {
-            if group.handle_mouse(kind, col, row) {
-                return;
-            }
-        }
-
-        for group in &self.groups {
-            for (widget_id, zone) in group.zones() {
-                if zone.contains(col, row) {
-                    if handler(*widget_id, kind, col, row) {
-                        return;
-                    }
+        for group in self.groups.iter_mut() {
+            if let Some(id) = group.dispatch_mouse(kind, col, row, modifiers) {
+                if handler(id, kind, col, row, modifiers) {
+                    return;
                 }
             }
         }
     }
 
-    pub fn dispatch_key<F>(
-        &self,
-        key: KeyEvent,
-        handler: &mut F,
-    ) -> bool
+    pub fn dispatch_key<F>(&mut self, key: KeyEvent, handler: &mut F) -> bool
     where
         F: FnMut(WidgetId, KeyEvent) -> bool,
     {
-        if let Some(fm) = self.focus_manager {
-            if key.modifiers.contains(KeyModifiers::TAB) {
+        let fm = self.focus_manager.as_mut().map(|p| unsafe { &mut *p });
+
+        if let Some(fm) = fm {
+            if key.code == crate::input::event::KeyCode::Tab {
                 if key.modifiers.contains(KeyModifiers::SHIFT) {
                     if let Some(id) = fm.tab_prev() {
                         return handler(id, key);
@@ -117,8 +102,7 @@ impl EventDispatcher {
             }
 
             if let Some(focused) = fm.focused() {
-                handler(focused, key);
-                return true;
+                return handler(focused, key);
             }
         }
 
@@ -129,39 +113,26 @@ impl EventDispatcher {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::input::event::MouseButton;
 
-    fn make_zone(x: u16, y: u16, w: u16, h: u16, id: WidgetId) -> HitZone {
-        HitZone::new(
-            Rect::new(x, y, w, h),
-            id,
-            Box::new(|_, _, _| {}),
-            Box::new(|_| {}),
-            Box::new(|_| {}),
-        )
+    fn make_zone(x: u16, y: u16, w: u16, h: u16) -> HitZone<WidgetId> {
+        HitZone::new(WidgetId::new(1), x, y, w, h)
     }
 
     #[test]
-    fn test_dispatch_mouse_capture_first() {
-        let dispatcher = EventDispatcher::new();
-        let hit = dispatcher.dispatch_mouse(
-            MouseEventKind::Press(MouseButton::Left),
-            10,
-            5,
-            &mut |id, _, _, _| {
-                assert_eq!(id, WidgetId::new(1));
-                true
-            },
-        );
+    fn test_add_zone_and_build() {
+        let mut dispatcher = EventDispatcher::new();
+        let zone = make_zone(0, 0, 10, 10);
+        dispatcher.add_zone(zone, true);
+        dispatcher.build_groups();
     }
 
     #[test]
-    fn test_tab_navigation_triggers_focus() {
+    fn test_dispatch_key_tabs() {
         let mut fm = FocusManager::new();
         fm.register(WidgetId::new(1), true);
         fm.register(WidgetId::new(2), true);
 
-        let mut dispatcher = EventDispatcher::with_focus(std::ptr::addr_of_mut!(fm));
+        let mut dispatcher = EventDispatcher::with_focus(&mut fm);
 
         let key = KeyEvent {
             code: 9,
@@ -172,6 +143,7 @@ mod tests {
         let mut handled = false;
         dispatcher.dispatch_key(key, &mut |id, _| {
             handled = true;
+            assert_eq!(id, WidgetId::new(1));
             true
         });
 
@@ -179,10 +151,24 @@ mod tests {
     }
 
     #[test]
-    fn test_add_zone_and_build() {
+    fn test_dispatch_mouse_bubble() {
         let mut dispatcher = EventDispatcher::new();
-        let zone = make_zone(0, 0, 10, 10, WidgetId::new(1));
-        dispatcher.add_zone(zone, WidgetId::new(1), true);
+        let zone = make_zone(0, 0, 20, 10);
+        dispatcher.add_zone(zone, false);
         dispatcher.build_groups();
+
+        let mut hit_id = None;
+        dispatcher.dispatch_mouse(
+            MouseEventKind::Press(crate::input::event::MouseButton::Left),
+            5,
+            5,
+            KeyModifiers::empty(),
+            &mut |id, _, _, _, _| {
+                hit_id = Some(id);
+                true
+            },
+        );
+
+        assert_eq!(hit_id, Some(WidgetId::new(1)));
     }
 }
