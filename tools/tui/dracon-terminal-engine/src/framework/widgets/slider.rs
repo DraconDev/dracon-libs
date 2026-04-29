@@ -141,13 +141,14 @@ impl crate::framework::widget::Widget for Slider {
 
     fn handle_mouse(&mut self, kind: crate::input::event::MouseEventKind, col: u16, _row: u16) -> bool {
         match kind {
-            crate::input::event::MouseEventKind::Drag(_) => {
-                let width = 80u16;
+            crate::input::event::MouseEventKind::Down(_) | crate::input::event::MouseEventKind::Drag(_) => {
+                let width = self.last_area_width;
                 let track_width = width.saturating_sub(4);
                 let rel_x = col.saturating_sub(1);
                 if rel_x <= track_width {
-                    let ratio = rel_x as f32 / track_width as f32;
+                    let ratio = rel_x as f32 / track_width.max(1) as f32;
                     self.value = self.min + ratio * (self.max - self.min);
+                    self.value = self.value.clamp(self.min, self.max);
                     if let Some(ref mut cb) = self.on_change {
                         cb(self.value);
                     }
