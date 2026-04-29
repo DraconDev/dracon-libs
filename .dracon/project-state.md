@@ -1,16 +1,10 @@
 # Project State
 
 ## Current Focus
-Refactor Modal UI to drop lifetime parameters, simplify rendering and event handling, and tighten closure bounds.
+Fix rendering index calculations in Modal to correctly address border and button cells, simplifying arithmetic and removing unnecessary casts.
 
 ## Completed
-- [x] Added `'static` bound to the closure in `List::on_select` to enable storing boxed callbacks.
-- [x] Removed the duplicate `ModalResult` enum definition and unified it in a single location.
-- [x] Simplified `Modal::render` return type by eliminating the unused `'static` lifetime parameter.
-- [x] Replaced the functional border‑character logic with a constant character value.
-- [x] Removed the intermediate `Rect` calculation and set `Plane` position directly.
-- [x] Updated button cell indexing to use explicit usize casting for clarity.
-- [x] Replaced the custom `on_click` closure assignment with a direct `HitZone::new` push.
-- [x] Eliminated redundant `plane.x` and `plane.y` assignments after positioning.
-- [x] Streamlined mouse hit detection by dropping intermediate local coordinate variables.
-- [x] Declared `btn_width` with an explicit type annotation for consistency.
+- [x] Adjusted border‑right cell index from `row * self.width + self.width as usize - 1` to `(row * self.width + self.width - 1)` cast once
+- [x] Simplified background/foreground cell indexing for buttons, removing redundant `as usize` casts
+- [x] Updated label placement index calculation to use explicit usize arithmetic
+- [x] Maintained bounds checks while streamlining the code

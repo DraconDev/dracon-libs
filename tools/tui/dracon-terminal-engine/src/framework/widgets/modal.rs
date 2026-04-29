@@ -69,7 +69,7 @@ impl<'a> Modal<'a> {
         for row in 1..self.height.saturating_sub(1) {
             let idx = (row * self.width) as usize;
             if idx < plane.cells.len() { plane.cells[idx].char = '│'; }
-            let idx = (row * self.width + self.width as usize - 1) as usize;
+            let idx = ((row * self.width + self.width - 1) as usize);
             if idx < plane.cells.len() { plane.cells[idx].char = '│'; }
         }
 
@@ -97,21 +97,21 @@ impl<'a> Modal<'a> {
             let bg = self.theme.active_bg;
             let fg = self.theme.fg;
             for col in 0..btn_width {
-                let idx = ((btn_y * self.width) + bx as usize + col as usize) as usize;
-                if idx < plane.cells.len() {
-                    plane.cells[idx].bg = bg;
-                    plane.cells[idx].fg = fg;
-                    plane.cells[idx].char = ' ';
+                let col_idx = btn_y as usize * self.width as usize + bx as usize + col as usize;
+                if col_idx < plane.cells.len() {
+                    plane.cells[col_idx].bg = bg;
+                    plane.cells[col_idx].fg = fg;
+                    plane.cells[col_idx].char = ' ';
                 }
             }
 
             let label_len = label.len().min(btn_width as usize - 2);
             let label_start = (btn_width as usize - label_len) / 2;
             for (j, ch) in label.chars().take(label_len).enumerate() {
-                let idx = ((btn_y * self.width + bx + label_start as u16 + j) as usize);
-                if idx < plane.cells.len() {
-                    plane.cells[idx].char = ch;
-                    plane.cells[idx].style = Styles::BOLD;
+                let label_idx = (btn_y as usize) * (self.width as usize) + (bx as usize) + (label_start as usize) + j;
+                if label_idx < plane.cells.len() {
+                    plane.cells[label_idx].char = ch;
+                    plane.cells[label_idx].style = Styles::BOLD;
                 }
             }
 
