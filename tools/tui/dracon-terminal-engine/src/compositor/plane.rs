@@ -78,11 +78,13 @@ impl Plane {
         }
     }
 
+    #[allow(dead_code)]
     pub fn set_absolute_position(&mut self, x: u16, y: u16) {
         self.x = x;
         self.y = y;
     }
 
+    #[allow(dead_code)]
     pub fn set_z_index(&mut self, z: i32) {
         self.z_index = z;
     }
@@ -106,6 +108,7 @@ impl Plane {
         }
     }
 
+    #[allow(dead_code)]
     pub fn put_cell(&mut self, x: u16, y: u16, mut cell: Cell) {
         if x >= self.width || y >= self.height {
             return;
@@ -141,6 +144,7 @@ impl Plane {
 
     /// Writes a string handling Unicode width.
     /// Returns the new X position.
+    #[allow(dead_code)]
     pub fn put_str(&mut self, mut x: u16, y: u16, text: &str) -> u16 {
         use unicode_width::UnicodeWidthChar;
 
@@ -176,12 +180,12 @@ impl Plane {
     }
 
     /// Set a filter for this plane (e.g. Dim, Invert)
+    #[allow(dead_code)]
     pub fn set_filter(&mut self, filter: Box<dyn Filter>) {
         self.filter = Some(filter);
     }
 
-    /// Set transparency for all cells in the plane.
-    /// Note: This overwrites per-cell transparency.
+    #[allow(dead_code)]
     pub fn set_transparent(&mut self, transparent: bool) {
         for cell in &mut self.cells {
             cell.transparent = transparent;
