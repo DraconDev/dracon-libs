@@ -17,7 +17,7 @@ struct DispatchEntry {
 pub struct EventDispatcher {
     groups: Vec<HitZoneGroup<WidgetId>>,
     entries: Vec<DispatchEntry>,
-    focus_manager: Option<*mut FocusManager>,
+    focus_manager: Option<std::sync::Mutex<FocusManager>>,
 }
 
 impl Default for EventDispatcher {
@@ -35,11 +35,11 @@ impl EventDispatcher {
         }
     }
 
-    pub fn with_focus(fm: &mut FocusManager) -> Self {
+    pub fn with_focus(fm: std::sync::Mutex<FocusManager>) -> Self {
         Self {
             groups: Vec::new(),
             entries: Vec::new(),
-            focus_manager: Some(fm as *mut FocusManager),
+            focus_manager: Some(fm),
         }
     }
 
@@ -134,9 +134,9 @@ mod tests {
         let mut dispatcher = EventDispatcher::with_focus(&mut fm);
 
         let key = KeyEvent {
-            code: 9,
-            modifiers: KeyModifiers::TAB,
-            kind: crate::input::event::KeyKind::Press,
+            code: crate::input::event::KeyCode::Tab,
+            modifiers: KeyModifiers::empty(),
+            kind: crate::input::event::KeyEventKind::Press,
         };
 
         let mut handled = false;
