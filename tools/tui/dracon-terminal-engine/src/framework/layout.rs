@@ -100,17 +100,20 @@ impl Layout {
                 Constraint::Fixed(f) => sizes[i] = *f,
                 Constraint::Min(m) => sizes[i] = (*m).min(remaining),
                 Constraint::Max(max) => {
-                    if let Some(idx) = percentages.iter().position(|(j, _)| *j == i) {
+                    let computed = if let Some(idx) = percentages.iter().position(|(j, _)| *j == i) {
                         let p = percentages[idx].1;
-                        let pct_size = (remaining as u32 * p as u32 / 100) as u16;
-                        sizes[i] = pct_size.min(*max);
+                        (remaining as u32 * p as u32 / 100) as u16
                     } else if let Some(idx) = ratios.iter().position(|(j, _, _)| *j == i) {
                         let (n, d) = (ratios[idx].1, ratios[idx].2);
                         if d > 0 {
-                            let ratio_size = (remaining as u32 * n as u32 / d as u32) as u16;
-                            sizes[i] = ratio_size.min(*max);
+                            (remaining as u32 * n as u32 / d as u32) as u16
+                        } else {
+                            remaining
                         }
-                    }
+                    } else {
+                        remaining
+                    };
+                    sizes[i] = computed.min(*max);
                 }
                 Constraint::Percentage(_) => {}
                 Constraint::Ratio(_, _) => {}
@@ -214,11 +217,12 @@ mod tests {
     #[test]
     fn test_max_constraint() {
         let layout = Layout::new(vec![
-            Constraint::Percentage(100),
-            Constraint::Max(30),
+            Constraint::Fixed(50),
+            Constraint::Max(20),
         ]);
         let rects = layout.layout(Rect::new(0, 0, 100, 20));
-        assert_eq!(rects[1].width, 30);
+        assert_eq!(rects[0].width, 50);
+        assert_eq!(rects[1].width, 20);
     }
 
     #[test]

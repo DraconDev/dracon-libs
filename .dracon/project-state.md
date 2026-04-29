@@ -1,8 +1,8 @@
 # Project State
 
 ## Current Focus
-Adjusted test assertions to reflect the new proportional layout widths (33 and 66).
+Refactored layout calculation to handle percentage and ratio constraints via a computed intermediate value and updated test assertions accordingly.
 
 ## Completed
-- [x] Updated assert_eq! values for rect widths from 25/75 to 33/66 in layout.rs test
-- [x] Modified test to match the revised 1:2 width ratio after layout changes
+- [x] Refactored `Layout::layout` to compute size using an intermediate `computed` variable for both percentage and ratio constraints, ensuring proper clamping with `min(*max)`.
+- [x] Updated test `test_max_constraint` to replace `Constraint::Percentage(100)` and `Constraint::Max(30)` with `Constraint::Fixed(50)` and `Constraint::Max(20)`, adjusting assertions to verify the new widths.
