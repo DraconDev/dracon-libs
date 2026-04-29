@@ -1,7 +1,8 @@
 # Project State
 
 ## Current Focus
-Update dependency lock file
+Added module‑level documentation comments to the `input` and `visuals` modules.
 
 ## Completed
-- [x] Bump Cargo.lock dependencies (binary unchanged)
+- [x] Added a module‑level doc comment to `tools/tui/dracon-terminal-engine/src/input/mod.rs` describing its purpose.
+- [x] Added a module‑level doc comment to `tools/tui/dracon-terminal-engine/src/visuals/mod.rs` describing its purpose.

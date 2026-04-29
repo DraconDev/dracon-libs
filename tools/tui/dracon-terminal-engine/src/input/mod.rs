@@ -1,3 +1,5 @@
+//! Input handling module for terminal input processing.
+
 pub mod event;
 pub mod kitty_key;
 pub mod mapping;
