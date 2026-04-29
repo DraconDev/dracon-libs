@@ -18,7 +18,7 @@ struct DispatchEntry {
 pub struct EventDispatcher {
     groups: Vec<HitZoneGroup<WidgetId>>,
     entries: Vec<DispatchEntry>,
-    focus_manager: Option<std::sync::Mutex<FocusManager>>,
+    focus_manager: Option<FocusManager>,
 }
 
 impl Default for EventDispatcher {

@@ -146,10 +146,10 @@ impl crate::framework::widget::Widget for MenuBar {
         }
         match kind {
             crate::input::event::MouseEventKind::Down(_) => {
-                let width = 80usize;
+                let width = self.last_area_width.get() as usize;
                 let total_entries = self.entries.len();
-                let entry_width = (width as u16 / total_entries as u16).max(1);
-                let entry_idx = (col / entry_width) as usize;
+                let entry_width = (width / total_entries.max(1)).max(1);
+                let entry_idx = (col as usize / entry_width).min(total_entries.saturating_sub(1));
                 if entry_idx < total_entries {
                     if self.active_entry == Some(entry_idx) {
                         self.active_entry = None;
