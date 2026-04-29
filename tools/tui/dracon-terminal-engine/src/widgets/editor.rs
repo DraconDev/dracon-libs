@@ -80,15 +80,15 @@ impl TextEditor {
         self.ensure_cursor_visible(area);
     }
 
-    macro_rules! nav_move {
-        ($self:ident, $has_shift:expr, $area:expr, $move:expr) => {{
-            if $has_shift {
-                $self.maybe_start_selection();
-            }
-            $move;
-            $self.finish_nav_move($has_shift, $area);
-            return true;
-        }};
+    fn nav_move<F>(&mut self, has_shift: bool, area: Rect, mover: F)
+    where
+        F: FnOnce(&mut TextEditor),
+    {
+        if has_shift {
+            self.maybe_start_selection();
+        }
+        mover(self);
+        self.finish_nav_move(has_shift, area);
     }
 
     pub fn set_filter(&mut self, query: &str) {
@@ -284,82 +284,22 @@ impl TextEditor {
 
                 match key.code {
                     KeyCode::Up | KeyCode::Char('p') if has_control => {
-                        if has_shift {
-                            self.maybe_start_selection();
-                        }
-                        self.move_cursor_up();
-                        if has_shift {
-                            self.update_selection_end();
-                        } else {
-                            self.clear_selection();
-                        }
-                        self.ensure_cursor_visible(area);
-                        return true;
+                        self.nav_move(has_shift, area, |s| s.move_cursor_up());
                     }
                     KeyCode::Down | KeyCode::Char('n') if has_control => {
-                        if has_shift {
-                            self.maybe_start_selection();
-                        }
-                        self.move_cursor_down();
-                        if has_shift {
-                            self.update_selection_end();
-                        } else {
-                            self.clear_selection();
-                        }
-                        self.ensure_cursor_visible(area);
-                        return true;
+                        self.nav_move(has_shift, area, |s| s.move_cursor_down());
                     }
                     KeyCode::Up => {
-                        if has_shift {
-                            self.maybe_start_selection();
-                        }
-                        self.move_cursor_up();
-                        if has_shift {
-                            self.update_selection_end();
-                        } else {
-                            self.clear_selection();
-                        }
-                        self.ensure_cursor_visible(area);
-                        return true;
+                        self.nav_move(has_shift, area, |s| s.move_cursor_up());
                     }
                     KeyCode::Down => {
-                        if has_shift {
-                            self.maybe_start_selection();
-                        }
-                        self.move_cursor_down();
-                        if has_shift {
-                            self.update_selection_end();
-                        } else {
-                            self.clear_selection();
-                        }
-                        self.ensure_cursor_visible(area);
-                        return true;
+                        self.nav_move(has_shift, area, |s| s.move_cursor_down());
                     }
                     KeyCode::Left => {
-                        if has_shift {
-                            self.maybe_start_selection();
-                        }
-                        self.move_cursor_left();
-                        if has_shift {
-                            self.update_selection_end();
-                        } else {
-                            self.clear_selection();
-                        }
-                        self.ensure_cursor_visible(area);
-                        return true;
+                        self.nav_move(has_shift, area, |s| s.move_cursor_left());
                     }
                     KeyCode::Right => {
-                        if has_shift {
-                            self.maybe_start_selection();
-                        }
-                        self.move_cursor_right();
-                        if has_shift {
-                            self.update_selection_end();
-                        } else {
-                            self.clear_selection();
-                        }
-                        self.ensure_cursor_visible(area);
-                        return true;
+                        self.nav_move(has_shift, area, |s| s.move_cursor_right());
                     }
                     KeyCode::PageUp => {
                         if has_shift {
