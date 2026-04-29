@@ -206,27 +206,21 @@ impl KittenTTS {
         })
     }
 
-    pub fn set_voice(&self, voice: &str) -> bool {
+    pub fn set_voice(&self, voice: &str) -> Result<bool> {
         if self.voices.contains_key(voice) {
-            let mut current = self.current_voice.lock().expect("mutex poisoned");
+            let mut current = self.current_voice.lock()
+                .map_err(|e| anyhow::anyhow!("mutex poisoned: {}", e))?;
             *current = voice.to_string();
-            println!(
-                "[Kitten] Voice changed to: {} ({})",
-                voice,
-                Self::voice_description(voice)
-            );
-            true
+            Ok(true)
         } else {
-            eprintln!(
-                "[Kitten] Voice not found: {}. Available: {:?}",
-                voice, self.voice_names
-            );
-            false
+            Ok(false)
         }
     }
 
-    pub fn get_voice(&self) -> String {
-        self.current_voice.lock().expect("mutex poisoned").clone()
+    pub fn get_voice(&self) -> Result<String> {
+        self.current_voice.lock()
+            .map_err(|e| anyhow::anyhow!("mutex poisoned: {}", e))
+            .map(|guard| guard.clone())
     }
 
     pub fn voice_description(voice: &str) -> &'static str {

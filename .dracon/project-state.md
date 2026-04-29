@@ -1,9 +1,9 @@
-# Project State
-Initializing project for documenting tooling changes in Dracon-tts-runtime
+#Project State
+
+## Current Focus
+Enhanced voice service error handling and added interactive UI event support for the terminal engine
 
 ## Completed
-- Updated dependencies and integration patterns around audio rendering with Kitten TTS
-- Refined asynchronous lifecycle management and error handling
-- Added robust logging and contextual messages for clarity during startup and setup
-- Improved module organization by grouping audio session and voice management responsibilities
-No features added or documentation refactored beyond core functionality updates.
+- [x] Improved voice service reliability by refactoring set_voice and get_voice methods to return Result types with anyhow-based error handling instead of raw bool flags
+- [x] Introduced HitZone event handling system in Dracon Terminal Engine to enable interactive UI components with click/hover/drag functionality
+- [x] Structured Dracon Terminal Engine module exports through new framework/mod.rs for better organization and type safety
