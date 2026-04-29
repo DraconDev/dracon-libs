@@ -17,7 +17,10 @@ pub enum UiEvent {
     /// Periodic tick (approx. every 250ms).
     Tick,
     /// Keyboard key pressed.
-    Key { key: Cow<'static, str> },
+    Key {
+        /// The key identifier string.
+        key: Cow<'static, str>,
+    },
     /// Terminal was resized.
     Resize(UiResize),
     /// Application shutdown requested.
