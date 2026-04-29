@@ -9,18 +9,21 @@ pub struct Compositor {
 }
 
 impl Compositor {
+    #[allow(dead_code)]
     pub fn new(width: u16, height: u16) -> Self {
         Self {
             planes: Vec::new(),
             width,
             height,
-            last_frame: vec![Cell::default(); (width * height) as usize],
+            last_frame: vec![Cell::default(); (width as u32 * height as u32) as usize],
         }
     }
 
+    #[allow(dead_code)]
     pub fn tick(&mut self, _delta: f32) {
     }
 
+    #[allow(dead_code)]
     pub fn hit_test(&self, x: u16, y: u16) -> Option<&Plane> {
         for plane in self.planes.iter().rev() {
             if !plane.visible {
@@ -51,6 +54,7 @@ impl Compositor {
         self.sort_planes();
     }
 
+    #[allow(dead_code)]
     pub fn draw_text(&mut self, text: &str, x: u16, y: u16, fg: Color, bg: Color, style: Styles) {
         let mut plane = Plane::new(0, text.len() as u16, 1);
         plane.x = x;
@@ -73,6 +77,7 @@ impl Compositor {
     }
 
     #[allow(clippy::too_many_arguments)]
+    #[allow(dead_code)]
     pub fn draw_rect(
         &mut self,
         x: u16,

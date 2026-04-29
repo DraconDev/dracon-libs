@@ -58,8 +58,6 @@ pub fn guess_icon_mode() -> IconMode {
     IconMode::ASCII
 }
 
-/// Guesses the appropriate icon rendering mode based on terminal environment variables.
-
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct SelectionState {
     pub selected: Option<usize>,
