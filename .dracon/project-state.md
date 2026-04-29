@@ -1,8 +1,9 @@
 # Project State
 
 ## Current Focus
-Expose underlying compositor for external mutable access.
+Add Kitty keyboard protocol parser, integration bridge for external TUI libraries, and terminal sync utilities for tear‑free rendering.
 
 ## Completed
-- [x] Added `pub fn compositor_mut(&mut self) -> &mut Compositor` to return a mutable reference to the compositor.
-- [x] Added a documentation comment to `pub fn new` describing its purpose.
+- [x] Implement `parse_kitty_keyboard` to parse key part slices into `Event`
+- [x] Add integration module documentation and expose `ratatui` for external TUI usage
+- [x] Implement `begin_sync` and `end_sync` functions for DECSET 2026 synchronized rendering
