@@ -164,7 +164,7 @@ mod tests {
 
         let mut hit_id = None;
         dispatcher.dispatch_mouse(
-            MouseEventKind::Press(crate::input::event::MouseButton::Left),
+            MouseEventKind::Down(crate::input::event::MouseButton::Left),
             5,
             5,
             KeyModifiers::empty(),
