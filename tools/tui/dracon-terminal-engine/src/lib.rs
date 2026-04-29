@@ -37,7 +37,6 @@
 //!         // Called every 250ms by default
 //!     })
 //!     .run(|ctx| {
-//!         // Render every frame
 //!         let (w, h) = ctx.compositor().size();
 //!         let area = Rect::new(0, 0, w, h);
 //!         let list = List::new(vec!["Item 1", "Item 2", "Item 3"]);

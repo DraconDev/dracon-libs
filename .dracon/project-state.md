@@ -1,10 +1,9 @@
 # Project State
 
 ## Current Focus
-Add rendering of a sample list across the full terminal area using Ratatui's `Rect` and Plane compositing.
+Simplify rendering by using `Rect` area directly and removing `split_h` layout logic
 
 ## Completed
-- [x] Import Ratatui's `layout::Rect` for layout calculations.
-- [x] Create a full‑screen rectangle using compositor size.
-- [x] Build a `List` widget with sample items.
-- [x] Render the list into a plane and add it to the compositor.
+- [x] Refactored rendering in `framework/mod.rs` to use `Rect` area, discarding the previous `split_h` approach
+- [x] Eliminated legacy sample rendering code from `lib.rs`
+- [x] Updated imports and documentation comments in `framework/mod.rs` to reflect the new rendering flow
