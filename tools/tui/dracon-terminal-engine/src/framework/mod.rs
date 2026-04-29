@@ -26,6 +26,7 @@ pub mod hitzone;
 pub mod scroll;
 /// The theme module.
 pub mod theme;
+pub mod widget;
 pub mod widgets;
 
 /// The prelude module.

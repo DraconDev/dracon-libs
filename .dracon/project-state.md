@@ -1,10 +1,10 @@
 # Project State
 
 ## Current Focus
-Add color configuration fields (error_fg, success_fg, warning_fg, disabled_fg) to Theme struct to support UI error, success, warning, and disabled text rendering.
+Introduce the core `Widget` trait and expose it via the framework module
 
 ## Completed
-- [x] Added error_fg color definitions for both light and dark themes.
-- [x] Added success_fg color definitions for both light and dark themes.
-- [x] Added warning_fg color definitions for both light and dark themes.
-- [x] Added disabled_fg color definitions for both light and dark themes.
+- [x] Added `pub mod widget;` to `framework/mod.rs` to expose the new widget system
+- [x] Created `framework/widget.rs` defining `WidgetId`, `Widget` trait, and associated types
+- [x] Implemented `WidgetId` with `default`, `new`, and trait implementations
+- [x] Defined the `Widget` trait with methods `id`, `focusable`, `render`, `handle_key`, and `handle_mouse`
