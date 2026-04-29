@@ -1,9 +1,8 @@
 # Project State
 
 ## Current Focus
-feat(menu bar): introduce MenuBar widget with dropdown capabilities and module registration
+Fix menu bar entry width calculation and clean up unused import
 
 ## Completed
-- [x] Added `tools/tui/dracon-terminal-engine/src/framework/widgets/menu_bar.rs` containing MenuBar, MenuEntry, and MenuItem definitions and rendering logic
-- [x] Modified `tools/tui/dracon-terminal-engine/src/framework/widgets/mod.rs` to export `menu_bar` (and `status_bar`) modules
-- [x] Updated `Cargo.lock` reflecting dependency changes
+- [x] Remove unused `Color` import from compositor
+- [x] Adjust entry width calculation to use u16 division and proper max(1) handling

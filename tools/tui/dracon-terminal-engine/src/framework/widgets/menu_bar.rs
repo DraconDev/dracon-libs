@@ -4,7 +4,7 @@
 
 use unicode_width::UnicodeWidthStr;
 
-use crate::compositor::{Cell, Color, Plane, Styles};
+use crate::compositor::{Cell, Plane, Styles};
 use crate::framework::theme::Theme;
 use crate::framework::widget::WidgetId;
 use ratatui::layout::Rect;
@@ -144,8 +144,8 @@ impl crate::framework::widget::Widget for MenuBar {
             crate::input::event::MouseEventKind::Down(_) => {
                 let width = 80usize;
                 let total_entries = self.entries.len();
-                let entry_width = width / total_entries.max(1);
-                let entry_idx = (col / entry_width.max(1)) as usize;
+                let entry_width = (width as u16 / total_entries as u16).max(1);
+                let entry_idx = (col / entry_width) as usize;
                 if entry_idx < total_entries {
                     if self.active_entry == Some(entry_idx) {
                         self.active_entry = None;
