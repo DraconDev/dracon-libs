@@ -12,6 +12,7 @@ use std::os::fd::AsFd;
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::Arc;
 use std::time::{Duration, Instant};
+use std::cell::RefCell;
 
 pub struct App {
     terminal: Terminal<io::Stdout>,
@@ -25,6 +26,7 @@ pub struct App {
     last_frame_time: Instant,
     tick_interval: Duration,
     resize_flag: Arc<AtomicBool>,
+    on_tick: Option<Box<dyn FnMut(&mut Ctx, u64)>>,
 }
 
 impl App {
@@ -41,9 +43,10 @@ impl App {
             theme: Theme::default(),
             running: Arc::new(AtomicBool::new(true)),
             frame_count: Arc::new(AtomicU64::new(0)),
-            last_frame_time: Instant::now(),
-            tick_interval: Duration::from_millis(250),
+last_frame_time: Instant::now(),
+            last_tick_time: Instant::now(),
             resize_flag: Arc::new(AtomicBool::new(false)),
+            on_tick: None,
         })
     }
 
@@ -60,6 +63,14 @@ impl App {
 
     pub fn theme(mut self, theme: Theme) -> Self {
         self.theme = theme;
+        self
+    }
+
+    pub fn on_tick<F>(mut self, f: F) -> Self
+    where
+        F: FnMut(&mut Ctx, u64) + 'static,
+    {
+        self.on_tick = Some(Box::new(f));
         self
     }
 
