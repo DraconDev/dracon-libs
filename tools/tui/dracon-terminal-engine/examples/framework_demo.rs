@@ -4,13 +4,13 @@ use dracon_terminal_engine::compositor::{Color, Plane};
 use dracon_terminal_engine::framework::prelude::*;
 use dracon_terminal_engine::framework::widgets::{Breadcrumbs, Hud, List, SplitPane};
 use dracon_terminal_engine::framework::hitzone::HitZone;
-use dracon_terminal_engine::{SystemMonitor, Theme};
+use dracon_terminal_engine::SystemMonitor;
 use ratatui::layout::Rect;
 
 fn main() -> std::io::Result<()> {
     let theme = Theme::cyberpunk();
 
-    App::new()
+    App::new()?
         .title("Framework Demo")
         .fps(30)
         .theme(theme)
@@ -29,7 +29,7 @@ fn main() -> std::io::Result<()> {
                 "CPU Graph",
                 "Settings",
             ]);
-            list.set_visible_count((left_rect.height as usize).saturating_sub(2));
+            list.set_visible_count((left_rect.height as usize).saturating_sub(2).max(1));
             let list_plane = list.render(left_rect);
             ctx.add_plane(list_plane);
 
@@ -43,11 +43,11 @@ fn main() -> std::io::Result<()> {
             let mut sys = SystemMonitor::new();
             let data = sys.get_data();
 
-            let mut info_plane = Plane::new(0, right_rect.width, right_rect.height);
+            let mut info_plane = Plane::new(0, right_rect.width, right_rect.height.saturating_sub(2));
             info_plane.z_index = 5;
 
             let mut y = 2u16;
-            let print_line = |plane: &mut Plane, text: &str, fg: Color| {
+            let mut print_line = |plane: &mut Plane, text: &str, fg: Color| {
                 for (i, c) in text.chars().take(right_rect.width as usize - 2).enumerate() {
                     let idx = (y * right_rect.width + 1 + i as u16) as usize;
                     if idx < plane.cells.len() {
