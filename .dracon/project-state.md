@@ -1,8 +1,8 @@
 # Project State
 
 ## Current Focus
-feat(async): add async reader spawning with graceful shutdown via guard
+feat(tests): add unit tests for compositor, plane, color, styles, and related functionality
 
 ## Completed
-- [x] Introduce `spawn_with_shutdown` method that spawns the async reader task and returns a handle plus a guard.
-- [x] Add `ShutdownGuard` struct with a `shutdown` method that drops the internal channel to terminate the task.
+- [x] Add new test suite `tools/tui/dracon-terminal-engine/tests/compositor_test.rs` containing 14 comprehensive tests covering Plane creation, positioning, Z‑index, cell initialization, char placement, clearing, Color variants, Styles composition, and Compositor operations
+- [x] Update dependency metadata in `Cargo.lock` (binary revision reflecting updated crate resolutions)
