@@ -1,7 +1,7 @@
 # Project State
 
 ## Current Focus
-Track the slider's rendered area width for subsequent rendering calculations.
+Add `std::cell::Cell` import to menu_bar.rs for future interior mutability needs
 
 ## Completed
-- [x] Store the current widget width in `last_area_width` Cell within the `render` method.
+- [x] Added `use std::cell::Cell;` import to tools/tui/dracon-terminal-engine/src/framework/widgets/menu_bar.rs
