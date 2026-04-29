@@ -277,9 +277,8 @@ mod tests {
         fm.register(id2, true);
 
         let mut changes = Vec::new();
-        let changes_ref = &mut changes;
         fm.on_focus_change(move |new, old| {
-            changes_ref.push((new, old));
+            changes.push((new, old));
         });
 
         assert!(fm.set_focus(id1));
