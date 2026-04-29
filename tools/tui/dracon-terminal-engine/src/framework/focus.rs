@@ -270,20 +270,24 @@ mod tests {
 
     #[test]
     fn test_focus_change_callback() {
+        use std::sync::Arc;
+        use std::sync::Mutex;
+
         let mut fm = FocusManager::new();
         let id1 = WidgetId::new(1);
         let id2 = WidgetId::new(2);
         fm.register(id1, true);
         fm.register(id2, true);
 
-        let mut changes = Vec::new();
+        let changes = Arc::new(Mutex::new(Vec::new()));
+        let changes_clone = changes.clone();
         fm.on_focus_change(move |new, old| {
-            changes.push((new, old));
+            changes_clone.lock().unwrap().push((new, old));
         });
 
         assert!(fm.set_focus(id1));
         fm.tab_next();
 
-        assert_eq!(changes.len(), 2);
+        assert_eq!(changes.lock().unwrap().len(), 2);
     }
 }

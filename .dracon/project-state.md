@@ -1,7 +1,10 @@
 # Project State
 
 ## Current Focus
-Refactor focus change handling to eliminate an unnecessary mutable binding and directly append changes.
+refactor focus handling test to use thread‑safe Arc<Mutex> for shared changes
 
 ## Completed
-- [x] Remove the unused `changes_ref` variable and push focus change tuples directly to `changes` in the closure.
+- [x] Introduced Arc<Mutex<Vec>> to store focus change callbacks safely
+- [x] Updated closure to lock mutex before pushing events
+- [x] Modified assertion to lock mutex before checking vector length
+- [x] Updated Cargo.lock as part of dependency upgrade
