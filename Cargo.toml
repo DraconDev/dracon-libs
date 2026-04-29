@@ -10,10 +10,19 @@ members = [
   "tools/media/dracon-stt-runtime",
   "tools/media/dracon-video-runtime",
   "tools/memory/dracon-memory-runtime",
+  # Contracts
+  "contracts/crates/dracon-memory-contracts",
+  "contracts/crates/ai/dracon-ai-contracts",
+  "contracts/crates/ai/dracon-ai-runtime-contracts",
+  # Services
+  "services/crates/ai/ai-service",
+  "services/crates/ai/ai-routing-runtime",
+  "services/crates/ai/ai-runtime-config",
+  "services/crates/ai/ai-runtime-adapters",
 ]
 
 [workspace.package]
-version = "12.6.0"
+version = "13.0.0"
 edition = "2024"
 
 [workspace.dependencies]

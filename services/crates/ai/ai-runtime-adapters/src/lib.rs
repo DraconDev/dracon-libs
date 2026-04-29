@@ -1,3 +1,5 @@
+use std::time::Duration;
+
 use async_trait::async_trait;
 use dracon_ai_runtime_contracts::models::{ChatMessage, ChatRequest};
 use dracon_ai_runtime_contracts::traits::AiProvider;
@@ -19,13 +21,18 @@ impl GenericOpenAIAdapter {
         auth_header_name: String,
         auth_header_prefix: String,
     ) -> Self {
+        let client = reqwest::Client::builder()
+            .timeout(Duration::from_secs(60))
+            .connect_timeout(Duration::from_secs(10))
+            .build()
+            .expect("reqwest client should build");
         Self {
             api_key,
             endpoint,
             model,
             auth_header_name,
             auth_header_prefix,
-            client: reqwest::Client::new(),
+            client,
         }
     }
 }

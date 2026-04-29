@@ -478,19 +478,28 @@ impl KittenTTS {
     }
 
     fn text_to_tokens(text: &str) -> Vec<i64> {
-        let output = std::process::Command::new("espeak-ng")
-            .args(["--ipa", "-q", text])
-            .output();
+        let mut child = std::process::Command::new("espeak-ng")
+            .args(["--ipa", "-q", "--stdin"])
+            .stdin(std::process::Stdio::piped())
+            .stdout(std::process::Stdio::piped())
+            .spawn()
+            .ok();
 
-        let phonemes = match output {
-            Ok(o) => String::from_utf8_lossy(&o.stdout).to_string(),
-            Err(_) => text.to_string(),
+        let phonemes = if let Some(ref mut c) = child {
+            if let Some(mut stdin) = c.stdin.take() {
+                use std::io::Write;
+                let _ = stdin.write_all(text.as_bytes());
+            }
+            c.stdout.as_mut().map(|o| {
+                let mut buf = String::new();
+                o.read_to_string(&mut buf).unwrap_or(0);
+                buf
+            }).unwrap_or_else(|| text.to_string())
+        } else {
+            text.to_string()
         };
 
-        // Tokenize phonemes: split into words and punctuation, then join with spaces
-        let tokenized = Self::tokenize_phonemes(&phonemes);
-
-        let cleaned = Self::clean_phonemes(&tokenized);
+        let cleaned = Self::clean_phonemes(&phonemes.chars().collect::<String>());
         let mut tokens = vec![0i64];
 
         for c in cleaned.chars() {

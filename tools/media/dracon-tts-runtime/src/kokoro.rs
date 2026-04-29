@@ -523,13 +523,25 @@ impl KokoroTts {
     }
 
     fn text_to_phonemes(text: &str) -> Vec<i64> {
-        let output = std::process::Command::new("espeak-ng")
-            .args(["--ipa", "-q", text])
-            .output();
+        let mut child = std::process::Command::new("espeak-ng")
+            .args(["--ipa", "-q", "--stdin"])
+            .stdin(std::process::Stdio::piped())
+            .stdout(std::process::Stdio::piped())
+            .spawn()
+            .ok();
 
-        let phonemes = match output {
-            Ok(o) => String::from_utf8_lossy(&o.stdout).to_string(),
-            Err(_) => text.to_string(),
+        let phonemes = if let Some(ref mut c) = child {
+            if let Some(mut stdin) = c.stdin.take() {
+                use std::io::Write;
+                let _ = stdin.write_all(text.as_bytes());
+            }
+            c.stdout.as_mut().map(|o| {
+                let mut buf = String::new();
+                o.read_to_string(&mut buf).unwrap_or(0);
+                buf
+            }).unwrap_or_else(|| text.to_string())
+        } else {
+            text.to_string()
         };
 
         let mut tokens = vec![0i64];

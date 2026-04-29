@@ -12,8 +12,15 @@ pub struct OnnxEmbedder {
 
 impl OnnxEmbedder {
     pub fn new() -> Result<Self> {
-        let model_bytes = include_bytes!("../assets/bge-small-en-v1.5.onnx");
-        let tokenizer_bytes = include_bytes!("../assets/tokenizer.json");
+        let model_path = std::env::var("DRACON_MODEL_PATH")
+            .unwrap_or_else(|_| "assets/bge-small-en-v1.5.onnx".to_string());
+        let tokenizer_path = std::env::var("DRACON_TOKENIZER_PATH")
+            .unwrap_or_else(|_| "assets/tokenizer.json".to_string());
+
+        let model_bytes = std::fs::read(&model_path)
+            .map_err(|e| anyhow::anyhow!("Failed to read model from {}: {}", model_path, e))?;
+        let tokenizer_bytes = std::fs::read(&tokenizer_path)
+            .map_err(|e| anyhow::anyhow!("Failed to read tokenizer from {}: {}", tokenizer_path, e))?;
 
         let session = Session::builder()?.commit_from_memory(model_bytes)?;
 

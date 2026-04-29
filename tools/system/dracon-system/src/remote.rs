@@ -189,18 +189,11 @@ impl RemoteExecContract for SshRemoteExecProvider {
         let (session, _) = connect_session(&bookmark, timeout)
             .map_err(|e| io::Error::other(format!("remote connect failed: {e}")))?;
 
-        let cmd = if args.is_empty() {
-            program.to_string()
-        } else {
-            let args_str = args.join(" ");
-            format!("{program} {args_str}")
-        };
-
         let mut channel = session
             .channel_session()
             .map_err(|e| io::Error::other(format!("open channel failed: {e}")))?;
         channel
-            .exec(&cmd)
+            .exec(&format!("{} {}", program, args.iter().map(|a| shell_escape(a)).collect::<Vec<_>>().join(" ")))
             .map_err(|e| io::Error::other(format!("exec failed: {e}")))?;
 
         let mut stdout = String::new();
@@ -370,4 +363,18 @@ fn copy_recursive_sftp(sftp: &ssh2::Sftp, src: &Path, dst: &Path) -> io::Result<
         io::copy(&mut input, &mut output)?;
         Ok(())
     }
+}
+
+fn shell_escape(s: &str) -> String {
+    let mut result = String::with_capacity(s.len() + 2);
+    result.push('\'');
+    for c in s.chars() {
+        if c == '\'' {
+            result.push_str("'\"'\"'");
+        } else {
+            result.push(c);
+        }
+    }
+    result.push('\'');
+    result
 }

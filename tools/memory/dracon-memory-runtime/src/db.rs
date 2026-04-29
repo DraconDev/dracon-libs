@@ -13,11 +13,9 @@ pub struct MemoryDb {
 
 impl MemoryDb {
     pub fn new(path: &str) -> Result<Self> {
-        #[allow(clippy::missing_transmute_annotations)]
+        let init_fn: unsafe extern "C" fn() = sqlite3_vec_init;
         unsafe {
-            rusqlite::ffi::sqlite3_auto_extension(Some(std::mem::transmute(
-                sqlite3_vec_init as *const (),
-            )));
+            rusqlite::ffi::sqlite3_auto_extension(Some(std::mem::transmute(init_fn)));
         }
 
         let conn = if path == ":memory:" {
