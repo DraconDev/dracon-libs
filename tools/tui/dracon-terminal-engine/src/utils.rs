@@ -211,6 +211,7 @@ impl FileCategory {
     }
 }
 
+/// Categorizes a file by extension into Audio, Video, Image, Code, Doc, or Other.
 pub fn get_file_category(path: &std::path::Path) -> FileCategory {
     let filename = path
         .file_name()
@@ -248,6 +249,7 @@ pub fn get_file_category(path: &std::path::Path) -> FileCategory {
     }
 }
 
+/// Returns a list of suggested applications to open files with the given extension.
 pub fn get_open_with_suggestions(ext: &str) -> Vec<String> {
     match ext {
         "txt" | "md" | "rs" | "toml" | "json" | "c" | "cpp" | "py" | "js" | "ts" | "log"
@@ -662,6 +664,7 @@ pub fn highlight_code<'a>(content: &'a str, extension: &str) -> Vec<Line<'a>> {
     lines
 }
 
+/// Draws a labeled stat bar (e.g., CPU, memory) using Unicode block characters.
 pub fn draw_stat_bar(
     label: &str,
     value: f32,
@@ -792,6 +795,9 @@ pub fn delete_word_backwards(s: &mut String) {
     s.truncate(i);
 }
 
+/// Opens a new terminal window (alacritty, kitty, gnome-terminal, etc.) at the given path.
+/// If `new_tab` is true, opens in a new tab rather than a new window.
+/// Optionally runs `command` in the new terminal.
 pub fn spawn_terminal_at(path: &std::path::Path, new_tab: bool, command: Option<&str>) -> bool {
     let log = |msg: &str| {
         use std::io::Write;
@@ -1085,6 +1091,7 @@ pub fn get_clipboard_text() -> Option<String> {
         .ok()
 }
 
+/// Gets the primary X11/Wayland selection text (for middle-click paste).
 pub fn get_primary_selection_text() -> Option<String> {
     std::process::Command::new("wl-paste")
         .arg("--primary")

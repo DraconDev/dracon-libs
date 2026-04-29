@@ -14,15 +14,15 @@ pub struct IntentInfo {
 pub fn extract_intent(repo: &Path, changed_files: &[PathBuf], branch: Option<&str>) -> IntentInfo {
     let plan_dir = find_plan_dir(repo);
 
-    if let Some(ref plan_dir) = plan_dir
-        && let Some(active_info) = extract_from_active_board(plan_dir, changed_files)
-    {
-        return IntentInfo {
-            intent: active_info.intent,
-            track: active_info.track,
-            blueprint: Some(active_info.blueprint),
-            task_progress: active_info.task_progress,
-        };
+    if let Some(ref plan_dir) = plan_dir {
+        if let Some(active_info) = extract_from_active_board(plan_dir, changed_files) {
+            return IntentInfo {
+                intent: active_info.intent,
+                track: active_info.track,
+                blueprint: Some(active_info.blueprint),
+                task_progress: active_info.task_progress,
+            };
+        }
     }
 
     if let Some(intent) = extract_from_branch(branch.unwrap_or("")) {
@@ -392,13 +392,12 @@ fn extract_from_file_patterns(changed_files: &[PathBuf]) -> Option<String> {
     let mut dir_counts: HashMap<String, usize> = HashMap::new();
 
     for file in changed_files {
-        if let Some(first) = file.components().next()
-            && let Some(dir) = first.as_os_str().to_str()
-            && !dir.starts_with('.')
-            && dir != "Cargo.lock"
-            && dir != "Cargo.toml"
-        {
-            *dir_counts.entry(dir.to_string()).or_insert(0) += 1;
+        if let Some(first) = file.components().next() {
+            if let Some(dir) = first.as_os_str().to_str() {
+                if !dir.starts_with('.') && dir != "Cargo.lock" && dir != "Cargo.toml" {
+                    *dir_counts.entry(dir.to_string()).or_insert(0) += 1;
+                }
+            }
         }
     }
 

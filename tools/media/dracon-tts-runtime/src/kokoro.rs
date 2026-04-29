@@ -72,6 +72,8 @@ pub const VOICE_DESCRIPTIONS: &[(&str, &str, &str)] = &[
     ("zm_yunyang", "Yunyang (Chinese)", "male"),
 ];
 
+/// Resolves a voice name or alias (e.g., "af_heart", "female", "male") to its internal name.
+/// Returns the default voice if no match is found.
 pub fn resolve_voice(name: &str) -> &'static str {
     let name_lower = name.to_lowercase();
 
@@ -91,6 +93,7 @@ pub fn resolve_voice(name: &str) -> &'static str {
     DEFAULT_VOICE
 }
 
+/// Returns (internal_name, friendly_name, gender) for a voice, or ("unknown", "Unknown", "unknown").
 pub fn voice_info(name: &str) -> (&'static str, &'static str, &'static str) {
     for info in VOICE_DESCRIPTIONS {
         if info.0 == name {

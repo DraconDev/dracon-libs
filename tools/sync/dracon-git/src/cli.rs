@@ -124,13 +124,13 @@ impl GitSnapshotContract for CliGitSnapshotProvider {
                         history.push(c);
                     }
                     current_commit = Some(parsed);
-                } else if let Some(ref mut c) = current_commit
-                    && line.contains("changed")
-                {
-                    let (files_changed, insertions, deletions) = parse_git_shortstat(line);
-                    c.files_changed = files_changed;
-                    c.insertions = insertions;
-                    c.deletions = deletions;
+                } else if let Some(ref mut c) = current_commit {
+                    if line.contains("changed") {
+                        let (files_changed, insertions, deletions) = parse_git_shortstat(line);
+                        c.files_changed = files_changed;
+                        c.insertions = insertions;
+                        c.deletions = deletions;
+                    }
                 }
             }
             if let Some(c) = current_commit {

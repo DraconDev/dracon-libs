@@ -97,18 +97,19 @@ impl GitService {
                 status.is_clean = status.modified_files == 0 && status.staged_files == 0;
 
                 if let Ok(head_ref) = head {
-                    if let Some(head_name) = head_ref.shorthand()
-                        && let Ok(upstream) =
-                            repo.branch_upstream_name(&format!("refs/heads/{}", head_name))
-                        && let Ok(upstream_str) = upstream
-                            .as_str()
-                            .ok_or(git2::Error::from_str("Invalid upstream name"))
-                        && let Ok(upstream_oid) = repo.refname_to_id(upstream_str)
-                        && let Some(head_oid) = head_ref.target()
-                        && let Ok((ahead, behind)) = repo.graph_ahead_behind(head_oid, upstream_oid)
-                    {
-                        status.ahead = ahead;
-                        status.behind = behind;
+                    if let Some(head_name) = head_ref.shorthand() {
+                        if let Ok(upstream) = repo.branch_upstream_name(&format!("refs/heads/{}", head_name)) {
+                            if let Ok(upstream_str) = upstream.as_str().ok_or(git2::Error::from_str("Invalid upstream name")) {
+                                if let Ok(upstream_oid) = repo.refname_to_id(upstream_str) {
+                                    if let Some(head_oid) = head_ref.target() {
+                                        if let Ok((ahead, behind)) = repo.graph_ahead_behind(head_oid, upstream_oid) {
+                                            status.ahead = ahead;
+                                            status.behind = behind;
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                     if let Ok(commit) = head_ref.peel_to_commit() {
                         status.last_commit_hash = Some(commit.id().to_string());
@@ -513,10 +514,10 @@ impl GitService {
                     .unwrap_or_else(|_| git2::Signature::now("Dracon", "dracon@void").unwrap());
 
                 let mut parents = Vec::new();
-                if let Ok(head) = repo.head()
-                    && let Ok(parent) = head.peel_to_commit()
-                {
-                    parents.push(parent);
+                if let Ok(head) = repo.head() {
+                    if let Ok(parent) = head.peel_to_commit() {
+                        parents.push(parent);
+                    }
                 }
 
                 let parents_refs: Vec<&git2::Commit> = parents.iter().collect();
@@ -596,12 +597,13 @@ impl GitService {
         let path = self.root_path.clone();
         tokio::task::spawn_blocking(move || -> std::result::Result<(), git2::Error> {
             let repo = git2::Repository::open(&path)?;
-            if let Ok(remote) = repo.find_remote("origin")
-                && let Some(url) = remote.url()
-                && url.starts_with("https://github.com/")
-            {
-                let new_url = url.replace("https://github.com/", "git@github.com:");
-                repo.remote_set_url("origin", &new_url)?;
+            if let Ok(remote) = repo.find_remote("origin") {
+                if let Some(url) = remote.url() {
+                    if url.starts_with("https://github.com/") {
+                        let new_url = url.replace("https://github.com/", "git@github.com:");
+                        repo.remote_set_url("origin", &new_url)?;
+                    }
+                }
             }
             Ok(())
         })

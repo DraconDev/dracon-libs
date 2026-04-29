@@ -156,9 +156,9 @@ impl RemoteExecContract for SshRemoteExecProvider {
         channel.read_to_string(&mut stdout)?;
 
         let mut stderr = String::new();
-        if let Ok(err) = channel.stderr().read_to_string(&mut stderr)
-            && err > 0
-        {}
+        if let Ok(err) = channel.stderr().read_to_string(&mut stderr) {
+            if err > 0 {}
+        }
 
         channel.wait_close().ok();
         let status = channel.exit_status().unwrap_or(1);
@@ -200,9 +200,9 @@ impl RemoteExecContract for SshRemoteExecProvider {
         channel.read_to_string(&mut stdout)?;
 
         let mut stderr = String::new();
-        if let Ok(err) = channel.stderr().read_to_string(&mut stderr)
-            && err > 0
-        {}
+        if let Ok(err) = channel.stderr().read_to_string(&mut stderr) {
+            if err > 0 {}
+        }
 
         channel.wait_close().ok();
         let status = channel.exit_status().unwrap_or(1);
@@ -249,24 +249,22 @@ fn connect_session(
     sess.set_blocking(true);
     sess.handshake().context("ssh handshake failed")?;
 
-    if let Ok(mut agent) = sess.agent()
-        && agent.connect().is_ok()
-        && agent.list_identities().is_ok()
-        && let Ok(identities) = agent.identities()
-    {
-        for identity in identities {
-            if agent.userauth(&bookmark.user, &identity).is_ok() {
-                return Ok((sess, "ssh-agent".to_string()));
+    if let Ok(mut agent) = sess.agent() {
+        if agent.connect().is_ok() && agent.list_identities().is_ok() {
+            if let Ok(identities) = agent.identities() {
+                for identity in identities {
+                    if agent.userauth(&bookmark.user, &identity).is_ok() {
+                        return Ok((sess, "ssh-agent".to_string()));
+                    }
+                }
             }
         }
     }
 
-    if let Some(key_path) = &bookmark.key_path
-        && sess
-            .userauth_pubkey_file(&bookmark.user, None, key_path, None)
-            .is_ok()
-    {
-        return Ok((sess, format!("key:{}", key_path.display())));
+    if let Some(key_path) = &bookmark.key_path {
+        if sess.userauth_pubkey_file(&bookmark.user, None, key_path, None).is_ok() {
+            return Ok((sess, format!("key:{}", key_path.display())));
+        }
     }
 
     Err(anyhow!(
@@ -318,10 +316,10 @@ fn remove_recursive(sftp: &ssh2::Sftp, path: &Path) -> io::Result<()> {
             .readdir(path)
             .map_err(|e| io::Error::other(format!("remote readdir failed: {e}")))?;
         for (entry, _) in entries {
-            if let Some(name) = entry.file_name().and_then(|n| n.to_str())
-                && (name == "." || name == "..")
-            {
-                continue;
+            if let Some(name) = entry.file_name().and_then(|n| n.to_str()) {
+                if name == "." || name == ".." {
+                    continue;
+                }
             }
             remove_recursive(sftp, &entry)?;
         }
@@ -344,10 +342,10 @@ fn copy_recursive_sftp(sftp: &ssh2::Sftp, src: &Path, dst: &Path) -> io::Result<
             .readdir(src)
             .map_err(|e| io::Error::other(format!("remote readdir failed: {e}")))?;
         for (entry, _) in entries {
-            if let Some(name) = entry.file_name().and_then(|n| n.to_str())
-                && (name == "." || name == "..")
-            {
-                continue;
+            if let Some(name) = entry.file_name().and_then(|n| n.to_str()) {
+                if name == "." || name == ".." {
+                    continue;
+                }
             }
             let target = dst.join(entry.file_name().unwrap_or_default());
             copy_recursive_sftp(sftp, &entry, &target)?;

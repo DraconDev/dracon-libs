@@ -112,13 +112,13 @@ impl SystemAgent {
         &self,
     ) -> std::result::Result<String, Box<dyn std::error::Error + Send + Sync>> {
         let mut info = String::new();
-        if let Ok(os) = tokio::fs::read_to_string("/etc/os-release").await
-            && let Some(name) = os.lines().find(|l| l.starts_with("PRETTY_NAME="))
-        {
-            info.push_str(&format!(
-                "OS: {}\n",
-                name.replace("PRETTY_NAME=", "").replace('"', "")
-            ));
+        if let Ok(os) = tokio::fs::read_to_string("/etc/os-release").await {
+            if let Some(name) = os.lines().find(|l| l.starts_with("PRETTY_NAME=")) {
+                info.push_str(&format!(
+                    "OS: {}\n",
+                    name.replace("PRETTY_NAME=", "").replace('"', "")
+                ));
+            }
         }
         Ok(info)
     }
