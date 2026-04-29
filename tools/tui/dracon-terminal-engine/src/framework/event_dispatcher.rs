@@ -92,8 +92,7 @@ impl EventDispatcher {
     where
         F: FnMut(WidgetId, KeyEvent) -> bool,
     {
-        if let Some(fm) = self.focus_manager.as_ref() {
-            let mut fm = fm.lock().unwrap();
+        if let Some(ref mut fm) = self.focus_manager {
             if key.code == crate::input::event::KeyCode::Tab {
                 if key.modifiers.contains(KeyModifiers::SHIFT) {
                     if let Some(id) = fm.tab_prev() {
@@ -137,7 +136,7 @@ mod tests {
         fm.register(WidgetId::new(1), true);
         fm.register(WidgetId::new(2), true);
 
-        let mut dispatcher = EventDispatcher::with_focus(std::sync::Mutex::new(fm));
+        let mut dispatcher = EventDispatcher::with_focus(fm);
 
         let key = KeyEvent {
             code: crate::input::event::KeyCode::Tab,

@@ -1,7 +1,9 @@
 # Project State
 
 ## Current Focus
-Remove Mutex wrapper from with_focus parameter, taking FocusManager directly for ownership simplification
+Remove Mutex wrapper from focus manager usage, directly passing FocusManager to EventDispatcher::with_focus and simplifying focus manager access.
 
 ## Completed
-- [x] Change function signature of with_focus from `with_focus(fm: Mutex<FocusManager>) -> Self` to `with_focus(fm: FocusManager) -> Self`
+- [x] Removed Mutex wrapper around focus manager in EventDispatcher::dispatch method
+- [x] Simplified focus manager access by using `ref mut fm` instead of locking a mutex
+- [x] Updated EventDispatcher::with_focus to accept FocusManager directly, eliminating unnecessary synchronization
