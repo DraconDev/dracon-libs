@@ -12,6 +12,7 @@ pub enum Color {
 }
 
 bitflags! {
+    #[allow(missing_docs)]
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Default)]
     pub struct Styles: u8 {
         /// Bold text.

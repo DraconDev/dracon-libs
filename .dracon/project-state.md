@@ -1,7 +1,8 @@
 # Project State
 
 ## Current Focus
-docs(comment): remove redundant comment above Styles enum
+Add `#[allow(missing_docs)]` to silence warnings for the `Styles` enum and bump dependencies in `Cargo.lock`.
 
 ## Completed
-- [x] Deleted the comment line “/// Terminal styling flags (bold, italic, underline, etc).” preceding the Styles enum in tools/tui/dracon-terminal-engine/src/compositor/plane.rs.
+- [x] Added `#[allow(missing_docs)]` before the `bitflags!` definition of `Styles` in `tools/tui/dracon-terminal-engine/src/compositor/plane.rs`
+- [x] Updated `Cargo.lock` to reflect the upgrade of `dracon-terminal-engine` and related dependencies to version 26
