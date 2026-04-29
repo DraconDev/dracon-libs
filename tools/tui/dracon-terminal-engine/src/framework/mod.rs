@@ -30,7 +30,7 @@ pub mod widgets;
 pub mod prelude {
     pub use crate::framework::{
         app::{App, Ctx},
-        hitzone::{DragState, HitZone, HitZoneGroup},
+        hitzone::{DragState, HitZone, HitZoneGroup, ScopedZone, ScopedZoneRegistry},
         scroll::ScrollContainer,
         theme::Theme,
         widgets::*,
