@@ -584,13 +584,7 @@ impl TextEditor {
                         }
                         self.cursor_row = 0;
                         self.cursor_col = 0;
-                        if has_shift {
-                            self.update_selection_end();
-                        } else {
-                            self.clear_selection();
-                        }
-                        self.ensure_cursor_visible(area);
-                        return true;
+                        self.finish_nav_move(has_shift, area);
                     }
                     KeyCode::End if has_control => {
                         if has_shift {
@@ -598,19 +592,12 @@ impl TextEditor {
                         }
                         self.cursor_row = self.lines.len().saturating_sub(1);
                         self.cursor_col = self.lines[self.cursor_row].len();
-                        if has_shift {
-                            self.update_selection_end();
-                        } else {
-                            self.clear_selection();
-                        }
-                        self.ensure_cursor_visible(area);
-                        return true;
+                        self.finish_nav_move(has_shift, area);
                     }
                     KeyCode::Home => {
                         if has_shift {
                             self.maybe_start_selection();
                         }
-
                         let line = &self.lines[self.cursor_row];
                         let first_non_whitespace = line
                             .chars()
@@ -618,62 +605,36 @@ impl TextEditor {
                             .find(|(_, c)| !c.is_whitespace())
                             .map(|(i, _)| i)
                             .unwrap_or(0);
-
                         if self.cursor_col == first_non_whitespace {
                             self.cursor_col = 0;
                         } else {
                             self.cursor_col = first_non_whitespace;
                         }
-
-                        if has_shift {
-                            self.update_selection_end();
-                        } else {
-                            self.clear_selection();
-                        }
-                        self.ensure_cursor_visible(area);
-                        return true;
+                        self.finish_nav_move(has_shift, area);
                     }
                     KeyCode::End => {
                         if has_shift {
                             self.maybe_start_selection();
                         }
                         self.cursor_col = self.lines[self.cursor_row].len();
-                        if has_shift {
-                            self.update_selection_end();
-                        } else {
-                            self.clear_selection();
-                        }
-                        self.ensure_cursor_visible(area);
-                        return true;
+                        self.finish_nav_move(has_shift, area);
                     }
                     KeyCode::PageUp => {
                         if has_shift {
                             self.maybe_start_selection();
                         }
                         self.cursor_row = self.cursor_row.saturating_sub(area.height as usize);
-                        if has_shift {
-                            self.update_selection_end();
-                        } else {
-                            self.clear_selection();
-                        }
-                        self.ensure_cursor_visible(area);
-                        return true;
+                        self.finish_nav_move(has_shift, area);
                     }
                     KeyCode::PageDown => {
                         if has_shift {
                             self.maybe_start_selection();
                         }
                         self.cursor_row = std::cmp::min(
-                            self.lines.len() - 1,
+                            self.lines.len().saturating_sub(1),
                             self.cursor_row + area.height as usize,
                         );
-                        if has_shift {
-                            self.update_selection_end();
-                        } else {
-                            self.clear_selection();
-                        }
-                        self.ensure_cursor_visible(area);
-                        return true;
+                        self.finish_nav_move(has_shift, area);
                     }
                     _ => {}
                 }
