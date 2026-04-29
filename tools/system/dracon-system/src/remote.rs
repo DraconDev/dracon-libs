@@ -197,7 +197,7 @@ impl RemoteExecContract for SshRemoteExecProvider {
             .map_err(|e| io::Error::other(format!("exec failed: {e}")))?;
 
         let mut stdout = String::new();
-        channel.read_to_string(&mut stdout)?;
+        channel.read_to_string(&mut stdout).map_err(|e| io::Error::other(format!("read stdout failed: {e}")))?;
 
         let mut stderr = String::new();
         if let Ok(err) = channel.stderr().read_to_string(&mut stderr) {
@@ -247,6 +247,7 @@ fn connect_session(
     let mut sess = ssh2::Session::new().context("failed to create ssh session")?;
     sess.set_tcp_stream(tcp);
     sess.set_blocking(true);
+    sess.set_timeout(timeout.as_millis() as u64);
     sess.handshake().context("ssh handshake failed")?;
 
     if let Ok(mut agent) = sess.agent() {

@@ -3,7 +3,6 @@ use crate::contracts::{
 };
 use std::io;
 use std::process::Command;
-use std::os::unix::process::ParentId;
 use sysinfo::{Disks, Networks, ProcessesToUpdate, System, Users};
 
 fn get_process_uid(pid: u32) -> Option<libc::uid_t> {
@@ -22,34 +21,11 @@ fn current_uid() -> libc::uid_t {
     unsafe { libc::getuid() }
 }
 
-pub struct ProcessController;
-
-impl ProcessControlContract for ProcessController {
-    fn kill_process(&self, pid: u32, signal: Option<i32>) -> io::Result<()> {
-        // SECURITY: Verify the target process belongs to the current user before killing.
-        // This prevents killing arbitrary processes owned by other users.
-        if let Some(target_uid) = get_process_uid(pid) {
-            if target_uid != current_uid() {
-                return Err(io::Error::other(format!(
-                    "Permission denied: process {pid} is owned by uid {} (not {})",
-                    target_uid,
-                    current_uid()
-                )));
-            }
-        }
-
-        let sig = signal.unwrap_or(9).to_string();
-        let status = Command::new("kill")
-            .args([format!("-{sig}"), pid.to_string()])
-            .status()?;
-        if status.success() {
-            Ok(())
-        } else {
-            Err(io::Error::other(format!(
-                "kill failed for pid {pid} (signal {sig})"
-            )))
-        }
-    }
+pub struct SystemSnapshotProvider {
+    sys: System,
+    disks: Disks,
+    networks: Networks,
+    users: Users,
 }
 
 impl SystemSnapshotProvider {
@@ -245,6 +221,16 @@ pub struct ProcessController;
 
 impl ProcessControlContract for ProcessController {
     fn kill_process(&self, pid: u32, signal: Option<i32>) -> io::Result<()> {
+        if let Some(target_uid) = get_process_uid(pid) {
+            if target_uid != current_uid() {
+                return Err(io::Error::other(format!(
+                    "Permission denied: process {pid} is owned by uid {} (not {})",
+                    target_uid,
+                    current_uid()
+                )));
+            }
+        }
+
         let sig = signal.unwrap_or(9).to_string();
         let status = Command::new("kill")
             .args([format!("-{sig}"), pid.to_string()])
