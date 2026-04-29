@@ -1,12 +1,12 @@
 # Project State
 
 ## Current Focus
-Implement interactive breadcrumb navigation, HUD overlay, and tab bar widgets with configurable builders and click handling.
+Introduce an interactive scroll state with full programmatic navigation, a scrollable container widget, and a typed context‑menu builder that adds clearer actions and theming.
 
 ## Completed
-- [x] Added `Breadcrumbs` struct with `from_path`, `with_theme`, `on_navigate`, and `render`/`handle_mouse` methods that return plane and hit zones for each segment
-- [x] Added `Hud` struct with size configuration, position/visibility helpers, `render_text`, and `render_gauge` for progress rendering
-- [x] Added `TabBar` struct with `with_theme`, `set_active`, and `render` method that returns plane and hit zones for each tab
-- [x] Introduced builder‑style methods for theme and configuration in all three widgets
-- [x] Implemented hit‑zone handling to enable click/tap interaction on breadcrumb segments and tabs
-- [x] Provided rendering APIs that integrate with the existing `Plane` and `HitZone` framework
+- [x] Added `ScrollState` with offset, content height, viewport height and methods (`max_offset`, `page_size`, `scroll_up`, `scroll_down`, `scroll_to`, `scroll_page_up/down`, `scroll_to_top/bottom`).
+- [x] Added `ScrollContainer` exposing builder methods (`with_content_height`, `with_viewport_height`, `with_scrollbar`) and key/mouse handling, plus scrollbar rendering.
+- [x] Created a typed `ContextAction` enum and populated it with explicit variants (Open, Edit, Delete, Rename, Copy, Cut, Paste, Separator).
+- [x] Refactored `ContextMenu` with a builder pattern (`new`, `with_theme`) and clarified its purpose in the documentation.
+- [x] Updated related widgets (modal handling) to integrate the new scroll interaction APIs.
+---
