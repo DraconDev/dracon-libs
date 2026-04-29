@@ -1,10 +1,8 @@
 # Project State
 
 ## Current Focus
-Updated `.gitignore` to exclude `runtime/` directory and clean up managed block formatting
+Added secure remote execution contract with shell injection protection
 
 ## Completed
-- [x] Added `runtime/` to ignored paths
-- [x] Removed duplicate `runtime/` exclusion rule
-- [x] Standardized managed block formatting in `.gitignore`
-```
+- [x] Added `exec_program()` method to replace insecure `run_command()` with argument-based execution
+- [x] Marked `run_command()` as deprecated with migration guidance to new API

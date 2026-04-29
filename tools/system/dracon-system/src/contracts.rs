@@ -148,5 +148,13 @@ pub trait RemoteFsContract {
 }
 
 pub trait RemoteExecContract {
+    #[deprecated(note = "Use exec_program() instead to avoid shell injection")]
     fn run_command(&self, connection: &RemoteConnection, command: &str) -> std::io::Result<String>;
+
+    fn exec_program(
+        &self,
+        connection: &RemoteConnection,
+        program: &str,
+        args: &[&str],
+    ) -> std::io::Result<String>;
 }
