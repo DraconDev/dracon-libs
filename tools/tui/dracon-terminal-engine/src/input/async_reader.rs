@@ -8,11 +8,13 @@ use tokio::sync::mpsc;
 #[cfg(feature = "async")]
 use tokio::time::{sleep, Duration};
 
+/// Spawns a task that reads stdin asynchronously and invokes a callback for each input event.
 #[cfg(feature = "async")]
 pub struct AsyncInputReader;
 
 #[cfg(feature = "async")]
 impl AsyncInputReader {
+    /// Spawns the async reader task and returns a handle to it.
     pub fn spawn<F>(mut callback: F) -> tokio::task::JoinHandle<()>
     where
         F: FnMut(crate::input::event::Event) + Send + 'static,

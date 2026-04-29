@@ -1,12 +1,8 @@
 # Project State
 
 ## Current Focus
-Add Tokio-based async support and expand framework documentation to explicitly mention compositor, input parsing, and event loop while updating Cargo metadata and parser doc comment.
+Adds a Tokio‑based async input reader that spawns a task to read stdin and invoke a callback for each input event.
 
 ## Completed
-- [x] Updated Cargo.lock to reflect new dependency resolutions
-- [x] Bumped version in tools/tui/dracon-terminal-engine/Cargo.toml (e.g., to 0.26)
-- [x] Modified framework module comment to describe `App` as owning the terminal, compositor, input parsing, and event loop
-- [x] Changed async feature flag from `async` to `tokio` in input module
-- [x] Updated parser doc comment to use inline code formatting for `Option<Event>`
-- [x] Added clarity around async handling in documentation
+- [x] Add comment documenting the purpose of AsyncInputReader
+- [x] Define AsyncInputReader struct with a spawn method that starts the async reader task
