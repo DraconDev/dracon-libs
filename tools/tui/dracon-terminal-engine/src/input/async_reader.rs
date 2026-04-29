@@ -22,6 +22,7 @@ impl AsyncInputReader {
 
             loop {
                 let n = tokio::task::block_in_place(|| {
+                    use std::io::Read;
                     let mut stdin = std::io::stdin();
                     let mut buf = [0u8; 1024];
                     stdin.read(&mut buf)
@@ -30,16 +31,17 @@ impl AsyncInputReader {
                 match n {
                     Ok(0) | Err(_) => break,
                     Ok(n) => {
-                        let mut buf = [0u8; 1024];
-                        let read_n = tokio::task::block_in_place(|| {
+                        let n2 = tokio::task::block_in_place(|| {
+                            use std::io::Read;
                             let mut stdin = std::io::stdin();
+                            let mut buf = [0u8; 1024];
                             stdin.read(&mut buf)
                         });
-                        match read_n {
+                        match n2 {
                             Ok(0) | Err(_) => break,
-                            Ok(read_n) => {
-                                for &item in buf.iter().take(read_n) {
-                                    if let Some(event) = parser.advance(item) {
+                            Ok(n2) => {
+                                for i in 0..n2 {
+                                    if let Some(event) = parser.advance(i) {
                                         callback(event);
                                     }
                                 }
@@ -70,6 +72,7 @@ impl AsyncInputReader {
 
             loop {
                 let n = tokio::task::block_in_place(|| {
+                    use std::io::Read;
                     let mut stdin = std::io::stdin();
                     let mut buf = [0u8; 1024];
                     stdin.read(&mut buf)
@@ -78,16 +81,17 @@ impl AsyncInputReader {
                 match n {
                     Ok(0) | Err(_) => break,
                     Ok(n) => {
-                        let mut buf = [0u8; 1024];
-                        let read_n = tokio::task::block_in_place(|| {
+                        let n2 = tokio::task::block_in_place(|| {
+                            use std::io::Read;
                             let mut stdin = std::io::stdin();
+                            let mut buf = [0u8; 1024];
                             stdin.read(&mut buf)
                         });
-                        match read_n {
+                        match n2 {
                             Ok(0) | Err(_) => break,
-                            Ok(read_n) => {
-                                for &item in buf.iter().take(read_n) {
-                                    if let Some(event) = parser.advance(item) {
+                            Ok(n2) => {
+                                for i in 0..n2 {
+                                    if let Some(event) = parser.advance(i) {
                                         callback(event);
                                     }
                                 }
