@@ -61,29 +61,26 @@ pub fn poll_input(fd: BorrowedFd, timeout_ms: i32) -> io::Result<bool> {
 
 #[cfg(feature = "async")]
 pub async fn poll_input_async<F: AsFd>(fd: F, timeout_ms: u32) -> io::Result<bool> {
-    use tokio::io::PollEvented;
     use std::time::Duration;
+    use tokio::time::timeout;
 
     let fd = fd.as_fd();
-    let mut pe = PollEvented::new(fd)?;
 
-    let timeout = if timeout_ms == 0 {
-        None
-    } else {
-        Some(Duration::from_millis(timeout_ms as u64))
-    };
+    let result = timeout(Duration::from_millis(timeout_ms as u64), async {
+        let mut buf = [0u8; 1];
+        let mut stdin = std::io::stdin();
+        loop {
+            match stdin.read(&mut buf).await {
+                Ok(0) => return false,
+                Ok(_) => return true,
+                Err(e) if e.kind() == std::io::ErrorKind::WouldBlock => continue,
+                Err(_) => return false,
+            }
+        }
+    }).await;
 
-    pe.readable().await?;
-
-    let mut fds = libc::pollfd {
-        fd: fd.as_raw_fd(),
-        events: libc::POLLIN,
-        revents: 0,
-    };
-
-    let ret = unsafe { libc::poll(&mut fds, 1, timeout_ms as i32) };
-    if ret < 0 {
-        return Err(io::Error::last_os_error());
+    match result {
+        Ok(v) => Ok(v),
+        Err(_) => Ok(false),
     }
-    Ok(ret > 0 && (fds.revents & libc::POLLIN) != 0)
 }
