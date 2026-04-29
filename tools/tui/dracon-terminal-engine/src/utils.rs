@@ -176,19 +176,29 @@ impl SelectionState {
     }
 }
 
+/// File category classification for icon and color styling.
 #[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
 pub enum FileCategory {
+    /// Compressed archives (zip, tar, gz, 7z, etc.)
     Archive,
+    /// Image files (png, jpg, svg, gif, etc.)
     Image,
+    /// Executable scripts (sh, py, js, rs, etc.)
     Script,
+    /// Plain text and source code files
     Text,
+    /// Document files (pdf, doc, xlsx, etc.)
     Document,
+    /// Audio files (mp3, wav, flac, etc.)
     Audio,
+    /// Video files (mp4, mkv, avi, etc.)
     Video,
+    /// Unclassified files
     Other,
 }
 
 impl FileCategory {
+    /// Returns the cyberpunk-style color associated with this file category.
     pub fn cyber_color(&self) -> Color {
         match self {
             FileCategory::Archive => Color::Rgb(255, 50, 80), // Neon Red
