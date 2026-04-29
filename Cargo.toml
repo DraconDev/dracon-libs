@@ -22,8 +22,12 @@ members = [
 ]
 
 [workspace.package]
-version = "20.0.4"
+version = "20.0.5"
 edition = "2021"
+license = "MIT OR Apache-2.0"
+authors = ["Dracon <dracon@void>"]
+repository = "https://github.com/DraconDev/dracon-libs"
+description = "Dracon multi-language Rust libraries for AI, system, media, and developer tooling"
 
 [workspace.dependencies]
 anyhow = "1.0"
