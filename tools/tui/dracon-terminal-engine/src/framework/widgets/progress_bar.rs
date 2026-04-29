@@ -54,7 +54,7 @@ impl crate::framework::widget::Widget for ProgressBar {
         let height = plane.height as usize;
 
         let fill_width = (self.progress * width as f32).round() as usize;
-        let fill_width = fill_width.min(width.saturating_sub(2)).max(1);
+        let fill_width = fill_width.min(width.saturating_sub(2));
 
         for x in 1..fill_width + 1 {
             let idx = ((height / 2) as u16 * plane.width + x as u16) as usize;
