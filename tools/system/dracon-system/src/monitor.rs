@@ -6,19 +6,19 @@ use std::process::Command;
 use std::os::unix::process::ParentId;
 use sysinfo::{Disks, Networks, ProcessesToUpdate, System, Users};
 
-fn get_process_uid(pid: u32) -> Option<uid_t> {
+fn get_process_uid(pid: u32) -> Option<libc::uid_t> {
     let status_path = format!("/proc/{}/status", pid);
     let content = std::fs::read_to_string(&status_path).ok()?;
     for line in content.lines() {
         if line.starts_with("Uid:") {
             let uid_str = line.split_whitespace().nth(1)?;
-            return uid_str.parse::<uid_t>().ok();
+            return uid_str.parse::<libc::uid_t>().ok();
         }
     }
     None
 }
 
-fn current_uid() -> uid_t {
+fn current_uid() -> libc::uid_t {
     unsafe { libc::getuid() }
 }
 

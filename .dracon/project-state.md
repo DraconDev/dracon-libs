@@ -1,8 +1,9 @@
 # Project State
 
 ## Current Focus
-Update Cargo.lock to reflect dependency version changes without modifying source code.
+
+Refining type safety and system call consistency in process monitoring logic
 
 ## Completed
-- [x] Updated Cargo.lock lockfile to reflect new dependency versions (no code changes)
-- [x] Documented lockfile update in project documentation
+- [x] Convert `get_process_uid` function to explicitly return `libc::uid_t` type instead of raw `uid_t`, ensuring consistent handling of user IDs through libc's standard type
+- [x] Update `current_uid` function to use `libc::getuid()` and return `libc::uid_t`, improving portability and eliminating ambiguous type definitions
