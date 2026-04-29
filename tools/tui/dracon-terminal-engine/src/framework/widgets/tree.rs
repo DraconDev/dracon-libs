@@ -1,0 +1,162 @@
+//! Tree widget for hierarchical data display.
+//!
+//! Renders a collapsible tree with expand/collapse state per node.
+
+use unicode_width::UnicodeWidthStr;
+
+use crate::compositor::{Cell, Plane, Styles};
+use crate::framework::theme::Theme;
+use crate::framework::widget::WidgetId;
+use ratatui::layout::Rect;
+
+pub struct TreeNode {
+    pub label: String,
+    pub expanded: bool,
+    pub children: Vec<TreeNode>,
+}
+
+impl TreeNode {
+    pub fn new(label: &str) -> Self {
+        Self {
+            label: label.to_string(),
+            expanded: false,
+            children: Vec::new(),
+        }
+    }
+
+    pub fn add_child(&mut self, child: TreeNode) {
+        self.children.push(child);
+    }
+}
+
+pub struct Tree {
+    id: WidgetId,
+    root: Vec<TreeNode>,
+    selected_path: Vec<usize>,
+    theme: Theme,
+    on_select: Option<Box<dyn FnMut(&str)>>,
+}
+
+impl Tree {
+    pub fn new(id: WidgetId) -> Self {
+        Self {
+            id,
+            root: Vec::new(),
+            selected_path: Vec::new(),
+            theme: Theme::default(),
+            on_select: None,
+        }
+    }
+
+    pub fn with_root(mut self, root: Vec<TreeNode>) -> Self {
+        self.root = root;
+        self
+    }
+
+    pub fn with_theme(mut self, theme: Theme) -> Self {
+        self.theme = theme;
+        self
+    }
+
+    pub fn on_select(mut self, f: impl FnMut(&str) + 'static) -> Self {
+        self.on_select = Some(Box::new(f));
+        self
+    }
+
+    fn get_selected_node<'a>(&self, nodes: &'a [TreeNode], path: &[usize]) -> Option<(&'a TreeNode, usize)> {
+        if path.is_empty() {
+            return None;
+        }
+        let idx = path[0];
+        if idx >= nodes.len() {
+            return None;
+        }
+        if path.len() == 1 {
+            return Some((&nodes[idx], idx));
+        }
+        Self::get_selected_node(&nodes[idx].children, &path[1..])
+    }
+
+    fn toggle_expand(&mut self, path: &[usize]) {
+        if let Some((node, _)) = self.get_selected_node(&self.root, path) {
+            node.expanded = !node.expanded;
+        }
+    }
+}
+
+impl crate::framework::widget::Widget for Tree {
+    fn id(&self) -> WidgetId {
+        self.id
+    }
+
+    fn render(&self, area: Rect) -> Plane {
+        let mut plane = Plane::new(0, area.width, area.height);
+        plane.z_index = 10;
+
+        let width = plane.cells.len() / plane.height as usize;
+        let mut row = 0usize;
+
+        fn render_node(
+            node: &TreeNode,
+            prefix: &str,
+            plane: &mut Plane,
+            theme: &Theme,
+            width: usize,
+            row: &mut usize,
+        ) {
+            if *row >= plane.height as usize {
+                return;
+            }
+            let line = format!("{}{}", prefix, if node.expanded { "- " } else { "+ " });
+            let label_len = line.width().min(width);
+            for (i, c) in line.chars().take(width).enumerate() {
+                let idx = (*row as u16 * plane.width + i as u16) as usize;
+                if idx < plane.cells.len() {
+                    plane.cells[idx] = Cell {
+                        char: c,
+                        fg: theme.fg,
+                        bg: theme.bg,
+                        style: Styles::empty(),
+                        transparent: false,
+                        skip: false,
+                    };
+                }
+            }
+            *row += 1;
+
+            if node.expanded {
+                for child in &node.children {
+                    let child_prefix = if node.expanded { "  " } else { "" };
+                    render_node(child, child_prefix, plane, theme, width, row);
+                }
+            }
+        }
+
+        for node in &self.root {
+            render_node(node, "", &mut plane, &self.theme, width, &mut row);
+        }
+
+        plane
+    }
+
+    fn handle_key(&mut self, key: crate::input::event::KeyEvent) -> bool {
+        use crate::input::event::KeyCode;
+        match key.code {
+            KeyCode::Enter => {
+                if !self.selected_path.is_empty() {
+                    self.toggle_expand(&self.selected_path);
+                }
+                true
+            }
+            KeyCode::Down if !self.selected_path.is_empty() => {
+                if let Some((node, _)) = self.get_selected_node(&self.root, &self.selected_path) {
+                    if node.expanded && !node.children.is_empty() {
+                        self.selected_path.push(0);
+                    }
+                }
+                true
+            }
+            _ => false,
+        }
+    }
+}
