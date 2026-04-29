@@ -7,6 +7,7 @@ use crate::framework::theme::Theme;
 use crate::framework::widget::WidgetId;
 use ratatui::layout::Rect;
 
+/// A horizontal slider for selecting a value within a range.
 pub struct Slider {
     id: WidgetId,
     value: f32,
@@ -17,6 +18,7 @@ pub struct Slider {
 }
 
 impl Slider {
+    /// Creates a new slider with the given ID.
     pub fn new(id: WidgetId) -> Self {
         Self {
             id,
@@ -28,6 +30,7 @@ impl Slider {
         }
     }
 
+    /// Sets the minimum and maximum values for the slider.
     pub fn with_range(mut self, min: f32, max: f32) -> Self {
         self.min = min;
         self.max = max;
@@ -35,20 +38,24 @@ impl Slider {
         self
     }
 
+    /// Sets the theme for this widget.
     pub fn with_theme(mut self, theme: Theme) -> Self {
         self.theme = theme;
         self
     }
 
+    /// Registers a callback when the slider value changes.
     pub fn on_change(mut self, f: impl FnMut(f32) + 'static) -> Self {
         self.on_change = Some(Box::new(f));
         self
     }
 
+    /// Sets the current value of the slider.
     pub fn set_value(&mut self, value: f32) {
         self.value = value.clamp(self.min, self.max);
     }
 
+    /// Returns the current value of the slider.
     pub fn value(&self) -> f32 {
         self.value
     }
@@ -132,7 +139,7 @@ impl crate::framework::widget::Widget for Slider {
         plane
     }
 
-    fn handle_mouse(&mut self, kind: crate::input::event::MouseEventKind, col: u16, row: u16) -> bool {
+    fn handle_mouse(&mut self, kind: crate::input::event::MouseEventKind, col: u16, _row: u16) -> bool {
         match kind {
             crate::input::event::MouseEventKind::Drag(_) => {
                 let width = 80u16;

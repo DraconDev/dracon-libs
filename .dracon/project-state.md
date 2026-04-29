@@ -1,9 +1,12 @@
 # Project State
 
 ## Current Focus
-Add Form widget with error handling and Select widget with dropdown functionality
+Adds range, theme, and change‑callback support to the Slider widget while simplifying mouse handling.
 
 ## Completed
-- [x] Introduced FormField struct for labeled inputs with optional error messages
-- [x] Added Form widget with methods to create, add fields, set theme, set field value/error
-- [x] Introduced Select dropdown widget with options, theme, change callback, and selection query methods
+- [x] Added `with_range` method to configure minimum and maximum values
+- [x] Added `with_theme` method to attach a theme
+- [x] Added `on_change` method for registering a value‑change callback
+- [x] Added `set_value` and `value` methods for mutable and read access to the slider value
+- [x] Added `min` and `max` fields to store the slider’s range
+- [x] Modified `handle_mouse` to drop the unused `row` parameter
