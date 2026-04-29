@@ -1,7 +1,8 @@
 # Project State
 
 ## Current Focus
-fix(dragdrop): add `'static` bound to `Default` implementation for `DragManager<T>` to match struct impl requirements
+Bump dracon-terminal-engine version to v26.0.0
 
 ## Completed
-- [x] fix(dragdrop): align `Default` trait bounds with struct requirements by adding `'static` bound to `DragManager<T>` implementation
+- [x] Updated version string in README.md from v25.1.0 to v26.0.0
+- [x] Updated Cargo.lock to reflect new dependency versions
