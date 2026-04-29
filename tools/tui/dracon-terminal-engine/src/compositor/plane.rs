@@ -51,9 +51,6 @@ impl Default for Cell {
 
 use crate::compositor::filter::Filter;
 
-/// A layer in the "God Mode" Compositor.
-/// Planes are Z-indexed and can be moved efficiently.
-#[allow(dead_code)]
 pub struct Plane {
     pub id: usize,
     pub z_index: i32,

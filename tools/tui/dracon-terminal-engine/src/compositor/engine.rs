@@ -18,7 +18,6 @@ impl Compositor {
         }
     }
 
-    #[allow(dead_code)]
     pub fn tick(&mut self, _delta: f32) {
     }
 
@@ -52,7 +51,6 @@ impl Compositor {
         self.sort_planes();
     }
 
-    #[allow(dead_code)]
     pub fn draw_text(&mut self, text: &str, x: u16, y: u16, fg: Color, bg: Color, style: Styles) {
         let mut plane = Plane::new(0, text.len() as u16, 1);
         plane.x = x;
@@ -74,8 +72,6 @@ impl Compositor {
         self.add_plane(plane);
     }
 
-    #[allow(clippy::too_many_arguments)]
-    #[allow(dead_code)]
     pub fn draw_rect(
         &mut self,
         x: u16,
