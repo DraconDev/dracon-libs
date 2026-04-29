@@ -1,8 +1,8 @@
 # Project State
 
 ## Current Focus
-Add Styles bitflags for text styling flags in the compositor plane module.
+Refactor button iteration to drop unused label and unused button rectangle variable
 
 ## Completed
-- [x] Defined `Styles` bitflags type with derives and documentation comment
-- [x] Added comment preceding the bitflags definition
+- [x] Remove label from button iteration in Modal rendering
+- [x] Remove unused btn_rect variable creation

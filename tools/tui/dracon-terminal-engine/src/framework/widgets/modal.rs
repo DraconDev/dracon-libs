@@ -104,9 +104,8 @@ impl<'a> Modal<'a> {
         let btn_y = self.height - 2;
 
         let mut zones = Vec::new();
-        for (i, (label, result)) in self.buttons.iter().enumerate() {
+        for (i, (_, result)) in self.buttons.iter().enumerate() {
             let bx = btn_start + (i as u16) * (btn_width + 1);
-            let btn_rect = Rect::new(x + bx, y + btn_y, btn_width, 1);
 
             let bg = self.theme.active_bg;
             let fg = self.theme.fg;
