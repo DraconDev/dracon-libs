@@ -113,6 +113,7 @@ impl TextEditor {
         self.finish_nav_move(has_shift, area);
     }
 
+    /// Sets the filter query and updates the visible line indices.
     pub fn set_filter(&mut self, query: &str) {
         if self.filter_query == query {
             return;
@@ -182,6 +183,7 @@ impl TextEditor {
         }
     }
 
+    /// Converts a byte column index to a visual (display) column position.
     pub fn get_visual_x(&self, row: usize, byte_col: usize) -> usize {
         if row >= self.effective_len() {
             return 0;
@@ -676,6 +678,7 @@ impl TextEditor {
         false
     }
 
+    /// Handles mouse events for cursor positioning and selection.
     pub fn handle_mouse_event(&mut self, mouse: MouseEvent, area: Rect) -> bool {
         if mouse.column < area.x
             || mouse.column >= area.x + area.width
@@ -847,6 +850,7 @@ impl TextEditor {
         false
     }
 
+    /// Pushes the current state onto the undo history stack.
     pub fn push_history(&mut self) {
         if let Some(last) = self.history.last() {
             if last == &self.lines {
@@ -1021,6 +1025,7 @@ impl TextEditor {
         self.invalidate_from(self.cursor_row);
     }
 
+    /// Ensures the cursor column is valid (on a character boundary).
     pub fn ensure_valid_cursor_col(&mut self) {
         if self.cursor_row >= self.lines.len() {
             self.cursor_row = self.lines.len().saturating_sub(1);
@@ -1173,6 +1178,7 @@ impl TextEditor {
         }
     }
 
+    /// Moves the current line up by swapping with the line above.
     pub fn move_line_up(&mut self) {
         if self.cursor_row > 0 {
             self.push_history();
@@ -1184,6 +1190,7 @@ impl TextEditor {
         }
     }
 
+    /// Moves the current line down by swapping with the line below.
     pub fn move_line_down(&mut self) {
         if self.cursor_row < self.lines.len().saturating_sub(1) {
             self.push_history();
@@ -1195,6 +1202,7 @@ impl TextEditor {
         }
     }
 
+    /// Ensures the cursor is centered in the visible area.
     pub fn ensure_cursor_centered(&mut self, area: Rect) {
         let height = area.height as usize;
         let target_scroll = self.cursor_row.saturating_sub(height / 2);
@@ -1217,6 +1225,7 @@ impl TextEditor {
         }
     }
 
+    /// Returns the visual row index for a given line index, accounting for wrapping.
     pub fn get_visual_row_at(&self, row: usize, width: usize) -> usize {
         let mut visual_row = 0;
         for i in 0..row {
@@ -1235,6 +1244,7 @@ impl TextEditor {
         visual_row
     }
 
+    /// Returns the visual row index of the cursor, accounting for wrapping.
     pub fn get_cursor_visual_row(&self, width: usize) -> usize {
         let mut visual_row = self.get_visual_row_at(self.cursor_row, width);
 
@@ -1265,6 +1275,7 @@ impl TextEditor {
         None
     }
 
+    /// Ensures the cursor is visible, scrolling if necessary.
     pub fn ensure_cursor_visible(&mut self, area: Rect) {
         let height = area.height as usize;
         let gutter = self.gutter_width();
@@ -1307,6 +1318,7 @@ impl TextEditor {
         }
     }
 
+    /// Returns the selection range as `Option<((start_row, start_col), (end_row, end_col))>`.
     pub fn get_selection_range(&self) -> Option<((usize, usize), (usize, usize))> {
         let start = self.selection_start?;
         let end = self.selection_end?;
@@ -1317,16 +1329,19 @@ impl TextEditor {
         }
     }
 
+    /// Starts a selection at the current cursor position if no selection exists.
     pub fn maybe_start_selection(&mut self) {
         if self.selection_start.is_none() {
             self.selection_start = Some((self.cursor_row, self.cursor_col));
         }
     }
 
+    /// Updates the selection end to the current cursor position.
     pub fn update_selection_end(&mut self) {
         self.selection_end = Some((self.cursor_row, self.cursor_col));
     }
 
+    /// Clears the current selection.
     pub fn clear_selection(&mut self) {
         self.selection_start = None;
         self.selection_end = None;
@@ -1334,6 +1349,7 @@ impl TextEditor {
         self.is_dragging_selection = false;
     }
 
+    /// Returns `true` if the given position is inside the current selection.
     pub fn is_inside_selection(&self, row: usize, byte_col: usize) -> bool {
         if let Some(((s_row, s_col), (e_row, e_col))) = self.get_selection_range() {
             if row > s_row && row < e_row {
@@ -1352,6 +1368,7 @@ impl TextEditor {
         false
     }
 
+    /// Returns the selected text content, or `None` if no selection exists.
     pub fn get_selected_text(&self) -> Option<String> {
         let ((s_row, s_col), (e_row, e_col)) = self.get_selection_range()?;
 
@@ -1382,6 +1399,7 @@ impl TextEditor {
         Some(result)
     }
 
+    /// Deletes the current selection.
     pub fn delete_selection(&mut self) {
         if let Some(((s_row, s_col), (e_row, e_col))) = self.get_selection_range() {
             if s_row == e_row {
@@ -1421,6 +1439,7 @@ impl TextEditor {
         }
     }
 
+    /// Moves the selection to a new position, deleting it first and re-inserting at the target.
     pub fn move_selection_to(&mut self, target_row: usize, target_col: usize) {
         let text = if let Some(t) = self.get_selected_text() {
             t
@@ -1462,6 +1481,7 @@ impl TextEditor {
         self.insert_string(&text);
     }
 
+    /// Inserts a string at the current cursor position.
     pub fn insert_string(&mut self, text: &str) {
         self.push_history();
         // Delete selection if active
@@ -1482,6 +1502,7 @@ impl TextEditor {
         self.invalidate_from(0);
     }
 
+    /// Selects all text in the editor.
     pub fn select_all(&mut self) {
         self.selection_start = Some((0, 0));
         let last_row = self.lines.len().saturating_sub(1);
@@ -1492,6 +1513,7 @@ impl TextEditor {
         self.is_selecting = false;
     }
 
+    /// Selects the word at the given position.
     pub fn select_word_at(&mut self, row: usize, col: usize) {
         if row >= self.lines.len() {
             return;
@@ -1539,6 +1561,7 @@ impl TextEditor {
         }
     }
 
+    /// Selects the entire line at the given row.
     pub fn select_line_at(&mut self, row: usize) {
         if row >= self.lines.len() {
             return;
@@ -1551,6 +1574,7 @@ impl TextEditor {
         self.is_selecting = false;
     }
 
+    /// Deletes the entire line at the given row.
     pub fn delete_line(&mut self, row: usize) {
         if self.lines.len() > 1 {
             self.push_history();

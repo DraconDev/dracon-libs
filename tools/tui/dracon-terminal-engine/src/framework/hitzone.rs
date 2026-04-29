@@ -22,11 +22,29 @@ pub enum ClickKind {
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum DragState {
     /// Drag started at the given coordinates.
-    Started { x: u16, y: u16 },
+    /// Drag started at the given coordinates.
+    Started {
+        /// X coordinate.
+        x: u16,
+        /// Y coordinate.
+        y: u16,
+    },
     /// Drag moved to the given coordinates.
-    Moved { x: u16, y: u16 },
+    /// Drag moved to the given coordinates.
+    Moved {
+        /// X coordinate.
+        x: u16,
+        /// Y coordinate.
+        y: u16,
+    },
     /// Drag ended at the given coordinates.
-    Ended { x: u16, y: u16 },
+    /// Drag ended at the given coordinates.
+    Ended {
+        /// X coordinate.
+        x: u16,
+        /// Y coordinate.
+        y: u16,
+    },
 }
 
 /// A rectangular interactive zone with typed ID and mouse/drag callbacks.

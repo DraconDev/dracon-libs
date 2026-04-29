@@ -1,3 +1,8 @@
+//! Ratatui backend integration for the terminal engine.
+//!
+//! This module provides a [`Backend`] implementation that bridges
+//! [`Ratatui`](ratatui) with the terminal engine's compositor.
+
 use crate::compositor::engine::{map_color, Compositor};
 use crate::compositor::plane::Plane;
 use crate::core::terminal::Terminal;
@@ -7,6 +12,7 @@ use std::io::{self, Write};
 use std::os::fd::AsFd;
 use unicode_width::UnicodeWidthStr;
 
+/// A ratatui backend that renders to the terminal compositor.
 pub struct RatatuiBackend<W: io::Write + std::os::fd::AsFd> {
     inner: Terminal<W>,
     compositor: Compositor,
