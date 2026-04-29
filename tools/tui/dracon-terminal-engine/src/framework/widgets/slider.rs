@@ -15,6 +15,7 @@ pub struct Slider {
     max: f32,
     theme: Theme,
     on_change: Option<Box<dyn FnMut(f32)>>,
+    last_area_width: u16,
 }
 
 impl Slider {
@@ -27,6 +28,7 @@ impl Slider {
             max: 1.0,
             theme: Theme::default(),
             on_change: None,
+            last_area_width: 80,
         }
     }
 
