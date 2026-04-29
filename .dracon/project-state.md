@@ -1,8 +1,9 @@
 # Project State
 
 ## Current Focus
-Fix bounds handling in the compositor and improve parsing of system disk information.
+refactor(terminal): Replace SyncGuard struct with standalone `begin_sync` and `end_sync` functions for terminal synchronized output mode 2026
 
 ## Completed
-- [x] refactor(compositor): replace direct addition with `saturating_add` to prevent overflow when computing plane boundaries and pixel coordinates, ensuring safe bounds checks during rendering.
-- [x] refactor(system_monitor): change disk info parsing to split on null characters (`'\x00'`), filter out empty segments, enforce a minimum number of fields, and safely unwrap optional values, eliminating crashes on malformed output.
+- [x] Remove `SyncGuard` struct and convert `begin`/`end` methods to standalone functions `begin_sync` and `end_sync`
+- [x] Simplify import statement from `use std::io::{self, Write}` to `use std::io::Write`
+- [x] Retain synchronized output functionality using escape codes `\x1b[?2026h` (enable) and `\x1b[?2026l` (disable)
