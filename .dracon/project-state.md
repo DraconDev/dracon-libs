@@ -1,9 +1,10 @@
 # Project State
 
 ## Current Focus
-Remove ProgressBar widget implementation and drop unused Color import in Toggle
+Added stateful methods and theme callback to Checkbox widget; updated color usage in Radio and Spinner.
 
 ## Completed
-- [x] Removed entire ProgressBar struct, impl, and related Theme usage from progress_bar.rs
-- [x] Deleted progress bar rendering logic and associated helper methods
-- [x] Removed unnecessary `Color` import from toggle.rs
+- [x] Exposed `with_theme`, `on_change`, `check`, `uncheck`, `toggle`, and `is_checked` methods on Checkbox
+- [x] Modified Radio to use `theme.accent` for selected state instead of `primary_fg`
+- [x] Modified Spinner to use `theme.accent` for spinner characters instead of `primary_fg`
+- [x] Introduced ProgressBar widget implementation.

@@ -9,6 +9,7 @@ use crate::framework::theme::Theme;
 use crate::framework::widget::WidgetId;
 use ratatui::layout::Rect;
 
+/// A toggle switch widget.
 pub struct Toggle {
     id: WidgetId,
     state: bool,

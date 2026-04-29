@@ -8,6 +8,7 @@ use crate::framework::theme::Theme;
 use crate::framework::widget::WidgetId;
 use ratatui::layout::Rect;
 
+/// A spinner widget.
 pub struct Spinner {
     id: WidgetId,
     frames: Vec<char>,
@@ -72,7 +73,7 @@ impl crate::framework::widget::Widget for Spinner {
         if idx < plane.cells.len() {
             plane.cells[idx] = Cell {
                 char: frame,
-                fg: self.theme.primary_fg,
+                fg: self.theme.accent,
                 bg: self.theme.bg,
                 style: Styles::empty(),
                 transparent: false,

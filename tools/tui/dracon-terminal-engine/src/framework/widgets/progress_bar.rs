@@ -7,6 +7,7 @@ use crate::framework::theme::Theme;
 use crate::framework::widget::WidgetId;
 use ratatui::layout::Rect;
 
+/// A progress bar widget.
 pub struct ProgressBar {
     id: WidgetId,
     progress: f32,

@@ -9,6 +9,7 @@ use crate::framework::theme::Theme;
 use crate::framework::widget::WidgetId;
 use ratatui::layout::Rect;
 
+/// A checkbox widget.
 pub struct Checkbox {
     id: WidgetId,
     checked: bool,
@@ -18,6 +19,7 @@ pub struct Checkbox {
 }
 
 impl Checkbox {
+    /// Creates a new checkbox with the given id and label.
     pub fn new(id: WidgetId, label: &str) -> Self {
         Self {
             id,
@@ -28,28 +30,34 @@ impl Checkbox {
         }
     }
 
+    /// Sets the theme for this checkbox.
     pub fn with_theme(mut self, theme: Theme) -> Self {
         self.theme = theme;
         self
     }
 
+    /// Sets the callback for when the checkbox state changes.
     pub fn on_change(mut self, f: impl FnMut(bool) + 'static) -> Self {
         self.on_change = Some(Box::new(f));
         self
     }
 
+    /// Checks the checkbox.
     pub fn check(&mut self) {
         self.checked = true;
     }
 
+    /// Unchecks the checkbox.
     pub fn uncheck(&mut self) {
         self.checked = false;
     }
 
+    /// Toggles the checkbox state.
     pub fn toggle(&mut self) {
         self.checked = !self.checked;
     }
 
+    /// Returns whether the checkbox is checked.
     pub fn is_checked(&self) -> bool {
         self.checked
     }

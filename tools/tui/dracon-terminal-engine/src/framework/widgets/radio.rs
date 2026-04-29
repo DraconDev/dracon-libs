@@ -9,6 +9,7 @@ use crate::framework::theme::Theme;
 use crate::framework::widget::WidgetId;
 use ratatui::layout::Rect;
 
+/// A radio button widget.
 pub struct Radio {
     id: WidgetId,
     selected: bool,
@@ -71,7 +72,7 @@ impl crate::framework::widget::Widget for Radio {
         let start_y = height.saturating_sub(1) / 2;
 
         let fg = if self.selected {
-            self.theme.primary_fg
+            self.theme.accent
         } else {
             self.theme.fg
         };
