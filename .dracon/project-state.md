@@ -1,13 +1,18 @@
 # Project State
 
 ## Current Focus
-Improve voice resolution and Git information handling, update dependency synchronization, and optimize remote execution.
+New integration tests for Git service functionality added to ensure repository operations work as expected.
 
 ## Completed
-- **`tools/media/dracon-tts-runtime/src/kokoro.rs`**: Implement voice resolution and fetch voice description from a list.
-- **`tools/sync/dracon-git/src/cli.rs`**: Ignore assignment of default values and address synthesizer naming - add check for `changed` in line parsing and populate git stats if line is `changed`.
-- **`tools/sync/dracon-git/src/intent.rs`**: Address syntax error related to usage of indentation symbols in Rust, and handle git log extraction from active board.
-- **`tools/sync/dracon-git/src/lib.rs`**: Synchronize git service information including status tracking, delegates, and finding file pattern. Allow tracking of git commit stats.
-- **`tools/system/dracon-system/src/lib.rs`**: Include evaluation of system OS release data to generate system agent response.
-- **`tools/system/dracon-system/src/remote.rs`**: Incorporate secure remote execution with system SSH settings and program using reverse ssh tunnel.
-- **Chore sync(Cargo.lock)**: Synchronize dependencies across core crates after security speculation, apply changes across tool.
+- [x] Integration tests for GitService in dracon-git module added
+- [x] Tests verify valid repository creation and error handling on invalid paths
+- [x] Tests confirm detection of existing Git repositories
+- [x] Tests check for clean and dirty repository statuses
+- [x] Tests validate retrieval of recent commits
+- [x] Tests for commit message generation and intent extraction implemented
+
+## Up Next
+- Ensure new tests run successfully and don’t break existing functionality
+- Add results from test runs to project status tracker
+- Update dependency synchronization in case new libraries were introduced in tests
+- Review and potentially optimize test performance if necessary
