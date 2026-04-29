@@ -65,9 +65,9 @@ impl VoiceInfo {
 pub type TtsResult<T> = anyhow::Result<T>;
 
 pub trait TextToSpeech: Send + Sync {
-    fn speak(&self, text: &str);
+    fn speak(&self, text: &str) -> TtsResult<()>;
 
-    fn stop(&self);
+    fn stop(&self) -> TtsResult<()>;
 
     fn is_speaking(&self) -> bool;
 
@@ -81,9 +81,9 @@ pub trait TextToSpeech: Send + Sync {
 pub trait VoiceProvider: Send + Sync {
     fn list_voices(&self) -> Vec<VoiceInfo>;
 
-    fn set_voice(&self, voice: &str) -> bool;
+    fn set_voice(&self, voice: &str) -> TtsResult<bool>;
 
-    fn current_voice(&self) -> VoiceInfo;
+    fn current_voice(&self) -> TtsResult<VoiceInfo>;
 
     fn resolve_voice(&self, name: &str) -> Option<VoiceInfo> {
         let name_lower = name.to_lowercase();
@@ -140,12 +140,12 @@ impl DynTtsEngine {
         self
     }
 
-    pub fn speak(&self, text: &str) {
-        self.inner.speak(text);
+    pub fn speak(&self, text: &str) -> TtsResult<()> {
+        self.inner.speak(text)
     }
 
-    pub fn stop(&self) {
-        self.inner.stop();
+    pub fn stop(&self) -> TtsResult<()> {
+        self.inner.stop()
     }
 
     pub fn is_speaking(&self) -> bool {

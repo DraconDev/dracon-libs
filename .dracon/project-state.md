@@ -1,8 +1,9 @@
 # Project State
 
 ## Current Focus
-Added a new `framework_file_manager` example to showcase the file‑manager UI.
+Upgrade TTS contracts to surface errors via TtsResult for reliable failure handling and propagation.
 
 ## Completed
-- [x] Inserted the `framework_file_manager` command into the README example list
-- [x] Updated the README formatting to include the new command and its description
+- [x] Modify TextToSpeech::speak and TextToSpeech::stop to return TtsResult<()> so callers can detect and handle synthesis or interruption failures.
+- [x] Adjust VoiceProvider::set_voice and VoiceProvider::current_voice to return TtsResult<bool> and TtsResult<VoiceInfo>, replacing silent bool fallbacks with explicit error reporting.
+- [x] Update DynTtsEngine::speak and DynTtsEngine::stop to propagate results from the inner implementation rather than discarding them.
