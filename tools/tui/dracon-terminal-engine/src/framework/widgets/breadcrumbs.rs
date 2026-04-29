@@ -157,7 +157,6 @@ impl Breadcrumbs {
         let mut x: u16 = 0;
 
         for (i, segment) in self.segments.iter().enumerate() {
-            let is_last = i == self.segments.len() - 1;
             let is_first = i == 0;
 
             let seg_width = (segment.len() as u16 + 2).min(80u16.saturating_sub(x));

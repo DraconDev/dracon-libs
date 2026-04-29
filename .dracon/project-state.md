@@ -1,7 +1,7 @@
 # Project State
 
 ## Current Focus
-Remove unused Rect creation in Breadcrumbs widget
+Remove unused `is_last` variable from Breadcrumbs widget rendering loop
 
 ## Completed
-- [x] Remove unused Rect creation in breadcrumbs.rs
+- [x] Remove unused `is_last` variable from breadcrumbs rendering loop
