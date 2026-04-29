@@ -34,12 +34,12 @@ fn test_git_service_new_invalid_path() {
     assert!(result.is_err());
 }
 
-#[test]
-fn test_git_service_is_repo() {
+#[tokio::test]
+async fn test_git_service_is_repo() {
     let tmp = TempDir::new().unwrap();
     setup_repo(tmp.path());
     let svc = dracon_git::GitService::new(tmp.path()).unwrap();
-    let is_repo = svc.is_git_repo();
+    let is_repo = svc.is_git_repo().await.unwrap();
     assert!(is_repo);
 }
 
@@ -103,10 +103,9 @@ async fn test_git_service_get_recent_commits() {
         .unwrap();
 
     let svc = dracon_git::GitService::new(tmp.path()).unwrap();
-    let commits = svc.get_recent_commits(5).await.unwrap();
-    assert_eq!(commits.len(), 2);
-    assert_eq!(commits[0].message.as_deref().unwrap(), "second");
-    assert_eq!(commits[1].message.as_deref().unwrap(), "first");
+    let diff_entries = svc.get_diff_entries().await.unwrap();
+    assert_eq!(diff_entries.len(), 1);
+    assert_eq!(diff_entries[0].path.to_str().unwrap(), "b.txt");
 }
 
 #[test]

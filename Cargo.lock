@@ -1239,7 +1239,7 @@ dependencies = [
 
 [[package]]
 name = "dracon-git"
-version = "13.4.0"
+version = "13.4.2"
 dependencies = [
  "anyhow",
  "git2",
@@ -1260,7 +1260,7 @@ dependencies = [
 
 [[package]]
 name = "dracon-memory-runtime"
-version = "13.4.0"
+version = "13.4.2"
 dependencies = [
  "anyhow",
  "chrono",
@@ -1275,7 +1275,7 @@ dependencies = [
 
 [[package]]
 name = "dracon-stt-runtime"
-version = "13.4.0"
+version = "13.4.2"
 dependencies = [
  "anyhow",
  "candle-core",
@@ -1328,7 +1328,7 @@ dependencies = [
 
 [[package]]
 name = "dracon-tts-runtime"
-version = "13.4.0"
+version = "13.4.2"
 dependencies = [
  "anyhow",
  "futures",
