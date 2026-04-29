@@ -1,8 +1,8 @@
 # Project State
 
 ## Current Focus
-Implement a secure process‑kill controller that validates ownership before terminating a process.
+Update Cargo.lock to reflect dependency version changes without modifying source code.
 
 ## Completed
-- [x] Added `ProcessController` implementing `ProcessControlContract` with UID verification and safe kill execution.
-- [x] Introduced helper functions `get_process_uid` and `current_uid` to fetch process owner IDs and enforce permission checks.
+- [x] Updated Cargo.lock lockfile to reflect new dependency versions (no code changes)
+- [x] Documented lockfile update in project documentation
