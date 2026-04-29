@@ -1,10 +1,10 @@
 # Project State
 
 ## Current Focus
-refactor(editor): remove unused cursor position tracking code in TextEditor widget
+Refactor terminal cursor tracking logic in GUI widgets
 
 ## Completed
-- [x] removed unused `_cursor_screen_pos` variable that was never assigned or used
-- [x] removed unused `_real_line_idx` variable call in line iteration loop
-- [x] removed dead code block for cursor detection in wrapped lines (commented as "hard")
-- [x] removed unused `_is_last_segment` variable and related incomplete cursor logic in terminal engine editor widget
+- [x] Remove redundant cursor style tracking that applied cursor formatting to both text and empty cells
+- [x] Eliminate unused logic for maintaining cursor position state in text buffer cells
+- [x] Simplify cursor rendering behavior to only activate on non-empty characters
+- [x] Ensure empty cell cursor handling defaults to terminal-native empty cell representation

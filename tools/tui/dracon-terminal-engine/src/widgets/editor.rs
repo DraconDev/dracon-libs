@@ -2278,10 +2278,8 @@ impl Widget for &TextEditor {
 
             if let Some(cell) = buf.cell_mut((cx, cy)) {
                 if !cell.symbol().is_empty() && cell.symbol() != " " {
-                    // Inverse video for character under cursor
                     cell.set_style(self.cursor_style);
                 } else {
-                    // Block cursor for empty space
                     cell.set_style(self.cursor_style);
                     cell.set_symbol(" ");
                 }
