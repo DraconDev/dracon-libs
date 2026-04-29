@@ -1,8 +1,9 @@
 # Project State
 
 ## Current Focus
-Removed two unit tests that were failing or no longer needed from OnnxEmbedder tests.
+Add new encrypted secret files and update tracking rules for secret handling in the terminal engine.
 
 ## Completed
-- [x] Deleted `test_embedder_new_fails_on_missing_tokenizer` which verified error handling when the tokenizer path was invalid
-- [x] Deleted `test_embed_empty_string_returns_normalized_zeros` which checked that embedding an empty string produced a near‑zero vector
+- [x] Add `owner_nixos.pub` key file to the dracon data directory for encrypted secret management.
+- [x] Extend `.gitattributes` to mark additional secret‑related patterns (bash/zsh/sh history, netrc, terraform lock/vars, known_hosts, credentials, vault.yml, etc.) for dracon filtering, diffing, and merging.
+- [x] Update `.gitignore` to ensure these encrypted secret files are not ignored, preserving them in version control for team collaboration.
