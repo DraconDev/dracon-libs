@@ -14,6 +14,10 @@ pub enum IconMode {
     ASCII,
 }
 
+/// Guesses the appropriate icon rendering mode based on terminal environment variables.
+///
+/// Checks `TERM`, `TERM_PROGRAM`, `TERMINAL_EMULATOR`, and `KONSOLE_VERSION`
+/// to detect Nerd Font-compatible, Unicode, or ASCII-only terminals.
 pub fn guess_icon_mode() -> IconMode {
     let term = std::env::var("TERM").unwrap_or_default().to_lowercase();
     let term_program = std::env::var("TERM_PROGRAM")
@@ -310,6 +314,7 @@ pub fn get_visual_width(c: char) -> usize {
     UnicodeWidthChar::width(c).unwrap_or(1)
 }
 
+/// Removes control characters from a string, preserving displayable characters.
 pub fn squarify(s: &str) -> String {
     s.chars().filter(|c| !c.is_control()).collect()
 }
@@ -344,6 +349,7 @@ pub fn truncate_to_width(s: &str, max_width: usize, suffix: &str) -> String {
     format!("{}{}", truncated, suffix)
 }
 
+/// Checks if a command exists in the system PATH.
 pub fn command_exists(cmd: &str) -> bool {
     if let Ok(path) = std::env::var("PATH") {
         for p in path.split(':') {
@@ -356,6 +362,8 @@ pub fn command_exists(cmd: &str) -> bool {
     false
 }
 
+/// Spawns a detached process with the given command and arguments.
+/// No waiting, no stdout/stderr capture, no stdin.
 pub fn spawn_detached(cmd: &str, args: Vec<String>) {
     let _ = std::process::Command::new(cmd)
         .args(args)
@@ -365,6 +373,8 @@ pub fn spawn_detached(cmd: &str, args: Vec<String>) {
         .spawn();
 }
 
+/// Formats a byte size into a human-readable string (B, KB, MB, GB, TB).
+/// Formats a byte size into a human-readable string (B, KB, MB, GB, TB).
 pub fn format_size(size: u64) -> String {
     if size >= 1073741824 {
         format!("{:.1} GB", size as f64 / 1073741824.0)
@@ -377,11 +387,13 @@ pub fn format_size(size: u64) -> String {
     }
 }
 
+/// Formats a timestamp into a compact "YYYY-MM-DD HH:MM" string.
 pub fn format_time(time: SystemTime) -> String {
     let datetime: DateTime<Local> = time.into();
     datetime.format("%Y-%m-%d %H:%M").to_string()
 }
 
+/// Formats a timestamp into a smart display: "HH:MM" if today, "YYYY-MM-DD" otherwise.
 pub fn format_datetime_smart(time: SystemTime) -> String {
     use chrono::Datelike;
     let dt: DateTime<Local> = time.into();
@@ -393,6 +405,7 @@ pub fn format_datetime_smart(time: SystemTime) -> String {
     }
 }
 
+/// Formats a Unix file mode into an rwx-style permission string (e.g., "rwxr-xr--").
 pub fn format_permissions(mode: u32) -> String {
     let r = |b| if b & 4 != 0 { "r" } else { "-" };
     let w = |b| if b & 2 != 0 { "w" } else { "-" };
@@ -691,11 +704,13 @@ pub fn draw_stat_bar(
     ));
     Line::from(spans)
 }
+/// Returns true if the first 8KB of bytes contain any null bytes (binary content).
 pub fn is_binary_content(bytes: &[u8]) -> bool {
     // Basic binary check: check for null bytes in the first 8KB
     bytes.iter().take(8192).any(|&b| b == 0)
 }
 
+/// Recursively copies a directory or file to a destination path.
 pub fn copy_recursive(src: &std::path::Path, dst: &std::path::Path) -> std::io::Result<()> {
     if src.is_dir() {
         std::fs::create_dir_all(dst)?;
@@ -714,6 +729,7 @@ pub fn copy_recursive(src: &std::path::Path, dst: &std::path::Path) -> std::io::
     Ok(())
 }
 
+/// Recursively moves a file or directory, with cross-device fallback via copy+delete.
 pub fn move_recursive(src: &std::path::Path, dst: &std::path::Path) -> std::io::Result<()> {
     if src == dst {
         return Ok(());
@@ -748,6 +764,7 @@ pub fn move_recursive(src: &std::path::Path, dst: &std::path::Path) -> std::io::
     }
     Ok(())
 }
+/// Deletes a word backwards from the current cursor position in a string.
 pub fn delete_word_backwards(s: &mut String) {
     if s.is_empty() {
         return;
@@ -1010,6 +1027,7 @@ pub fn check_file_suitability(path: &std::path::Path, max_bytes: u64) -> (bool, 
     (false, false, 0)
 }
 
+/// Sets clipboard text via OSC 52, wl-copy, xclip, or pbcopy (in that order).
 pub fn set_clipboard_text(text: &str) {
     // 1. Try OSC 52 (Internal via stdout)
     {
@@ -1051,6 +1069,7 @@ pub fn set_clipboard_text(text: &str) {
         });
 }
 
+/// Gets clipboard text via wl-paste, xclip, or pbpaste.
 pub fn get_clipboard_text() -> Option<String> {
     std::process::Command::new("wl-paste")
         .output()
