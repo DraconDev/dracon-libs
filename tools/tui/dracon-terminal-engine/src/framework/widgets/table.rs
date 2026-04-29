@@ -205,10 +205,10 @@ impl<T: Clone + ToString> Table<T> {
         (plane, header_zones, row_zones)
     }
 
-    pub fn handle_mouse(&mut self, kind: crate::input::event::MouseEventKind, col: u16, row: u16) -> bool {
+    pub fn handle_mouse(&mut self, kind: crate::input::event::MouseEventKind, _col: u16, row: u16) -> bool {
         if row == 0 {
             for zone in self.columns.iter().enumerate() {
-                let mut z = HitZone::new(zone.0, 0, 0, 0, 0);
+                let _z = HitZone::new(zone.0, 0, 0, 0, 0);
                 // find header hit
             }
             return false;
