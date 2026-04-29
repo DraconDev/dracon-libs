@@ -2,9 +2,9 @@
 //!
 //! A single-line text input optimized for search queries.
 
-use unicode_width::UnicodeWidthStr;
+use unicode_width::{UnicodeWidthChar, UnicodeWidthStr};
 
-use crate::compositor::{Cell, Color, Plane, Styles};
+use crate::compositor::{Cell, Plane, Styles};
 use crate::framework::theme::Theme;
 use crate::framework::widget::WidgetId;
 use ratatui::layout::Rect;
@@ -95,7 +95,7 @@ impl crate::framework::widget::Widget for SearchInput {
             }
             KeyCode::Backspace => {
                 if self.cursor_pos > 0 && !self.query.is_empty() {
-                    let char_width = self.query.chars().nth(self.cursor_pos - 1).map(|c| c.width()).unwrap_or(1);
+                    let char_width = self.query.chars().nth(self.cursor_pos - 1).map(|c| c.width().unwrap_or(1)).unwrap_or(1);
                     self.query.truncate(self.query.len().saturating_sub(char_width.max(1)));
                     self.cursor_pos = self.cursor_pos.saturating_sub(1);
                 }
