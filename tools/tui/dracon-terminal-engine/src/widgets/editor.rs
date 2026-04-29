@@ -688,36 +688,17 @@ impl TextEditor {
                 }
 
                 let (target_row, target_col) = if self.wrap {
-                    // In wrap mode, scroll_row is screen line index.
-                    let screen_row = self.scroll_row + rel_row;
-
-                    // Find which source line and which segment this screen row belongs to
-                    let mut current_screen_row = 0;
-                    let mut found = None;
                     let width = content_width as usize;
-
-                    for i in 0..self.effective_len() {
-                        let line = self.get_effective_line(i);
-                        let w = line.width();
-                        let segments = if w == 0 {
-                            1
-                        } else {
-                            (w.saturating_sub(1) / width) + 1
-                        };
-
-                        if screen_row >= current_screen_row
-                            && screen_row < current_screen_row + segments
-                        {
-                            let segment_idx = screen_row - current_screen_row;
+                    let screen_row = self.scroll_row + rel_row;
+                    match self.source_row_from_visual(screen_row, width) {
+                        Some((row, segment_idx, _)) => {
                             let rel_col = (mouse.column - area.x - gutter as u16) as usize;
                             let visual_x = segment_idx * width + rel_col;
-                            let byte_idx = self.get_byte_index_from_visual(i, visual_x);
-                            found = Some((i, byte_idx));
-                            break;
+                            let byte_idx = self.get_byte_index_from_visual(row, visual_x);
+                            (row, byte_idx)
                         }
-                        current_screen_row += segments;
+                        None => (self.cursor_row, self.cursor_col),
                     }
-                    found.unwrap_or((self.cursor_row, self.cursor_col))
                 } else {
                     let row = self.scroll_row + rel_row;
                     let col = if mouse.column >= area.x + gutter as u16 {
