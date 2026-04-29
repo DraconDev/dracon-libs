@@ -125,26 +125,14 @@ impl TextInput {
                 }
                 KeyCode::Backspace => {
                     if self.cursor_position > 0 {
-                        let mut new_val = String::with_capacity(self.value.len());
-                        for (i, ch) in self.value.chars().enumerate() {
-                            if i != self.cursor_position - 1 {
-                                new_val.push(ch);
-                            }
-                        }
-                        self.value = new_val;
+                        self.value.remove(self.cursor_position - 1);
                         self.cursor_position -= 1;
                         return true;
                     }
                 }
                 KeyCode::Delete => {
                     if self.cursor_position < self.value.len() {
-                        let mut new_val = String::with_capacity(self.value.len());
-                        for (i, ch) in self.value.chars().enumerate() {
-                            if i != self.cursor_position {
-                                new_val.push(ch);
-                            }
-                        }
-                        self.value = new_val;
+                        self.value.remove(self.cursor_position);
                         return true;
                     }
                 }
