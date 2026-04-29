@@ -1175,7 +1175,7 @@ dependencies = [
 
 [[package]]
 name = "dracon-git"
-version = "12.2.0"
+version = "12.6.0"
 dependencies = [
  "anyhow",
  "git2",
@@ -1187,7 +1187,7 @@ dependencies = [
 
 [[package]]
 name = "dracon-memory-runtime"
-version = "12.2.0"
+version = "12.6.0"
 dependencies = [
  "anyhow",
  "chrono",
@@ -1202,7 +1202,7 @@ dependencies = [
 
 [[package]]
 name = "dracon-stt-runtime"
-version = "12.2.0"
+version = "12.6.0"
 dependencies = [
  "anyhow",
  "candle-core",
@@ -1219,7 +1219,7 @@ dependencies = [
 
 [[package]]
 name = "dracon-system"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "anyhow",
  "dirs",
@@ -1255,7 +1255,7 @@ dependencies = [
 
 [[package]]
 name = "dracon-tts-runtime"
-version = "12.2.0"
+version = "12.6.0"
 dependencies = [
  "anyhow",
  "futures",
