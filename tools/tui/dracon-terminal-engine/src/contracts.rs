@@ -20,7 +20,10 @@ pub enum UiEvent {
     /// Periodic tick event for rendering updates.
     Tick,
     /// Keyboard key event.
-    Key { key: Cow<'static, str> },
+    Key {
+        /// The key value.
+        key: Cow<'static, str>,
+    },
     /// Terminal resize event with new dimensions.
     Resize(UiResize),
     /// Request to quit the application.
@@ -191,8 +194,8 @@ pub enum ModifierKeyCode {
     IsoLevel5Shift,
 }
 
-/// Bitflags representing active keyboard modifier keys.
 bitflags! {
+    /// Bitflags representing active keyboard modifier keys.
     #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default, Serialize, Deserialize)]
     pub struct KeyModifiers: u8 {
         /// Shift modifier key.

@@ -1,9 +1,11 @@
 # Project State
 
 ## Current Focus
-Add module‑level documentation and public re‑exports for the compositor and plane components.
+Add UI widget modules, color enum, styling flags, and theme integration
 
 ## Completed
-- [x] Added descriptive module‑level doc comment for the compositor module.
-- [x] Re‑exported engine::Compositor for external use.
-- [x] Re‑exported plane::{Cell, Color, Plane, Styles} types for external access.
+- [x] Add Color enum and Styles bitflags in compositor plane module
+- [x] Update UiEvent Key variant with detailed documentation
+- [x] Add KeyModifiers bitflags with comprehensive derive attributes
+- [x] Introduce theme module and prelude re-exports
+- [x] Refactor widgets into distinct submodules (button, component, context_menu, editor, hotkey, input, panel)
