@@ -70,12 +70,14 @@ impl crate::framework::widget::Widget for Spinner {
 
         let idx = (center_y as u16 * plane.width + center_x as u16) as usize;
         if idx < plane.cells.len() {
-            plane.cells[idx] = Cell::new(
-                frame,
-                Styles::default()
-                    .with_fg(self.theme.primary_fg)
-                    .with_bg(self.theme.bg),
-            );
+            plane.cells[idx] = Cell {
+                char: frame,
+                fg: self.theme.primary_fg,
+                bg: self.theme.bg,
+                style: Styles::empty(),
+                transparent: false,
+                skip: false,
+            };
         }
 
         plane

@@ -2,7 +2,7 @@
 //!
 //! A horizontal progress bar showing completion percentage.
 
-use crate::compositor::{Cell, Plane, Styles};
+use crate::compositor::{Cell, Color, Plane, Styles};
 use crate::framework::theme::Theme;
 use crate::framework::widget::WidgetId;
 use ratatui::layout::Rect;
@@ -65,8 +65,22 @@ impl crate::framework::widget::Widget for ProgressBar {
             }
         }
 
-        let left_bracket = Cell::new('[', Styles::default().with_fg(self.theme.fg));
-        let right_bracket = Cell::new(']', Styles::default().with_fg(self.theme.fg));
+        let left_bracket = Cell {
+            char: '[',
+            fg: self.theme.fg,
+            bg: Color::Default,
+            style: Styles::empty(),
+            transparent: false,
+            skip: false,
+        };
+        let right_bracket = Cell {
+            char: ']',
+            fg: self.theme.fg,
+            bg: Color::Default,
+            style: Styles::empty(),
+            transparent: false,
+            skip: false,
+        };
 
         let left_idx = ((height / 2) as u16 * plane.width) as usize;
         let right_idx = ((height / 2) as u16 * plane.width + (width - 1) as u16) as usize;
