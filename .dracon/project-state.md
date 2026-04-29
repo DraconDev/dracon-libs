@@ -1,8 +1,9 @@
 # Project State
 
 ## Current Focus
-Added FileCategory enum with cyberpunk color mappings for file types
+Refactor the layout system and add code syntax highlighting support
 
 ## Completed
-- [x] Defined enum variants for Archive, Image, Script, Text, Document, Audio, Video, Other
-- [x] Implemented cyber_color method mapping each variant to a neon RGB color
+- [x] Refactored `Stack` layout to use an `orientation` field, `children` collection, and `spacing` support; removed the legacy `Orientation` enum.
+- [x] Added `highlight_code` function that provides syntax highlighting for 50+ languages with cyberpunk-themed styling.
+- [x] Updated `Cargo.lock` to reflect new dependency versions (binary unchanged).

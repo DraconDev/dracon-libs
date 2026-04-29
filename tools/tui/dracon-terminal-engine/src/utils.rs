@@ -436,6 +436,8 @@ use syntect::util::LinesWithEndings;
 static SYNTAX_SET: OnceLock<SyntaxSet> = OnceLock::new();
 static THEME_SET: OnceLock<ThemeSet> = OnceLock::new();
 
+/// Highlights code content using syntect and returns styled ratatui Lines.
+/// Supports syntax highlighting for 50+ languages with cyberpunk color tweaks.
 pub fn highlight_code<'a>(content: &'a str, extension: &str) -> Vec<Line<'a>> {
     let ps = SYNTAX_SET.get_or_init(SyntaxSet::load_defaults_newlines);
     let ts = THEME_SET.get_or_init(ThemeSet::load_defaults);
