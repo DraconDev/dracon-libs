@@ -58,21 +58,3 @@ pub struct SelectionConstraints {
     /// Sampling temperature for generation.
     pub temperature: Option<f32>,
 }
-
-impl RoutingTask {
-    pub fn parse(s: &str) -> Option<Self> {
-        match s.to_lowercase().as_str() {
-            "general" => Some(RoutingTask::General),
-            "code" => Some(RoutingTask::Code),
-            "research" => Some(RoutingTask::Research),
-            "creative" => Some(RoutingTask::Creative),
-            _ => None,
-        }
-    }
-}
-
-#[derive(Debug, Clone, Default)]
-pub struct SelectionConstraints {
-    pub max_tokens: Option<usize>,
-    pub temperature: Option<f32>,
-}
