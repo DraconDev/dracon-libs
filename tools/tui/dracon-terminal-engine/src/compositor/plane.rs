@@ -13,6 +13,8 @@ pub enum Color {
 
 /// Text styling flags for terminal cells.
 bitflags! {
+    #[derive(Clone, Copy, Debug, PartialEq, Eq, Default)]
+    pub struct Styles: u8 {
         /// Bold text.
         const BOLD       = 1 << 0;
         /// Dimmed text.
