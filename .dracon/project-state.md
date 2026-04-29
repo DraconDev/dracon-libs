@@ -1,9 +1,9 @@
 # Project State
 
 ## Current Focus
-Expose compositor and input parser APIs and modernize module documentation for downstream use.
+Remove legacy font asset and tidy module re‑exports in the terminal engine crate.
 
 ## Completed
-- [x] Re-export `Compositor`, `Plane`, `Cell`, `Color`, `Styles` from compositor for external consumers.
-- [x] Re-export `Parser` from input to enable external parsing of SGR mouse and chord sequences.
-- [x] Replace stale module comments with `#[doc = "..."]` attributes for consistent documentation generation.
+- [x] Delete unused `font.ttf` asset from `dracon-terminal-engine` (legacy icon assets removed).
+- [x] Clean up `lib.rs` by eliminating the hidden `contracts` re‑export and simplifying the `input` re‑export block.
+- [x] Update `Cargo.lock` to reflect the lockfile changes after asset removal.

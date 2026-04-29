@@ -77,6 +77,3 @@ pub mod widgets;
 pub use compositor::{Cell, Color, Compositor, Plane, Styles};
 pub use core::terminal::Terminal;
 pub use input::{InputReader, Parser};
-
-#[doc(hidden)]
-pub use contracts;
