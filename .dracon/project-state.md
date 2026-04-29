@@ -1,9 +1,9 @@
 # Project State
-This commit updates the Rust-based terminal UI engine, specifically the Dracon terminal, to align with the Compositor Engine’s latest standards. Changes include modernizing documentation, refactoring compositor structures, and refining input handling and rendering logic for improved UI responsiveness and cross-platform compatibility.
+
+## Current Focus
+Expose compositor and input parser APIs and modernize module documentation for downstream use.
 
 ## Completed
-- Updated Cargo.lock and files related to the Dracon terminal setup
-- Refactored structure modules for better modularity and maintainability
-- Enhanced input support for modern keyboards and SGR mouse
-- Improved visual polish with synchronized rendering and visual consistency
-- Updated documentation to reflect current API usage and Cargo.toml dependencies
+- [x] Re-export `Compositor`, `Plane`, `Cell`, `Color`, `Styles` from compositor for external consumers.
+- [x] Re-export `Parser` from input to enable external parsing of SGR mouse and chord sequences.
+- [x] Replace stale module comments with `#[doc = "..."]` attributes for consistent documentation generation.
