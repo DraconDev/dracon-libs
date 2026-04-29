@@ -1,7 +1,9 @@
 # Project State
 
 ## Current Focus
-Removal of unnecessary mutability for text_color variable in framework_chat.rs
+Refactor example code to simplify bounds calculation and clean unused imports
 
 ## Completed
-- [x] Removed `mut` keyword from `let mut text_color` line, making variable immutable as it is only assigned once.
+- [x] Remove saturating subtraction in display_text iteration bounds calculation
+- [x] Remove unused HitZone import from framework_demo example
+- [x] Rename selected index variable to underscore prefix indicating it is unused
