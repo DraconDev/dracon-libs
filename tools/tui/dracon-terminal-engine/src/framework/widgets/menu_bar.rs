@@ -107,6 +107,7 @@ impl crate::framework::widget::Widget for MenuBar {
     }
 
     fn render(&self, area: Rect) -> Plane {
+        self.last_area_width.set(area.width);
         let mut plane = Plane::new(0, area.width, area.height);
         plane.z_index = 60;
 
