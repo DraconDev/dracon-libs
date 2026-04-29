@@ -38,13 +38,10 @@ impl<T: Clone + ToString> Table<T> {
             columns,
             rows: Vec::new(),
             selected: 0,
-            sort_col: None,
-            sort_asc: true,
             offset: 0,
             visible_count: 10,
             theme: Theme::default(),
             on_select: None,
-            on_sort: None,
         }
     }
 
