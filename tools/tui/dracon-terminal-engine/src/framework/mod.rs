@@ -29,6 +29,7 @@ pub mod focus;
 pub mod hitzone;
 pub mod layout;
 pub mod scroll;
+pub mod sixel;
 /// The theme module.
 pub mod theme;
 pub mod widget;
