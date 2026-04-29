@@ -16,7 +16,7 @@ pub struct Slider {
     max: f32,
     theme: Theme,
     on_change: Option<Box<dyn FnMut(f32)>>,
-    last_area_width: u16,
+    last_area_width: Cell<u16>,
 }
 
 impl Slider {
@@ -29,7 +29,7 @@ impl Slider {
             max: 1.0,
             theme: Theme::default(),
             on_change: None,
-            last_area_width: 80,
+            last_area_width: Cell::new(80),
         }
     }
 
@@ -145,7 +145,7 @@ impl crate::framework::widget::Widget for Slider {
     fn handle_mouse(&mut self, kind: crate::input::event::MouseEventKind, col: u16, _row: u16) -> bool {
         match kind {
             crate::input::event::MouseEventKind::Down(_) | crate::input::event::MouseEventKind::Drag(_) => {
-                let width = self.last_area_width;
+                let width = self.last_area_width.get();
                 let track_width = width.saturating_sub(4);
                 let rel_x = col.saturating_sub(1);
                 if rel_x <= track_width {
