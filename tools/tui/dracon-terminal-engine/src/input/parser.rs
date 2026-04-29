@@ -147,11 +147,11 @@ impl Parser {
                         kind: KeyEventKind::Press,
                     }));
                 }
-                // Handle Ctrl+. (Unit Separator / 31)
+                // Handle Ctrl+_ (Unit Separator / 31) / Ctrl+/
                 31 => {
                     let modifiers = KeyModifiers::CONTROL;
                     return Some(Event::Key(KeyEvent {
-                        code: KeyCode::Char('.'),
+                        code: KeyCode::Char('_'),
                         modifiers,
                         kind: KeyEventKind::Press,
                     }));
@@ -318,7 +318,7 @@ impl Parser {
                     kind: KeyEventKind::Press,
                 }));
             }
-            if second != b'[' && second != b'O' && second != b'2' {
+            if second != b'[' && second != b'O' {
                 let mut modifiers = KeyModifiers::ALT;
                 let key = if (1..=26).contains(&second) {
                     modifiers.insert(KeyModifiers::CONTROL);
@@ -596,7 +596,7 @@ impl Parser {
             }));
         }
 
-        let button = match b & 0b1100_1011 {
+        let button = match b & 0b0000_0011 {
             0 => MouseButton::Left,
             1 => MouseButton::Middle,
             2 => MouseButton::Right,
