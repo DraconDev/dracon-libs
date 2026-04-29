@@ -1,13 +1,11 @@
 # Project State
 
 ## Current Focus
-Upgrade to dracon-terminal-engine v26.0.1 and refresh README to match new API and documentation.
+Remove Color import from widget modules
 
 ## Completed
-- [x] Bumped `dracon-terminal-engine` version from git reference to `26.0.1` in `Cargo.toml`.
-- [x] Updated README code example: replaced `App::new()?` with `.unwrap()`, added `.on_tick` closure, removed `split_h` in favor of `size` and `Rect`‑based rendering.
-- [x] Changed framework version header from “Framework (v25)” to “Framework (v26)”.
-- [x] Updated changelog reference from `v26.0.0` to `v26.0.1`.
-- [x] Added documentation entries for new API items: `App::on_tick`, `App::tick_interval`, `Ctx::split_v`, `ScopedZone<T>`, `ScopedZoneRegistry<T>`, `DragManager<T>`.
-- [x] Revised dependencies section to show version `26.0.1` and optional git tag usage.
-- [x] Removed outdated `split_h` usage and related comments from the example.
+- [x] Drop `Color` from `use crate::compositor` import in list.rs
+- [x] Drop `HitZone` import from list.rs
+- [x] Drop `Color` from `use crate::compositor` import in modal.rs
+- [x] Drop `Color` from `use crate::compositor` import in tabbar.rs
+- [x] Drop `Color` from `use crate::compositor` import in table.rs
