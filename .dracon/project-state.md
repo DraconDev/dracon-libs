@@ -1,7 +1,8 @@
 # Project State
 
 ## Current Focus
-Fixed implementation of source_row mapping for navigation.
+Analyze modified source files to understand the structural and functional updates in the dracon terminal editor.
 
 ## Completed
-- Fixed source_row_from_visual helper integration.
+- [ ] Addressed implementation inconsistency in cursor mapping and source tracking logic.
+- [ ] Refactored navigation-related helper methods for cleaner code.
