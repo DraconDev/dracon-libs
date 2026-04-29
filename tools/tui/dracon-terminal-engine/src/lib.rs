@@ -67,7 +67,8 @@ pub mod input;
 pub mod integration;
 #[doc = "Layout helpers (grid, border, padding utilities)."]
 pub mod layout;
-pub(crate) mod system;
+#[doc = "System monitoring (CPU, memory, disk, processes)."]
+pub mod system;
 
 #[doc = "General utilities (visual width, truncate, formatting helpers)."]
 pub mod utils;
