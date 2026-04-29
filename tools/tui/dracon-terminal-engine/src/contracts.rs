@@ -127,38 +127,67 @@ pub enum KeyCode {
     Modifier(ModifierKeyCode),
 }
 
+/// Media key codes for multimedia keyboard keys.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum MediaKeyCode {
+    /// Play media key.
     Play,
+    /// Pause media key.
     Pause,
+    /// Play/Pause toggle key.
     PlayPause,
+    /// Reverse media key.
     Reverse,
+    /// Stop media key.
     Stop,
+    /// Fast forward media key.
     FastForward,
+    /// Rewind media key.
     Rewind,
+    /// Next track media key.
     TrackNext,
+    /// Previous track media key.
     TrackPrevious,
+    /// Record media key.
     Record,
+    /// Lower volume media key.
     LowerVolume,
+    /// Raise volume media key.
     RaiseVolume,
+    /// Mute volume media key.
     MuteVolume,
 }
 
+/// Modifier key codes for keyboard modifier keys.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum ModifierKeyCode {
+    /// Left Shift key.
     LeftShift,
+    /// Left Control key.
     LeftControl,
+    /// Left Alt key.
     LeftAlt,
+    /// Left Super (Windows/Command) key.
     LeftSuper,
+    /// Left Hyper key.
     LeftHyper,
+    /// Left Meta key.
     LeftMeta,
+    /// Right Shift key.
     RightShift,
+    /// Right Control key.
     RightControl,
+    /// Right Alt key.
     RightAlt,
+    /// Right Super (Windows/Command) key.
     RightSuper,
+    /// Right Hyper key.
     RightHyper,
+    /// Right Meta key.
     RightMeta,
+    /// ISO Level 3 Shift key.
     IsoLevel3Shift,
+    /// ISO Level 5 Shift key.
     IsoLevel5Shift,
 }
 
