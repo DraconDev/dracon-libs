@@ -1,10 +1,11 @@
 # Project State
 
 ## Current Focus
-Completed TTS contract upgrade by implementing result-based error handling in Kokoro TTS module.
+Implement error handling and framework integration for TTS subsystems and terminal engine infrastructure.
 
 ## Completed
-- [x] Refactored Kokoro TTS methods (`speak`, `stop`, `set_voice`, `current_voice`) to return `anyhow::Result<T>` for consistent error propagation
-- [x] Added proper mutex error handling using `map_err` instead of `expect` panics
-- [x] Wrapped voice setting operations in `Result` to align with new TTS contract requirements
-- [x] Updated voice provider methods to return `Result<VoiceInfo>` and `Result<bool>` for safer operation handling
+- [x] Refactor `kitten` TTS runtime to enforce `anyhow::Result` error handling across all core methods (`speak`, `stop`, `set_voice`, `current_voice`)
+- [x] Update AI documentation to position `dracon-terminal-engine` as a terminal application framework with explicit framework examples (App.run(), widget RAII patterns)
+- [x] Introduce framework demos: Birds example demonstrates List, Breadcrumbs, and SplitPane widgets through framework integration
+- [x] Standardize RAII ownership patterns with explicit Terminal manager ownership in framework demos
+- [x] Strengthen terminal state management through compositor-based rendering composition instead of direct stdout manipulation

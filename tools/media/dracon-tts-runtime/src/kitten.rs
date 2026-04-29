@@ -1018,16 +1018,18 @@ impl KittenTTS {
 }
 
 impl TextToSpeech for KittenTTS {
-    fn speak(&self, text: &str) {
-        let voice = self.get_voice();
+    fn speak(&self, text: &str) -> anyhow::Result<()> {
+        let voice = self.get_voice()?;
         futures::executor::block_on(self.speak_with_voice(text, &voice));
+        Ok(())
     }
 
-    fn stop(&self) {
+    fn stop(&self) -> anyhow::Result<()> {
         self.speaking.store(false, Ordering::SeqCst);
         self.sink.stop();
         self.sink.clear();
         self.sink.play();
+        Ok(())
     }
 
     fn is_speaking(&self) -> bool {
@@ -1113,24 +1115,25 @@ impl VoiceProvider for KittenTTS {
             .collect()
     }
 
-    fn set_voice(&self, voice: &str) -> bool {
+    fn set_voice(&self, voice: &str) -> anyhow::Result<bool> {
         let resolved = resolve_voice(voice);
         if self.voices.contains_key(resolved) {
-            let mut current = self.current_voice.lock().expect("mutex poisoned");
+            let mut current = self.current_voice.lock()
+                .map_err(|e| anyhow::anyhow!("mutex poisoned: {}", e))?;
             *current = resolved.to_string();
-            println!("[Kitten] Voice changed to: {}", resolved);
-            true
+            Ok(true)
         } else {
-            eprintln!("[Kitten] Voice not found: {}", voice);
-            false
+            Ok(false)
         }
     }
 
-    fn current_voice(&self) -> VoiceInfo {
-        let voice_id = self.current_voice.lock().expect("mutex poisoned").clone();
+    fn current_voice(&self) -> anyhow::Result<VoiceInfo> {
+        let voice_id = self.current_voice.lock()
+            .map_err(|e| anyhow::anyhow!("mutex poisoned: {}", e))?
+            .clone();
         for (id, name, gender) in VOICE_DESCRIPTIONS {
             if *id == voice_id {
-                return VoiceInfo {
+                return Ok(VoiceInfo {
                     id: id.to_string(),
                     name: name.to_string(),
                     gender: if *gender == "male" {
@@ -1140,9 +1143,9 @@ impl VoiceProvider for KittenTTS {
                     },
                     language: None,
                     description: None,
-                };
+                });
             }
         }
-        VoiceInfo::new(DEFAULT_VOICE, "Bruno", Gender::Male)
+        Ok(VoiceInfo::new(DEFAULT_VOICE, "Bruno", Gender::Male))
     }
 }
