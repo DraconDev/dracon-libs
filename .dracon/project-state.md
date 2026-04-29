@@ -1,8 +1,9 @@
 # Project State
 
 ## Current Focus
-Add dirty region tracking for efficient partial screen updates
+Refactor Easing apply method to static helper and adjust Animation update to use it
 
 ## Completed
-- [x] Add new `dirty_regions.rs` module implementing rectangular dirty region tracking
-- [x] Register the module in `framework/mod.rs` for external access
+- [x] Replace `Easing::apply(self, t)` with `Easing::apply_easing(&easing, t)` in animation logic
+- [x] Update `Animation::update` to invoke the new static helper method
+- [x] Update Cargo.lock reflecting dependency changes (binary size adjustment)

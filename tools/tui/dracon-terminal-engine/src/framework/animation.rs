@@ -14,8 +14,8 @@ pub enum Easing {
 }
 
 impl Easing {
-    fn apply(self, t: f64) -> f64 {
-        match self {
+    fn apply_easing(easing: &Easing, t: f64) -> f64 {
+        match easing {
             Easing::Linear => t,
             Easing::EaseIn => t * t,
             Easing::EaseOut => t * (2.0 - t),
@@ -60,7 +60,7 @@ impl Animation {
         }
         let elapsed = Instant::now().duration_since(self.start_time);
         let t = (elapsed.as_secs_f64() / self.duration.as_secs_f64()).min(1.0);
-        let eased = self.easing.apply(t);
+        let eased = Easing::apply_easing(&self.easing, t);
         self.start_value + (self.end_value - self.start_value) * eased
     }
 
