@@ -64,11 +64,13 @@ impl EventLogger {
             timestamp: timestamp.to_string(),
             description: description.to_string(),
         });
+        self.dirty = true;
     }
 
     /// Clears all logged events.
     pub fn clear(&mut self) {
         self.events.clear();
+        self.dirty = true;
     }
 }
 

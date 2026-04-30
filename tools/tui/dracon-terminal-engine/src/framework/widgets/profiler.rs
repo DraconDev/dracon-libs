@@ -51,6 +51,7 @@ impl Profiler {
     /// Sets the metrics to display.
     pub fn set_metrics(&mut self, metrics: Vec<Metric>) {
         self.metrics = metrics;
+        self.dirty = true;
     }
 
     /// Records a metric entry.
@@ -60,6 +61,7 @@ impl Profiler {
             value,
             call_count,
         });
+        self.dirty = true;
     }
 }
 
@@ -74,6 +76,19 @@ impl crate::framework::widget::Widget for Profiler {
 
     fn set_area(&mut self, area: Rect) {
         self.area.set(area);
+        self.dirty = true;
+    }
+
+    fn needs_render(&self) -> bool {
+        self.dirty
+    }
+
+    fn mark_dirty(&mut self) {
+        self.dirty = true;
+    }
+
+    fn clear_dirty(&mut self) {
+        self.dirty = false;
     }
 
     fn z_index(&self) -> u16 {

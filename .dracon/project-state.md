@@ -1,9 +1,9 @@
 # Project State
 
 ## Current Focus
-Added dirty state management for debug widgets to enable selective rendering updates and improved performance feedback.
+Implement dirty state tracking in EventLogger, Profiler, and WidgetInspector widgets for selective redraw optimization
 
 ## Completed
-- [x] Implemented dirty flag and associated state tracking in `DebugOverlay`, `EventLogger`, `Profiler`, `ProgressBar`, `Spinner`, and `WidgetInspector`.
-- [x] Enhanced UI responsiveness by marking dirty widgets for selective redraw optimization.
-- [x] Improved maintainability via organized dirty checks and clear rendering boundaries.
+- [x] event_logger: Mark dirty flag true when logging or clearing events
+- [x] profiler: Mark dirty flag true on metrics updates and implement full Widget trait dirty state methods (needs_render, mark_dirty, clear_dirty)
+- [x] widget_inspector: Mark dirty flag true on hierarchy updates and implement full Widget trait dirty state methods
