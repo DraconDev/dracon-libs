@@ -25,6 +25,7 @@ pub struct Form {
     fields: Vec<FormField>,
     focused_field: usize,
     theme: Theme,
+    area: std::cell::Cell<Rect>,
 }
 
 impl Form {
@@ -35,6 +36,7 @@ impl Form {
             fields: Vec::new(),
             focused_field: 0,
             theme: Theme::default(),
+            area: std::cell::Cell::new(Rect::new(0, 0, 40, 10)),
         }
     }
 

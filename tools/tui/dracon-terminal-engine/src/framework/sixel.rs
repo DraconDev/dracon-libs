@@ -66,6 +66,7 @@ pub struct SixelRenderer {
     id: WidgetId,
     image: Option<SixelImage>,
     theme: Color,
+    area: std::cell::Cell<Rect>,
 }
 
 impl SixelRenderer {
@@ -75,6 +76,7 @@ impl SixelRenderer {
             id,
             image: None,
             theme: Color::Reset,
+            area: std::cell::Cell::new(Rect::new(0, 0, 40, 20)),
         }
     }
 

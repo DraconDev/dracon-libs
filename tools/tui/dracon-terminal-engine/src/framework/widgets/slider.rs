@@ -16,6 +16,7 @@ pub struct Slider {
     theme: Theme,
     on_change: Option<Box<dyn FnMut(f32)>>,
     last_area_width: std::cell::Cell<u16>,
+    area: std::cell::Cell<Rect>,
 }
 
 impl Slider {
@@ -29,6 +30,7 @@ impl Slider {
             theme: Theme::default(),
             on_change: None,
             last_area_width: std::cell::Cell::new(80),
+            area: std::cell::Cell::new(Rect::new(0, 0, 40, 1)),
         }
     }
 

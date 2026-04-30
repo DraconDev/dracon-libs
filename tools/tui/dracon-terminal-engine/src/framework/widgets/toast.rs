@@ -34,6 +34,7 @@ pub struct Toast {
     duration: Duration,
     /// The theme for this widget.
     theme: Theme,
+    area: std::cell::Cell<Rect>,
 }
 
 impl Toast {
@@ -46,6 +47,7 @@ impl Toast {
             created_at: Instant::now(),
             duration: Duration::from_secs(3),
             theme: Theme::default(),
+            area: std::cell::Cell::new(Rect::new(0, 0, 40, 1)),
         }
     }
 

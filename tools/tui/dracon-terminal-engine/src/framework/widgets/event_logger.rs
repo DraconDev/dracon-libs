@@ -26,6 +26,7 @@ pub struct EventLogger {
     events: VecDeque<LoggedEvent>,
     /// The theme for this widget.
     theme: Theme,
+    area: std::cell::Cell<Rect>,
 }
 
 impl EventLogger {
@@ -36,6 +37,7 @@ impl EventLogger {
             max_events: 100,
             events: VecDeque::new(),
             theme: Theme::default(),
+            area: std::cell::Cell::new(Rect::new(0, 0, 60, 15)),
         }
     }
 

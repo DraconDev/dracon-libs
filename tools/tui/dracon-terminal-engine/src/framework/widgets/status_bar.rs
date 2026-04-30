@@ -48,6 +48,7 @@ pub struct StatusBar {
     segments: Vec<StatusSegment>,
     /// The theme for this widget.
     theme: Theme,
+    area: std::cell::Cell<Rect>,
 }
 
 impl StatusBar {
@@ -57,6 +58,7 @@ impl StatusBar {
             id,
             segments: Vec::new(),
             theme: Theme::default(),
+            area: std::cell::Cell::new(Rect::new(0, 0, 80, 1)),
         }
     }
 

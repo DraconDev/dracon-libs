@@ -17,6 +17,7 @@ pub struct Select {
     expanded: bool,
     theme: Theme,
     on_change: Option<Box<dyn FnMut(&str)>>,
+    area: std::cell::Cell<Rect>,
 }
 
 impl Select {
@@ -29,6 +30,7 @@ impl Select {
             expanded: false,
             theme: Theme::default(),
             on_change: None,
+            area: std::cell::Cell::new(Rect::new(0, 0, 20, 1)),
         }
     }
 

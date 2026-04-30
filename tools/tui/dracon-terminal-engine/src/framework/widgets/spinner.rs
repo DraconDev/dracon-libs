@@ -27,6 +27,7 @@ impl Spinner {
             current_frame: 0,
             last_update: Instant::now(),
             theme: Theme::default(),
+            area: std::cell::Cell::new(Rect::new(0, 0, 10, 1)),
         }
     }
 
@@ -62,6 +63,14 @@ impl Spinner {
 impl crate::framework::widget::Widget for Spinner {
     fn id(&self) -> WidgetId {
         self.id
+    }
+
+    fn area(&self) -> Rect {
+        self.area.get()
+    }
+
+    fn set_area(&mut self, area: Rect) {
+        self.area.set(area);
     }
 
     fn render(&self, area: Rect) -> Plane {

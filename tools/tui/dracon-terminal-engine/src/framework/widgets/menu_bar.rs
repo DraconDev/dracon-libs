@@ -78,6 +78,7 @@ pub struct MenuBar {
     theme: Theme,
     /// The last recorded area width for layout.
     last_area_width: std::cell::Cell<u16>,
+    area: std::cell::Cell<Rect>,
 }
 
 impl MenuBar {
@@ -89,6 +90,7 @@ impl MenuBar {
             active_entry: None,
             theme: Theme::default(),
             last_area_width: std::cell::Cell::new(80),
+            area: std::cell::Cell::new(Rect::new(0, 0, 80, 1)),
         }
     }
 

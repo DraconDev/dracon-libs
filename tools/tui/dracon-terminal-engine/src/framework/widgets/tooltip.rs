@@ -12,6 +12,7 @@ pub struct Tooltip {
     id: WidgetId,
     text: String,
     theme: Theme,
+    area: std::cell::Cell<Rect>,
 }
 
 impl Tooltip {
@@ -21,6 +22,7 @@ impl Tooltip {
             id,
             text: text.to_string(),
             theme: Theme::default(),
+            area: std::cell::Cell::new(Rect::new(0, 0, 30, 3)),
         }
     }
 

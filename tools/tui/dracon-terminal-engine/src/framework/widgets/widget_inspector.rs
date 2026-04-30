@@ -36,6 +36,7 @@ pub struct WidgetInspector {
     root: Vec<WidgetNode>,
     /// The theme for this widget.
     theme: Theme,
+    area: std::cell::Cell<Rect>,
 }
 
 impl WidgetInspector {
@@ -45,6 +46,7 @@ impl WidgetInspector {
             id,
             root: Vec::new(),
             theme: Theme::default(),
+            area: std::cell::Cell::new(Rect::new(0, 0, 60, 20)),
         }
     }
 

@@ -14,6 +14,7 @@ pub struct SearchInput {
     cursor_pos: usize,
     theme: Theme,
     on_submit: Option<Box<dyn FnMut(&str)>>,
+    area: std::cell::Cell<Rect>,
 }
 
 impl SearchInput {
@@ -25,6 +26,7 @@ impl SearchInput {
             cursor_pos: 0,
             theme: Theme::default(),
             on_submit: None,
+            area: std::cell::Cell::new(Rect::new(0, 0, 30, 1)),
         }
     }
 
