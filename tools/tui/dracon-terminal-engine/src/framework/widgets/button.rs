@@ -14,6 +14,7 @@ pub struct Button {
     theme: Theme,
     on_click: Option<Box<dyn FnMut()>>,
     area: std::cell::Cell<Rect>,
+    dirty: bool,
 }
 
 impl Button {

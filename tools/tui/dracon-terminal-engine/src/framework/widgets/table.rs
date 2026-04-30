@@ -158,6 +158,7 @@ impl<T: Clone + ToString> crate::framework::widget::Widget for Table<T> {
 
     fn set_area(&mut self, area: Rect) {
         self.area.set(area);
+        self.dirty = true;
     }
 
     fn z_index(&self) -> u16 {
