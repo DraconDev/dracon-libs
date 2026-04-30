@@ -1,12 +1,15 @@
 # Project State
 
 ## Current Focus
-One‑line description: streamline core framework updates by removing unused imports, simplifying mouse event handling, and updating dependencies
+Expose the application context to widget-level operations via the `Ctx` struct
 
 ## Completed
-- [x] Updated Cargo.lock to newer dependency versions
-- [x] Removed unnecessary `mut` on `anim` in animation.rs test
-- [x] Refactored mouse event target lookup in `app.rs` to use direct area checks instead of zone dispatcher iteration
-- [x] Dropped unused `ratatui::layout::Rect` import from `dirty_regions.rs`
-- [x] Trimmed import list in `event_logger.rs` by removing `Color`
-- [x] Trimmed import list in `profiler.rs` by removing `Color`
+- [x] Added `app: &self` parameter to the tick closure in `App`
+- [x] Added `app: &'a App` field to `Ctx` struct
+- [x] Added `focused_widget` method to `Ctx` to retrieve focused widget ID
+- [x] Added `set_focus` method to `Ctx` for programmatically setting focus
+- [x] Added `widget_count` method to `Ctx` to get total widget count
+- [x] Added `widget` method to `Ctx` for immutable widget access
+- [x] Added `widget_mut` method to `Ctx` for mutable widget access
+- [x] Added `widget_ref` generic method to downcast widget reference
+- [x] Added `widget_mut_ref` generic method to downcast mutable widget reference

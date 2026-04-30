@@ -251,6 +251,7 @@ impl App {
                 theme: &self.theme,
                 frame_count: frame_count.load(Ordering::SeqCst),
                 last_frame: &self.last_frame_time,
+                app: &self,
             };
 
             if self.last_tick_time.elapsed() >= self.tick_interval {
@@ -309,6 +310,7 @@ pub struct Ctx<'a> {
     pub(crate) theme: &'a Theme,
     pub(crate) frame_count: u64,
     pub(crate) last_frame: &'a Instant,
+    pub(crate) app: &'a App,
 }
 
 impl<'a> Ctx<'a> {
@@ -345,6 +347,44 @@ impl<'a> Ctx<'a> {
     /// Returns a reference to the current theme.
     pub fn theme(&self) -> &Theme {
         self.theme
+    }
+
+    /// Returns the ID of the currently focused widget, if any.
+    pub fn focused_widget(&self) -> Option<crate::framework::widget::WidgetId> {
+        self.app.focus_manager.focused()
+    }
+
+    /// Sets focus to a specific widget.
+    /// Returns `true` if focus was successfully set.
+    pub fn set_focus(&mut self, id: crate::framework::widget::WidgetId) -> bool {
+        self.app.focus_manager.set_focus(id)
+    }
+
+    /// Returns the number of registered widgets.
+    pub fn widget_count(&self) -> usize {
+        self.app.widget_count()
+    }
+
+    /// Returns an immutable reference to a widget by ID.
+    pub fn widget(&self, id: crate::framework::widget::WidgetId) -> Option<Ref<'_, Box<dyn Widget>>> {
+        self.app.widget(id)
+    }
+
+    /// Returns a mutable reference to a widget by ID.
+    pub fn widget_mut(&mut self, id: crate::framework::widget::WidgetId) -> Option<RefMut<'_, Box<dyn Widget>>> {
+        self.app.widget_mut(id)
+    }
+
+    /// Downcasts a widget reference to a concrete type.
+    /// Returns `Some(&T)` if the widget is of type `T`, `None` otherwise.
+    pub fn widget_ref<T: Widget>(&self, id: crate::framework::widget::WidgetId) -> Option<&T> {
+        self.app.widget(id).and_then(|w| w.as_ref().downcast_ref::<T>())
+    }
+
+    /// Downcasts a mutable widget reference to a concrete type.
+    /// Returns `Some(&mut T)` if the widget is of type `T`, `None` otherwise.
+    pub fn widget_mut_ref<T: Widget>(&mut self, id: crate::framework::widget::WidgetId) -> Option<&mut T> {
+        self.app.widget_mut(id).and_then(|w| w.as_mut().downcast_mut::<T>())
     }
 
     /// Splits the screen horizontally into two panes and passes them to the closure.
