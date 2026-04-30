@@ -1,9 +1,8 @@
 # Project State
 
 ## Current Focus
-Implement dirty state tracking in EventLogger, Profiler, and WidgetInspector widgets for selective redraw optimization
+Enable dirty‑state tracking for the `Breadcrumbs` widget by initializing its dirty flag.
 
 ## Completed
-- [x] event_logger: Mark dirty flag true when logging or clearing events
-- [x] profiler: Mark dirty flag true on metrics updates and implement full Widget trait dirty state methods (needs_render, mark_dirty, clear_dirty)
-- [x] widget_inspector: Mark dirty flag true on hierarchy updates and implement full Widget trait dirty state methods
+- [x] Add `dirty: true` initialization to the `Breadcrumbs` default constructor for proper redraw tracking.
+- [x] Update `Cargo.lock` to reflect the new changes in the dependency graph.

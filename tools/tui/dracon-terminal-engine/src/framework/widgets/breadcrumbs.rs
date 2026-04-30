@@ -64,6 +64,7 @@ impl Breadcrumbs {
             height: 1,
             on_navigate: None,
             area: std::cell::Cell::new(Rect::new(0, 0, 80, 1)),
+            dirty: true,
         }
     }
 
