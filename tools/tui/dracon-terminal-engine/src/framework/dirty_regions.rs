@@ -8,9 +8,13 @@ use ratatui::layout::Rect;
 /// A rectangular dirty region.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct DirtyRegion {
+    /// The x coordinate of this region.
     pub x: u16,
+    /// The y coordinate of this region.
     pub y: u16,
+    /// The width of this region.
     pub width: u16,
+    /// The height of this region.
     pub height: u16,
 }
 

@@ -7,9 +7,13 @@ use std::time::{Duration, Instant};
 
 /// Easing function for animation curves.
 pub enum Easing {
+    /// Linear easing.
     Linear,
+    /// Ease-in easing.
     EaseIn,
+    /// Ease-out easing.
     EaseOut,
+    /// Ease-in-out easing.
     EaseInOut,
 }
 
