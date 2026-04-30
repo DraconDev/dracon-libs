@@ -148,6 +148,19 @@ impl crate::framework::widget::Widget for Tree {
 
     fn set_area(&mut self, area: Rect) {
         self.area.set(area);
+        self.dirty = true;
+    }
+
+    fn needs_render(&self) -> bool {
+        self.dirty
+    }
+
+    fn mark_dirty(&mut self) {
+        self.dirty = true;
+    }
+
+    fn clear_dirty(&mut self) {
+        self.dirty = false;
     }
 
     fn render(&self, area: Rect) -> Plane {
@@ -210,6 +223,7 @@ impl crate::framework::widget::Widget for Tree {
                 if !self.selected_path.is_empty() {
                     let path = self.selected_path.clone();
                     self.toggle_expand_at(&path);
+                    self.dirty = true;
                 }
                 true
             }
@@ -217,6 +231,7 @@ impl crate::framework::widget::Widget for Tree {
                 if let Some((node, _)) = self.get_selected_node(&self.root, &self.selected_path) {
                     if node.expanded && !node.children.is_empty() {
                         self.selected_path.push(0);
+                        self.dirty = true;
                     }
                 }
                 true
@@ -224,6 +239,7 @@ impl crate::framework::widget::Widget for Tree {
             KeyCode::Up => {
                 if !self.selected_path.is_empty() {
                     self.selected_path.pop();
+                    self.dirty = true;
                 }
                 true
             }
@@ -234,6 +250,7 @@ impl crate::framework::widget::Widget for Tree {
                         if !node.expanded && !node.children.is_empty() {
                             self.toggle_expand_at(&path);
                             self.selected_path.push(0);
+                            self.dirty = true;
                         }
                     }
                 }
@@ -248,6 +265,7 @@ impl crate::framework::widget::Widget for Tree {
                         } else {
                             self.selected_path.pop();
                         }
+                        self.dirty = true;
                     }
                 }
                 true
