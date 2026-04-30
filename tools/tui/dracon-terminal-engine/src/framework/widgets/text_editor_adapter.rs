@@ -72,7 +72,10 @@ impl crate::framework::widget::Widget for TextEditorAdapter {
         let visual_x = self.editor.get_visual_x(self.editor.cursor_row, self.editor.cursor_col);
         let screen_row = self.editor.cursor_row.saturating_sub(self.editor.scroll_row) as u16;
         let screen_col = visual_x.saturating_sub(self.editor.scroll_col) as u16;
-        Some((area.x + screen_col, area.y + screen_row))
+        // Clamp to visible area to avoid reporting coordinates outside the widget
+        let clamped_col = screen_col.min(area.width.saturating_sub(1));
+        let clamped_row = screen_row.min(area.height.saturating_sub(1));
+        Some((area.x + clamped_col, area.y + clamped_row))
     }
 
     fn render(&self, area: Rect) -> Plane {

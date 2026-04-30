@@ -7,10 +7,12 @@
 //! Usage:
 //!     cargo run --example text_editor_demo -- [FILE_PATH]
 
+use dracon_terminal_engine::backend::tty;
 use dracon_terminal_engine::framework::prelude::*;
 use dracon_terminal_engine::framework::widget::WidgetId;
 use dracon_terminal_engine::framework::widgets::TextEditorAdapter;
 use dracon_terminal_engine::widgets::editor::TextEditor;
+use std::os::fd::AsFd;
 use std::path::PathBuf;
 use ratatui::layout::Rect;
 
@@ -45,13 +47,15 @@ fn main() -> std::io::Result<()> {
         .fps(30)
         .theme(theme);
 
+    // Query terminal size so the editor fills the screen from startup.
+    // The framework does not auto-resize widget areas on terminal resize;
+    // each widget's area is fixed after add_widget() unless explicitly updated.
+    let (w, h) = tty::get_window_size(std::io::stdout().as_fd()).unwrap_or((80, 24));
+
     let adapter = TextEditorAdapter::new(WidgetId::new(1), editor);
-    // Store the widget ID so we can resize it later
-    let _widget_id = app.add_widget(Box::new(adapter), Rect::new(0, 0, 80, 24));
+    app.add_widget(Box::new(adapter), Rect::new(0, 0, w, h));
 
     app.run(move |ctx| {
-        // Terminal resize is handled by the framework; the widget's area
-        // will be updated automatically via set_area on the next render cycle.
         ctx.hide_cursor().ok();
     })
 }

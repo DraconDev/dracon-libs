@@ -1,7 +1,8 @@
 # Project State
 
 ## Current Focus
-Lockfile updated to reflect resolved dependency versions without functional changes.
+Enhance text editor demo to use actual terminal size and prevent cursor coordinates from exceeding widget bounds.
 
 ## Completed
-- [x] Cargo.lock updated (binary diff) with no source changes or version bumps.
+- [x] Update demo to query terminal dimensions via `tty::get_window_size` and set widget area accordingly
+- [x] Clamp cursor screen coordinates to the widget’s visible area in `TextEditorAdapter::cursor_position` to avoid reporting positions outside the widget bounds
