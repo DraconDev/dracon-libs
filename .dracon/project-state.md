@@ -1,11 +1,12 @@
 # Project State
 
 ## Current Focus
-Refactor TUI widget dirty state tracking to use direct flag assignment and fix missing dirty marking in Toggle widget
+Refactor theme propagation tests to use per-widget call counting instead of a global mutex registry.
 
 ## Completed
-- [x] Replace mark_dirty() method calls with direct self.dirty = true assignment in Checkbox widget state change methods (check, uncheck, toggle)
-- [x] Replace mark_dirty() method calls with direct self.dirty = true assignment in Radio widget state change methods (select, deselect)
-- [x] Replace mark_dirty() method call with direct self.dirty = true assignment in Slider widget's set_value method
-- [x] Add missing self.dirty = true assignment in Toggle widget's toggle method to track dirty state on state changes
-- [x] Update Cargo.lock (binary lockfile update)
+- [x] Replace global `THEME_CALL_REGISTRY` mutex with per-widget `Rc<Cell<usize>>` for tracking theme change calls
+- [x] Simplify `TrackingWidget` by removing `index` field and `Drop` implementation that managed global registry
+- [x] Add `call_count()` method to `TrackingWidget` for direct access to theme change invocation count
+- [x] Update tests to verify widgets receive theme changes individually rather than through filtered global counts
+- [x] Add test verifying widget persistence after theme change
+- [x] Add test verifying widget removal works correctly after theme change
