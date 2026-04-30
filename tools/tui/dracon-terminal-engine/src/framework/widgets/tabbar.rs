@@ -1,26 +1,44 @@
 //! Tab bar widget.
 
+use std::cell::Cell;
+
 use unicode_width::UnicodeWidthStr;
 
 use crate::compositor::{Cell, Plane, Styles};
 use crate::framework::hitzone::HitZone;
 use crate::framework::theme::Theme;
+use crate::framework::widget::WidgetId;
 use ratatui::layout::Rect;
 
 /// A horizontal tab bar widget with clickable and keyboard-navigable tabs.
 pub struct TabBar {
+    id: WidgetId,
     tabs: Vec<String>,
     active: usize,
     theme: Theme,
+    area: Cell<Rect>,
 }
 
 impl TabBar {
     /// Creates a new `TabBar` from a list of tab labels.
     pub fn new(tabs: Vec<&str>) -> Self {
         Self {
+            id: WidgetId::default_id(),
             tabs: tabs.iter().map(|s| s.to_string()).collect(),
             active: 0,
             theme: Theme::default(),
+            area: Cell::new(Rect::new(0, 0, 80, 3)),
+        }
+    }
+
+    /// Creates a new `TabBar` with the given widget ID and tab labels.
+    pub fn new_with_id(id: WidgetId, tabs: Vec<&str>) -> Self {
+        Self {
+            id,
+            tabs: tabs.iter().map(|s| s.to_string()).collect(),
+            active: 0,
+            theme: Theme::default(),
+            area: Cell::new(Rect::new(0, 0, 80, 3)),
         }
     }
 
