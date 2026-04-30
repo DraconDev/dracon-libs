@@ -9,8 +9,11 @@ use ratatui::layout::Rect;
 
 /// A node in the widget hierarchy for inspection.
 pub struct WidgetNode {
+    /// The widget ID for this node.
     pub id: WidgetId,
+    /// The label for this node.
     pub label: String,
+    /// The child nodes of this widget.
     pub children: Vec<WidgetNode>,
 }
 
@@ -27,8 +30,11 @@ impl WidgetNode {
 
 /// A widget that displays the live widget hierarchy for inspection.
 pub struct WidgetInspector {
+    /// The widget ID for this inspector.
     id: WidgetId,
+    /// The root nodes of the widget hierarchy.
     root: Vec<WidgetNode>,
+    /// The theme for this widget.
     theme: Theme,
 }
 

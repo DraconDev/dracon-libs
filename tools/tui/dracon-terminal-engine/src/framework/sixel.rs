@@ -40,6 +40,7 @@ impl SixelImage {
         self.height
     }
 
+    /// Returns the RGB pixel value at the given coordinates.
     pub fn pixel(&self, x: usize, y: usize) -> Option<(u8, u8, u8)> {
         if x >= self.width || y >= self.height {
             return None;
@@ -48,6 +49,7 @@ impl SixelImage {
         Some((self.data[idx], self.data[idx + 1], self.data[idx + 2]))
     }
 
+    /// Sets the RGB pixel value at the given coordinates.
     pub fn set_pixel(&mut self, x: usize, y: usize, r: u8, g: u8, b: u8) {
         if x >= self.width || y >= self.height {
             return;
@@ -59,6 +61,7 @@ impl SixelImage {
     }
 }
 
+/// A widget that renders sixel images.
 pub struct SixelRenderer {
     id: WidgetId,
     image: Option<SixelImage>,
@@ -66,6 +69,7 @@ pub struct SixelRenderer {
 }
 
 impl SixelRenderer {
+    /// Creates a new sixel renderer with the given widget ID.
     pub fn new(id: WidgetId) -> Self {
         Self {
             id,
@@ -74,15 +78,18 @@ impl SixelRenderer {
         }
     }
 
+    /// Sets the image to render.
     pub fn with_image(mut self, image: SixelImage) -> Self {
         self.image = Some(image);
         self
     }
 
+    /// Sets the image to render.
     pub fn set_image(&mut self, image: SixelImage) {
         self.image = Some(image);
     }
 
+    /// Loads a sixel image from encoded data.
     pub fn load_sixel(&mut self, data: &[u8]) -> Result<(), &'static str> {
         self.image = Some(SixelImage::from_sixel(data)?);
         Ok(())

@@ -10,7 +10,9 @@ use ratatui::layout::Rect;
 
 /// A recorded input event for display.
 pub struct LoggedEvent {
+    /// The timestamp for this event.
     pub timestamp: String,
+    /// The description of this event.
     pub description: String,
 }
 

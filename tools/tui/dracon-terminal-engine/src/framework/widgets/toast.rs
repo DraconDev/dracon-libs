@@ -10,19 +10,29 @@ use ratatui::layout::Rect;
 
 /// Severity level for toast notifications.
 pub enum ToastKind {
+    /// An informational toast.
     Info,
+    /// A success toast.
     Success,
+    /// A warning toast.
     Warning,
+    /// An error toast.
     Error,
 }
 
 /// A transient notification toast.
 pub struct Toast {
+    /// The widget ID for this toast.
     id: WidgetId,
+    /// The message text for this toast.
     message: String,
+    /// The severity kind for this toast.
     kind: ToastKind,
+    /// The creation timestamp for this toast.
     created_at: Instant,
+    /// The display duration for this toast.
     duration: Duration,
+    /// The theme for this widget.
     theme: Theme,
 }
 

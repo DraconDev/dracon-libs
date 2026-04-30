@@ -1,10 +1,12 @@
 # Project State
 
 ## Current Focus
-Adds constructor, width/height accessors, and a stub decoder to SixelImage.
+Add sixel image rendering support, enhanced event logging, toast severity taxonomy, and widget hierarchy inspection.
 
 ## Completed
-- [x] Added `new` method to create a SixelImage with specified width and height
-- [x] Added `width` method to return the image width
-- [x] Added `height` method to return the image height
-- [x] Added `from_sixel` method that currently returns an error for decoding data
+- [x ] Added RGB pixel getter and setter to `SixelImage` with bounds checking.
+- [x ] Implemented `load_sixel` method to decode encoded sixel data into a `SixelImage`.
+- [x ] Created `SixelRenderer` struct with constructors, image setting, and loading capabilities.
+- [x ] Extended `LoggedEvent` with `timestamp` and `description` fields.
+- [x ] Added `ToastKind` variants (`Info`, `Success`, `Warning`, `Error`) and enriched `Toast` with `id`, `message`, `kind`, `created_at`, `duration`, and `theme`.
+- [x ] Enhanced `WidgetInspector` with `id`, `label`, `children`, `root`, and `theme` fields.
