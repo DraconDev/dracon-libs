@@ -1,11 +1,11 @@
 # Project State
-
-## Current Focus
-Adjust widget focus registration, simplify resize handling, and refine mouse click targeting with z-index ordering and local coordinates.
+This commit addresses several refinements across dracon-terminal-engine's UI widgets. It updates the Checkbox trait to properly handle key events, adds refinement in radio and select widgets, introduces a new "spinner" implementation, fixes input validation in key handling, and polishes general widget trait usage for consistency. The project continues iterating on user input mechanics with stricter key checks and better integration with event dispatchers.
 
 ## Completed
-- [x] Register widget focusability (`widget.focusable()`) instead of always `true` in the focus manager.
-- [x] Remove the redundant area recomputation and `set_area` loop that previously ran on every resize event.
-- [x] Reorder widget hit‑testing by sorting on `z_index()` and select the topmost matching widget.
-- [x] Use localized click coordinates (`local_col`, `local_row`) when dispatching mouse events to the target widget.
-- [x] Update the application’s focus state when a widget is identified as the click target.
+- Enhanced checkbox handling for non-press keys
+- Updated radio widget event flow and rendering
+- Implemented improved toggle functionality
+- Fixed select widget to accurately reflect user selection state
+- Revised spinner logic for user-facing feedback
+- Refined general widget trait implementations
+- Added and streamlined lifecycle key checks

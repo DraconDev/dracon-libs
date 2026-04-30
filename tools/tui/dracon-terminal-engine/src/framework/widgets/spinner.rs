@@ -99,7 +99,11 @@ impl crate::framework::widget::Widget for Spinner {
         plane
     }
 
-    fn handle_key(&mut self, _key: crate::input::event::KeyEvent) -> bool {
+    fn handle_key(&mut self, key: crate::input::event::KeyEvent) -> bool {
+        use crate::input::event::KeyEventKind;
+        if key.kind != KeyEventKind::Press {
+            return false;
+        }
         false
     }
 }

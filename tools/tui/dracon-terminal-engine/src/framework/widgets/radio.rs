@@ -111,7 +111,10 @@ impl crate::framework::widget::Widget for Radio {
     }
 
     fn handle_key(&mut self, key: crate::input::event::KeyEvent) -> bool {
-        use crate::input::event::KeyCode;
+        use crate::input::event::{KeyCode, KeyEventKind};
+        if key.kind != KeyEventKind::Press {
+            return false;
+        }
         match key.code {
             KeyCode::Enter => {
                 if !self.selected {
