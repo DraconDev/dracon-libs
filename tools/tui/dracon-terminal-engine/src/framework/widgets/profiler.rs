@@ -20,8 +20,11 @@ pub struct Metric {
 
 /// A widget that displays performance profiling data.
 pub struct Profiler {
+    /// The widget ID for this profiler.
     id: WidgetId,
+    /// The performance metrics to display.
     metrics: Vec<Metric>,
+    /// The theme for this widget.
     theme: Theme,
 }
 

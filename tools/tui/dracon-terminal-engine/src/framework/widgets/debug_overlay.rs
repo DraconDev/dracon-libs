@@ -9,8 +9,11 @@ use ratatui::layout::Rect;
 
 /// A debug overlay displaying key-value diagnostic pairs.
 pub struct DebugOverlay {
+    /// The widget ID for this overlay.
     id: WidgetId,
+    /// The lines of debug text to display.
     lines: Vec<String>,
+    /// The theme for this widget.
     theme: Theme,
 }
 

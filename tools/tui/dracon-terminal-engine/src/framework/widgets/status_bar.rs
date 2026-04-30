@@ -9,8 +9,11 @@ use ratatui::layout::Rect;
 
 /// A segment of the status bar with optional content.
 pub struct StatusSegment {
+    /// The text for this segment.
     pub text: String,
+    /// The foreground color for this segment.
     pub fg: Color,
+    /// The background color for this segment.
     pub bg: Color,
 }
 
@@ -39,8 +42,11 @@ impl StatusSegment {
 
 /// A horizontal status bar displaying segments of information.
 pub struct StatusBar {
+    /// The widget ID for this status bar.
     id: WidgetId,
+    /// The segments to display.
     segments: Vec<StatusSegment>,
+    /// The theme for this widget.
     theme: Theme,
 }
 

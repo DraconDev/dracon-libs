@@ -11,8 +11,11 @@ use ratatui::layout::Rect;
 
 /// A single menu item with a label and optional action.
 pub struct MenuItem {
+    /// The label for this menu item.
     pub label: String,
+    /// The action callback for this menu item.
     pub action: Option<Box<dyn FnMut()>>,
+    /// Whether this menu item is enabled.
     pub enabled: bool,
 }
 
@@ -41,7 +44,9 @@ impl MenuItem {
 
 /// A menu entry in the menu bar with dropdown items.
 pub struct MenuEntry {
+    /// The label for this menu entry.
     pub label: String,
+    /// The items in this menu entry.
     pub items: Vec<MenuItem>,
 }
 
@@ -63,10 +68,15 @@ impl MenuEntry {
 
 /// A horizontal menu bar with dropdown submenus.
 pub struct MenuBar {
+    /// The widget ID for this menu bar.
     id: WidgetId,
+    /// The menu entries to display.
     entries: Vec<MenuEntry>,
+    /// The currently active menu entry index.
     active_entry: Option<usize>,
+    /// The theme for this widget.
     theme: Theme,
+    /// The last recorded area width for layout.
     last_area_width: std::cell::Cell<u16>,
 }
 

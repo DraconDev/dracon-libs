@@ -1,13 +1,14 @@
 # Project State
 
 ## Current Focus
-Adds widget ID tracking and event limit to EventLogger, and enriches Metric with name, duration, and call count for performance profiling.
+Adds widget‑ID tracking and enriches struct definitions for debug overlay, menu bar, profiler, and status bar components.
 
 ## Completed
-- [x] Added `id: WidgetId` field to `EventLogger`
-- [x] Added `max_events: usize` field to `EventLogger`
-- [x] Added `events: VecDeque<LoggedEvent>` field to `EventLogger`
-- [x] Added `theme: Theme` field to `EventLogger`
-- [x] Added `name: String` field to `Metric`
-- [x] Added `value: Duration` field to `Metric`
-- [x] Added `call_count: u64` field to `Metric`
+- [x] DebugOverlay now stores an ID, debug lines, and a theme field.
+- [x] MenuItem gains label, action callback, and enable flag.
+- [x] MenuEntry gains label and items collection.
+- [x] MenuBar gains ID, entries vector, active entry index, theme, and last_area_width Cell.
+- [x] Profiler gains ID, metrics vector, and theme field.
+- [x] StatusSegment gains text, foreground, and background color fields.
+- [x] StatusBar gains ID, segments vector, and theme field.
+- [x] Cargo.lock updated with new dependency versions.
