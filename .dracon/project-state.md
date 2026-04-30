@@ -1,8 +1,8 @@
 # Project State
 
 ## Current Focus
-Add dirty state flag to TabBar widget to enable selective redraw optimization
+Introduce dirty state tracking for selective redraw optimization in TabBar and Tree widgets
 
 ## Completed
-- [x] Add `dirty` boolean field to `TabBar` widget to track modification state for selective redraws
-- [x] Initialize `dirty` to `true` in all `TabBar` constructors to align with existing widget dirty state patterns
+- [x] Add dirty flag and state tracking methods (`dirty`, `needs_render`, `mark_dirty`, `clear_dirty`) to TabBar widget
+- [x] Implement dirty flag in Tree widget's state structure with initialization state

@@ -43,6 +43,7 @@ pub struct Tree {
     theme: Theme,
     on_select: Option<Box<dyn FnMut(&str)>>,
     area: std::cell::Cell<Rect>,
+    dirty: bool,
 }
 
 impl Tree {
@@ -55,6 +56,7 @@ impl Tree {
             theme: Theme::default(),
             on_select: None,
             area: std::cell::Cell::new(Rect::new(0, 0, 40, 20)),
+            dirty: true,
         }
     }
 
