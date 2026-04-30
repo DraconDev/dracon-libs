@@ -2,6 +2,36 @@ use crate::backend::tty::{get_terminal_attr, make_raw, set_terminal_attr, Termio
 use std::io::{self, Write};
 use std::os::fd::{AsFd, BorrowedFd, AsRawFd, RawFd};
 
+#[cfg(test)]
+struct NullWriter {
+    data: Vec<u8>,
+}
+
+#[cfg(test)]
+impl NullWriter {
+    fn new() -> Self {
+        Self { data: Vec::new() }
+    }
+}
+
+#[cfg(test)]
+impl Write for NullWriter {
+    fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
+        self.data.extend_from_slice(buf);
+        Ok(buf.len())
+    }
+    fn flush(&mut self) -> io::Result<()> {
+        Ok(())
+    }
+}
+
+#[cfg(test)]
+impl AsFd for NullWriter {
+    fn as_fd(&self) -> BorrowedFd<'_> {
+        unsafe { BorrowedFd::borrow_raw(-1) }
+    }
+}
+
 /// The main RAII wrapper for the terminal.
 /// When this struct is dropped, the terminal is restored to its original state.
 pub struct Terminal<W: Write + AsFd> {
@@ -60,7 +90,7 @@ impl<W: Write + AsFd> Terminal<W> {
     /// Use this for headless testing where no real terminal is available.
     #[cfg(test)]
     pub fn new_null() -> io::Result<Self> {
-        let null_output = Vec::new();
+        let null_output = NullWriter::new();
         Ok(Self {
             original_termios: unsafe { std::mem::zeroed() },
             output: null_output,
