@@ -1,7 +1,5 @@
 //! Heads-up display (HUD) widget.
 
-use std::cell::Cell;
-
 use unicode_width::UnicodeWidthStr;
 
 use crate::compositor::{Cell, Color, Plane, Styles};
@@ -17,7 +15,7 @@ pub struct Hud {
     visible: bool,
     width: u16,
     height: u16,
-    area: Cell<Rect>,
+    area: std::cell::Cell<Rect>,
 }
 
 impl Hud {
@@ -29,7 +27,7 @@ impl Hud {
             visible: true,
             width: 30,
             height: 10,
-            area: Cell::new(Rect::new(0, 0, 30, 10)),
+            area: std::cell::Cell::new(Rect::new(0, 0, 30, 10)),
         }
     }
 
@@ -41,7 +39,7 @@ impl Hud {
             visible: true,
             width: 30,
             height: 10,
-            area: Cell::new(Rect::new(0, 0, 30, 10)),
+            area: std::cell::Cell::new(Rect::new(0, 0, 30, 10)),
         }
     }
 
@@ -158,7 +156,7 @@ impl crate::framework::widget::Widget for Hud {
         self.z_index
     }
 
-    fn render(&self, area: Rect) -> Plane {
+    fn render(&self, _area: Rect) -> Plane {
         let mut plane = Plane::new(0, self.width, self.height);
         plane.z_index = self.z_index;
 

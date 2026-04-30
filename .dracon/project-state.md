@@ -1,11 +1,11 @@
 # Project State
 
 ## Current Focus
-Implement Widget trait for HUD and add area/id handling
+Refactor Hud widget to use fully qualified `std::cell::Cell` and drop unused `area` parameter in `render`
 
 ## Completed
-- [x] Updated Hud to store WidgetId and use u16 z_index instead of i32
-- [x] Added new constructors `new(z_index: u16)` and `new_with_id(id: WidgetId, z_index: u16)` with default area using Cell<Rect>
-- [x] Implemented full Widget trait for Hud (id, area, set_area, z_index, render, handle_key, handle_mouse)
-- [x] Introduced necessary imports (Cell, WidgetId, Rect) and removed obsolete z_index() method
-- [x] Refactored HUD rendering and interaction logic to conform to the new widget system
+- [x] Updated Cargo.lock reflecting dependency version changes
+- [x] Replaced imported `Cell` with fully qualified `std::cell::Cell` for the `area` field
+- [x] Updated `area` field initialization to use `std::cell::Cell::new`
+- [x] Modified `render` method signature to remove the unused `area: Rect` parameter
+- [x] Adjusted `render` method body to reference the qualified `Cell` type where needed
