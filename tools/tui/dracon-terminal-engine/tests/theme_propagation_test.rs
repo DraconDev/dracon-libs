@@ -256,6 +256,7 @@ fn test_app_remove_widget_after_theme_change() {
     app.remove_widget(id1);
 
     assert_eq!(app.widget_count(), 1, "one widget should remain after removal");
+    assert!(app.widget(id1).is_none(), "removed widget should not be found");
 }
 
 // === Default Widget trait on_theme_change ===
