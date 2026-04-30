@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [27.0.1] - 2026-04-30
+
+### Fixed
+
+- All 23+ framework widgets now correctly call `mark_dirty()` on state changes (Checkbox::toggle/check/uncheck, Slider::set_value, Radio::select/deselect, Toggle::toggle)
+- Fixed parallel test race in theme propagation tests by using per-widget Rc<Cell> tracking instead of shared static registry
+- `Terminal::new()` now falls back to null-mode when stdout is not a TTY (headless/CI environments)
+- `App::add_widget` now calls `widget.set_id(id)` to sync App-assigned IDs with widgets
+
+### Added
+
+- `Ctx::layout()` — constraint-based layout helper for use in `App::run` callbacks
+- 8 new dirty tracking integration tests in `tests/phase1_widget_test.rs`
+
 ## [27.0.0] - 2024-12-01
 
 ### Added

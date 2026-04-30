@@ -63,7 +63,7 @@ The `framework` module provides the complete application runtime:
 | [`FocusManager`] | Tab-order focus ring with keyboard navigation |
 | [`ScrollContainer`] | Scrollable container with offset management + scrollbar |
 
-### 23 Framework Widgets
+### 28 Framework Widgets
 | Widget | What |
 |---|---|
 | [`Breadcrumbs`] | Hierarchical path display with clickable segments |
@@ -131,14 +131,14 @@ The framework is built on these primitives — available directly when needed:
 
 ```toml
 [dependencies]
-dracon-terminal-engine = "27.0"
+dracon-terminal-engine = "27.0.1"
 ```
 
 Or from git:
 
 ```toml
 [dependencies]
-dracon-terminal-engine = { git = "https://github.com/DraconDev/dracon-terminal-engine", tag = "v27.0.0" }
+dracon-terminal-engine = { git = "https://github.com/DraconDev/dracon-terminal-engine", tag = "v27.0.1" }
 ```
 
 ## Quick Start (Framework)
@@ -194,7 +194,7 @@ cargo test --test scroll_test          # Scroll behavior tests
 
 ## Version
 
-**v27.0.0** — See [CHANGELOG](CHANGELOG.md) for full history.
+**v27.0.1** — See [CHANGELOG](CHANGELOG.md) for full history.
 
 ## License
 
