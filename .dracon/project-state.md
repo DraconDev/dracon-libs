@@ -1,6 +1,8 @@
 # Project State
-##Current Focus
-Adding scroll container functionality tests to verify scrolling behavior at maximum viewport limits
+
+## Current Focus
+Remove the standalone text editor edge case test file as part of test consolidation
 
 ## Completed
-- [x] Added test case for scroll container handling mouse scroll down at maximum viewport, requiring mutable state to simulate scroll interaction
+- [x] Deleted `text_editor_edge_test.rs` containing 634 lines of TextEditor edge case tests
+- [x] Updated `Cargo.lock` to reflect current dependency resolution state
