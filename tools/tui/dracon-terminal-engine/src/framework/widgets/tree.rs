@@ -100,6 +100,7 @@ impl Tree {
         ) -> Option<Vec<usize>> {
             for (i, node) in nodes.iter().enumerate() {
                 if *current_row >= row {
+                    path.push(i);
                     return Some(path.clone());
                 }
                 *current_row += 1;

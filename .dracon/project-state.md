@@ -1,10 +1,14 @@
 # Project State
 
 ## Current Focus
-Add a password input widget that masks characters, manages cursor movement, and triggers a submission callback.
+Added a line of code to push the current node index into the path during tree navigation.
 
 ## Completed
-- [x] Refactor `App::remove_widget` to call `on_unmount` on the widget before retaining the updated widget list and eliminate the unnecessary mutable binding.
-- [x] Implement `PasswordInput` with theme, mask character, submission callback, and full key handling for typing, navigation, backspace, enter, and cursor positioning.
-- [x] Export `PasswordInput` via `pub use` in `widgets/mod.rs` to make the widget accessible throughout the codebase.
-- [x] Bump project version to 27.0.0 in `Cargo.lock`, updating dependencies accordingly.
+- [x] Push node index into path during tree row handling.
+
+## In Progress
+- [ ] Continue development of mouse event handling features for widgets.
+- [ ] Proceed with focus management refinement and resize handling simplification.
+- [ ] Advance with comprehensive integration testing for widget event handling.
+- [ ] Further refine dependencies and input handling in form widgets.
+- [ ] Conclude with explicit `z_index` implementations for UI widgets.
