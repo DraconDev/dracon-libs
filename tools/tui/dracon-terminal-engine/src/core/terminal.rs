@@ -1,6 +1,6 @@
 use crate::backend::tty::{get_terminal_attr, make_raw, set_terminal_attr, Termios};
 use std::io::{self, Write};
-use std::os::fd::{AsFd, BorrowedFd};
+use std::os::fd::{AsFd, BorrowedFd, AsRawFd, RawFd};
 
 /// The main RAII wrapper for the terminal.
 /// When this struct is dropped, the terminal is restored to its original state.
