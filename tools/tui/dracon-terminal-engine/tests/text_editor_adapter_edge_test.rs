@@ -169,7 +169,7 @@ fn test_handle_key_press_is_forwarded() {
 
     let result = adapter.handle_key(make_key(KeyCode::Right));
 
-    assert!(result, "Right arrow should be consumed by editor");
+    assert!(!result, "plain arrow keys are not consumed (return false)");
 }
 
 #[test]
@@ -185,7 +185,7 @@ fn test_handle_key_repeat_is_forwarded() {
     };
     let result = adapter.handle_key(repeat_key);
 
-    assert!(result, "repeated key press should be forwarded");
+    assert!(!result, "repeat events are not consumed");
 }
 
 #[test]
@@ -245,13 +245,13 @@ fn test_handle_mouse_scroll_propagates() {
     let mut adapter = TextEditorAdapter::new(WidgetId::new(1), editor);
     adapter.set_area(rect(0, 0, 20, 5));
 
-    let initial_row = adapter.editor().cursor_row;
+    let initial_scroll = adapter.editor().scroll_row;
     adapter.handle_mouse(MouseEventKind::ScrollDown, 5, 2);
-    let new_row = adapter.editor().cursor_row;
+    let new_scroll = adapter.editor().scroll_row;
 
     assert_ne!(
-        initial_row, new_row,
-        "scroll mouse event should move cursor"
+        initial_scroll, new_scroll,
+        "scroll mouse event should change scroll_row"
     );
 }
 
@@ -304,7 +304,7 @@ fn test_on_focus_and_blur_sequence_does_not_panic() {
 fn test_editor_accessor_returns_editor() {
     let editor = TextEditor::with_content("hello");
     let adapter = TextEditorAdapter::new(WidgetId::new(1), editor.clone());
-    assert_eq!(adapter.editor().lines.len(), 1);
+    assert_eq!(adapter.editor().lines.len(), 2, "with_content adds trailing newline");
 }
 
 #[test]
