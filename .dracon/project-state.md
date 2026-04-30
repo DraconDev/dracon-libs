@@ -1,10 +1,10 @@
 # Project State
 
 ## Current Focus
-feat(widgets): add dirty state tracking to Form, Hud, and BaseInput widgets for selective redraw optimization
+Add dirty‑state tracking to text input widgets and expose rendering hooks in `SearchInput`.
 
 ## Completed
-- [x] Add `dirty: bool` field to Form, Hud, and BaseInput (text_input_base) widgets, initialized to `true` on instantiation
-- [x] Implement Widget trait methods `needs_render`, `mark_dirty`, and `clear_dirty` for Form and Hud widgets
-- [x] Set Form widget `dirty` flag to `true` on state mutations: field value/error updates, area changes, focus shifts via keyboard/mouse, text input modifications (character input, backspace, full value clear)
-- [x] Set Hud widget `dirty` flag to `true` when area is updated via `set_area`
+- [x] Implement dirty flag in `BaseInput` with `dirty` field, and update state on text modifications, cursor movement, and area changes.
+- [x] Add helper methods `set_area`, `mark_dirty`, and `clear_dirty` to `BaseInput`.
+- [x] Update `SearchInput` to delegate area updates to `BaseInput::set_area` and provide `needs_render`, `mark_dirty`, and `clear_dirty` methods that interact with the new dirty flag.
+- [x] Ensure `BaseInput::clear` now marks the widget as dirty for subsequent redraws.

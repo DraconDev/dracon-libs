@@ -55,7 +55,19 @@ impl Widget for SearchInput {
     }
 
     fn set_area(&mut self, area: Rect) {
-        self.base.area.set(area);
+        self.base.set_area(area);
+    }
+
+    fn needs_render(&self) -> bool {
+        self.base.dirty
+    }
+
+    fn mark_dirty(&mut self) {
+        self.base.dirty = true;
+    }
+
+    fn clear_dirty(&mut self) {
+        self.base.dirty = false;
     }
 
     fn render(&self, area: Rect) -> crate::compositor::Plane {
