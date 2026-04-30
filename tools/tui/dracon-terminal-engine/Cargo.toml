@@ -28,6 +28,7 @@ libc = "0.2"
 
 [dev-dependencies]
 rand = "0.8"
+tempfile = "3.10"
 
 [features]
 default = []
