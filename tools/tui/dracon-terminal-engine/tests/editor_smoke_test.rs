@@ -11,18 +11,18 @@ use std::thread;
 #[test]
 fn test_text_editor_demo_smoke() {
     // Build the example first so we have a binary to run
-    let status = Command::new("cargo")
+    let build_status = Command::new("cargo")
         .args(["build", "--example", "text_editor_demo"])
         .current_dir(env!("CARGO_MANIFEST_DIR"))
         .stdin(Stdio::null())
         .stdout(Stdio::null())
         .stderr(Stdio::null())
-        .status();
+        .status()
+        .expect("failed to run cargo build for text_editor_demo");
 
-    assert!(status.is_ok(), "failed to build text_editor_demo example");
-    assert!(status.unwrap().success(), "build of text_editor_demo failed");
+    assert!(build_status.success(), "cargo build for text_editor_demo failed");
 
-    // Spawn the example — it will open with "Start typing..." placeholder content
+    // Spawn the example with piped stdin so we can write to it
     let mut child = Command::new("cargo")
         .args(["run", "--example", "text_editor_demo"])
         .current_dir(env!("CARGO_MANIFEST_DIR"))
@@ -33,30 +33,39 @@ fn test_text_editor_demo_smoke() {
         .expect("failed to spawn text_editor_demo");
 
     // Give it time to initialize the terminal and start the event loop
-    thread::sleep(Duration::from_millis(500));
+    thread::sleep(Duration::from_millis(800));
 
-    // Send Ctrl+C to gracefully shut down (SIGINT)
-    // In raw terminal mode, Ctrl+C sends SIGINT to the process group
+    // Send Ctrl+C (byte 0x03 = SIGINT) to gracefully shut down
     {
         let stdin = child.stdin.as_mut().expect("stdin not captured");
-        // Ctrl+C = byte 0x03 in the stream
         stdin.write_all(&[3]).ok();
     }
 
-    // Wait for the process to exit (with timeout)
-    let result = child.wait_with_timeout(Duration::from_secs(5));
+    // Wait for the process to exit with a manual timeout loop
+    let mut exited = false;
+    for _ in 0..50 {
+        // try_wait returns None if the child hasn't exited yet
+        match child.try_wait() {
+            Ok(Some(status)) => {
+                assert!(
+                    status.success(),
+                    "text_editor_demo exited with error signal: {:?}",
+                    status.code()
+                );
+                exited = true;
+                break;
+            }
+            Ok(None) => {
+                thread::sleep(Duration::from_millis(100));
+            }
+            Err(e) => {
+                panic!("error waiting for text_editor_demo: {}", e);
+            }
+        }
+    }
 
-    match result {
-        Ok(Some(status)) => {
-            assert!(status.success(), "text_editor_demo exited with error: {:?}", status);
-        }
-        Ok(None) => {
-            // Timed out — force kill
-            child.kill().ok();
-            panic!("text_editor_demo did not exit within 5 seconds");
-        }
-        Err(e) => {
-            panic!("error waiting for text_editor_demo: {}", e);
-        }
+    if !exited {
+        child.kill().ok();
+        panic!("text_editor_demo did not exit within 5 seconds");
     }
 }
