@@ -225,7 +225,12 @@ fn extract_focus_summary(description: Option<&str>) -> Option<String> {
 
         // Collect first non-empty line in focus section
         if in_focus && !trimmed.is_empty() {
-            let summary = trimmed.to_string();
+            let mut summary = trimmed.to_string();
+            if let Some(stripped) = summary.strip_prefix("ONE LINE:").map(|s| s.trim_start().to_string()) {
+                summary = stripped;
+            } else if let Some(stripped) = summary.strip_prefix("one line:").map(|s| s.trim_start().to_string()) {
+                summary = stripped;
+            }
             // Truncate to reasonable commit subject length
             if summary.len() > 72 {
                 return Some(summary.chars().take(69).collect::<String>() + "...");

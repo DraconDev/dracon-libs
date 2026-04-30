@@ -121,7 +121,7 @@ impl crate::framework::widget::Widget for StatusBar {
         if self.segments.is_empty() {
             let default_text = "Ready";
             for (i, c) in default_text.chars().take(width).enumerate() {
-                let idx = (0u16 * plane.width + i as u16) as usize;
+                let idx = i;
                 if idx < plane.cells.len() {
                     plane.cells[idx] = Cell {
                         char: c,
