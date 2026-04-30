@@ -16,6 +16,7 @@ pub struct BaseInput {
     pub area: std::cell::Cell<Rect>,
     pub placeholder: String,
     pub mask_char: Option<char>,
+    pub dirty: bool,
 }
 
 impl BaseInput {
@@ -29,6 +30,7 @@ impl BaseInput {
             area: std::cell::Cell::new(Rect::new(0, 0, 30, 1)),
             placeholder: placeholder.to_string(),
             mask_char: None,
+            dirty: true,
         }
     }
 
