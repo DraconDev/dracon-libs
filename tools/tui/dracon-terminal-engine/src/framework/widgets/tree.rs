@@ -289,6 +289,7 @@ impl crate::framework::widget::Widget for Tree {
                         } else {
                             self.selected_path = path;
                         }
+                        self.dirty = true;
                     }
                 }
                 true
