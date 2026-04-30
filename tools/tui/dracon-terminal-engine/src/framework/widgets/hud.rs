@@ -1,27 +1,47 @@
 //! Heads-up display (HUD) widget.
 
+use std::cell::Cell;
+
 use unicode_width::UnicodeWidthStr;
 
 use crate::compositor::{Cell, Color, Plane, Styles};
+use crate::framework::widget::WidgetId;
+use ratatui::layout::Rect;
 
 /// A heads-up display overlay positioned at the top-left corner.
 ///
 /// Renders text and progress gauges as planes with a fixed z-index.
 pub struct Hud {
-    z_index: i32,
+    id: WidgetId,
+    z_index: u16,
     visible: bool,
     width: u16,
     height: u16,
+    area: Cell<Rect>,
 }
 
 impl Hud {
     /// Creates a new `Hud` with the given z-index.
-    pub fn new(z_index: i32) -> Self {
+    pub fn new(z_index: u16) -> Self {
         Self {
+            id: WidgetId::default_id(),
             z_index,
             visible: true,
             width: 30,
             height: 10,
+            area: Cell::new(Rect::new(0, 0, 30, 10)),
+        }
+    }
+
+    /// Creates a new `Hud` with the given widget ID and z-index.
+    pub fn new_with_id(id: WidgetId, z_index: u16) -> Self {
+        Self {
+            id,
+            z_index,
+            visible: true,
+            width: 30,
+            height: 10,
+            area: Cell::new(Rect::new(0, 0, 30, 10)),
         }
     }
 
@@ -35,11 +55,6 @@ impl Hud {
     /// Returns the fixed position of the HUD (always `(0, 0)`).
     pub fn position(&self) -> (u16, u16) {
         (0, 0)
-    }
-
-    /// Returns the z-index.
-    pub fn z_index(&self) -> i32 {
-        self.z_index
     }
 
     /// Returns whether the HUD is visible.
@@ -123,5 +138,44 @@ impl Hud {
         }
 
         plane
+    }
+}
+
+impl crate::framework::widget::Widget for Hud {
+    fn id(&self) -> WidgetId {
+        self.id
+    }
+
+    fn area(&self) -> Rect {
+        self.area.get()
+    }
+
+    fn set_area(&mut self, area: Rect) {
+        self.area.set(area);
+    }
+
+    fn z_index(&self) -> u16 {
+        self.z_index
+    }
+
+    fn render(&self, area: Rect) -> Plane {
+        let mut plane = Plane::new(0, self.width, self.height);
+        plane.z_index = self.z_index;
+
+        if !self.visible {
+            for cell in &mut plane.cells {
+                cell.transparent = true;
+            }
+        }
+
+        plane
+    }
+
+    fn handle_key(&mut self, _key: crate::input::event::KeyEvent) -> bool {
+        false
+    }
+
+    fn handle_mouse(&mut self, _kind: crate::input::event::MouseEventKind, _col: u16, _row: u16) -> bool {
+        false
     }
 }

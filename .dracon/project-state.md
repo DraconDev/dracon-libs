@@ -1,11 +1,11 @@
 # Project State
 
 ## Current Focus
-Add `get_ratio` accessor and interactive mouse-drag resizing, refactor area handling.
+Implement Widget trait for HUD and add area/id handling
 
 ## Completed
-- [x] Added `pub fn get_ratio(&self) -> f32` returning the stored split ratio.
-- [x] Added `pub fn handle_resize(&mut self, kind, col, row, area) -> bool` to update ratio on drag.
-- [x] Refactored `handle_mouse` to use `self.area.get()` as `current_area`, compute width/height from it, and clamp ratio.
-- [x] Removed old `area()` method and legacy `handle_resize` implementation.
-- [x] Updated orientation logic to use `current_area` dimensions for accurate sizing.
+- [x] Updated Hud to store WidgetId and use u16 z_index instead of i32
+- [x] Added new constructors `new(z_index: u16)` and `new_with_id(id: WidgetId, z_index: u16)` with default area using Cell<Rect>
+- [x] Implemented full Widget trait for Hud (id, area, set_area, z_index, render, handle_key, handle_mouse)
+- [x] Introduced necessary imports (Cell, WidgetId, Rect) and removed obsolete z_index() method
+- [x] Refactored HUD rendering and interaction logic to conform to the new widget system
