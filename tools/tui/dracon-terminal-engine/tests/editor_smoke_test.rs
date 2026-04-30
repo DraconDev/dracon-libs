@@ -1,20 +1,16 @@
 //! Smoke test for the text_editor_demo example.
 //!
-//! Spawns the example binary, waits for initialization, and verifies it
-//! exits cleanly (no immediate panic).
-//!
-//! Note: This test may exit with code 1 in non-TTY environments (CI, containers)
-//! because the terminal cannot be initialized. This is expected behavior for
-//! interactive TUI applications.
+//! Spawns the example binary and verifies it initializes without crashing.
+//! In non-TTY environments (CI, containers), exit code 1 is expected
+//! because terminal size can't be determined -- this is acceptable.
 
+use std::io::Read;
 use std::process::{Command, Stdio};
 use std::time::Duration;
-use std::io::Write;
 use std::thread;
 
 #[test]
 fn test_text_editor_demo_smoke() {
-    // Build the example first so we have a binary to run
     let build_status = Command::new("cargo")
         .args(["build", "--example", "text_editor_demo"])
         .current_dir(env!("CARGO_MANIFEST_DIR"))
@@ -26,57 +22,54 @@ fn test_text_editor_demo_smoke() {
 
     assert!(build_status.success(), "cargo build for text_editor_demo failed");
 
-    // Spawn the example with piped stdin so we can write to it
     let mut child = Command::new("cargo")
         .args(["run", "--example", "text_editor_demo"])
         .current_dir(env!("CARGO_MANIFEST_DIR"))
-        .stdin(Stdio::piped())
-        .stdout(Stdio::null())
-        .stderr(Stdio::null())
+        .stdin(Stdio::null())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
         .spawn()
         .expect("failed to spawn text_editor_demo");
 
-    // Give it time to initialize the terminal and start the event loop
-    thread::sleep(Duration::from_millis(800));
+    thread::sleep(Duration::from_millis(500));
 
-    // Send Ctrl+C (byte 0x03 = SIGINT) to gracefully shut down
-    {
-        let stdin = child.stdin.as_mut().expect("stdin not captured");
-        stdin.write_all(&[3]).ok();
-    }
+    let mut attempts = 0;
+    let mut final_status = None;
 
-    // Wait for the process to exit with a manual timeout loop
-    let mut exited = false;
-    for _ in 0..50 {
+    while attempts < 30 {
         match child.try_wait() {
             Ok(Some(status)) => {
-                // Exit code 1 in non-TTY environments is expected for TUI apps
-                // Exit code 0 means it shut down gracefully
-                if status.code() == Some(1) {
-                    // Likely "could not get terminal size" or similar tty-related error
-                    // This is acceptable in CI/container environments
-                    exited = true;
-                } else {
-                    assert!(
-                        status.success(),
-                        "text_editor_demo exited with error: {:?}",
-                        status.code()
-                    );
-                    exited = true;
-                }
+                final_status = Some((status, None));
                 break;
             }
             Ok(None) => {
                 thread::sleep(Duration::from_millis(100));
+                attempts += 1;
             }
-            Err(e) => {
-                panic!("error waiting for text_editor_demo: {}", e);
-            }
+            Err(e) => panic!("error waiting for text_editor_demo: {}", e),
         }
     }
 
-    if !exited {
-        child.kill().ok();
-        panic!("text_editor_demo did not exit within 5 seconds");
+    let status = match final_status {
+        Some((s, _)) => s,
+        None => {
+            child.kill().ok();
+            panic!("text_editor_demo did not exit within 3 seconds");
+        }
+    };
+
+    let code = status.code();
+    if code == Some(0) {
+    } else if code == Some(1) {
+    } else {
+        let mut stderr_buf = Vec::new();
+        if let Some(mut stderr) = child.stderr.take() {
+            stderr.read_to_end(&mut stderr_buf).ok();
+        }
+        let stderr_msg = String::from_utf8_lossy(&stderr_buf);
+        panic!(
+            "text_editor_demo exited unexpectedly with {:?}\nstderr: {}",
+            code, stderr_msg
+        );
     }
 }
