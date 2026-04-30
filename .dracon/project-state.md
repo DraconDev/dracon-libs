@@ -1,15 +1,16 @@
 # Project State
 
 ## Current Focus
-Expose the application context to widget-level operations via the `Ctx` struct
+Integrated tick‑driven updates, widget rendering, and event handling into a unified run loop that enables user callbacks to receive both context and app state.
 
 ## Completed
-- [x] Added `app: &self` parameter to the tick closure in `App`
-- [x] Added `app: &'a App` field to `Ctx` struct
-- [x] Added `focused_widget` method to `Ctx` to retrieve focused widget ID
-- [x] Added `set_focus` method to `Ctx` for programmatically setting focus
-- [x] Added `widget_count` method to `Ctx` to get total widget count
-- [x] Added `widget` method to `Ctx` for immutable widget access
-- [x] Added `widget_mut` method to `Ctx` for mutable widget access
-- [x] Added `widget_ref` generic method to downcast widget reference
-- [x] Added `widget_mut_ref` generic method to downcast mutable widget reference
+- [x] Modified `on_tick` to accept `&mut App` in addition to `&mut Ctx`.
+- [x] Updated `run` to accept `F: FnMut(&mut Ctx, &mut App)` for user code access to the app.
+- [x] Added tick interval tracking, counter, and callback invocation each tick.
+- [x] Implemented sorting of widgets by `z_index` and rendering each plane to the compositor.
+- [x] Created and passed a `Ctx` containing compositor, theme, frame count, and timing references.
+- [x] Integrated user‑provided closure `f` to be called each frame after tick handling.
+- [x] Added frame‑rate pacing with sleep based on elapsed time.
+- [x] Relocated stdin event reading and handling into the main loop for continuous processing.
+- [x] Added control‑C handling to gracefully stop the application.
+- [x] Restructured the execution flow to combine tick updates, widget rendering, and event dispatch into a single cohesive loop.
