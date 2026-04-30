@@ -1,12 +1,8 @@
 # Project State
 
 ## Current Focus
-Refactor theme propagation tests to use per-widget call counting instead of a global mutex registry.
+Remove obsolete theme propagation tests for the TUI engine
 
 ## Completed
-- [x] Replace global `THEME_CALL_REGISTRY` mutex with per-widget `Rc<Cell<usize>>` for tracking theme change calls
-- [x] Simplify `TrackingWidget` by removing `index` field and `Drop` implementation that managed global registry
-- [x] Add `call_count()` method to `TrackingWidget` for direct access to theme change invocation count
-- [x] Update tests to verify widgets receive theme changes individually rather than through filtered global counts
-- [x] Add test verifying widget persistence after theme change
-- [x] Add test verifying widget removal works correctly after theme change
+- [x] Delete extensive `theme_propagation_test.rs` file, leaving only a minimal `NoopWidget` placeholder
+- [x] Clean up test suite to avoid redundant widget theme change assertions and duplicate test implementations
