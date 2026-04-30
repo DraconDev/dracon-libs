@@ -142,7 +142,7 @@ impl crate::framework::widget::Widget for StatusBar {
         for (seg_idx, segment) in self.segments.iter().enumerate() {
             let start_x = seg_idx * segment_width;
             for (i, c) in segment.text.chars().take(segment_width.saturating_sub(1)).enumerate() {
-                let idx = (0u16 * plane.width + (start_x + i) as u16) as usize;
+                let idx = start_x + i;
                 if idx < plane.cells.len() {
                     plane.cells[idx] = Cell {
                         char: c,

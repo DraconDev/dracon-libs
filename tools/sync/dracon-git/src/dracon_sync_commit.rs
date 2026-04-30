@@ -295,7 +295,8 @@ pub fn build_commit_message(ctx: &CommitContext) -> String {
         extract_focus_summary(ctx.description.as_deref())
             .unwrap_or_else(|| "wip checkpoint".to_string())
     } else {
-        build_summary_line(added, modified, deleted, &display_files)
+        extract_focus_summary(ctx.description.as_deref())
+            .unwrap_or_else(|| build_summary_line(added, modified, deleted, &display_files))
     };
     let subject = format!("{}({}): {}", category, scope, summary);
 
