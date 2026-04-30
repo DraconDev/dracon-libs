@@ -111,7 +111,7 @@ impl App {
     pub fn new_for_testing() -> io::Result<Self> {
         let (w, h) = (80, 24);
         Ok(Self {
-            terminal: Terminal::new(io::stdout())?,
+            terminal: Terminal::new_null()?,
             compositor: Compositor::new(w, h),
             parser: Parser::new(),
             title: String::from("Test App"),
