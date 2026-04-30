@@ -12,7 +12,9 @@ use crate::input::event::Event;
 use crate::input::parser::Parser;
 use crate::Terminal;
 use ratatui::layout::Rect;
+use std::cell::Ref;
 use std::cell::RefCell;
+use std::cell::RefMut;
 use std::io::{self, Read, Write};
 use std::os::fd::AsFd;
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
@@ -140,29 +142,17 @@ impl App {
     }
 
     /// Returns an immutable reference to a widget by ID.
-    pub fn widget(&self, id: WidgetId) -> Option<&dyn Widget> {
-        let mut result = None;
+    pub fn widget(&self, id: WidgetId) -> Option<Ref<'_, Box<dyn Widget>>> {
         let widgets = self.widgets.borrow();
-        for i in 0..widgets.len() {
-            if widgets[i].id() == id {
-                result = Some(widgets[i].as_ref());
-                break;
-            }
-        }
-        result
+        let idx = widgets.iter().position(|w| w.id() == id)?;
+        Some(Ref::map(widgets, |w| &w[idx]))
     }
 
     /// Returns a mutable reference to a widget by ID.
-    pub fn widget_mut(&mut self, id: WidgetId) -> Option<&mut dyn Widget> {
-        let mut result = None;
+    pub fn widget_mut(&mut self, id: WidgetId) -> Option<RefMut<'_, Box<dyn Widget>>> {
         let mut widgets = self.widgets.borrow_mut();
-        for i in 0..widgets.len() {
-            if widgets[i].id() == id {
-                result = Some(widgets[i].as_mut());
-                break;
-            }
-        }
-        result
+        let idx = widgets.iter().position(|w| w.id() == id)?;
+        Some(RefMut::map(widgets, |w| &mut w[idx]))
     }
 
     /// Returns the number of registered widgets.
