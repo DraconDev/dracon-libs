@@ -128,4 +128,19 @@ impl crate::framework::widget::Widget for Radio {
             _ => false,
         }
     }
+
+    fn handle_mouse(&mut self, kind: crate::input::event::MouseEventKind, _col: u16, _row: u16) -> bool {
+        match kind {
+            crate::input::event::MouseEventKind::Down(crate::input::event::MouseButton::Left) => {
+                if !self.selected {
+                    self.selected = true;
+                    if let Some(ref mut cb) = self.on_change {
+                        cb(true);
+                    }
+                }
+                true
+            }
+            _ => false,
+        }
+    }
 }

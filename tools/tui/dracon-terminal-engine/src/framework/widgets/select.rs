@@ -158,4 +158,27 @@ impl crate::framework::widget::Widget for Select {
             _ => false,
         }
     }
+
+    fn handle_mouse(&mut self, kind: crate::input::event::MouseEventKind, col: u16, row: u16) -> bool {
+        match kind {
+            crate::input::event::MouseEventKind::Down(crate::input::event::MouseButton::Left) => {
+                if row == 0 {
+                    self.expanded = !self.expanded;
+                    true
+                } else if self.expanded {
+                    let item_idx = (row - 1) as usize;
+                    if item_idx < self.options.len() {
+                        self.selected = item_idx;
+                        self.expanded = false;
+                        true
+                    } else {
+                        false
+                    }
+                } else {
+                    false
+                }
+            }
+            _ => false,
+        }
+    }
 }

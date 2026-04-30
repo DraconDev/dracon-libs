@@ -1,11 +1,9 @@
 # Project State
 
 ## Current Focus
-Addmouse event handling to Checkbox widget for user input interaction
+Add mouse event handling to the Radio, Select, and Toggle widgets to enable user interaction via clicks.
 
 ## Completed
-- [x] Add `handle_mouse` method to Checkbox to toggle state on left-click
-- [x] Implement event processing for mouse down events
-- [x] Notify `on_change` closure when checkbox state changes
-- [x] Fix event handling to prioritize boolean return values appropriately
-This change enables checkbox toggling through mouse clicks by adding mouse event handling logic. The implementation responds to left mouse button down events by calling `toggle()`, updating the checkbox state, and notifying any registered `on_change` observers through their closure. The method structure matches the widget trait requirements while providing targeted input handling.
+- [x] Implement `handle_mouse` for the Radio widget: clicking selects the option and triggers the change callback.
+- [x] Implement `handle_mouse` for the Select widget: left-click toggles expansion and selects options when expanded.
+- [x] Implement `handle_mouse` for the Toggle widget: left-click toggles state and fires the change callback.
