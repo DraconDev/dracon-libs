@@ -1,3 +1,13 @@
+//! Color themes for terminal UI.
+//!
+//! Provides [`Theme`] with 15 built-in themes: `dark`, `light`, `cyberpunk`,
+//! `dracula`, `nord`, `catppuccin_mocha`, `gruvbox_dark`, `tokyo_night`,
+//! `solarized_dark`, `solarized_light`, `one_dark`, `rose_pine`, `kanagawa`,
+//! `everforest`, `monokai`.
+//!
+//! Apply a theme with [`App::set_theme`](crate::framework::app::App::set_theme),
+//! which propagates it to all registered widgets via `on_theme_change`.
+
 use crate::compositor::Color;
 
 /// A color scheme defining the visual appearance of the terminal UI.

@@ -1,4 +1,21 @@
 //! The main application entry point.
+//!
+//! [`App`] owns the terminal, compositor, input parser, widget registry,
+//! and event loop. Build with the builder pattern, then call [`run`](App::run).
+//!
+//! ## Widget lifecycle
+//!
+//! - [`add_widget`](App::add_widget) registers a widget and calls [`on_mount`](crate::framework::widget::Widget::on_mount)
+//! - [`remove_widget`](App::remove_widget) calls [`on_unmount`](crate::framework::widget::Widget::on_unmount) and removes it
+//! - Focus changes trigger [`on_focus`](crate::framework::widget::Widget::on_focus) / [`on_blur`](crate::framework::widget::Widget::on_blur)
+//! - Theme changes propagate via [`set_theme`](App::set_theme) → [`on_theme_change`](crate::framework::widget::Widget::on_theme_change)
+//!
+//! ## Dirty rendering
+//!
+//! Widgets that return `false` from [`needs_render`](crate::framework::widget::Widget::needs_render)
+//! are skipped during the render pass. Call [`mark_dirty`](Ctx::mark_dirty) on `Ctx` to
+//! invalidate a screen region, or call [`mark_dirty`](crate::framework::widget::Widget::mark_dirty) on a
+//! widget to force it to re-render next frame.
 
 use crate::backend::tty;
 use crate::compositor::{Compositor, Plane};
@@ -381,8 +398,19 @@ impl Default for App {
 
 /// Application context, passed to every render and tick callback.
 ///
-/// Provides access to the compositor, theme, and convenience methods
-/// for splitting the screen and measuring frame rate.
+/// Provides access to the compositor, theme, animation manager, focus manager,
+/// and dirty region tracker. Use it to add planes, manage focus, and mark
+/// screen regions as dirty for the next render pass.
+///
+/// ## Example
+///
+/// ```ignore
+/// app.run(|ctx| {
+///     ctx.mark_dirty(0, 0, 80, 24); // mark entire screen dirty
+///     let plane = my_widget.render(ctx.compositor().size().into());
+///     ctx.add_plane(plane);
+/// });
+/// ```
 pub struct Ctx<'a> {
     pub(crate) compositor: &'a mut Compositor,
     pub(crate) theme: &'a Theme,

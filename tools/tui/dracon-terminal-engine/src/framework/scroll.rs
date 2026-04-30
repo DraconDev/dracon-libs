@@ -1,4 +1,8 @@
 //! Scroll state and container widgets.
+//!
+//! Provides [`ScrollState`] for tracking scroll position, content height,
+//! and viewport height. [`ScrollContainer`] wraps content and renders a
+//! scrollbar with customizable colors.
 
 use crate::compositor::{Cell, Color, Plane, Styles};
 use ratatui::layout::Rect;
