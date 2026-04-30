@@ -85,16 +85,15 @@ impl FocusManager {
         let old = self.focused;
         if old != Some(id) {
             self.focused = Some(id);
-            self.notify_focus_change(id, old);
+            self.notify_focus_change(Some(id), old);
         }
         true
     }
 
     /// Clears focus (no widget is focused).
     pub fn clear_focus(&mut self) {
-        if let Some(old) = self.focused.take() {
-            self.notify_focus_change(old, None);
-        }
+        let old = self.focused.take();
+        self.notify_focus_change(None, old);
     }
 
     /// Advances focus to the next widget in tab order (Tab key).
@@ -133,7 +132,7 @@ impl FocusManager {
 
         let old = self.focused;
         self.focused = Some(next);
-        self.notify_focus_change(next, old);
+        self.notify_focus_change(Some(next), old);
         Some(next)
     }
 
