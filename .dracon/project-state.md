@@ -1,7 +1,7 @@
 # Project State
 
 ## Current Focus
-Implement headless terminal for testing to enable unit tests in environments without a real terminal.
+Replace default `App` constructor with a testing-specific `App` constructor for theme propagation tests.
 
 ## Completed
-- [x] Replace real terminal initialization with null terminal in `App::new_for_testing` for headless testing support.
+- [x] Replace `App::new()` with `App::new_for_testing()` in theme propagation tests for isolated unit testing setup.

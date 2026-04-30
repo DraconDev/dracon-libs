@@ -175,7 +175,6 @@ impl TrackingWidget {
 
 impl Drop for TrackingWidget {
     fn drop(&mut self) {
-        // Remove from registry when dropped
         if let Ok(mut reg) = THEME_CALL_REGISTRY.lock() {
             if self.index < reg.len() {
                 reg[self.index] = usize::MAX;
@@ -208,7 +207,7 @@ impl Widget for TrackingWidget {
 fn test_app_set_theme_calls_on_theme_change_on_all_widgets() {
     reset_registry();
 
-    let mut app = App::new().unwrap();
+    let mut app = App::new_for_testing().unwrap();
     app.add_widget(Box::new(TrackingWidget::new(1, 0)), Rect::new(0, 0, 10, 10));
     app.add_widget(Box::new(TrackingWidget::new(2, 1)), Rect::new(10, 0, 10, 10));
     app.add_widget(Box::new(TrackingWidget::new(3, 2)), Rect::new(0, 10, 20, 10));
@@ -224,7 +223,7 @@ fn test_app_set_theme_calls_on_theme_change_on_all_widgets() {
 fn test_app_set_theme_multiple_times_accumulates() {
     reset_registry();
 
-    let mut app = App::new().unwrap();
+    let mut app = App::new_for_testing().unwrap();
     app.add_widget(Box::new(TrackingWidget::new(1, 0)), Rect::new(0, 0, 10, 10));
 
     app.set_theme(Theme::dark());
@@ -238,7 +237,7 @@ fn test_app_set_theme_multiple_times_accumulates() {
 
 #[test]
 fn test_app_widget_persists_after_theme_change() {
-    let mut app = App::new().unwrap();
+    let mut app = App::new_for_testing().unwrap();
     let wid = app.add_widget(Box::new(TrackingWidget::new(42, 0)), Rect::new(0, 0, 10, 10));
 
     app.set_theme(Theme::cyberpunk());
@@ -249,7 +248,7 @@ fn test_app_widget_persists_after_theme_change() {
 
 #[test]
 fn test_app_remove_widget_after_theme_change() {
-    let mut app = App::new().unwrap();
+    let mut app = App::new_for_testing().unwrap();
     let id1 = app.add_widget(Box::new(TrackingWidget::new(1, 0)), Rect::new(0, 0, 10, 10));
     let id2 = app.add_widget(Box::new(TrackingWidget::new(2, 1)), Rect::new(10, 0, 10, 10));
 
