@@ -1,8 +1,9 @@
 # Project State
 
 ## Current Focus
-Refactor TabBar to use a fully qualified `std::cell::Cell` type for the `area` field
+Refactor TabBar to use fully qualified `std::cell::Cell` and add a builder `with_theme` method
 
 ## Completed
-- [x] Removed the `use std::cell::Cell;` import from the file
-- [x] Updated the `area` field declaration from `Cell<Rect>` to `std::cell::Cell<Rect>` to reference the type explicitly
+- [x] Use `std::cell::Cell::new` for the `area` field initialization
+- [x] Add `with_theme(mut self, theme: Theme) -> Self` builder method
+- [x] Update method documentation and formatting

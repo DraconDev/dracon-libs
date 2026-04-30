@@ -25,19 +25,26 @@ impl TabBar {
             tabs: tabs.iter().map(|s| s.to_string()).collect(),
             active: 0,
             theme: Theme::default(),
-            area: Cell::new(Rect::new(0, 0, 80, 3)),
+            area: std::cell::Cell::new(Rect::new(0, 0, 80, 3)),
         }
     }
 
-    /// Creates a new `TabBar` with the given widget ID and tab labels.
+/// Creates a new `TabBar` with the given widget ID and tab labels.
     pub fn new_with_id(id: WidgetId, tabs: Vec<&str>) -> Self {
         Self {
             id,
             tabs: tabs.iter().map(|s| s.to_string()).collect(),
             active: 0,
             theme: Theme::default(),
-            area: Cell::new(Rect::new(0, 0, 80, 3)),
+            area: std::cell::Cell::new(Rect::new(0, 0, 80, 3)),
         }
+    }
+
+    /// Sets the rendering theme.
+    pub fn with_theme(mut self, theme: Theme) -> Self {
+        self.theme = theme;
+        self
+    }
     }
 
     /// Sets the rendering theme.
