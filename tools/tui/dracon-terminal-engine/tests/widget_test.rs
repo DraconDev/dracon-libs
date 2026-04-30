@@ -51,9 +51,6 @@ fn test_list_visible_count() {
 
 #[test]
 fn test_table_new() {
-    let cols = vec![
-        Table::new(vec![]).id(), // dummy to check Table exists
-    ];
     let table = Table::new(vec![]);
     assert_eq!(table.len(), 0);
 }
