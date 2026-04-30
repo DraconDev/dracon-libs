@@ -111,6 +111,19 @@ impl App {
         self
     }
 
+    /// Sets the UI theme and propagates it to all registered widgets.
+    ///
+    /// This calls `on_theme_change()` on every widget, allowing them to
+    /// update internal theme-dependent state without requiring manual
+    /// configuration of each widget.
+    pub fn set_theme(&mut self, theme: Theme) -> &mut Self {
+        self.theme = theme;
+        for widget in self.widgets.borrow_mut().iter_mut() {
+            widget.on_theme_change(&theme);
+        }
+        self
+    }
+
     /// Registers a callback that fires every `tick_interval` milliseconds.
     /// The callback receives the context and the tick count.
     pub fn on_tick<F>(self, f: F) -> Self

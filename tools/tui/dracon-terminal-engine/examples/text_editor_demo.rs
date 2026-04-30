@@ -55,7 +55,7 @@ fn main() -> std::io::Result<()> {
     let adapter = TextEditorAdapter::new(WidgetId::new(1), editor);
     app.add_widget(Box::new(adapter), Rect::new(0, 0, w, h));
 
-    app.run(move |ctx| {
+    app.run(|ctx| {
         ctx.hide_cursor().ok();
     })
 }

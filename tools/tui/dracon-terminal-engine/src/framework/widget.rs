@@ -79,6 +79,10 @@ pub trait Widget {
     /// Called when the widget is removed from the application.
     fn on_unmount(&mut self) {}
 
+    /// Called when the theme is changed via `App::set_theme()`.
+    /// Allows widgets to update their internal theme-dependent state.
+    fn on_theme_change(&mut self, _theme: &crate::framework::theme::Theme) {}
+
     /// Handles a keyboard event.
     /// Returns `true` if the event was consumed, `false` if it should bubble.
     fn handle_key(&mut self, _key: KeyEvent) -> bool {
