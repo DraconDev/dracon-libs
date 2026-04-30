@@ -213,10 +213,24 @@ impl App {
                                 {
                                     running.store(false, Ordering::SeqCst);
                                 } else if k.code == crate::input::event::KeyCode::Tab {
+                                    let old = self.focus_manager.focused();
                                     if k.modifiers.contains(crate::input::event::KeyModifiers::SHIFT) {
                                         let _ = self.focus_manager.tab_prev();
                                     } else {
                                         let _ = self.focus_manager.tab_next();
+                                    }
+                                    let new = self.focus_manager.focused();
+                                    if new != old {
+                                        if let Some(old_id) = old {
+                                            if let Some(mut w) = self.widget_mut(old_id) {
+                                                w.on_blur();
+                                            }
+                                        }
+                                        if let Some(new_id) = new {
+                                            if let Some(mut w) = self.widget_mut(new_id) {
+                                                w.on_focus();
+                                            }
+                                        }
                                     }
                                 } else if let Some(focused) = self.focus_manager.focused() {
                                     if let Some(mut widget) = self.widget_mut(focused) {
@@ -237,7 +251,18 @@ impl App {
                                     }).map(|w| w.id())
                                 };
                                 if let Some(id) = target_id {
-                                    self.focus_manager.set_focus(id);
+                                    let old = self.focus_manager.focused();
+                                    if old != Some(id) {
+                                        if let Some(old_id) = old {
+                                            if let Some(mut w) = self.widget_mut(old_id) {
+                                                w.on_blur();
+                                            }
+                                        }
+                                        self.focus_manager.set_focus(id);
+                                        if let Some(mut w) = self.widget_mut(id) {
+                                            w.on_focus();
+                                        }
+                                    }
                                     if let Some(mut widget) = self.widget_mut(id) {
                                         let a = widget.area();
                                         let local_col = col.saturating_sub(a.x);

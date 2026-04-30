@@ -1,8 +1,10 @@
 # Project State
-
-## Current Focus
-Refactored focus manager implementation to improve readability and maintainability.
+##Current Focus
+Improved focus management with explicit blur/focus callbacks and Shift‑Tab navigation
 
 ## Completed
-- [x] Removed redundant closing braces in focus manager impl block
-- [x] Deleted deprecated closing contexts for cleaner code structure
+- [x] Added handling for Shift‑Tab to move focus backward
+- [x] Implemented on_blur() notification for the previously focused widget
+- [x] Implemented on_focus() notification for the newly focused widget
+- [x] Guarded callback invocations to run only when the focus actually changes
+- [x] Updated Cargo.lock to reflect new dependency lock (binary change)
