@@ -1,0 +1,7 @@
+[allow]
+too_many_arguments_threshold = 8
+type_complexity_threshold = 500
+cognitive_complexity_threshold = 60
+
+[warn]
+single_match_else = true
