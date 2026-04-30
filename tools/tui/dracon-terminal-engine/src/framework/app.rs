@@ -103,37 +103,6 @@ impl App {
         })
     }
 
-    /// Creates a new `App` without a terminal for headless testing.
-    ///
-    /// This bypasses `Terminal::new()` which requires a real TTY,
-    /// allowing tests to run in environments without a terminal.
-    #[cfg(test)]
-    pub fn new_for_testing() -> io::Result<Self> {
-        use crate::core::terminal::new_null_terminal;
-        let (w, h) = (80, 24);
-        Ok(Self {
-            terminal: new_null_terminal()?,
-            compositor: Compositor::new(w, h),
-            parser: Parser::new(),
-            title: String::from("Test App"),
-            fps: 30,
-            theme: Theme::default(),
-            running: Arc::new(AtomicBool::new(true)),
-            frame_count: Arc::new(AtomicU64::new(0)),
-            last_frame_time: Instant::now(),
-            last_tick_time: Instant::now(),
-            tick_interval: Duration::from_millis(250),
-            resize_flag: Arc::new(AtomicBool::new(false)),
-            tick_count: 0,
-            on_tick: RefCell::new(None),
-            widgets: RefCell::new(Vec::new()),
-            focus_manager: FocusManager::new(),
-            dirty_tracker: DirtyRegionTracker::new(),
-            animations: AnimationManager::new(),
-            next_widget_id: 0,
-        })
-    }
-
     /// Sets the terminal window title (via OSC escape sequence).
     pub fn title(mut self, title: &str) -> Self {
         self.title = title.to_string();

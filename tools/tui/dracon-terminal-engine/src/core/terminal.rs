@@ -17,7 +17,7 @@ impl<W: Write + AsFd> Drop for Terminal<W> {
             "\x1b[<u\x1b[?25h\x1b[?1l\x1b[?1000l\x1b[?1002l\x1b[?1003l\x1b[?1006l\x1b[?1007h\x1b[?7h\x1b[?1049l"
         );
         let _ = self.output.flush();
-        // Restore terminal attributes
+        // Restore terminal attributes (ignore errors for null-mode terminals)
         let _ = set_terminal_attr(self.output.as_fd(), &self.original_termios);
     }
 }
@@ -29,9 +29,15 @@ impl<W: Write + AsFd> Terminal<W> {
     /// (e.g., when stdout is piped in a test environment).
     pub fn new(mut writer: W) -> io::Result<Self> {
         let fd = writer.as_fd();
-        let mut termios = get_terminal_attr(fd)?;
-        let original_termios = termios;
+        let original_termios = match get_terminal_attr(fd) {
+            Ok(t) => t,
+            Err(e) if e.raw_os_error() == Some(25) => {
+                return Self::new_null_mode(writer);
+            }
+            Err(e) => return Err(e),
+        };
 
+        let mut termios = original_termios;
         make_raw(&mut termios);
         set_terminal_attr(fd, &termios)?;
 
@@ -45,6 +51,13 @@ impl<W: Write + AsFd> Terminal<W> {
 
         Ok(Self {
             original_termios,
+            output: writer,
+        })
+    }
+
+    fn new_null_mode(writer: W) -> io::Result<Self> {
+        Ok(Self {
+            original_termios: unsafe { std::mem::zeroed() },
             output: writer,
         })
     }
@@ -83,45 +96,5 @@ impl<W: Write + AsFd> Write for Terminal<W> {
 impl<W: Write + AsFd> AsFd for Terminal<W> {
     fn as_fd(&self) -> BorrowedFd<'_> {
         self.output.as_fd()
-    }
-}
-
-/// Creates a terminal that writes to /dev/null (or a null device).
-/// Used for headless testing where no real terminal is available.
-#[cfg(test)]
-pub fn new_null_terminal() -> io::Result<Terminal<NullWriter>> {
-    Ok(Terminal {
-        original_termios: unsafe { std::mem::zeroed() },
-        output: NullWriter::new(),
-    })
-}
-
-#[cfg(test)]
-struct NullWriter {
-    data: Vec<u8>,
-}
-
-#[cfg(test)]
-impl NullWriter {
-    fn new() -> Self {
-        Self { data: Vec::new() }
-    }
-}
-
-#[cfg(test)]
-impl Write for NullWriter {
-    fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
-        self.data.extend_from_slice(buf);
-        Ok(buf.len())
-    }
-    fn flush(&mut self) -> io::Result<()> {
-        Ok(())
-    }
-}
-
-#[cfg(test)]
-impl AsFd for NullWriter {
-    fn as_fd(&self) -> BorrowedFd<'_> {
-        unsafe { BorrowedFd::borrow_raw(-1) }
     }
 }
