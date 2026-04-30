@@ -154,9 +154,6 @@ impl Widget for NoopWidget {
     fn render(&self, _area: ratatui::layout::Rect) -> Plane {
         Plane::new(0, 80, 24)
     }
-    fn on_theme_change(&mut self, _theme: &Theme) {
-        panic!("should use default implementation");
-    }
 }
 
 #[test]
