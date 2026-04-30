@@ -1,8 +1,9 @@
 # Project State
 
 ## Current Focus
-Updating dependencies and refining input handling in form widget
+Add comprehensive integration tests for widget event handling (keyboard and mouse) across List, SearchInput, and Slider.
 
 ## Completed
-- [x] Bumped Cargo.lock to newer dependency versions for improved stability
-- [x] Added parentheses in form.rs mouse handler for explicit type conversion safety
+- [x] Integration tests for List: key navigation (Up/Down/Home/End), repeat-key suppression, and mouse scroll behavior with visible item count.
+- [x] Integration tests for SearchInput: character insertion, backspace, Enter submission with callback, cursor navigation (Left/Right), and repeat-key suppression.
+- [x] Integration tests for Slider: mouse click within bounds to update value and out-of-bounds click rejection.
