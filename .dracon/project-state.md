@@ -1,9 +1,7 @@
 # Project State
 
 ## Current Focus
-Removed rendering and interaction logic from the List widget.
+Updated Cargo.lock to reflect newer dependency versions
 
 ## Completed
-- [x] removed render method from List<T>
-- [x] removed handle_mouse method from List<T>
-- [x] removed handle_key method from List<T>
+- [x] Updated Cargo.lock with newer dependency versions
