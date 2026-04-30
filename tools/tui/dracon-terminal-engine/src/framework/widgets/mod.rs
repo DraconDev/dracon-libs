@@ -24,6 +24,7 @@ pub mod spinner;
 pub mod status_bar;
 pub mod tabbar;
 pub mod table;
+pub mod text_editor_adapter;
 pub mod text_input_base;
 pub mod toast;
 pub mod toggle;

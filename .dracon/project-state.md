@@ -1,7 +1,9 @@
 # Project State
 
 ## Current Focus
-Add comprehensive agent documentation for the Dracon Terminal Engine, detailing vision, architecture, and TextEditor API.
+feat(editor): add TextEditorAdapter to integrate TextEditor widget with framework's Widget trait system
 
 ## Completed
-- [x] docs(scope): added AGENTS.md with engine vision, architecture principles, and TextEditor public API documentation.
+- [x] Add TextEditorAdapter struct that wraps TextEditor widget for framework integration
+- [x] Implement Widget trait for TextEditorAdapter with render, input handling, and focus management
+- [x] Add text_editor_adapter module to widgets/mod.rs exports
