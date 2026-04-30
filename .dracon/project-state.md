@@ -1,10 +1,9 @@
 # Project State
 
 ## Current Focus
-Refactor tick handling to eliminate redundant context creation and streamline widget processing
+Refactor event handling and simplify tick context creation in the terminal application.
 
 ## Completed
-- [x] Removed the local `Ctx` variable creation and its associated block
-- [x] Moved the `f(&mut ctx)` call to execute immediately after updating `last_tick_time`
-- [x] Eliminated the duplicate `f(&mut ctx)` call that previously occurred after widget collection
-- [x] Adjusted the order of widget sorting and rendering to reflect the removed calls
+- [x] Removed the redundant `dispatch_key` call for non‑Control key events in the `Event::Key` branch.
+- [x] Simplified mouse event processing by capturing the target widget ID and invoking `widget.handle_mouse` directly.
+- [x] Added creation of a `Ctx` instance for the tick callback and passed it to `on_tick` without redundant context creation.

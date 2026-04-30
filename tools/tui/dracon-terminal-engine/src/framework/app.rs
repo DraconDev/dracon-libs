@@ -208,36 +208,45 @@ impl App {
                                     && k.modifiers.contains(crate::input::event::KeyModifiers::CONTROL)
                                 {
                                     running.store(false, Ordering::SeqCst);
-                                } else {
-                                    let _ = self.event_dispatcher.dispatch_key(*k, &mut |id, key| {
-                                        if let Some(widget) = self.widget_mut(id) {
-                                            widget.handle_key(key)
-                                        } else {
-                                            false
-                                        }
-                                    });
                                 }
                             }
                             Event::Mouse(mouse_event) => {
-                                let _ = self.event_dispatcher.dispatch_mouse(
-                                    mouse_event.kind,
-                                    mouse_event.column,
-                                    mouse_event.row,
-                                    mouse_event.modifiers,
-                                    &mut |id, kind, col, row, modifiers| {
-                                        if let Some(widget) = self.widget_mut(id) {
-                                            widget.handle_mouse(kind, col, row)
-                                        } else {
-                                            false
-                                        }
-                                    },
-                                );
+                                let mut target_id = None;
+                                {
+                                    let mut ed = &mut self.event_dispatcher;
+                                    ed.dispatch_mouse(
+                                        mouse_event.kind,
+                                        mouse_event.column,
+                                        mouse_event.row,
+                                        mouse_event.modifiers,
+                                        &mut |id, _, _, _, _| {
+                                            target_id = Some(id);
+                                            true
+                                        },
+                                    );
+                                }
+                                if let Some(id) = target_id {
+                                    if let Some(mut widget) = self.widget_mut(id) {
+                                        let _ = widget.handle_mouse(
+                                            mouse_event.kind,
+                                            mouse_event.column,
+                                            mouse_event.row,
+                                        );
+                                    }
+                                }
                             }
                             _ => {}
                         }
                     }
                 }
             }
+
+            let mut ctx = Ctx {
+                compositor: &mut self.compositor,
+                theme: &self.theme,
+                frame_count: frame_count.load(Ordering::SeqCst),
+                last_frame: &self.last_frame_time,
+            };
 
             if self.last_tick_time.elapsed() >= self.tick_interval {
                 if let Some(ref mut tick_fn) = *self.on_tick.borrow_mut() {
