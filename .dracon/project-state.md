@@ -1,7 +1,5 @@
-# Project State
-
-## Current Focus
-refactor(text_editor): use `map_color` helper for foreground and background color mapping
+# Project State## Current Focus
+Add demonstration example for text editor widget showcasing new features
 
 ## Completed
-- [x] refactor(text_editor_adapter): replace direct Color::Ansi construction with map_color helper function for fg and bg color mapping
+- [x] Added `text_editor_demo.rs` to demonstrate new TextEditor widget with configurable UI options, search/replace functionality, and language auto-detection based on file extensions
