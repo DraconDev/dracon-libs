@@ -1,4 +1,5 @@
 use dracon_terminal_engine::framework::widgets::List;
+use dracon_terminal_engine::framework::widget::Widget;
 use ratatui::layout::Rect;
 
 #[test]
