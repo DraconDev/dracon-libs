@@ -266,6 +266,7 @@ impl<T: Clone + ToString> crate::framework::widget::Widget for Table<T> {
                     if self.selected >= self.offset + self.visible_count {
                         self.offset = self.selected.saturating_sub(self.visible_count) + 1;
                     }
+                    self.dirty = true;
                 }
                 true
             }
@@ -275,17 +276,20 @@ impl<T: Clone + ToString> crate::framework::widget::Widget for Table<T> {
                     if self.selected < self.offset {
                         self.offset = self.selected;
                     }
+                    self.dirty = true;
                 }
                 true
             }
             KeyCode::Home => {
                 self.selected = 0;
                 self.offset = 0;
+                self.dirty = true;
                 true
             }
             KeyCode::End => {
                 self.selected = self.rows.len().saturating_sub(1);
                 self.offset = self.rows.len().saturating_sub(self.visible_count);
+                self.dirty = true;
                 true
             }
             KeyCode::Enter => {
@@ -319,14 +323,17 @@ impl<T: Clone + ToString> crate::framework::widget::Widget for Table<T> {
                 if let Some(f) = self.on_select.as_mut() {
                     f(&self.rows[idx].data);
                 }
+                self.dirty = true;
                 true
             }
             crate::input::event::MouseEventKind::ScrollDown => {
                 self.offset = (self.offset + 1).min(self.rows.len().saturating_sub(self.visible_count));
+                self.dirty = true;
                 true
             }
             crate::input::event::MouseEventKind::ScrollUp => {
                 self.offset = self.offset.saturating_sub(1);
+                self.dirty = true;
                 true
             }
             _ => false,

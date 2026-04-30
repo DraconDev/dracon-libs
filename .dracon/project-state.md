@@ -1,8 +1,8 @@
 # Project State
 
 ## Current Focus
-Introduce a dirty‑state flag to the `Table` widget to enable selective redraws.
+Add a dirty state flag to Table and List widgets for selective redraw optimization.
 
 ## Completed
-- [x] Add `dirty: bool` field to `Table` and initialize it as `true` in constructors.
-- [x] Implement `needs_render`, `mark_dirty`, and `clear_dirty` methods for dirty‑state tracking.
+- Implemented `dirty = true;` in selection checks to trigger rebuilds when necessary.
+- Updated scroll logic using `saturating_sub` and `min()` to refine offset adjustments safely.
