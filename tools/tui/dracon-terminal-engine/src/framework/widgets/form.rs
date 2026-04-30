@@ -155,7 +155,10 @@ impl crate::framework::widget::Widget for Form {
     }
 
     fn handle_key(&mut self, key: crate::input::event::KeyEvent) -> bool {
-        use crate::input::event::KeyCode;
+        use crate::input::event::{KeyCode, KeyEventKind};
+        if key.kind != KeyEventKind::Press {
+            return false;
+        }
         match key.code {
             KeyCode::Down => {
                 if self.focused_field < self.fields.len().saturating_sub(1) {
@@ -166,6 +169,24 @@ impl crate::framework::widget::Widget for Form {
             KeyCode::Up => {
                 if self.focused_field > 0 {
                     self.focused_field -= 1;
+                }
+                true
+            }
+            KeyCode::Char(ch) => {
+                if let Some(ref mut field) = self.fields.get_mut(self.focused_field) {
+                    field.value.push(ch);
+                }
+                true
+            }
+            KeyCode::Backspace => {
+                if let Some(ref mut field) = self.fields.get_mut(self.focused_field) {
+                    field.value.pop();
+                }
+                true
+            }
+            KeyCode::Home => {
+                if let Some(ref mut field) = self.fields.get_mut(self.focused_field) {
+                    field.value.clear();
                 }
                 true
             }

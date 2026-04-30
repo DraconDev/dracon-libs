@@ -172,7 +172,10 @@ impl crate::framework::widget::Widget for Tree {
     }
 
     fn handle_key(&mut self, key: crate::input::event::KeyEvent) -> bool {
-        use crate::input::event::KeyCode;
+        use crate::input::event::{KeyCode, KeyEventKind};
+        if key.kind != KeyEventKind::Press {
+            return false;
+        }
         match key.code {
             KeyCode::Enter => {
                 if !self.selected_path.is_empty() {
@@ -181,11 +184,41 @@ impl crate::framework::widget::Widget for Tree {
                 }
                 true
             }
-            KeyCode::Down if !self.selected_path.is_empty() => {
-                let path = self.selected_path.clone();
-                if let Some((node, _)) = self.get_selected_node(&self.root, &path) {
+            KeyCode::Down => {
+                if let Some((node, _)) = self.get_selected_node(&self.root, &self.selected_path) {
                     if node.expanded && !node.children.is_empty() {
                         self.selected_path.push(0);
+                    }
+                }
+                true
+            }
+            KeyCode::Up => {
+                if !self.selected_path.is_empty() {
+                    self.selected_path.pop();
+                }
+                true
+            }
+            KeyCode::Right => {
+                if !self.selected_path.is_empty() {
+                    let path = self.selected_path.clone();
+                    if let Some((node, _)) = self.get_selected_node(&self.root, &path) {
+                        if !node.expanded && !node.children.is_empty() {
+                            self.toggle_expand_at(&path);
+                            self.selected_path.push(0);
+                        }
+                    }
+                }
+                true
+            }
+            KeyCode::Left => {
+                if !self.selected_path.is_empty() {
+                    let path = self.selected_path.clone();
+                    if let Some((node, _)) = self.get_selected_node(&self.root, &path) {
+                        if node.expanded {
+                            self.toggle_expand_at(&path);
+                        } else {
+                            self.selected_path.pop();
+                        }
                     }
                 }
                 true
