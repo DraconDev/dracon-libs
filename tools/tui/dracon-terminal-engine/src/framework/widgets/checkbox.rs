@@ -49,16 +49,19 @@ impl Checkbox {
     /// Checks the checkbox.
     pub fn check(&mut self) {
         self.checked = true;
+        self.mark_dirty();
     }
 
     /// Unchecks the checkbox.
     pub fn uncheck(&mut self) {
         self.checked = false;
+        self.mark_dirty();
     }
 
     /// Toggles the checkbox state.
     pub fn toggle(&mut self) {
         self.checked = !self.checked;
+        self.mark_dirty();
     }
 
     /// Returns whether the checkbox is checked.

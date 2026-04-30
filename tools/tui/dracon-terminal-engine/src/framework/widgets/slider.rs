@@ -59,6 +59,7 @@ impl Slider {
     /// Sets the current value of the slider.
     pub fn set_value(&mut self, value: f32) {
         self.value = value.clamp(self.min, self.max);
+        self.mark_dirty();
     }
 
     /// Returns the current value of the slider.

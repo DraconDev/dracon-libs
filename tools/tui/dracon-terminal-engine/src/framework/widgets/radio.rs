@@ -49,11 +49,13 @@ impl Radio {
     /// Selects the radio button.
     pub fn select(&mut self) {
         self.selected = true;
+        self.mark_dirty();
     }
 
     /// Deselects the radio button.
     pub fn deselect(&mut self) {
         self.selected = false;
+        self.mark_dirty();
     }
 
     /// Returns whether the radio button is selected.
