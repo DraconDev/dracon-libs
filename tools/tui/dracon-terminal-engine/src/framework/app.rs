@@ -166,7 +166,7 @@ impl App {
     /// each frame until the user presses Ctrl+C or [`App::stop`] is called.
     pub fn run<F>(mut self, mut f: F) -> io::Result<()>
     where
-        F: FnMut(&mut Ctx, &mut App),
+        F: FnMut(&mut Ctx),
     {
         let running = self.running.clone();
         let resize_flag = self.resize_flag.clone();
@@ -275,7 +275,7 @@ impl App {
                 theme: &self.theme,
                 frame_count: frame_count.load(Ordering::SeqCst),
                 last_frame: &self.last_frame_time,
-            }, &mut self);
+            });
 
             self.compositor.render(&mut self.terminal)?;
 
