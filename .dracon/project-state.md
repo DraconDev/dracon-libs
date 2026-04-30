@@ -1,7 +1,12 @@
-# Project State## Current Focus
-Add dirty state tracking to Select and Tree widgets for selective redraw optimization.
+# Project State
+
+## Current Focus
+feat(widgets): add dirty state tracking to Slider widget for selective redraw optimization
 
 ## Completed
-- [x] Added `dirty` field and `needs_render`, `mark_dirty`, `clear_dirty` methods to `Select`.
-- [x] Set `dirty = true` in `Select::set_area`, key event handlers, and `Tree::set_path`.
-- [x] Implemented dirty flag propagation to enable selective redraw optimization.
+- [x] Add `dirty` boolean field to Slider struct for tracking render state
+- [x] Initialize `dirty` to `true` in Slider constructor
+- [x] Implement `set_area` method that marks widget dirty when area changes
+- [x] Implement `needs_render` method to check dirty state
+- [x] Implement `mark_dirty` method to flag widget for redraw
+- [x] Implement `clear_dirty` method to reset dirty flag after rendering
