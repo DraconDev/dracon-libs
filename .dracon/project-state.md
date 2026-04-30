@@ -1,15 +1,16 @@
 # Project State
 
 ## Current Focus
-refactor Modal to implement Widget trait and decouple rendering/area handling
+Refactor `Breadcrumbs` to implement the `Widget` trait, add widget ID and area handling, and simplify the interaction API.
 
 ## Completed
-- [x] Added WidgetId import and stored id field in Modal
-- [x] Added area cell to track position/size and provided area(), set_area(), z_index() methods
-- [x] Added new_with_id constructor accepting a WidgetId
-- [x] Implemented Widget trait for Modal with required methods
-- [x] Refactored render to return only Plane instead of (Plane, Vec<HitZone<ModalResult>>)
-- [x] Removed HitZone collection and returned only Plane
-- [x] Simplified button rendering loop using _ placeholder for unused result
-- [x] Changed handle_mouse to accept only mouse event kind and return bool instead of Option<ModalResult>
-- [x] Updated mouse handling logic to use area() and return true/false for click detection
+- [x] Added `WidgetId` import and stored `id` field in `Breadcrumbs`.
+- [x] Added `area: Cell<Rect>` to manage widget bounds.
+- [x] Introduced `new_with_id` constructor for explicit widget ID creation.
+- [x] Implemented `Widget` trait methods: `id()`, `area()`, `set_area()`, `z_index()`, `render()`.
+- [x] Modified `render` to accept `area: Rect` and return a single `Plane` (removed `Vec<HitZone<usize>>`).
+- [x] Updated hit‑zone creation to discard the returned `HitZone` instance.
+- [x] Changed `handle_mouse` signature to return `bool` and use `self.area.get().width` for width.
+- [x] Replaced `Option<usize>` return with `true`/`false` to signal click handling.
+- [x] Removed the now‑unused `zones` field and associated logic.
+- [x] Adjusted internal mouse‑event loop to work with the new `handle_mouse` contract.
