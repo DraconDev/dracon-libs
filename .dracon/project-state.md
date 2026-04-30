@@ -1,13 +1,11 @@
 # Project State
 
 ## Current Focus
-feat(editor): Add search, replace, and goto line modal modes with interactive status bar prompts
+Implement regex‑based search, replace, and filter in the TextEditor widget and add a demonstration example.
 
 ## Completed
-- [x] Add `EditorMode::Search`, `EditorMode::Replace`, and `EditorMode::GotoLine` variants with input handling
-- [x] Implement Ctrl+F keybinding to enter search mode with "Search: " prompt in status bar
-- [x] Implement Ctrl+H keybinding to enter replace mode with "Replace: " prompt in status bar
-- [x] Implement Ctrl+G keybinding to enter goto line mode with "Goto Line: " prompt in status bar
-- [x] Add mode input field with character entry, backspace deletion, and Enter/Esc confirmation
-- [x] Update status bar rendering to display mode-specific prompts with distinct color styling
-- [x] Connect goto line mode to existing `goto_line()` functionality
+- [x] Import `regex` crate and enable regex‑driven filtering, searching, and replacing in the editor widget.
+- [x] Refactor filter logic to use case‑insensitive regex matching when applicable.
+- [x] Update search/replace operations to invoke `Regex::new` and handle matches with `replace_all`.
+- [x] Add new example file `tools/tui/dracon-terminal-engine/examples/text_editor.rs` that showcases the widget.
+- [x] Update `Cargo.toml` for the `dracon-terminal-engine` package to include the `regex` dependency and regenerate `Cargo.lock`.

@@ -10,6 +10,7 @@ use ratatui::text::{Line, Span};
 use ratatui::widgets::{Scrollbar, ScrollbarOrientation, ScrollbarState, StatefulWidget, Widget};
 use unicode_width::{UnicodeWidthChar, UnicodeWidthStr};
 
+use regex::Regex;
 use std::cell::RefCell;
 use std::path::PathBuf;
 
@@ -159,13 +160,23 @@ impl TextEditor {
         self.filter_query = query.to_string();
 
         if !self.filter_query.is_empty() {
+            let use_regex = Regex::new(&format!("(?i){}", query)).is_ok();
             self.filtered_indices = self
                 .lines
                 .iter()
                 .enumerate()
                 .filter(|(_, line)| {
-                    line.to_lowercase()
-                        .contains(&self.filter_query.to_lowercase())
+                    if use_regex {
+                        if let Ok(re) = Regex::new(&format!("(?i){}", query)) {
+                            re.is_match(line)
+                        } else {
+                            line.to_lowercase()
+                                .contains(&self.filter_query.to_lowercase())
+                        }
+                    } else {
+                        line.to_lowercase()
+                            .contains(&self.filter_query.to_lowercase())
+                    }
                 })
                 .map(|(i, _)| i)
                 .collect();
@@ -358,8 +369,14 @@ impl TextEditor {
         if find.is_empty() {
             return;
         }
-        for line in &mut self.lines {
-            *line = line.replace(find, replace);
+        if let Ok(re) = Regex::new(find) {
+            for line in &mut self.lines {
+                *line = re.replace_all(line, replace).to_string();
+            }
+        } else {
+            for line in &mut self.lines {
+                *line = line.replace(find, replace);
+            }
         }
         self.modified = true;
         self.invalidate_from(0);
@@ -374,13 +391,30 @@ impl TextEditor {
         let start_row = self.cursor_row;
         let start_col = self.cursor_col;
 
+        let use_regex = Regex::new(find).is_ok();
+
         for r in 0..self.lines.len() {
             let row = (start_row + r) % self.lines.len();
             let line = &self.lines[row];
             let search_from = if r == 0 { start_col } else { 0 };
 
             if search_from < line.len() {
-                if let Some(col) = line[search_from..].find(find) {
+                if use_regex {
+                    if let Ok(re) = Regex::new(find) {
+                        if let Some(mat) = re.find(&line[search_from..]) {
+                            let actual_col = search_from + mat.start();
+                            let mut new_line = line.clone();
+                            new_line.replace_range(actual_col..actual_col + mat.len(), replace);
+                            self.lines[row] = new_line;
+
+                            self.cursor_row = row;
+                            self.cursor_col = actual_col + replace.len();
+                            self.modified = true;
+                            self.invalidate_from(0);
+                            return true;
+                        }
+                    }
+                } else if let Some(col) = line[search_from..].find(find) {
                     let actual_col = search_from + col;
                     let mut new_line = line.clone();
                     new_line.replace_range(actual_col..actual_col + find.len(), replace);

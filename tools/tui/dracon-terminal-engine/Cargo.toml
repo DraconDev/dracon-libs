@@ -20,6 +20,7 @@ serde = { workspace = true }
 sysinfo = "0.32"
 syntect = "5.2"
 tokio = { workspace = true, optional = true }
+regex = "1.10"
 
 [target.'cfg(not(target_os = "windows"))'.dependencies]
 libc = "0.2"
