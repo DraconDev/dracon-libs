@@ -20,7 +20,7 @@ pub struct SplitPane {
     ratio: f32,
     orientation: Orientation,
     divider_char: char,
-    divider_color: Color,
+    pub divider_color: Color,
     min_size: u16,
     area: std::cell::Cell<Rect>,
 }
