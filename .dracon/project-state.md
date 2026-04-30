@@ -1,7 +1,10 @@
-# Project State## Current Focus
-Update Cargo.lock dependencies and refine text editor test cases for cursor position clamping.
+# Project State
+
+## Current Focus
+Add comprehensive unit tests for scrolling, theme propagation, and widget color handling in the terminal UI framework.
 
 ## Completed
-- [x] Updated Cargo.lock to reflect current dependency resolution state without functional changes
-- [x] Simplified test input in TextEditorAdapter tests from long string to numeric pattern ("0123...") for clearer cursor clamping validation (area.width=40)
-- [x] Updated cursor position tests to more directly verify clamping behavior using predictable editor content
+- [x] Created exhaustive tests for `ScrollState` and `ScrollContainer` behavior.
+- [x] Added tests verifying theme propagation across UI components.
+- [x] Implemented tests covering theme application logic for the terminal engine.
+- [x] Developed tests for widget color rendering under various theme conditions.
