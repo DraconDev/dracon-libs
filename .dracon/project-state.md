@@ -1,7 +1,12 @@
 # Project State
 
 ## Current Focus
-Expose SplitPane divider color field for external theming configuration.
+Update widget tests to use the new Widget API with WidgetId and .with_theme, and verify theme‑dependent colors by extracting rendered cell colors.
 
 ## Completed
-- [x] Make SplitPane.divider_color public to allow theme propagation.
+- [x] Replace Button constructor calls with `.with_theme(Theme)`
+- [x] Use `WidgetId::default_id()` for Checkbox and Toggle widget IDs
+- [x] Make Checkbox and Toggle instances mutable and call `.check()`/`.toggle()` before rendering
+- [x] Extract foreground colors from the rendered plane rather than from the widget before rendering
+- [x] Update imports to bring `Widget` and `WidgetId` into scope
+- [x] Adjust bracket‑character and non‑reset foreground assertions to use rendered output
