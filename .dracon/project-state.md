@@ -1,9 +1,9 @@
 # Project State
 
 ## Current Focus
-Add mouse event handling to the Radio, Select, and Toggle widgets to enable user interaction via clicks.
+Add mouse handling for Form and Tree widgets to enable focus and interactive expansion.
 
 ## Completed
-- [x] Implement `handle_mouse` for the Radio widget: clicking selects the option and triggers the change callback.
-- [x] Implement `handle_mouse` for the Select widget: left-click toggles expansion and selects options when expanded.
-- [x] Implement `handle_mouse` for the Toggle widget: left-click toggles state and fires the change callback.
+- [x] Implemented `handle_mouse` in `Form` to set `focused_field` based on the mouse row.
+- [x] Implemented `handle_mouse` in `Tree` to manage left‑click expansion/collapse using `selected_path` and `toggle_expand_at`.
+- [x] Updated `Cargo.lock` with newer dependency versions.

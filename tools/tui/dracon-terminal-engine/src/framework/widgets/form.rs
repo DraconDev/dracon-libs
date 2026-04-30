@@ -193,4 +193,13 @@ impl crate::framework::widget::Widget for Form {
             _ => false,
         }
     }
+
+    fn handle_mouse(&mut self, _kind: crate::input::event::MouseEventKind, _col: u16, row: u16) -> bool {
+        if row as usize < self.fields.len() {
+            self.focused_field = row as usize;
+            true
+        } else {
+            false
+        }
+    }
 }

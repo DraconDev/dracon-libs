@@ -226,4 +226,38 @@ impl crate::framework::widget::Widget for Tree {
             _ => false,
         }
     }
+
+    fn handle_mouse(&mut self, kind: crate::input::event::MouseEventKind, _col: u16, row: u16) -> bool {
+        match kind {
+            crate::input::event::MouseEventKind::Down(crate::input::event::MouseButton::Left) => {
+                if self.selected_path.is_empty() {
+                    return false;
+                }
+                let path_len = self.selected_path.len();
+                if path_len == 0 {
+                    return false;
+                }
+                let mut current = &self.root;
+                for &idx in &self.selected_path[..path_len - 1] {
+                    if idx >= current.len() {
+                        return false;
+                    }
+                    current = &current[idx].children;
+                }
+                let last_idx = *self.selected_path.last().unwrap();
+                if last_idx >= current.len() {
+                    return false;
+                }
+                if current[last_idx].expanded && !current[last_idx].children.is_empty() {
+                    self.selected_path.push(0);
+                } else if !current[last_idx].children.is_empty() {
+                    let path = self.selected_path.clone();
+                    self.toggle_expand_at(&path);
+                    self.selected_path.push(0);
+                }
+                true
+            }
+            _ => false,
+        }
+    }
 }
