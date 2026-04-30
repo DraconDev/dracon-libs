@@ -15,6 +15,7 @@ pub struct TabBar {
     active: usize,
     theme: Theme,
     area: std::cell::Cell<Rect>,
+    dirty: bool,
 }
 
 impl TabBar {
@@ -26,6 +27,7 @@ impl TabBar {
             active: 0,
             theme: Theme::default(),
             area: std::cell::Cell::new(Rect::new(0, 0, 80, 3)),
+            dirty: true,
         }
     }
 
@@ -37,6 +39,7 @@ impl TabBar {
             active: 0,
             theme: Theme::default(),
             area: std::cell::Cell::new(Rect::new(0, 0, 80, 3)),
+            dirty: true,
         }
     }
 
