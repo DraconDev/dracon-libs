@@ -248,6 +248,65 @@ impl TextEditor {
         }
     }
 
+    /// Opens a file and returns a new `TextEditor` with its contents.
+    pub fn open(path: &PathBuf) -> std::io::Result<Self> {
+        let content = std::fs::read_to_string(path)?;
+        let mut editor = Self::with_content(&content);
+        editor.file_path = Some(path.clone());
+        editor.modified = false;
+        if let Some(ext) = path.extension().and_then(|e| e.to_str()) {
+            editor.language = ext.to_string();
+        }
+        Ok(editor)
+    }
+
+    /// Saves the editor content to the current file path.
+    /// Returns an error if no file path is set.
+    pub fn save(&mut self) -> std::io::Result<()> {
+        if let Some(ref path) = self.file_path {
+            std::fs::write(path, self.get_content())?;
+            self.modified = false;
+            Ok(())
+        } else {
+            Err(std::io::Error::new(
+                std::io::ErrorKind::NotFound,
+                "No file path set. Use save_as() instead.",
+            ))
+        }
+    }
+
+    /// Saves the editor content to a new file path and sets it as the current path.
+    pub fn save_as(&mut self, path: &PathBuf) -> std::io::Result<()> {
+        std::fs::write(path, self.get_content())?;
+        self.file_path = Some(path.clone());
+        self.modified = false;
+        Ok(())
+    }
+
+    /// Returns the current file path, if set.
+    pub fn file_path(&self) -> Option<&PathBuf> {
+        self.file_path.as_ref()
+    }
+
+    /// Returns the filename (not full path) of the current file, or "Untitled".
+    pub fn filename(&self) -> String {
+        self.file_path
+            .as_ref()
+            .and_then(|p| p.file_name())
+            .and_then(|n| n.to_str())
+            .unwrap_or("Untitled")
+            .to_string()
+    }
+
+    /// Jumps to a specific line number (1-indexed).
+    pub fn goto_line(&mut self, line: usize, area: Rect) {
+        if line > 0 && line <= self.lines.len() {
+            self.cursor_row = line - 1;
+            self.cursor_col = 0;
+            self.ensure_cursor_visible(area);
+        }
+    }
+
     /// Returns the full editor content joined by newlines.
     pub fn get_content(&self) -> String {
         self.lines.join("\n")
