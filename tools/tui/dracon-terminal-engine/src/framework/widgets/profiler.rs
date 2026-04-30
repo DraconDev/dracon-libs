@@ -27,6 +27,7 @@ pub struct Profiler {
     /// The theme for this widget.
     theme: Theme,
     area: std::cell::Cell<Rect>,
+    dirty: bool,
 }
 
 impl Profiler {
@@ -37,6 +38,7 @@ impl Profiler {
             metrics: Vec::new(),
             theme: Theme::default(),
             area: std::cell::Cell::new(Rect::new(0, 0, 60, 15)),
+            dirty: true,
         }
     }
 

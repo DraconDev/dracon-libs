@@ -27,6 +27,7 @@ pub struct EventLogger {
     /// The theme for this widget.
     theme: Theme,
     area: std::cell::Cell<Rect>,
+    dirty: bool,
 }
 
 impl EventLogger {
@@ -38,6 +39,7 @@ impl EventLogger {
             events: VecDeque::new(),
             theme: Theme::default(),
             area: std::cell::Cell::new(Rect::new(0, 0, 60, 15)),
+            dirty: true,
         }
     }
 
@@ -81,6 +83,19 @@ impl crate::framework::widget::Widget for EventLogger {
 
     fn set_area(&mut self, area: Rect) {
         self.area.set(area);
+        self.dirty = true;
+    }
+
+    fn needs_render(&self) -> bool {
+        self.dirty
+    }
+
+    fn mark_dirty(&mut self) {
+        self.dirty = true;
+    }
+
+    fn clear_dirty(&mut self) {
+        self.dirty = false;
     }
 
     fn z_index(&self) -> u16 {

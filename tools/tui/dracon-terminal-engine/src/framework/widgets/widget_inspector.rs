@@ -37,6 +37,7 @@ pub struct WidgetInspector {
     /// The theme for this widget.
     theme: Theme,
     area: std::cell::Cell<Rect>,
+    dirty: bool,
 }
 
 impl WidgetInspector {
@@ -47,6 +48,7 @@ impl WidgetInspector {
             root: Vec::new(),
             theme: Theme::default(),
             area: std::cell::Cell::new(Rect::new(0, 0, 60, 20)),
+            dirty: true,
         }
     }
 
