@@ -49,7 +49,7 @@ pub struct App {
     tick_interval: Duration,
     resize_flag: Arc<AtomicBool>,
     tick_count: u64,
-    on_tick: RefCell<Option<Box<dyn FnMut(&mut Ctx, u64, &mut App)>>>,
+    on_tick: RefCell<Option<Box<dyn FnMut(&mut Ctx, u64) + 'static>>>,
     widgets: RefCell<Vec<Box<dyn Widget>>>,
     focus_manager: FocusManager,
     event_dispatcher: EventDispatcher,
