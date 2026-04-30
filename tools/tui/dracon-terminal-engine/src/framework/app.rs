@@ -318,12 +318,28 @@ pub struct Ctx<'a> {
     pub(crate) theme: &'a Theme,
     pub(crate) frame_count: u64,
     pub(crate) last_frame: &'a Instant,
+    pub(crate) terminal: &'a mut crate::Terminal<io::Stdout>,
 }
 
 impl<'a> Ctx<'a> {
     /// Adds a plane to the compositor.
     pub fn add_plane(&mut self, plane: Plane) {
         self.compositor.add_plane(plane);
+    }
+
+    /// Shows the terminal cursor (for text input widgets).
+    pub fn show_cursor(&mut self) -> io::Result<()> {
+        self.terminal.show_cursor()
+    }
+
+    /// Hides the terminal cursor (for non-text widgets during render).
+    pub fn hide_cursor(&mut self) -> io::Result<()> {
+        self.terminal.hide_cursor()
+    }
+
+    /// Sets the terminal cursor position.
+    pub fn set_cursor(&mut self, col: u16, row: u16) -> io::Result<()> {
+        self.terminal.set_cursor(col, row)
     }
 
     /// Returns an immutable reference to the compositor.
