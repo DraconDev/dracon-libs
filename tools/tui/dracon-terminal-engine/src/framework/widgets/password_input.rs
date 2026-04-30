@@ -26,10 +26,11 @@ impl PasswordInput {
         }
     }
 
-    /// Sets the mask character (default is '*').
-    pub fn with_mask_char(mut self, ch: char) -> Self {
-        self.base.mask_char = Some(ch);
-        self
+    /// Sets the placeholder text shown when empty.
+    pub fn with_placeholder(self, text: &str) -> Self {
+        let mut base = self.base;
+        base.placeholder = text.to_string();
+        Self { base, ..self }
     }
 
     /// Registers a callback when the user submits the password (Enter key).
