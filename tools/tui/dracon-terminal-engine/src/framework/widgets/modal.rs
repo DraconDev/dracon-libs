@@ -5,6 +5,7 @@ use unicode_width::UnicodeWidthStr;
 use crate::compositor::{Plane, Styles};
 use crate::framework::hitzone::HitZone;
 use crate::framework::theme::Theme;
+use crate::framework::widget::WidgetId;
 use ratatui::layout::Rect;
 
 /// Result returned when the user clicks a button in a modal.
@@ -20,22 +21,39 @@ pub enum ModalResult {
 
 /// A centered modal dialog with a title, optional buttons, and a border.
 pub struct Modal<'a> {
+    id: WidgetId,
     title: &'a str,
     width: u16,
     height: u16,
     theme: Theme,
     buttons: Vec<(&'a str, ModalResult)>,
+    area: std::cell::Cell<Rect>,
 }
 
 impl<'a> Modal<'a> {
     /// Creates a new `Modal` with the given title and default OK/Cancel buttons.
     pub fn new(title: &'a str) -> Self {
         Self {
+            id: WidgetId::default_id(),
             title,
             width: 40,
             height: 5,
             theme: Theme::default(),
             buttons: vec![("OK", ModalResult::Confirm), ("Cancel", ModalResult::Cancel)],
+            area: std::cell::Cell::new(Rect::new(0, 0, 40, 5)),
+        }
+    }
+
+    /// Creates a new `Modal` with the given widget ID and title.
+    pub fn new_with_id(id: WidgetId, title: &'a str) -> Self {
+        Self {
+            id,
+            title,
+            width: 40,
+            height: 5,
+            theme: Theme::default(),
+            buttons: vec![("OK", ModalResult::Confirm), ("Cancel", ModalResult::Cancel)],
+            area: std::cell::Cell::new(Rect::new(0, 0, 40, 5)),
         }
     }
 
@@ -57,13 +75,28 @@ impl<'a> Modal<'a> {
         self.buttons = buttons;
         self
     }
+}
 
-    /// Renders the modal centered on `screen` and returns the plane and button hit zones.
-    ///
-    /// Hit zones have `id = ModalResult` for each button.
-    pub fn render(&self, screen: Rect) -> (Plane, Vec<HitZone<ModalResult>>) {
-        let x = (screen.width.saturating_sub(self.width)) / 2;
-        let y = (screen.height.saturating_sub(self.height)) / 2;
+impl<'a> crate::framework::widget::Widget for Modal<'a> {
+    fn id(&self) -> WidgetId {
+        self.id
+    }
+
+    fn area(&self) -> Rect {
+        self.area.get()
+    }
+
+    fn set_area(&mut self, area: Rect) {
+        self.area.set(area);
+    }
+
+    fn z_index(&self) -> u16 {
+        100
+    }
+
+    fn render(&self, area: Rect) -> Plane {
+        let x = (area.width.saturating_sub(self.width)) / 2;
+        let y = (area.height.saturating_sub(self.height)) / 2;
 
         let mut plane = Plane::new(0, self.width, self.height);
         plane.x = x;
@@ -105,8 +138,7 @@ impl<'a> Modal<'a> {
         let btn_start = (self.width.saturating_sub(total_btn_width)) / 2;
         let btn_y = self.height - 2;
 
-        let mut zones = Vec::new();
-        for (i, (label, result)) in self.buttons.iter().enumerate() {
+        for (i, (label, _result)) in self.buttons.iter().enumerate() {
             let bx = btn_start + (i as u16) * (btn_width + 1);
 
             let bg = self.theme.active_bg;
@@ -130,20 +162,19 @@ impl<'a> Modal<'a> {
                 }
             }
 
-            zones.push(HitZone::new(*result, bx, btn_y, btn_width, 1));
+            let _zone = HitZone::new(*_result, bx, btn_y, btn_width, 1);
         }
 
-        (plane, zones)
+        plane
     }
 
-    /// Handles a mouse click within the modal.
-    /// Returns `Some(result)` if a button was clicked, or `None`.
-    pub fn handle_mouse(&mut self, kind: crate::input::event::MouseEventKind, col: u16, row: u16, screen: Rect) -> Option<ModalResult> {
+    fn handle_mouse(&mut self, kind: crate::input::event::MouseEventKind, col: u16, row: u16) -> bool {
+        let screen = self.area.get();
         let x = (screen.width.saturating_sub(self.width)) / 2;
         let y = (screen.height.saturating_sub(self.height)) / 2;
 
         if col < x || col >= x + self.width || row < y || row >= y + self.height {
-            return None;
+            return false;
         }
 
         let local_col = col - x;
@@ -154,17 +185,17 @@ impl<'a> Modal<'a> {
         let btn_start = (self.width.saturating_sub(total_btn_width)) / 2;
         let btn_y = self.height - 2;
 
-        for (i, (_, result)) in self.buttons.iter().enumerate() {
+        for (i, (_, _result)) in self.buttons.iter().enumerate() {
             let bx = btn_start + (i as u16) * (btn_width + 1);
             let in_btn = local_col >= bx && local_col < bx + btn_width && local_row == btn_y;
 
             if in_btn {
                 if let crate::input::event::MouseEventKind::Down(_) = kind {
-                    return Some(*result);
+                    return true;
                 }
             }
         }
 
-        None
+        false
     }
 }
