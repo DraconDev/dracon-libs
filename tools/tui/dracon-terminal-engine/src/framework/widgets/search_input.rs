@@ -98,7 +98,10 @@ impl crate::framework::widget::Widget for SearchInput {
     }
 
     fn handle_key(&mut self, key: crate::input::event::KeyEvent) -> bool {
-        use crate::input::event::KeyCode;
+        use crate::input::event::{KeyCode, KeyEventKind};
+        if key.kind != KeyEventKind::Press {
+            return false;
+        }
         match key.code {
             KeyCode::Enter => {
                 if let Some(ref mut cb) = self.on_submit {
@@ -111,6 +114,39 @@ impl crate::framework::widget::Widget for SearchInput {
                     self.query.pop();
                     self.cursor_pos = self.cursor_pos.saturating_sub(1);
                 }
+                true
+            }
+            KeyCode::Char(ch) => {
+                self.query.push(ch);
+                if self.cursor_pos < self.query.len() {
+                    self.cursor_pos = self.query.len();
+                }
+                true
+            }
+            KeyCode::Left => {
+                if self.cursor_pos > 0 {
+                    self.cursor_pos -= 1;
+                }
+                true
+            }
+            KeyCode::Right => {
+                if self.cursor_pos < self.query.len() {
+                    self.cursor_pos += 1;
+                }
+                true
+            }
+            KeyCode::Delete => {
+                if self.cursor_pos < self.query.len() {
+                    self.query.remove(self.cursor_pos);
+                }
+                true
+            }
+            KeyCode::Home => {
+                self.cursor_pos = 0;
+                true
+            }
+            KeyCode::End => {
+                self.cursor_pos = self.query.len();
                 true
             }
             _ => false,
