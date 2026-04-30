@@ -1,9 +1,9 @@
 # Project State
 
 ## Current Focus
-Add area handling and rendering metadata to the Checkbox widget.
+Add area handling to ProgressBar, Spinner, and Toggle widgets for rendering metadata
 
 ## Completed
-- [x] Added `area` field to `Checkbox` struct
-- [x] Initialized `area` in constructor with default dimensions
-- [x] Implemented `area()` getter and `set_area()` setter methods
+- [x] Added `area: std::cell::Cell<Rect>` field to `ProgressBar`
+- [x] Added `area: std::cell::Cell<Rect>` field to `Spinner`
+- [x] Added `area: std::cell::Cell<Rect>` field to `Toggle`

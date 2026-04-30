@@ -16,6 +16,7 @@ pub struct Toggle {
     label: String,
     theme: Theme,
     on_change: Option<Box<dyn FnMut(bool)>>,
+    area: std::cell::Cell<Rect>,
 }
 
 impl Toggle {

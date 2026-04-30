@@ -12,6 +12,7 @@ pub struct ProgressBar {
     id: WidgetId,
     progress: f32,
     theme: Theme,
+    area: std::cell::Cell<Rect>,
 }
 
 impl ProgressBar {

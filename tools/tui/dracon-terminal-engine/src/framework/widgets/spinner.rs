@@ -15,6 +15,7 @@ pub struct Spinner {
     current_frame: usize,
     last_update: Instant,
     theme: Theme,
+    area: std::cell::Cell<Rect>,
 }
 
 impl Spinner {
