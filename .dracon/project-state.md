@@ -1,10 +1,18 @@
 # Project State
 
 ## Current Focus
-Update dependencies and clean up example / framework code, fixing borrow handling and removing dead code.
+Add unit tests for Table, TabBar, Breadcrumbs, SplitPane, Hud, Modal, ContextMenu widgets
 
 ## Completed
-- [x] Updated Cargo.lock with newer dependency versions
-- [x] Removed unused `std::time::Duration` import and unused `_theme` variable in the example widget file
-- [x] Eliminated unneeded `mut` on the widget borrow in `App::widget_mut`
-- [x] Deleted redundant `x = 0;` line from the Table widget rendering logic
+- [x] Add imports for Table, TabBar, Breadcrumbs, SplitPane, Hud, Modal, ContextMenu, ContextAction, Orientation
+- [x] Add test_table_new
+- [x] Add test_table_render
+- [x] Add test_tabbar_new
+- [x] Add test_tabbar_render
+- [x] Add test_breadcrumbs_new
+- [x] Add test_split_pane_new
+- [x] Add test_split_pane_split
+- [x] Add test_hud_new
+- [x] Add test_hud_render
+- [x] Add test_modal_new
+- [x] Add test_context_menu_new
