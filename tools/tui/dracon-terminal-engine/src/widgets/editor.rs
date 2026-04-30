@@ -528,6 +528,31 @@ impl TextEditor {
                         self.ensure_cursor_visible(area);
                         return true;
                     }
+                    KeyCode::Char('c') if has_control => {
+                        if let Some(text) = self.get_selected_text() {
+                            set_clipboard_text(&text);
+                        }
+                        return true;
+                    }
+                    KeyCode::Char('x') if has_control => {
+                        if let Some(text) = self.get_selected_text() {
+                            set_clipboard_text(&text);
+                            self.push_history();
+                            self.delete_selection();
+                            self.modified = true;
+                            self.ensure_cursor_visible(area);
+                        }
+                        return true;
+                    }
+                    KeyCode::Char('v') if has_control => {
+                        if let Some(text) = get_clipboard_text() {
+                            self.push_history();
+                            self.insert_string(&text);
+                            self.modified = true;
+                            self.ensure_cursor_visible(area);
+                        }
+                        return true;
+                    }
                     KeyCode::Char('d') if has_control => {
                         self.push_history();
                         let current_line = self.lines[self.cursor_row].clone();
