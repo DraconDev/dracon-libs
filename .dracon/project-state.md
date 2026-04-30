@@ -1,11 +1,11 @@
 # Project State
-This commit addresses several refinements across dracon-terminal-engine's UI widgets. It updates the Checkbox trait to properly handle key events, adds refinement in radio and select widgets, introduces a new "spinner" implementation, fixes input validation in key handling, and polishes general widget trait usage for consistency. The project continues iterating on user input mechanics with stricter key checks and better integration with event dispatchers.
+
+## Current Focus
+Implement widget trait methods and refine UI component behavior through explicit type annotations and event handling
 
 ## Completed
-- Enhanced checkbox handling for non-press keys
-- Updated radio widget event flow and rendering
-- Implemented improved toggle functionality
-- Fixed select widget to accurately reflect user selection state
-- Revised spinner logic for user-facing feedback
-- Refined general widget trait implementations
-- Added and streamlined lifecycle key checks
+- [x] Implement `z_index` method for DebugOverlay to establish rendering layer priority (200)
+- [x] Refactor Hud's key handling to exclusively process KeyEvent::Press events
+- [x] Update Slider widget's on_change event handler to return false when no callback exists
+- [x] Complete Widget trait implementation for all three widgets
+- [x] Enhance rendering consistency through explicit plane z-index configuration
