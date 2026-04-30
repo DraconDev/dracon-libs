@@ -187,6 +187,7 @@ impl Widget for TrackingWidget {
     fn id(&self) -> WidgetId { self.id }
     fn area(&self) -> Rect { self.area.get() }
     fn set_area(&mut self, area: Rect) { self.area.set(area); }
+    fn set_id(&mut self, id: WidgetId) { self.id = id; }
     fn needs_render(&self) -> bool { self.dirty_flag.get() }
     fn mark_dirty(&mut self) { self.dirty_flag.set(true); }
     fn clear_dirty(&mut self) { self.dirty_flag.set(false); }

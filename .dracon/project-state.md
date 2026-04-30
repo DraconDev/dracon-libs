@@ -1,8 +1,7 @@
 # Project State
 
 ## Current Focus
-Synchronize widget IDs between the `App` and individual widgets by assigning the ID during widget addition.
+Add mutable widget ID support in the test `TrackingWidget` to enable proper theme propagation testing.
 
 ## Completed
-- [x] Added `set_id` method to `Widget` trait for ID synchronization.
-- [x] Modified `App::add_widget` to invoke `widget.set_id(id)` after generating a new `WidgetId`.
+- [x] Implement `set_id(&mut self, id: WidgetId)` in `TrackingWidget` for testability.
