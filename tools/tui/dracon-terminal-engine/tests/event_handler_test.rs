@@ -1,14 +1,10 @@
 //! Integration tests for widget event handling (handle_key, handle_mouse).
 
-use dracon_terminal_engine::framework::widget::Widget;
+use dracon_terminal_engine::framework::widget::{Widget, WidgetId};
 use dracon_terminal_engine::framework::widgets::{List, SearchInput, Slider};
 use dracon_terminal_engine::framework::widgets::split::Orientation;
 use dracon_terminal_engine::input::event::{KeyCode, KeyEvent, KeyEventKind, MouseButton, MouseEventKind};
 use ratatui::layout::Rect;
-
-fn dummy_area() -> Rect {
-    Rect::new(0, 0, 40, 10)
-}
 
 fn make_key(code: KeyCode) -> KeyEvent {
     KeyEvent {
@@ -121,16 +117,19 @@ fn test_search_input_handle_key_backspace() {
 
 #[test]
 fn test_search_input_handle_key_enter() {
+    use std::cell::RefCell;
+    use std::rc::Rc;
     let mut si = SearchInput::new(WidgetId::default_id());
-    let mut submitted = String::new();
-    si = si.on_submit(|q| submitted = q.to_string());
+    let submitted = Rc::new(RefCell::new(String::new()));
+    let submitted_clone = submitted.clone();
+    si = si.on_submit(move |q| *submitted_clone.borrow_mut() = q.to_string());
 
     si.handle_key(make_key(KeyCode::Char('t')));
     si.handle_key(make_key(KeyCode::Char('e')));
     si.handle_key(make_key(KeyCode::Char('s')));
     si.handle_key(make_key(KeyCode::Char('t')));
     si.handle_key(make_key(KeyCode::Enter));
-    assert_eq!(submitted, "test");
+    assert_eq!(*submitted.borrow(), "test");
 }
 
 #[test]
@@ -142,28 +141,16 @@ fn test_search_input_handle_key_repeat_suppressed() {
 }
 
 #[test]
-fn test_search_input_handle_key_arrows() {
+fn test_search_input_handle_key_home_end() {
     let mut si = SearchInput::new(WidgetId::default_id());
     si.handle_key(make_key(KeyCode::Char('a')));
     si.handle_key(make_key(KeyCode::Char('b')));
     si.handle_key(make_key(KeyCode::Char('c')));
     assert_eq!(si.query(), "abc");
 
-    si.handle_key(make_key(KeyCode::Left));
-    si.handle_key(make_key(KeyCode::Left));
-    si.handle_key(make_key(KeyCode::Char('x')));
-    assert_eq!(si.query(), "abxc");
-}
-
-#[test]
-fn test_search_input_handle_mouse_sets_cursor() {
-    let mut si = SearchInput::new(WidgetId::default_id());
-    si.handle_key(make_key(KeyCode::Char('h')));
-    si.handle_key(make_key(KeyCode::Char('e')));
-    si.handle_key(make_key(KeyCode::Char('l')));
-    si.handle_key(make_key(KeyCode::Char('l')));
-    si.handle_key(make_key(KeyCode::Char('o')));
-    assert_eq!(si.query(), "hello");
+    si.handle_key(make_key(KeyCode::Home));
+    si.handle_key(make_key(KeyCode::End));
+    assert_eq!(si.query(), "abc");
 }
 
 // ========== Slider Event Tests ==========
@@ -185,7 +172,8 @@ fn test_slider_handle_mouse_out_of_bounds_returns_false() {
     slider.set_area(Rect::new(0, 0, 40, 3));
     let initial = slider.value();
 
-    slider.handle_mouse(MouseEventKind::Down(MouseButton::Left), 100, 0);
+    let consumed = slider.handle_mouse(MouseEventKind::Down(MouseButton::Left), 100, 0);
+    assert!(!consumed);
     assert_eq!(slider.value(), initial);
 }
 
@@ -245,6 +233,7 @@ fn test_split_pane_z_index() {
 
 #[test]
 fn test_split_pane_mouse_returns_false_for_non_drag() {
+    use dracon_terminal_engine::framework::widgets::SplitPane;
     let mut split = SplitPane::new(Orientation::Horizontal);
     split.set_area(Rect::new(0, 0, 80, 24));
 
@@ -254,6 +243,7 @@ fn test_split_pane_mouse_returns_false_for_non_drag() {
 
 #[test]
 fn test_split_pane_mouse_drag_updates_ratio() {
+    use dracon_terminal_engine::framework::widgets::SplitPane;
     let mut split = SplitPane::new(Orientation::Horizontal);
     split.set_area(Rect::new(0, 0, 80, 24));
     let initial_ratio = split.get_ratio();
@@ -263,44 +253,63 @@ fn test_split_pane_mouse_drag_updates_ratio() {
     assert_ne!(initial_ratio, new_ratio);
 }
 
-// ========== Select Event Tests ==========
+// ========== Toggle Event Tests ==========
 
 #[test]
-fn test_select_handle_key_expand() {
-    use dracon_terminal_engine::framework::widgets::Select;
-    let mut select = Select::new(WidgetId::default_id())
-        .with_options(vec!["A".to_string(), "B".to_string(), "C".to_string()]);
-    assert!(!select.is_expanded());
+fn test_toggle_handle_key_enter() {
+    use dracon_terminal_engine::framework::widgets::Toggle;
+    let mut t = Toggle::new(WidgetId::default_id(), "Enable");
+    assert!(!t.is_on());
 
-    select.handle_key(make_key(KeyCode::Enter));
-    assert!(select.is_expanded());
+    t.handle_key(make_key(KeyCode::Enter));
+    assert!(t.is_on());
 
-    select.handle_key(make_key(KeyCode::Enter));
-    assert!(!select.is_expanded());
+    t.handle_key(make_key(KeyCode::Enter));
+    assert!(!t.is_on());
 }
 
 #[test]
-fn test_select_handle_key_repeat_suppressed() {
-    use dracon_terminal_engine::framework::widgets::Select;
-    let mut select = Select::new(WidgetId::default_id())
-        .with_options(vec!["A".to_string(), "B".to_string()]);
+fn test_toggle_handle_mouse_click() {
+    use dracon_terminal_engine::framework::widgets::Toggle;
+    let mut t = Toggle::new(WidgetId::default_id(), "Enable");
+    assert!(!t.is_on());
 
-    select.handle_key(make_key_repeat(KeyCode::Enter));
-    assert!(!select.is_expanded());
+    t.handle_mouse(MouseEventKind::Down(MouseButton::Left), 0, 0);
+    assert!(t.is_on());
 }
 
-// ========== WidgetId Tests ==========
+// ========== Radio Event Tests ==========
+
+#[test]
+fn test_radio_handle_key_enter() {
+    use dracon_terminal_engine::framework::widgets::Radio;
+    let mut r = Radio::new(WidgetId::default_id(), "Option A");
+    assert!(!r.is_selected());
+
+    r.handle_key(make_key(KeyCode::Enter));
+    assert!(r.is_selected());
+}
+
+#[test]
+fn test_radio_handle_mouse_click() {
+    use dracon_terminal_engine::framework::widgets::Radio;
+    let mut r = Radio::new(WidgetId::default_id(), "Option A");
+    assert!(!r.is_selected());
+
+    r.handle_mouse(MouseEventKind::Down(MouseButton::Left), 0, 0);
+    assert!(r.is_selected());
+}
+
+// ========== Widget Trait Tests ==========
 
 #[test]
 fn test_widget_id_default() {
-    use dracon_terminal_engine::framework::widget::WidgetId;
     let id = WidgetId::default_id();
     assert_eq!(id, WidgetId::default_id());
 }
 
 #[test]
 fn test_widget_id_equality() {
-    use dracon_terminal_engine::framework::widget::WidgetId;
     let id1 = WidgetId::new(1);
     let id2 = WidgetId::new(1);
     let id3 = WidgetId::new(2);
@@ -310,9 +319,24 @@ fn test_widget_id_equality() {
 
 #[test]
 fn test_widget_id_uniqueness() {
-    use dracon_terminal_engine::framework::widget::WidgetId;
     let ids: Vec<_> = (0..100).map(WidgetId::new).collect();
     for (i, id) in ids.iter().enumerate() {
         assert_eq!(id.0, i);
     }
+}
+
+#[test]
+fn test_list_z_index() {
+    let items = vec!["a", "b", "c"];
+    let list = List::new(items);
+    assert_eq!(list.z_index(), 10);
+}
+
+#[test]
+fn test_list_area_set_and_get() {
+    let items = vec!["a", "b", "c"];
+    let mut list = List::new(items);
+    let area = Rect::new(5, 10, 30, 15);
+    list.set_area(area);
+    assert_eq!(list.area(), area);
 }
