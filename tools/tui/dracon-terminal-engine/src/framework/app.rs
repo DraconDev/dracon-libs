@@ -112,7 +112,7 @@ impl App {
     /// The callback receives the context and the tick count.
     pub fn on_tick<F>(self, f: F) -> Self
     where
-        F: FnMut(&mut Ctx, u64, &mut App) + 'static,
+        F: FnMut(&mut Ctx, u64) + 'static,
     {
         *self.on_tick.borrow_mut() = Some(Box::new(f));
         self
@@ -257,50 +257,25 @@ impl App {
                 }
             }
 
-            let mut ctx = Ctx {
-                compositor: &mut self.compositor,
-                theme: &self.theme,
-                frame_count: frame_count.load(Ordering::SeqCst),
-                last_frame: &self.last_frame_time,
-            };
-
-            {
-                let mut widgets = self.widgets.borrow_mut();
-                let mut sorted: Vec<_> = widgets.iter_mut().collect();
-                sorted.sort_by_key(|w| w.z_index());
-                for w in sorted {
-                    let area = w.area();
-                    let plane = w.render(area);
-                    self.compositor.add_plane(plane);
-                }
-            }
-
             if self.last_tick_time.elapsed() >= self.tick_interval {
                 if let Some(ref mut tick_fn) = *self.on_tick.borrow_mut() {
-                    let tc = self.tick_count;
-                    let cmp = &mut self.compositor;
-                    let thm = &self.theme;
-                    let fc = frame_count.load(Ordering::SeqCst);
-                    let lf = &self.last_frame_time;
                     tick_fn(&mut Ctx {
-                        compositor: cmp,
-                        theme: thm,
-                        frame_count: fc,
-                        last_frame: lf,
-                    }, tc, self);
+                        compositor: &mut self.compositor,
+                        theme: &self.theme,
+                        frame_count: frame_count.load(Ordering::SeqCst),
+                        last_frame: &self.last_frame_time,
+                    }, self.tick_count);
                     self.tick_count += 1;
                     self.last_tick_time = Instant::now();
                 }
             }
 
-            let mut ctx = Ctx {
+            f(&mut Ctx {
                 compositor: &mut self.compositor,
                 theme: &self.theme,
                 frame_count: frame_count.load(Ordering::SeqCst),
                 last_frame: &self.last_frame_time,
-            };
-
-            f(&mut ctx, &mut self);
+            }, &mut self);
 
             self.compositor.render(&mut self.terminal)?;
 
