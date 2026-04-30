@@ -26,6 +26,13 @@ impl PasswordInput {
         }
     }
 
+    /// Sets the mask character (default is '*').
+    pub fn with_mask_char(self, ch: char) -> Self {
+        let mut base = self.base;
+        base.mask_char = Some(ch);
+        Self { base, ..self }
+    }
+
     /// Sets the placeholder text shown when empty.
     pub fn with_placeholder(self, text: &str) -> Self {
         let mut base = self.base;
