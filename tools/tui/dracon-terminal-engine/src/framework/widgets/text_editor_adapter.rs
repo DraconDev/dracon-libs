@@ -5,7 +5,7 @@
 
 use crate::compositor::Plane;
 use crate::framework::widget::WidgetId;
-use crate::input::event::{Event, KeyEvent, KeyEventKind, MouseEvent, MouseEventKind};
+use crate::input::event::{Event, KeyEvent, MouseEvent, MouseEventKind};
 use crate::widgets::editor::TextEditor;
 use ratatui::layout::Rect;
 
@@ -117,10 +117,6 @@ impl crate::framework::widget::Widget for TextEditorAdapter {
     fn on_blur(&mut self) {}
 
     fn handle_key(&mut self, key: KeyEvent) -> bool {
-        if key.kind != KeyEventKind::Press {
-            return false;
-        }
-
         let area = self.area.get();
         self.editor.handle_event(&Event::Key(key), area)
     }

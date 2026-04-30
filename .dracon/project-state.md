@@ -1,7 +1,8 @@
 # Project State
 
 ## Current Focus
-Refresh Cargo.lock to reflect current dependency resolution state
+Remove key event kind filtering in text editor adapter and persist undo stack on save-as operations
 
 ## Completed
-- [x] lockfile: update Cargo.lock to reflect resolved dependency versions (no functional changes)
+- [x] Remove `KeyEventKind` import and filtering in `TextEditorAdapter::handle_key` to process all key events (press, repeat, release)
+- [x] Update `TextEditor::save_as` to persist undo stack to `.new_filename.undo` file alongside saved content

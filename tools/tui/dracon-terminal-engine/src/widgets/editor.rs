@@ -374,9 +374,11 @@ impl TextEditor {
     }
 
     /// Saves the editor content to a new file path and sets it as the current path.
+    /// Also saves the undo stack to `.new_filename.undo`.
     pub fn save_as(&mut self, path: &PathBuf) -> std::io::Result<()> {
         std::fs::write(path, self.get_content())?;
         self.file_path = Some(path.clone());
+        self.save_undo_stack()?;
         self.modified = false;
         Ok(())
     }
