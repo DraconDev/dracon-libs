@@ -1,11 +1,11 @@
 # Project State
 
 ## Current Focus
-Implement regex‑based search, replace, and filter in the TextEditor widget and add a demonstration example.
+feat(editor): add auto-pairing brackets and bracket matching navigation in TextEditor widget
 
 ## Completed
-- [x] Import `regex` crate and enable regex‑driven filtering, searching, and replacing in the editor widget.
-- [x] Refactor filter logic to use case‑insensitive regex matching when applicable.
-- [x] Update search/replace operations to invoke `Regex::new` and handle matches with `replace_all`.
-- [x] Add new example file `tools/tui/dracon-terminal-engine/examples/text_editor.rs` that showcases the widget.
-- [x] Update `Cargo.toml` for the `dracon-terminal-engine` package to include the `regex` dependency and regenerate `Cargo.lock`.
+- [x] feat(editor): add automatic closing bracket insertion for `()`, `[]`, `{}` in insert_char method
+- [x] feat(editor): implement find_matching_bracket to locate corresponding bracket
+- [x] feat(editor): add find_closing_bracket for forward bracket search
+- [x] feat(editor): add find_opening_bracket for backward bracket search
+- [x] chore(cleanup): remove standalone text_editor example file (functionality now integrated)

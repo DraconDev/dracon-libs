@@ -1252,10 +1252,107 @@ impl TextEditor {
         }
         self.ensure_valid_cursor_col();
         let line = &mut self.lines[self.cursor_row];
+
+        let pairs: &[(char, char)] = &[('(', ')'), ('[', ']'), ('{', '}')];
+        let is_opening = pairs.iter().any(|&(o, _)| o == c);
+        if is_opening {
+            let closing = match c {
+                '(' => ')',
+                '[' => ']',
+                '{' => '}',
+                _ => c,
+            };
+            line.insert(self.cursor_col, c);
+            self.cursor_col += c.len_utf8();
+            line.insert(self.cursor_col, closing);
+            self.cursor_col += closing.len_utf8();
+            self.modified = true;
+            self.invalidate_from(self.cursor_row);
+            return;
+        }
+
         line.insert(self.cursor_col, c);
         self.cursor_col += c.len_utf8();
         self.modified = true;
         self.invalidate_from(self.cursor_row);
+    }
+
+    fn find_matching_bracket(&self, row: usize, col: usize) -> Option<(usize, usize)> {
+        if row >= self.lines.len() {
+            return None;
+        }
+        let line = &self.lines[row];
+        if col >= line.len() {
+            return None;
+        }
+
+        let c = line.chars().nth(col)?;
+        let pairs: &[(char, char)] = &[('(', ')'), ('[', ']'), ('{', '}')];
+
+        for &(open, close) in pairs {
+            if c == open {
+                return self.find_closing_bracket(row, col, open, close);
+            } else if c == close {
+                return self.find_opening_bracket(row, col, open, close);
+            }
+        }
+        None
+    }
+
+    fn find_closing_bracket(&self, row: usize, col: usize, open: char, close: char) -> Option<(usize, usize)> {
+        let mut depth = 1;
+        let mut r = row;
+        let mut c = col + open.len_utf8();
+
+        while r < self.lines.len() {
+            let line = &self.lines[r];
+            while c < line.len() {
+                let ch = line.chars().nth(c)?;
+                if ch == open {
+                    depth += 1;
+                } else if ch == close {
+                    depth -= 1;
+                    if depth == 0 {
+                        return Some((r, c));
+                    }
+                }
+                c += ch.len_utf8();
+            }
+            r += 1;
+            c = 0;
+        }
+        None
+    }
+
+    fn find_opening_bracket(&self, row: usize, col: usize, open: char, close: char) -> Option<(usize, usize)> {
+        let mut depth = 1;
+        let mut r = row;
+        let mut c = col.saturating_sub(1);
+
+        while r < self.lines.len() {
+            let line = &self.lines[r];
+            while c > 0 {
+                let ch = line.chars().nth(c)?;
+                if ch == close {
+                    depth += 1;
+                } else if ch == open {
+                    depth -= 1;
+                    if depth == 0 {
+                        return Some((r, c));
+                    }
+                }
+                if c == 0 {
+                    break;
+                }
+                c -= 1;
+            }
+            if r == 0 {
+                break;
+            }
+            r -= 1;
+            c = self.lines[r].len();
+        }
+        None
     }
 
     /// Ensures the cursor column is valid (on a character boundary).
@@ -2385,6 +2482,21 @@ impl Widget for &TextEditor {
                                 cell.set_bg(Color::Rgb(40, 60, 100)); // Selection Blue
                                 cell.set_fg(Color::White);
                             }
+                        }
+                    }
+                }
+            }
+
+            // Apply Bracket Matching highlight
+            if let Some((match_row, match_col)) = self.find_matching_bracket(self.cursor_row, self.cursor_col) {
+                if real_line_idx == match_row {
+                    let visual_x = self.get_visual_x(match_row, match_col);
+                    if visual_x >= self.scroll_col && visual_x < self.scroll_col + content_area.width as usize {
+                        let cx = content_area.x + (visual_x - self.scroll_col) as u16;
+                        let cy = area.y + i as u16;
+                        if let Some(cell) = buf.cell_mut((cx, cy)) {
+                            cell.set_bg(Color::Rgb(255, 200, 0)); // Yellow bracket match
+                            cell.set_fg(Color::Black);
                         }
                     }
                 }
