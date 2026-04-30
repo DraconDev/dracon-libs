@@ -32,8 +32,24 @@ pub trait Widget {
     /// Returns the unique identifier for this widget.
     fn id(&self) -> WidgetId;
 
+    /// Returns the current area of this widget.
+    fn area(&self) -> Rect;
+
+    /// Sets the area of this widget.
+    fn set_area(&mut self, area: Rect);
+
     /// Returns true if this widget can receive focus.
     fn focusable(&self) -> bool {
+        true
+    }
+
+    /// Returns the z-index for layering (higher = on top).
+    fn z_index(&self) -> u16 {
+        0
+    }
+
+    /// Returns true if this widget needs to be rendered (dirty).
+    fn needs_render(&self) -> bool {
         true
     }
 
