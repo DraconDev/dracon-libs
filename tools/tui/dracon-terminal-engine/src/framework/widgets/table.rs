@@ -1,8 +1,11 @@
 //! Sortable, selectable table widget with header and row hit zones.
 
+use std::cell::Cell;
+
 use crate::compositor::{Plane, Styles};
 use crate::framework::hitzone::HitZone;
 use crate::framework::theme::Theme;
+use crate::framework::widget::WidgetId;
 use ratatui::layout::Rect;
 
 /// A column definition for a `Table`.
@@ -22,6 +25,7 @@ pub struct TableRow<T> {
 
 /// A sortable, selectable table with header and row hit zones.
 pub struct Table<T> {
+    id: WidgetId,
     columns: Vec<Column>,
     rows: Vec<TableRow<T>>,
     selected: usize,
@@ -29,12 +33,14 @@ pub struct Table<T> {
     visible_count: usize,
     theme: Theme,
     on_select: Option<Box<dyn FnMut(&T)>>,
+    area: Cell<Rect>,
 }
 
 impl<T: Clone + ToString> Table<T> {
     /// Creates a new `Table` with the given column definitions.
     pub fn new(columns: Vec<Column>) -> Self {
         Self {
+            id: WidgetId::default_id(),
             columns,
             rows: Vec::new(),
             selected: 0,
@@ -42,6 +48,22 @@ impl<T: Clone + ToString> Table<T> {
             visible_count: 10,
             theme: Theme::default(),
             on_select: None,
+            area: Cell::new(Rect::new(0, 0, 80, 20)),
+        }
+    }
+
+    /// Creates a new `Table` with the given widget ID and column definitions.
+    pub fn new_with_id(id: WidgetId, columns: Vec<Column>) -> Self {
+        Self {
+            id,
+            columns,
+            rows: Vec::new(),
+            selected: 0,
+            offset: 0,
+            visible_count: 10,
+            theme: Theme::default(),
+            on_select: None,
+            area: Cell::new(Rect::new(0, 0, 80, 20)),
         }
     }
 

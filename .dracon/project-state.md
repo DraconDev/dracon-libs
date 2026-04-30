@@ -1,7 +1,9 @@
 # Project State
 
 ## Current Focus
-Update dependencies to newer versions recorded in Cargo.lock
+Added widget identifier and area handling to Table for integration into the widget framework
 
 ## Completed
-- [x] Updated Cargo.lock to newer versions of project dependencies per recent dependency upgrade commit
+- [x] Added WidgetId field and default constructor initialization
+- [x] Added Cell<Rect> area field with default Rect initialization
+- [x] Added new_with_id constructor to set custom widget ID
