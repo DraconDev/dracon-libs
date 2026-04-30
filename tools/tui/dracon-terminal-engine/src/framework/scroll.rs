@@ -219,7 +219,7 @@ impl ScrollContainer {
             if idx < plane.cells.len() {
                 plane.cells[idx] = Cell {
                     char,
-                    fg: if i >= thumb_pos && i < thumb_pos + thumb_len {
+                    fg: if y >= thumb_pos && y < thumb_pos + thumb_len {
                         self.scrollbar_thumb
                     } else {
                         self.scrollbar_track

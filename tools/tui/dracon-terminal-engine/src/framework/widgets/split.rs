@@ -1,6 +1,7 @@
 //! Split pane widget.
 
 use crate::compositor::{Color, Plane, Styles};
+use crate::framework::theme::Theme;
 use crate::framework::widget::WidgetId;
 use ratatui::layout::Rect;
 
