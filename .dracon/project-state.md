@@ -1,11 +1,12 @@
 # Project State
 
 ## Current Focus
-Update Cargo.lock to reflect current dependency resolution state
+Bump dracon-terminal-engine to v27.0.0 and document framework expansion (23+ widgets, 15 themes, dirty regions, animations, focus, layout).
 
 ## Completed
-- [x] Implement dirty region tracking to optimize screen redraws with exposed API
-- [x] Expose SplitPane divider_color field for external theming configuration
-- [x] Remove unused attribute annotations from dirty_tracker
-- [x] Clean up obsolete test files and theme-related test code
-- [x] Update widget tests to use new Widget API with WidgetId
+- [x] Promote framework from v26 to v27 with major API surface additions (widgets, utilities, lifecycle hooks, theming).
+- [x] Add 23+ framework widgets (Button, Checkbox, Toggle, Radio, Select, Slider, ProgressBar, Spinner, Tree, Form, MenuBar, Toast, Tooltip, etc.).
+- [x] Introduce 15 built-in themes (dark, light, cyberpunk, dracula, nord, catppuccin_mocha, gruvbox_dark, tokyo_night, solarized, one_dark, rose_pine, kanagawa, everforest, monokai).
+- [x] Implement dirty region tracking for efficient partial redraws and expose AnimationManager, FocusManager, Layout engine.
+- [x] Expand TextEditor with undo, filter, multi-cursor and wrap it as a framework widget (TextEditorAdapter).
+- [x] Update examples and dependency pins (27.0.0) and add framework_widgets and text_editor_demo showcases.
