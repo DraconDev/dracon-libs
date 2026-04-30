@@ -1,5 +1,7 @@
 //! Internal text input shared by SearchInput and PasswordInput.
 
+#![allow(missing_docs)]
+
 use crate::compositor::{Cell, Plane, Styles};
 use crate::framework::theme::Theme;
 use crate::framework::widget::WidgetId;
