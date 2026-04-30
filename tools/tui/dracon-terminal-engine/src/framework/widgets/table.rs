@@ -195,7 +195,6 @@ impl<T: Clone + ToString> crate::framework::widget::Widget for Table<T> {
             .take(self.visible_count)
             .collect();
 
-        x = 0;
         for (i, row) in visible_rows.iter().enumerate() {
             let y = 1 + i;
             let is_selected = self.offset + i == self.selected;

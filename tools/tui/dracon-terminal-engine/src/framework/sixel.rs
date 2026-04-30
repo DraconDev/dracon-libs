@@ -26,7 +26,7 @@ impl SixelImage {
     }
 
     /// Creates a sixel image from encoded data.
-    pub fn from_sixel(data: &[u8]) -> Result<Self, &'static str> {
+    pub fn from_sixel(_data: &[u8]) -> Result<Self, &'static str> {
         Err("Sixel decoding not yet implemented")
     }
 
