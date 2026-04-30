@@ -117,6 +117,14 @@ impl crate::framework::widget::Widget for MenuBar {
         self.id
     }
 
+    fn area(&self) -> Rect {
+        self.area.get()
+    }
+
+    fn set_area(&mut self, area: Rect) {
+        self.area.set(area);
+    }
+
     fn render(&self, area: Rect) -> Plane {
         self.last_area_width.set(area.width);
         let mut plane = Plane::new(0, area.width, area.height);

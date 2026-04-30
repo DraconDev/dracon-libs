@@ -75,6 +75,14 @@ impl crate::framework::widget::Widget for EventLogger {
         self.id
     }
 
+    fn area(&self) -> Rect {
+        self.area.get()
+    }
+
+    fn set_area(&mut self, area: Rect) {
+        self.area.set(area);
+    }
+
     fn render(&self, area: Rect) -> Plane {
         let mut plane = Plane::new(0, area.width, area.height);
         plane.z_index = 170;
