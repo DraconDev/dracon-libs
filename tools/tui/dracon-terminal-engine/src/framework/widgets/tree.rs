@@ -227,7 +227,7 @@ impl crate::framework::widget::Widget for Tree {
         }
     }
 
-    fn handle_mouse(&mut self, kind: crate::input::event::MouseEventKind, _col: u16, row: u16) -> bool {
+    fn handle_mouse(&mut self, kind: crate::input::event::MouseEventKind, _col: u16, _row: u16) -> bool {
         match kind {
             crate::input::event::MouseEventKind::Down(crate::input::event::MouseButton::Left) => {
                 if self.selected_path.is_empty() {
