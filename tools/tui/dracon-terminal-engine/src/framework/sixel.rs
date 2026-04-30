@@ -8,6 +8,7 @@ use crate::compositor::{Cell, Color, Plane, Styles};
 use crate::framework::widget::WidgetId;
 use ratatui::layout::Rect;
 
+/// A sixel-encoded image.
 pub struct SixelImage {
     data: Vec<u8>,
     width: usize,
