@@ -27,6 +27,10 @@ pub struct Modal<'a> {
     height: u16,
     theme: Theme,
     buttons: Vec<(&'a str, ModalResult)>,
+    focused_btn: usize,
+    result: Option<ModalResult>,
+    on_confirm: Option<Box<dyn FnMut()>>,
+    on_cancel: Option<Box<dyn FnMut()>>,
     area: std::cell::Cell<Rect>,
 }
 
@@ -40,6 +44,10 @@ impl<'a> Modal<'a> {
             height: 5,
             theme: Theme::default(),
             buttons: vec![("OK", ModalResult::Confirm), ("Cancel", ModalResult::Cancel)],
+            focused_btn: 0,
+            result: None,
+            on_confirm: None,
+            on_cancel: None,
             area: std::cell::Cell::new(Rect::new(0, 0, 40, 5)),
         }
     }
@@ -53,6 +61,10 @@ impl<'a> Modal<'a> {
             height: 5,
             theme: Theme::default(),
             buttons: vec![("OK", ModalResult::Confirm), ("Cancel", ModalResult::Cancel)],
+            focused_btn: 0,
+            result: None,
+            on_confirm: None,
+            on_cancel: None,
             area: std::cell::Cell::new(Rect::new(0, 0, 40, 5)),
         }
     }
@@ -74,6 +86,28 @@ impl<'a> Modal<'a> {
     pub fn with_buttons(mut self, buttons: Vec<(&'a str, ModalResult)>) -> Self {
         self.buttons = buttons;
         self
+    }
+
+    /// Sets the callback for when OK is confirmed.
+    pub fn on_confirm(mut self, f: impl FnMut() + 'static) -> Self {
+        self.on_confirm = Some(Box::new(f));
+        self
+    }
+
+    /// Sets the callback for when Cancel is pressed.
+    pub fn on_cancel(mut self, f: impl FnMut() + 'static) -> Self {
+        self.on_cancel = Some(Box::new(f));
+        self
+    }
+
+    /// Returns the result of the modal after it's been dismissed.
+    pub fn get_result(&self) -> Option<ModalResult> {
+        self.result
+    }
+
+    /// Clears the result, allowing the modal to be reused.
+    pub fn clear_result(&mut self) {
+        self.result = None;
     }
 }
 
@@ -141,13 +175,16 @@ impl<'a> crate::framework::widget::Widget for Modal<'a> {
         for (i, (label, _result)) in self.buttons.iter().enumerate() {
             let bx = btn_start + (i as u16) * (btn_width + 1);
 
-            let bg = self.theme.active_bg;
+            let is_focused = i == self.focused_btn;
+            let bg = if is_focused { self.theme.active_bg } else { self.theme.bg };
             let fg = self.theme.fg;
+            let style = if is_focused { Styles::BOLD | Styles::REVERSE } else { Styles::empty() };
             for col in 0..btn_width {
                 let col_idx = btn_y as usize * self.width as usize + bx as usize + col as usize;
                 if col_idx < plane.cells.len() {
                     plane.cells[col_idx].bg = bg;
                     plane.cells[col_idx].fg = fg;
+                    plane.cells[col_idx].style = style;
                     plane.cells[col_idx].char = ' ';
                 }
             }
@@ -158,7 +195,7 @@ impl<'a> crate::framework::widget::Widget for Modal<'a> {
                 let label_idx = (btn_y as usize) * (self.width as usize) + (bx as usize) + (label_start as usize) + j;
                 if label_idx < plane.cells.len() {
                     plane.cells[label_idx].char = ch;
-                    plane.cells[label_idx].style = Styles::BOLD;
+                    plane.cells[label_idx].style = if is_focused { Styles::BOLD } else { Styles::empty() };
                 }
             }
 
@@ -197,5 +234,52 @@ impl<'a> crate::framework::widget::Widget for Modal<'a> {
         }
 
         false
+    }
+
+    fn handle_key(&mut self, key: crate::input::event::KeyEvent) -> bool {
+        use crate::input::event::{KeyCode, KeyEventKind};
+        if key.kind != KeyEventKind::Press {
+            return false;
+        }
+        match key.code {
+            KeyCode::Tab => {
+                self.focused_btn = (self.focused_btn + 1) % self.buttons.len();
+                true
+            }
+            KeyCode::BackTab => {
+                self.focused_btn = self.focused_btn.saturating_sub(1);
+                if self.focused_btn == usize::MAX {
+                    self.focused_btn = self.buttons.len().saturating_sub(1);
+                }
+                true
+            }
+            KeyCode::Enter => {
+                if let Some((_, result)) = self.buttons.get(self.focused_btn) {
+                    self.result = Some(*result);
+                    match result {
+                        ModalResult::Confirm => {
+                            if let Some(ref mut cb) = self.on_confirm {
+                                cb();
+                            }
+                        }
+                        ModalResult::Cancel => {
+                            if let Some(ref mut cb) = self.on_cancel {
+                                cb();
+                            }
+                        }
+                        ModalResult::Custom(_) => {}
+                    }
+                }
+                true
+            }
+            KeyCode::Esc => {
+                self.result = Some(ModalResult::Cancel);
+                if let Some(ref mut cb) = self.on_cancel {
+                    cb();
+                }
+                true
+            }
+            _ => false,
+        }
     }
 }

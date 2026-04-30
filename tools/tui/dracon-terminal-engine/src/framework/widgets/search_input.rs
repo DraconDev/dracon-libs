@@ -97,6 +97,11 @@ impl crate::framework::widget::Widget for SearchInput {
         plane
     }
 
+    fn cursor_position(&self) -> Option<(u16, u16)> {
+        let area = self.area.get();
+        Some((area.x + self.cursor_pos as u16, area.y))
+    }
+
     fn handle_key(&mut self, key: crate::input::event::KeyEvent) -> bool {
         use crate::input::event::{KeyCode, KeyEventKind};
         if key.kind != KeyEventKind::Press {

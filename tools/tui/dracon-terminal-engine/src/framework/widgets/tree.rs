@@ -90,6 +90,32 @@ impl Tree {
         self.get_selected_node(&nodes[idx].children, &path[1..])
     }
 
+    fn node_at_row(&self, row: u16) -> Option<Vec<usize>> {
+        let mut current_row = 0u16;
+        fn traverse<'a>(
+            nodes: &'a [TreeNode],
+            row: u16,
+            current_row: &mut u16,
+            path: &mut Vec<usize>,
+        ) -> Option<Vec<usize>> {
+            for (i, node) in nodes.iter().enumerate() {
+                if *current_row >= row {
+                    return Some(path.clone());
+                }
+                *current_row += 1;
+                if node.expanded {
+                    path.push(i);
+                    if let Some(result) = traverse(&node.children, row, current_row, path) {
+                        return Some(result);
+                    }
+                    path.pop();
+                }
+            }
+            None
+        }
+        traverse(&self.root, row, &mut current_row, &mut Vec::new())
+    }
+
     fn toggle_expand_at(&mut self, path: &[usize]) {
         if path.is_empty() {
             return;
@@ -227,33 +253,22 @@ impl crate::framework::widget::Widget for Tree {
         }
     }
 
-    fn handle_mouse(&mut self, kind: crate::input::event::MouseEventKind, _col: u16, _row: u16) -> bool {
+    fn handle_mouse(&mut self, kind: crate::input::event::MouseEventKind, _col: u16, row: u16) -> bool {
         match kind {
             crate::input::event::MouseEventKind::Down(crate::input::event::MouseButton::Left) => {
-                if self.selected_path.is_empty() {
-                    return false;
-                }
-                let path_len = self.selected_path.len();
-                if path_len == 0 {
-                    return false;
-                }
-                let mut current = &self.root;
-                for &idx in &self.selected_path[..path_len - 1] {
-                    if idx >= current.len() {
-                        return false;
+                if let Some(path) = self.node_at_row(row) {
+                    if let Some((node, _)) = self.get_selected_node(&self.root, &path) {
+                        if node.expanded && !node.children.is_empty() {
+                            self.selected_path = path;
+                            self.selected_path.push(0);
+                        } else if !node.children.is_empty() {
+                            self.selected_path = path.clone();
+                            self.toggle_expand_at(&path);
+                            self.selected_path.push(0);
+                        } else {
+                            self.selected_path = path;
+                        }
                     }
-                    current = &current[idx].children;
-                }
-                let last_idx = *self.selected_path.last().unwrap();
-                if last_idx >= current.len() {
-                    return false;
-                }
-                if current[last_idx].expanded && !current[last_idx].children.is_empty() {
-                    self.selected_path.push(0);
-                } else if !current[last_idx].children.is_empty() {
-                    let path = self.selected_path.clone();
-                    self.toggle_expand_at(&path);
-                    self.selected_path.push(0);
                 }
                 true
             }
