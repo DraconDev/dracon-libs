@@ -270,6 +270,7 @@ impl App {
                         theme: &self.theme,
                         frame_count: frame_count.load(Ordering::SeqCst),
                         last_frame: &self.last_frame_time,
+                        terminal: &mut self.terminal,
                     }, self.tick_count);
                     self.tick_count += 1;
                     self.last_tick_time = Instant::now();
@@ -281,6 +282,8 @@ impl App {
                 theme: &self.theme,
                 frame_count: frame_count.load(Ordering::SeqCst),
                 last_frame: &self.last_frame_time,
+                terminal: &mut self.terminal,
+                focus_manager: &mut self.focus_manager,
             });
 
             self.compositor.render(&mut self.terminal)?;
@@ -319,6 +322,7 @@ pub struct Ctx<'a> {
     pub(crate) frame_count: u64,
     pub(crate) last_frame: &'a Instant,
     pub(crate) terminal: &'a mut crate::Terminal<io::Stdout>,
+    pub(crate) focus_manager: &'a mut FocusManager,
 }
 
 impl<'a> Ctx<'a> {
@@ -340,6 +344,16 @@ impl<'a> Ctx<'a> {
     /// Sets the terminal cursor position.
     pub fn set_cursor(&mut self, col: u16, row: u16) -> io::Result<()> {
         self.terminal.set_cursor(col, row)
+    }
+
+    /// Sets the focused widget by ID.
+    pub fn set_focus(&mut self, id: WidgetId) {
+        self.focus_manager.set_focus(id);
+    }
+
+    /// Returns the currently focused widget ID, if any.
+    pub fn focused(&self) -> Option<WidgetId> {
+        self.focus_manager.focused()
     }
 
     /// Returns an immutable reference to the compositor.

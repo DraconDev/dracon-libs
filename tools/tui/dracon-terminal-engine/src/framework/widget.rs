@@ -58,6 +58,12 @@ pub trait Widget {
         true
     }
 
+    /// Returns the cursor position for text input widgets.
+    /// Returns `None` if the widget does not show a cursor.
+    fn cursor_position(&self) -> Option<(u16, u16)> {
+        None
+    }
+
     /// Renders the widget into a `Plane` at the given area.
     fn render(&self, area: Rect) -> Plane;
 

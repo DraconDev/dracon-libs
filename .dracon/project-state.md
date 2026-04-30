@@ -1,9 +1,10 @@
 # Project State
 
 ## Current Focus
-Add terminal cursor control utilities (show, hide, set position) to enable dynamic cursor management in text input widgets.
+Introduce focus management into the application context and enable widgets to report cursor positions.
 
 ## Completed
-- [x] Add terminal cursor control utilities (show_cursor, hide_cursor, set_cursor) to the application context for use by text input widgets during render and interaction
-- [x] Add terminal field to Ctx struct to hold mutable terminal reference
-- [x] Implement low-level cursor position and visibility control methods for precise terminal UI interactions
+- [x] Extend `Ctx` with mutable references to `FocusManager` and add methods `set_focus` and `focused` for managing widget focus.
+- [x] Pass `focus_manager` and `terminal` references into `Ctx` construction in the main loop.
+- [x] Add `focus_manager` field to `Ctx` struct definition.
+- [x] Add `cursor_position` method to the `Widget` trait, allowing widgets to optionally report their cursor location.
