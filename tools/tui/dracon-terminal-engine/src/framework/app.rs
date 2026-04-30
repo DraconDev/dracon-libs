@@ -141,22 +141,28 @@ impl App {
 
     /// Returns an immutable reference to a widget by ID.
     pub fn widget(&self, id: WidgetId) -> Option<&dyn Widget> {
-        for w in self.widgets.borrow().iter() {
-            if w.id() == id {
-                return Some(w.as_ref());
+        let mut result = None;
+        let widgets = self.widgets.borrow();
+        for i in 0..widgets.len() {
+            if widgets[i].id() == id {
+                result = Some(widgets[i].as_ref());
+                break;
             }
         }
-        None
+        result
     }
 
     /// Returns a mutable reference to a widget by ID.
     pub fn widget_mut(&mut self, id: WidgetId) -> Option<&mut dyn Widget> {
-        for w in self.widgets.borrow_mut().iter_mut() {
-            if w.id() == id {
-                return Some(w.as_mut());
+        let mut result = None;
+        let mut widgets = self.widgets.borrow_mut();
+        for i in 0..widgets.len() {
+            if widgets[i].id() == id {
+                result = Some(widgets[i].as_mut());
+                break;
             }
         }
-        None
+        result
     }
 
     /// Returns the number of registered widgets.
