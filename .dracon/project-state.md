@@ -1,10 +1,8 @@
-# Project State
+#Project State
 
 ## Current Focus
-Add comprehensive unit tests for scrolling, theme propagation, and widget color handling in the terminal UI framework.
 
 ## Completed
-- [x] Created exhaustive tests for `ScrollState` and `ScrollContainer` behavior.
-- [x] Added tests verifying theme propagation across UI components.
-- [x] Implemented tests covering theme application logic for the terminal engine.
-- [x] Developed tests for widget color rendering under various theme conditions.
+- [x] Added `tools/tui/dracon-terminal-engine/tests/text_editor_adapter_edge_test.rs` with edge case tests for cursor position and rendering.
+- [x] Added `tools/tui/dracon-terminal-engine/tests/text_editor_edge_test.rs` with additional edge case tests.
+- [x] Updated Cargo.lock (dependency lock file).
