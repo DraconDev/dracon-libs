@@ -1,11 +1,8 @@
 # Project State
 
 ## Current Focus
-Test integration of theme propagation with widget dirty-state tracking.
+Add a headless `App` constructor for unit tests and clean up test imports.
 
 ## Completed
-- [x] Add `TrackingWidget` struct to mock theme change notifications via global registry
-- [x] Implement `on_theme_change` counter tracking in widget lifecycle tests
-- [x] Enhance theme propagation validation tests to verify accumulation of multi-theme changes
-- [x] Confirm widget persistence through theme changes using ID-based existence checks
-- [x] Validate digital theme storage preservation after multiple theme switches
+- [x] feat(app): provide `App::new_for_testing()` to create an app without requiring a real terminal, enabling headless testing.
+- [x] fix(test): update test to import `App` from its module path and remove unused imports.

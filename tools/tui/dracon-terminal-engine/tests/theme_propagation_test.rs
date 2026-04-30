@@ -141,10 +141,8 @@ fn test_mock_widget_records_theme_name() {
 
 // === App::set_theme integration ===
 
-use dracon_terminal_engine::framework::App;
+use dracon_terminal_engine::framework::app::App;
 use ratatui::layout::Rect;
-use std::cell::Cell;
-use std::rc::Rc;
 
 static THEME_CALL_REGISTRY: std::sync::Mutex<Vec<usize>> = std::sync::Mutex::new(Vec::new());
 
