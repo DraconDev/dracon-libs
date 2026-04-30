@@ -22,6 +22,7 @@ pub struct List<T> {
     item_height: u16,
     width: u16,
     area: std::cell::Cell<Rect>,
+    dirty: bool,
 }
 
 impl<T: Clone + ToString> List<T> {
@@ -38,6 +39,7 @@ impl<T: Clone + ToString> List<T> {
             item_height: 1,
             width: 40,
             area: std::cell::Cell::new(Rect::new(0, 0, 40, 10)),
+            dirty: true,
         }
     }
 
@@ -54,6 +56,7 @@ impl<T: Clone + ToString> List<T> {
             item_height: 1,
             width: 40,
             area: std::cell::Cell::new(Rect::new(0, 0, 40, 10)),
+            dirty: true,
         }
     }
 
@@ -153,6 +156,14 @@ impl<T: Clone + ToString> crate::framework::widget::Widget for List<T> {
         10
     }
 
+    fn needs_render(&self) -> bool {
+        self.dirty
+    }
+
+    fn mark_dirty(&mut self) {
+        self.dirty = true;
+    }
+
     fn render(&self, area: Rect) -> Plane {
         let mut plane = Plane::new(0, area.width, area.height);
         plane.z_index = 10;
@@ -210,6 +221,7 @@ impl<T: Clone + ToString> crate::framework::widget::Widget for List<T> {
                     if self.selected >= self.offset + self.visible_count {
                         self.offset = self.selected.saturating_sub(self.visible_count) + 1;
                     }
+                    self.dirty = true;
                 }
                 true
             }
@@ -219,17 +231,20 @@ impl<T: Clone + ToString> crate::framework::widget::Widget for List<T> {
                     if self.selected < self.offset {
                         self.offset = self.selected;
                     }
+                    self.dirty = true;
                 }
                 true
             }
             KeyCode::Home => {
                 self.selected = 0;
                 self.offset = 0;
+                self.dirty = true;
                 true
             }
             KeyCode::End => {
                 self.selected = self.items.len().saturating_sub(1);
                 self.offset = self.items.len().saturating_sub(self.visible_count);
+                self.dirty = true;
                 true
             }
             KeyCode::PageDown => {
@@ -237,11 +252,13 @@ impl<T: Clone + ToString> crate::framework::widget::Widget for List<T> {
                 if self.selected >= self.offset + self.visible_count {
                     self.offset = self.selected.saturating_sub(self.visible_count) + 1;
                 }
+                self.dirty = true;
                 true
             }
             KeyCode::PageUp => {
                 self.selected = self.selected.saturating_sub(self.visible_count);
                 self.offset = self.selected;
+                self.dirty = true;
                 true
             }
             KeyCode::Enter => {
@@ -268,14 +285,17 @@ impl<T: Clone + ToString> crate::framework::widget::Widget for List<T> {
                 if let Some(f) = self.on_select.as_mut() {
                     f(&self.items[idx]);
                 }
+                self.dirty = true;
                 true
             }
             crate::input::event::MouseEventKind::ScrollDown => {
                 self.offset = (self.offset + 1).min(self.items.len().saturating_sub(self.visible_count));
+                self.dirty = true;
                 true
             }
             crate::input::event::MouseEventKind::ScrollUp => {
                 self.offset = self.offset.saturating_sub(1);
+                self.dirty = true;
                 true
             }
             _ => false,

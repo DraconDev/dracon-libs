@@ -1,9 +1,10 @@
 # Project State
 
 ## Current Focus
-Refactor the `App` framework to clean up unused event dispatching infrastructure, simplifying the struct and its initialization, and synchronize dependency state.
+Implement dirty‑state tracking for the `List` widget to enable selective re‑rendering.
 
 ## Completed
-- [x] Removed the `EventDispatcher` field from `App`, eliminating unused import and struct member.
-- [x] Updated `App::new()` to no longer instantiate `EventDispatcher`.
-- [x] Updated Cargo.lock to reflect the current dependency resolution state, ensuring lock file consistency.
+- [x] Added a `dirty: bool` field to `List` to record when its visual state has changed.
+- [x] Initialized `dirty` to `true` in constructors so new lists render on first draw.
+- [x] Implemented `needs_render` and `mark_dirty` methods required by the `Widget` trait.
+- [x] Updated event handling (keyboard navigation, mouse scroll, selection) to set `dirty = true` after any state change that affects rendering.
