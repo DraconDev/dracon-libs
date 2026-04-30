@@ -1,8 +1,7 @@
 # Project State
 
 ## Current Focus
-Replace manual auto‑generated IDs in registry tests with explicit WidgetId values.
+Adjust render area x‑offset from 1 to 0 for proper column alignment
 
 ## Completed
-- [x] Changed test `test_registry_register_and_get` to use `WidgetId::new(1)` instead of `registry.next_id()`
-- [x] Changed test `test_registry_unregister` to use `WidgetId::new(2)` instead of `registry.next_id()`
+- [x] Replace Plane::new(1, 1) with Plane::new(0, 1, 1) to start rendering at column 0

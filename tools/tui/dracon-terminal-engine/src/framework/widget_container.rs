@@ -107,7 +107,7 @@ mod tests {
         }
 
         fn render(&self, _area: Rect) -> Plane {
-            Plane::new(1, 1)
+            Plane::new(0, 1, 1)
         }
     }
 
