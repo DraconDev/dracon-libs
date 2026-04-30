@@ -1,9 +1,7 @@
-# Project State
+# Project State## Current Focus
+Update Cargo.lock dependencies and refine text editor test cases for cursor position clamping.
 
-## Current Focus
-Add multiple predefined color themes and enable split pane divider coloring to adapt to the active theme.
-
-## Completed- [x] Added 12 theme factory methods (dracula, nord, catppuccin_mocha, gruvbox_dark, tokyo_night, solarized_dark, solarized_light, one_dark, rosé_pine, kanagawa, everforest, monokai) to Theme.
-- [x] Introduced `divider_color` field in `SplitPane` with default RGB(80,80,100).
-- [x] Updated cell styling to use `self.divider_color` instead of a hardcoded RGB value.
-- [x] Implemented `on_theme_change` method to sync `divider_color` with `theme.inactive_fg` when the theme changes.
+## Completed
+- [x] Updated Cargo.lock to reflect current dependency resolution state without functional changes
+- [x] Simplified test input in TextEditorAdapter tests from long string to numeric pattern ("0123...") for clearer cursor clamping validation (area.width=40)
+- [x] Updated cursor position tests to more directly verify clamping behavior using predictable editor content

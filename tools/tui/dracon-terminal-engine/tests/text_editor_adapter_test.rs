@@ -100,16 +100,14 @@ fn test_adapter_cursor_position_with_area_offset() {
 
 #[test]
 fn test_adapter_cursor_position_clamped_to_area() {
-    // Use a line much longer than the area width to ensure visual_x > area.width
-    let mut editor = TextEditor::with_content("a very long line that exceeds forty one characters here and more");
+    let mut editor = TextEditor::with_content("0123456789012345678901234567890123456789012345678901234567890");
     editor.cursor_row = 0;
-    editor.cursor_col = 50; // byte index within the line
+    editor.cursor_col = 50;
 
     let mut adapter = TextEditorAdapter::new(WidgetId::new(1), editor);
-    adapter.set_area(Rect::new(0, 0, 40, 10)); // width=40
+    adapter.set_area(Rect::new(0, 0, 40, 10));
 
     let pos = adapter.cursor_position();
-    // Should be clamped to area.width - 1 = 39
     assert_eq!(pos, Some((39, 0)));
 }
 
