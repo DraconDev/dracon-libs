@@ -73,6 +73,8 @@ pub struct TextEditor {
     pub file_path: Option<PathBuf>,
     /// Whether to show the status bar at the bottom.
     pub show_status_bar: bool,
+    /// Whether to show indent guides (vertical lines at indentation).
+    pub show_indent_guides: bool,
     /// Current editor mode for search/goto UI.
     mode: EditorMode,
     /// Input buffer for search/goto dialogs.
@@ -111,6 +113,7 @@ impl Default for TextEditor {
             first_invalid_line: RefCell::new(Some(0)),
             file_path: None,
             show_status_bar: true,
+            show_indent_guides: false,
             mode: EditorMode::Normal,
             mode_input: String::new(),
             is_replacing: false,
@@ -351,6 +354,11 @@ impl TextEditor {
     /// Enables or disables the status bar.
     pub fn with_status_bar(&mut self, show: bool) {
         self.show_status_bar = show;
+    }
+
+    /// Enables or disables indent guide rendering.
+    pub fn with_indent_guides(&mut self, show: bool) {
+        self.show_indent_guides = show;
     }
 
     /// Sets the language for syntax highlighting (e.g., "rust", "python").

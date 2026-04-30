@@ -1,11 +1,10 @@
 # Project State
 
 ## Current Focus
-feat(editor): add auto-pairing brackets and bracket matching navigation in TextEditor widget
+feat(editor): add option to toggle indent guide rendering in the text editor widget
 
 ## Completed
-- [x] feat(editor): add automatic closing bracket insertion for `()`, `[]`, `{}` in insert_char method
-- [x] feat(editor): implement find_matching_bracket to locate corresponding bracket
-- [x] feat(editor): add find_closing_bracket for forward bracket search
-- [x] feat(editor): add find_opening_bracket for backward bracket search
-- [x] chore(cleanup): remove standalone text_editor example file (functionality now integrated)
+- [x] Introduced `show_indent_guides` flag in `TextEditor` to control visibility of vertical indentation lines
+- [x] Added public method `with_indent_guides` to configure the indent guide setting
+- [x] Updated default initialization to set `show_indent_guides` to `false`
+- [x] Updated struct documentation to explain the new flag and method usage
