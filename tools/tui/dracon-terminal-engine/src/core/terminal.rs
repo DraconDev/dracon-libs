@@ -24,6 +24,9 @@ impl<W: Write + AsFd> Drop for Terminal<W> {
 
 impl<W: Write + AsFd> Terminal<W> {
     /// Enter "God Mode" (Raw Mode + Alternate Screen).
+    ///
+    /// Falls back to null mode (no-op) when `writer` is not a TTY
+    /// (e.g., when stdout is piped in a test environment).
     pub fn new(mut writer: W) -> io::Result<Self> {
         let fd = writer.as_fd();
         let mut termios = get_terminal_attr(fd)?;
