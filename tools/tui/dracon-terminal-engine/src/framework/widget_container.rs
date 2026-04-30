@@ -42,7 +42,6 @@ impl WidgetContainer {
 
 pub struct WidgetRegistry {
     containers: Vec<WidgetContainer>,
-    next_id: usize,
 }
 
 impl Default for WidgetRegistry {
@@ -52,16 +51,17 @@ impl Default for WidgetRegistry {
 }
 
 impl WidgetRegistry {
+    /// Creates a new empty registry.
     pub fn new() -> Self {
         Self {
             containers: Vec::new(),
-            next_id: 0,
         }
     }
 
+    /// Registers a widget by moving it into a container.
     pub fn register(&mut self, widget: Box<dyn Widget>) -> WidgetId {
         let id = widget.id();
-        self.containers.push(WidgetContainer::new(widget))
+        self.containers.push(WidgetContainer::new(widget));
         id
     }
 
