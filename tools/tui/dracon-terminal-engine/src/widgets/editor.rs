@@ -177,6 +177,7 @@ impl TextEditor {
         &self.extra_cursors
     }
 
+    #[allow(dead_code)]
     fn move_cursor(&mut self, row: usize, col: usize) {
         self.cursor_row = row;
         self.cursor_col = col;
