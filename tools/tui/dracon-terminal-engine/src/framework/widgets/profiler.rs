@@ -10,8 +10,11 @@ use ratatui::layout::Rect;
 
 /// A performance metric entry.
 pub struct Metric {
+    /// The name of this metric.
     pub name: String,
+    /// The measured duration value.
     pub value: Duration,
+    /// The number of times this metric was recorded.
     pub call_count: u64,
 }
 

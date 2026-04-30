@@ -18,9 +18,13 @@ pub struct LoggedEvent {
 
 /// A widget that displays a scrolling log of recent input events.
 pub struct EventLogger {
+    /// The widget ID for this logger.
     id: WidgetId,
+    /// The maximum number of events to retain.
     max_events: usize,
+    /// The logged events.
     events: VecDeque<LoggedEvent>,
+    /// The theme for this widget.
     theme: Theme,
 }
 
