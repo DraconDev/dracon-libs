@@ -1,8 +1,9 @@
 # Project State
 
 ## Current Focus
-Ignore unused column and row parameters in Tree::handle_mouse and update dependencies.
+Add terminal cursor control utilities (show, hide, set position).
 
 ## Completed
-- [x] Updated Cargo.lock with new dependency versions
-- [x] Modified Tree::handle_mouse to drop both _col and _row arguments
+- [x] Implement `show_cursor` to make the cursor visible.
+- [x] Implement `hide_cursor` to hide the cursor.
+- [x] Implement `set_cursor` to move the cursor to a specific 1‑based position.
