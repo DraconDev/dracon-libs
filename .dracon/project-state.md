@@ -1,8 +1,12 @@
 # Project State
 
 ## Current Focus
-Implement dirty‑state tracking in `TextEditorAdapter` so that key and mouse events that modify the editor mark the widget as dirty for selective redraw.
+Add dirty-state tracking to Breadcrumbs, DebugOverlay, Label, ProgressBar, Spinner, and StatusBar widgets for selective rendering.
 
 ## Completed
-- [x] Update `handle_key` to set `self.dirty = true` when the editor reports a state‑changing key event.
-- [x] Update `handle_mouse` to set `self.dirty = true` when the editor reports a state‑changing mouse event.
+- [x] Add `dirty` field to Breadcrumbs and implement `needs_render`, `mark_dirty`, `clear_dirty` methods
+- [x] Add `dirty` field to DebugOverlay and initialize it as dirty
+- [x] Add `dirty` field to Label and implement dirty handling in `set_area`, `needs_render`, `mark_dirty`, `clear_dirty`
+- [x] Add `dirty` field to ProgressBar and initialize it as dirty
+- [x] Add `dirty` field to Spinner and initialize it as dirty
+- [x] Add `dirty` field to StatusBar and implement dirty handling similar to other widgets

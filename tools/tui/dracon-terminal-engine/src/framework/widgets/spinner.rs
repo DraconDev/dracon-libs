@@ -16,6 +16,7 @@ pub struct Spinner {
     last_update: Instant,
     theme: Theme,
     area: std::cell::Cell<Rect>,
+    dirty: bool,
 }
 
 impl Spinner {

@@ -16,6 +16,7 @@ pub struct DebugOverlay {
     /// The theme for this widget.
     theme: Theme,
     area: std::cell::Cell<Rect>,
+    dirty: bool,
 }
 
 impl DebugOverlay {

@@ -12,6 +12,7 @@ pub struct Label {
     theme: Theme,
     style: Styles,
     area: std::cell::Cell<Rect>,
+    dirty: bool,
 }
 
 impl Label {
@@ -23,6 +24,7 @@ impl Label {
             theme: Theme::default(),
             style: Styles::empty(),
             area: std::cell::Cell::new(Rect::new(0, 0, 40, 1)),
+            dirty: true,
         }
     }
 
@@ -34,6 +36,7 @@ impl Label {
             theme: Theme::default(),
             style: Styles::empty(),
             area: std::cell::Cell::new(Rect::new(0, 0, 40, 1)),
+            dirty: true,
         }
     }
 
@@ -72,6 +75,19 @@ impl crate::framework::widget::Widget for Label {
 
     fn set_area(&mut self, area: Rect) {
         self.area.set(area);
+        self.dirty = true;
+    }
+
+    fn needs_render(&self) -> bool {
+        self.dirty
+    }
+
+    fn mark_dirty(&mut self) {
+        self.dirty = true;
+    }
+
+    fn clear_dirty(&mut self) {
+        self.dirty = false;
     }
 
     fn focusable(&self) -> bool {

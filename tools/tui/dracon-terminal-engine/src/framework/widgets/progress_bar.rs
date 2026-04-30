@@ -13,6 +13,7 @@ pub struct ProgressBar {
     progress: f32,
     theme: Theme,
     area: std::cell::Cell<Rect>,
+    dirty: bool,
 }
 
 impl ProgressBar {
