@@ -181,6 +181,7 @@ impl crate::framework::widget::Widget for Slider {
                     if let Some(ref mut cb) = self.on_change {
                         cb(self.value);
                     }
+                    self.dirty = true;
                     true
                 } else {
                     false
