@@ -10,36 +10,38 @@ use crate::input::event::{Event, KeyEvent, KeyEventKind, MouseEvent, MouseEventK
 use crate::widgets::editor::TextEditor;
 use ratatui::layout::Rect;
 
+/// Adapter that wraps a [`TextEditor`] to implement the framework's [`Widget`] trait.
+///
+/// This allows the standalone text editor (which implements ratatui's `Widget`)
+/// to be used inside the framework's `App` with focus management, event routing,
+/// and compositor integration.
 pub struct TextEditorAdapter {
     id: WidgetId,
     editor: TextEditor,
     area: std::cell::Cell<Rect>,
-    theme: Theme,
 }
 
 impl TextEditorAdapter {
+    /// Creates a new adapter wrapping the given [`TextEditor`].
     pub fn new(id: WidgetId, editor: TextEditor) -> Self {
         Self {
             id,
             editor,
             area: std::cell::Cell::new(Rect::new(0, 0, 80, 24)),
-            theme: Theme::dark(),
         }
     }
 
-    pub fn with_theme(mut self, theme: Theme) -> Self {
-        self.theme = theme;
-        self
-    }
-
+    /// Returns a reference to the underlying [`TextEditor`].
     pub fn editor(&self) -> &TextEditor {
         &self.editor
     }
 
+    /// Returns a mutable reference to the underlying [`TextEditor`].
     pub fn editor_mut(&mut self) -> &mut TextEditor {
         &mut self.editor
     }
 
+    /// Sets the screen area allocated to this widget.
     pub fn set_area(&mut self, area: Rect) {
         self.area.set(area);
     }
@@ -68,10 +70,10 @@ impl crate::framework::widget::Widget for TextEditorAdapter {
 
     fn cursor_position(&self) -> Option<(u16, u16)> {
         let area = self.area.get();
-        Some((
-            area.x + self.editor.get_visual_x(self.editor.cursor_row, self.editor.cursor_col) as u16,
-            area.y + self.editor.cursor_row as u16,
-        ))
+        let visual_x = self.editor.get_visual_x(self.editor.cursor_row, self.editor.cursor_col);
+        let screen_row = self.editor.cursor_row.saturating_sub(self.editor.scroll_row) as u16;
+        let screen_col = visual_x.saturating_sub(self.editor.scroll_col) as u16;
+        Some((area.x + screen_col, area.y + screen_row))
     }
 
     fn render(&self, area: Rect) -> Plane {
@@ -123,10 +125,12 @@ impl crate::framework::widget::Widget for TextEditorAdapter {
 
     fn handle_mouse(&mut self, kind: MouseEventKind, col: u16, row: u16) -> bool {
         let area = self.area.get();
+        // Convert local coordinates (relative to widget area) back to absolute
+        // because the editor expects absolute screen coordinates.
         let mouse = MouseEvent {
             kind,
-            column: col,
-            row,
+            column: area.x + col,
+            row: area.y + row,
             modifiers: crate::input::event::KeyModifiers::empty(),
         };
         self.editor.handle_mouse_event(mouse, area)
