@@ -271,6 +271,7 @@ impl App {
                         frame_count: frame_count.load(Ordering::SeqCst),
                         last_frame: &self.last_frame_time,
                         terminal: &mut self.terminal,
+                        focus_manager: &mut self.focus_manager,
                     }, self.tick_count);
                     self.tick_count += 1;
                     self.last_tick_time = Instant::now();
