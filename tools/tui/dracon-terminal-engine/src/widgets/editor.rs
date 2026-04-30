@@ -138,6 +138,7 @@ impl Default for TextEditor {
             file_path: None,
             show_status_bar: true,
             show_indent_guides: false,
+            extra_cursors: Vec::new(),
             mode: EditorMode::Normal,
             mode_input: String::new(),
             is_replacing: false,
@@ -146,6 +147,35 @@ impl Default for TextEditor {
 }
 
 impl TextEditor {
+    pub fn add_cursor(&mut self, row: usize, col: usize) {
+        if (row, col) != (self.cursor_row, self.cursor_col) {
+            if !self.extra_cursors.contains(&(row, col)) {
+                self.extra_cursors.push((row, col));
+            }
+        }
+    }
+
+    pub fn remove_cursor(&mut self, row: usize, col: usize) {
+        self.extra_cursors.retain(|&(r, c)| !(r == row && c == col));
+    }
+
+    pub fn clear_extra_cursors(&mut self) {
+        self.extra_cursors.clear();
+    }
+
+    pub fn extra_cursor_count(&self) -> usize {
+        self.extra_cursors.len()
+    }
+
+    pub fn get_extra_cursors(&self) -> &Vec<(usize, usize)> {
+        &self.extra_cursors
+    }
+
+    fn move_cursor(&mut self, row: usize, col: usize) {
+        self.cursor_row = row;
+        self.cursor_col = col;
+    }
+
     fn finish_nav_move(&mut self, has_shift: bool, area: Rect) {
         if has_shift {
             self.update_selection_end();
@@ -969,8 +999,25 @@ impl TextEditor {
                         }
                         self.nav_move(has_shift, area, |s| s.move_cursor_down());
                     }
-
-                    KeyCode::Home if has_control => {
+                    KeyCode::Char('j') if has_control && has_alt => {
+                        if self.cursor_row < self.lines.len() - 1 {
+                            self.add_cursor(self.cursor_row + 1, self.cursor_col);
+                            self.ensure_cursor_visible(area);
+                        }
+                        return true;
+                    }
+                    KeyCode::Char('k') if has_control && has_alt => {
+                        if self.cursor_row > 0 {
+                            self.add_cursor(self.cursor_row - 1, self.cursor_col);
+                            self.ensure_cursor_visible(area);
+                        }
+                        return true;
+                    }
+                    KeyCode::Char('d') if has_control && has_alt => {
+                        self.clear_extra_cursors();
+                        return true;
+                    }
+                    KeyCode::Char('d') if has_control => {
                         if has_shift {
                             self.maybe_start_selection();
                         }
@@ -1378,31 +1425,45 @@ impl TextEditor {
         if c == '\x1b' {
             return;
         }
-        self.ensure_valid_cursor_col();
-        let line = &mut self.lines[self.cursor_row];
+
+        let all_cursors: Vec<(usize, usize)> = std::iter::once((self.cursor_row, self.cursor_col))
+            .chain(self.extra_cursors.iter().cloned())
+            .collect();
 
         let pairs: &[(char, char)] = &[('(', ')'), ('[', ']'), ('{', '}')];
         let is_opening = pairs.iter().any(|&(o, _)| o == c);
-        if is_opening {
-            let closing = match c {
-                '(' => ')',
-                '[' => ']',
-                '{' => '}',
-                _ => c,
-            };
-            line.insert(self.cursor_col, c);
-            self.cursor_col += c.len_utf8();
-            line.insert(self.cursor_col, closing);
-            self.cursor_col += closing.len_utf8();
-            self.modified = true;
-            self.invalidate_from(self.cursor_row);
-            return;
+
+        let mut affected_rows: Vec<usize> = Vec::new();
+
+        for &(row, col) in &all_cursors {
+            let line = &mut self.lines[row];
+            let mut insert_col = col;
+            let mut inserted_pair = false;
+            for &(open, close) in pairs {
+                if c == open {
+                    line.insert(insert_col, c);
+                    insert_col += c.len_utf8();
+                    line.insert(insert_col, close);
+                    inserted_pair = true;
+                    break;
+                }
+            }
+            if !inserted_pair {
+                line.insert(insert_col, c);
+            }
+            if !affected_rows.contains(&row) {
+                affected_rows.push(row);
+            }
         }
 
-        line.insert(self.cursor_col, c);
-        self.cursor_col += c.len_utf8();
         self.modified = true;
-        self.invalidate_from(self.cursor_row);
+        for row in &affected_rows {
+            self.invalidate_from(*row);
+        }
+
+        if let Some(&(last_row, _)) = all_cursors.last() {
+            self.cursor_row = last_row;
+        }
     }
 
     fn find_matching_bracket(&self, row: usize, col: usize) -> Option<(usize, usize)> {
