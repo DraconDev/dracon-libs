@@ -109,9 +109,10 @@ impl App {
     /// allowing tests to run in environments without a terminal.
     #[cfg(test)]
     pub fn new_for_testing() -> io::Result<Self> {
+        use crate::core::terminal::new_null_terminal;
         let (w, h) = (80, 24);
         Ok(Self {
-            terminal: Terminal::new_null()?,
+            terminal: new_null_terminal()?,
             compositor: Compositor::new(w, h),
             parser: Parser::new(),
             title: String::from("Test App"),

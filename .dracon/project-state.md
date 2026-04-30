@@ -1,9 +1,12 @@
 # Project State
 
 ## Current Focus
-Move null terminal support into a dedicated test module and eliminate duplicated code.
+Refactor terminal test utilities by moving null terminal implementation into a dedicated test module and exposing a headless `new_null_terminal()` function.
 
 ## Completed
-- [x] Add a `test_support` module providing `NullWriter` and a `Terminal<NullWriter>` constructor `new_null()` for headless testing.
-- [x] Remove the former inline null terminal implementation from `terminal.rs` and its associated test code.
-- [x] Consolidate imports by dropping unused `RawFd` and retaining only `AsFd` and `BorrowedFd`.
+- [x] Added `new_null_terminal()` function that creates a `Terminal<NullWriter>` for headless testing
+- [x] Moved `NullWriter` struct and its `Write`/`AsFd` implementations into the test-specific module
+- [x] Updated `Terminal<NullWriter>` constructor to delegate to `new_null_terminal()`
+- [x] Modified `App::new_for_testing()` to instantiate the terminal via `new_null_terminal()`
+- [x] Adjusted imports in `app.rs` to use the new `new_null_terminal` function
+- [x] Updated `Cargo.lock` reflecting dependency revisions (binary change)

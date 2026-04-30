@@ -83,44 +83,42 @@ impl<W: Write + AsFd> AsFd for Terminal<W> {
     }
 }
 
+/// Creates a terminal that writes to /dev/null (or a null device).
+/// Used for headless testing where no real terminal is available.
 #[cfg(test)]
-pub(crate) mod test_support {
-    use super::*;
-    use std::io::{self, Write};
-    use std::os::fd::{AsFd, BorrowedFd};
+pub fn new_null_terminal() -> io::Result<Terminal<NullWriter>> {
+    Ok(Terminal {
+        original_termios: unsafe { std::mem::zeroed() },
+        output: NullWriter::new(),
+    })
+}
 
-    struct NullWriter {
-        data: Vec<u8>,
+#[cfg(test)]
+struct NullWriter {
+    data: Vec<u8>,
+}
+
+#[cfg(test)]
+impl NullWriter {
+    fn new() -> Self {
+        Self { data: Vec::new() }
     }
+}
 
-    impl NullWriter {
-        fn new() -> Self {
-            Self { data: Vec::new() }
-        }
+#[cfg(test)]
+impl Write for NullWriter {
+    fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
+        self.data.extend_from_slice(buf);
+        Ok(buf.len())
     }
-
-    impl Write for NullWriter {
-        fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
-            self.data.extend_from_slice(buf);
-            Ok(buf.len())
-        }
-        fn flush(&mut self) -> io::Result<()> {
-            Ok(())
-        }
+    fn flush(&mut self) -> io::Result<()> {
+        Ok(())
     }
+}
 
-    impl AsFd for NullWriter {
-        fn as_fd(&self) -> BorrowedFd<'_> {
-            unsafe { BorrowedFd::borrow_raw(-1) }
-        }
-    }
-
-    impl Terminal<NullWriter> {
-        pub fn new_null() -> io::Result<Self> {
-            Ok(Self {
-                original_termios: unsafe { std::mem::zeroed() },
-                output: NullWriter::new(),
-            })
-        }
+#[cfg(test)]
+impl AsFd for NullWriter {
+    fn as_fd(&self) -> BorrowedFd<'_> {
+        unsafe { BorrowedFd::borrow_raw(-1) }
     }
 }
