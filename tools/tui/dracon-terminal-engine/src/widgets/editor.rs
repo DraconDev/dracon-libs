@@ -486,6 +486,58 @@ impl TextEditor {
             return false;
         }
 
+        // Handle search/goto/replace mode
+        if self.mode != EditorMode::Normal {
+            if let Event::Key(key) = event {
+                if key.kind != KeyEventKind::Press {
+                    return false;
+                }
+                match key.code {
+                    KeyCode::Esc => {
+                        self.mode = EditorMode::Normal;
+                        self.mode_input.clear();
+                        return true;
+                    }
+                    KeyCode::Enter => {
+                        match self.mode {
+                            EditorMode::Search => {
+                                let query = self.mode_input.clone();
+                                if !query.is_empty() {
+                                    self.set_filter(&query);
+                                }
+                            }
+                            EditorMode::Replace => {
+                                let query = self.mode_input.clone();
+                                if !query.is_empty() {
+                                    self.set_filter(&query);
+                                }
+                            }
+                            EditorMode::GotoLine => {
+                                let line_str = self.mode_input.clone();
+                                if let Ok(line) = line_str.parse::<usize>() {
+                                    self.goto_line(line, area);
+                                }
+                            }
+                            EditorMode::Normal => {}
+                        }
+                        self.mode = EditorMode::Normal;
+                        self.mode_input.clear();
+                        return true;
+                    }
+                    KeyCode::Backspace => {
+                        self.mode_input.pop();
+                        return true;
+                    }
+                    KeyCode::Char(c) if !key.modifiers.contains(KeyModifiers::CONTROL) && !key.modifiers.contains(KeyModifiers::ALT) => {
+                        self.mode_input.push(c);
+                        return true;
+                    }
+                    _ => {}
+                }
+            }
+            return false;
+        }
+
         match event {
             Event::Key(key) => {
                 if key.kind != KeyEventKind::Press {
@@ -592,6 +644,23 @@ impl TextEditor {
                             self.modified = true;
                             self.ensure_cursor_visible(area);
                         }
+                        return true;
+                    }
+                    KeyCode::Char('f') if has_control => {
+                        self.mode = EditorMode::Search;
+                        self.mode_input.clear();
+                        self.is_replacing = false;
+                        return true;
+                    }
+                    KeyCode::Char('h') if has_control => {
+                        self.mode = EditorMode::Replace;
+                        self.mode_input.clear();
+                        self.is_replacing = true;
+                        return true;
+                    }
+                    KeyCode::Char('g') if has_control => {
+                        self.mode = EditorMode::GotoLine;
+                        self.mode_input.clear();
                         return true;
                     }
                     KeyCode::Char('d') if has_control => {
@@ -2105,25 +2174,47 @@ impl Widget for &TextEditor {
                     String::new()
                 };
 
-                let left_text = pos_text;
                 let right_text = format!("{}{}", modified_text, lang_text);
 
-                buf.set_string(area.x, status_y, &left_text, status_style);
+                if self.mode == EditorMode::Search {
+                    let search_text = format!("Search: {}_", self.mode_input);
+                    let search_style = Style::default()
+                        .bg(Color::Rgb(40, 40, 20))
+                        .fg(Color::Rgb(255, 200, 100));
+                    buf.set_string(area.x, status_y, &search_text, search_style);
+                    buf.set_string(area.x + area.width.saturating_sub(pos_text.len() as u16), status_y, &pos_text, status_style);
+                } else if self.mode == EditorMode::Replace {
+                    let replace_text = format!("Replace: {}_", self.mode_input);
+                    let replace_style = Style::default()
+                        .bg(Color::Rgb(40, 20, 20))
+                        .fg(Color::Rgb(255, 100, 100));
+                    buf.set_string(area.x, status_y, &replace_text, replace_style);
+                    buf.set_string(area.x + area.width.saturating_sub(pos_text.len() as u16), status_y, &pos_text, status_style);
+                } else if self.mode == EditorMode::GotoLine {
+                    let goto_text = format!("Goto Line: {}_", self.mode_input);
+                    let goto_style = Style::default()
+                        .bg(Color::Rgb(20, 40, 40))
+                        .fg(Color::Rgb(100, 200, 255));
+                    buf.set_string(area.x, status_y, &goto_text, goto_style);
+                    buf.set_string(area.x + area.width.saturating_sub(pos_text.len() as u16), status_y, &pos_text, status_style);
+                } else {
+                    buf.set_string(area.x, status_y, &pos_text, status_style);
 
-                let right_width = right_text.len() as u16;
-                let right_x = area.x + area.width.saturating_sub(right_width);
-                buf.set_string(right_x, status_y, &right_text, status_style);
+                    let right_width = right_text.len() as u16;
+                    let right_x = area.x + area.width.saturating_sub(right_width);
+                    buf.set_string(right_x, status_y, &right_text, status_style);
 
-                if !filename_text.is_empty() && filename_text != "Untitled" {
-                    let total_left_len = left_text.len() as u16;
-                    let total_right_len = right_text.len() as u16;
-                    let available = area.width.saturating_sub(total_left_len + total_right_len + 4);
-                    if available > filename_text.len() as u16 {
-                        let center_x = area.x + total_left_len + 2;
-                        let filename_style = Style::default()
-                            .bg(Color::Rgb(30, 30, 35))
-                            .fg(Color::Rgb(120, 200, 255));
-                        buf.set_string(center_x, status_y, &filename_text, filename_style);
+                    if !filename_text.is_empty() && filename_text != "Untitled" {
+                        let total_left_len = pos_text.len() as u16;
+                        let total_right_len = right_text.len() as u16;
+                        let available = area.width.saturating_sub(total_left_len + total_right_len + 4);
+                        if available > filename_text.len() as u16 {
+                            let center_x = area.x + total_left_len + 2;
+                            let filename_style = Style::default()
+                                .bg(Color::Rgb(30, 30, 35))
+                                .fg(Color::Rgb(120, 200, 255));
+                            buf.set_string(center_x, status_y, &filename_text, filename_style);
+                        }
                     }
                 }
 
@@ -2303,25 +2394,47 @@ impl Widget for &TextEditor {
                 String::new()
             };
 
-            let left_text = pos_text;
             let right_text = format!("{}{}", modified_text, lang_text);
 
-            buf.set_string(area.x, status_y, &left_text, status_style);
+            if self.mode == EditorMode::Search {
+                let search_text = format!("Search: {}_", self.mode_input);
+                let search_style = Style::default()
+                    .bg(Color::Rgb(40, 40, 20))
+                    .fg(Color::Rgb(255, 200, 100));
+                buf.set_string(area.x, status_y, &search_text, search_style);
+                buf.set_string(area.x + area.width.saturating_sub(pos_text.len() as u16), status_y, &pos_text, status_style);
+            } else if self.mode == EditorMode::Replace {
+                let replace_text = format!("Replace: {}_", self.mode_input);
+                let replace_style = Style::default()
+                    .bg(Color::Rgb(40, 20, 20))
+                    .fg(Color::Rgb(255, 100, 100));
+                buf.set_string(area.x, status_y, &replace_text, replace_style);
+                buf.set_string(area.x + area.width.saturating_sub(pos_text.len() as u16), status_y, &pos_text, status_style);
+            } else if self.mode == EditorMode::GotoLine {
+                let goto_text = format!("Goto Line: {}_", self.mode_input);
+                let goto_style = Style::default()
+                    .bg(Color::Rgb(20, 40, 40))
+                    .fg(Color::Rgb(100, 200, 255));
+                buf.set_string(area.x, status_y, &goto_text, goto_style);
+                buf.set_string(area.x + area.width.saturating_sub(pos_text.len() as u16), status_y, &pos_text, status_style);
+            } else {
+                buf.set_string(area.x, status_y, &pos_text, status_style);
 
-            let right_width = right_text.width() as u16;
-            let right_x = area.x + area.width.saturating_sub(right_width);
-            buf.set_string(right_x, status_y, &right_text, status_style);
+                let right_width = right_text.width() as u16;
+                let right_x = area.x + area.width.saturating_sub(right_width);
+                buf.set_string(right_x, status_y, &right_text, status_style);
 
-            if !filename_text.is_empty() && filename_text != "Untitled" {
-                let total_left_len = left_text.len() as u16;
-                let total_right_len = right_text.len() as u16;
-                let available = area.width.saturating_sub(total_left_len + total_right_len + 4);
-                if available > filename_text.len() as u16 {
-                    let center_x = area.x + total_left_len + 2;
-                    let filename_style = Style::default()
-                        .bg(Color::Rgb(30, 30, 35))
-                        .fg(Color::Rgb(120, 200, 255));
-                    buf.set_string(center_x, status_y, &filename_text, filename_style);
+                if !filename_text.is_empty() && filename_text != "Untitled" {
+                    let total_left_len = pos_text.len() as u16;
+                    let total_right_len = right_text.len() as u16;
+                    let available = area.width.saturating_sub(total_left_len + total_right_len + 4);
+                    if available > filename_text.len() as u16 {
+                        let center_x = area.x + total_left_len + 2;
+                        let filename_style = Style::default()
+                            .bg(Color::Rgb(30, 30, 35))
+                            .fg(Color::Rgb(120, 200, 255));
+                        buf.set_string(center_x, status_y, &filename_text, filename_style);
+                    }
                 }
             }
 
