@@ -1,6 +1,7 @@
 //! Split pane widget.
 
 use crate::compositor::{Color, Plane, Styles};
+use crate::framework::widget::WidgetId;
 use ratatui::layout::Rect;
 
 /// The direction in which a split pane divides the screen.
@@ -14,20 +15,36 @@ pub enum Orientation {
 
 /// A widget that splits a rectangular area into two panes with a configurable ratio.
 pub struct SplitPane {
+    id: WidgetId,
     ratio: f32,
     orientation: Orientation,
     divider_char: char,
     min_size: u16,
+    area: std::cell::Cell<Rect>,
 }
 
 impl SplitPane {
     /// Creates a new `SplitPane` in the given orientation with a 50/50 split.
     pub fn new(orientation: Orientation) -> Self {
         Self {
+            id: WidgetId::default_id(),
             ratio: 0.5,
             orientation,
             divider_char: '│',
             min_size: 10,
+            area: std::cell::Cell::new(Rect::new(0, 0, 80, 24)),
+        }
+    }
+
+    /// Creates a new `SplitPane` with the given widget ID.
+    pub fn new_with_id(id: WidgetId, orientation: Orientation) -> Self {
+        Self {
+            id,
+            ratio: 0.5,
+            orientation,
+            divider_char: '│',
+            min_size: 10,
+            area: std::cell::Cell::new(Rect::new(0, 0, 80, 24)),
         }
     }
 
@@ -40,10 +57,12 @@ impl SplitPane {
             Orientation::Vertical
         };
         Self {
+            id: WidgetId::default_id(),
             ratio: 0.5,
             orientation,
             divider_char: '│',
             min_size: 10,
+            area: std::cell::Cell::new(rect),
         }
     }
 
@@ -116,6 +135,53 @@ impl SplitPane {
         }
 
         plane
+    }
+}
+
+impl crate::framework::widget::Widget for SplitPane {
+    fn id(&self) -> WidgetId {
+        self.id
+    }
+
+    fn area(&self) -> Rect {
+        self.area.get()
+    }
+
+    fn set_area(&mut self, area: Rect) {
+        self.area.set(area);
+    }
+
+    fn z_index(&self) -> u16 {
+        5
+    }
+
+    fn render(&self, area: Rect) -> Plane {
+        self.render_divider(area)
+    }
+
+    fn handle_mouse(&mut self, kind: crate::input::event::MouseEventKind, col: u16, row: u16) -> bool {
+        match kind {
+            crate::input::event::MouseEventKind::Drag(_) => {
+                match self.orientation {
+                    Orientation::Horizontal => {
+                        let total_w = area().width as f32;
+                        self.ratio = (col as f32 / total_w).clamp(0.1, 0.9);
+                    }
+                    Orientation::Vertical => {
+                        let total_h = area().height as f32;
+                        self.ratio = (row as f32 / total_h).clamp(0.1, 0.9);
+                    }
+                }
+                true
+            }
+            _ => false,
+        }
+    }
+}
+
+impl SplitPane {
+    fn area(&self) -> Rect {
+        self.area.get()
     }
 
     /// Handles a mouse drag event to interactively resize the split ratio.
