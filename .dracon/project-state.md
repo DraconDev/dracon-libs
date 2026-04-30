@@ -1,8 +1,11 @@
 # Project State
 
 ## Current Focus
-Update Cargo.lock to reflect newer dependency versions
+Integrate core framework managers (animation, dirty regions, event dispatch, focus, widget) into the application module.
 
 ## Completed
-- [x] Update Cargo.lock with the latest compatible crate versions
-- [x] Re-resolve dependencies to ensure up‑to‑date security and feature flags
+- [x] Add import for AnimationManager to use animation management
+- [x] Add import for DirtyRegionTracker to track dirty regions
+- [x] Add import for EventDispatcher to handle event dispatching
+- [x] Add import for FocusManager to manage focus state
+- [x] Add import for Widget to represent UI widgets

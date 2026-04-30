@@ -2,7 +2,12 @@
 
 use crate::backend::tty;
 use crate::compositor::{Compositor, Plane};
+use crate::framework::animation::AnimationManager;
+use crate::framework::dirty_regions::DirtyRegionTracker;
+use crate::framework::event_dispatcher::EventDispatcher;
+use crate::framework::focus::FocusManager;
 use crate::framework::theme::Theme;
+use crate::framework::widget::Widget;
 use crate::input::event::Event;
 use crate::input::parser::Parser;
 use crate::Terminal;
