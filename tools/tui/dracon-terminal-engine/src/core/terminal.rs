@@ -56,6 +56,17 @@ impl<W: Write + AsFd> Terminal<W> {
         write!(self.output, "\x1b[?25h").map_err(|e| io::Error::new(io::ErrorKind::Other, e))
     }
 
+    /// Creates a null terminal that discards all output and uses zeroed termios.
+    /// Use this for headless testing where no real terminal is available.
+    #[cfg(test)]
+    pub fn new_null() -> io::Result<Self> {
+        let null_output = Vec::new();
+        Ok(Self {
+            original_termios: unsafe { std::mem::zeroed() },
+            output: null_output,
+        })
+    }
+
     /// Hides the terminal cursor.
     pub fn hide_cursor(&mut self) -> io::Result<()> {
         write!(self.output, "\x1b[?25l").map_err(|e| io::Error::new(io::ErrorKind::Other, e))

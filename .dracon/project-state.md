@@ -1,8 +1,7 @@
 # Project State
 
 ## Current Focus
-Add a headless `App` constructor for unit tests and clean up test imports.
+Introduce a null terminal constructor for headless testing environments.
 
 ## Completed
-- [x] feat(app): provide `App::new_for_testing()` to create an app without requiring a real terminal, enabling headless testing.
-- [x] fix(test): update test to import `App` from its module path and remove unused imports.
+- [x] Added `new_null` method to `Terminal` that creates a terminal with zeroed termios and discards output, gated to test builds.
