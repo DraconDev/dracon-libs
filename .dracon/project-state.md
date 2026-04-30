@@ -1,7 +1,10 @@
 # Project State
 
 ## Current Focus
-Enable dirty-state tracking for the `Breadcrumbs` widget by initializing the dirty flag
+Validates theme propagation and dirty-state integration across App-managed widgets via comprehensive tests.
 
 ## Completed
-- [x] Initialize dirty state tracking for Breadcrumbs widget to enable selective redraw optimization
+- [x] Add integration tests verifying App::set_theme propagates theme changes to all registered widgets exactly once.
+- [x] Verify all widgets are marked dirty immediately after construction and theme application.
+- [x] Confirm repeated theme changes increment per-widget theme-change counters correctly.
+- [x] Ensure widget IDs remain stable and lookupable after theme changes.
