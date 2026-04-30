@@ -147,6 +147,8 @@ impl Default for TextEditor {
 }
 
 impl TextEditor {
+    /// Adds an additional cursor at the given position.
+    /// Ignores duplicates and the primary cursor position.
     pub fn add_cursor(&mut self, row: usize, col: usize) {
         if (row, col) != (self.cursor_row, self.cursor_col) {
             if !self.extra_cursors.contains(&(row, col)) {
@@ -155,18 +157,22 @@ impl TextEditor {
         }
     }
 
+    /// Removes the extra cursor at the given position, if it exists.
     pub fn remove_cursor(&mut self, row: usize, col: usize) {
         self.extra_cursors.retain(|&(r, c)| !(r == row && c == col));
     }
 
+    /// Removes all extra cursors, leaving only the primary cursor.
     pub fn clear_extra_cursors(&mut self) {
         self.extra_cursors.clear();
     }
 
+    /// Returns the number of extra cursors (not including the primary cursor).
     pub fn extra_cursor_count(&self) -> usize {
         self.extra_cursors.len()
     }
 
+    /// Returns a reference to the list of extra cursor positions.
     pub fn get_extra_cursors(&self) -> &Vec<(usize, usize)> {
         &self.extra_cursors
     }
@@ -1431,7 +1437,7 @@ impl TextEditor {
             .collect();
 
         let pairs: &[(char, char)] = &[('(', ')'), ('[', ']'), ('{', '}')];
-        let is_opening = pairs.iter().any(|&(o, _)| o == c);
+        let _is_opening = pairs.iter().any(|&(o, _)| o == c);
 
         let mut affected_rows: Vec<usize> = Vec::new();
 

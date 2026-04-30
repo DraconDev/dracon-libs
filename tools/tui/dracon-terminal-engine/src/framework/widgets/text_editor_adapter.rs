@@ -4,7 +4,6 @@
 //! into the framework's `Widget` trait so it can be used with `App::add_widget()`.
 
 use crate::compositor::Plane;
-use crate::framework::theme::Theme;
 use crate::framework::widget::WidgetId;
 use crate::input::event::{Event, KeyEvent, KeyEventKind, MouseEvent, MouseEventKind};
 use crate::widgets::editor::TextEditor;
