@@ -1,7 +1,6 @@
 # Project State
 
-## Current Focus
-Silence non-documentation lint for the internal text input base module to streamline development.
+## Current FocusSilence dead‑code warning on `on_focus_change_internal`
 
 ## Completed
-- [x] Add `#![allow(missing_docs)]` to `text_input_base.rs` to suppress missing-documentation warnings for internal shared input components.
+- [x] Added `#[allow(dead_code)]` attribute before `pub(crate) fn on_focus_change_internal` to suppress warnings
