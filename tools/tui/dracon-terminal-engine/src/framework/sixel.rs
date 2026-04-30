@@ -16,6 +16,7 @@ pub struct SixelImage {
 }
 
 impl SixelImage {
+    /// Creates a new sixel image with the given dimensions.
     pub fn new(width: usize, height: usize) -> Self {
         Self {
             data: vec![0; width * height * 3],
@@ -24,14 +25,17 @@ impl SixelImage {
         }
     }
 
+    /// Creates a sixel image from encoded data.
     pub fn from_sixel(data: &[u8]) -> Result<Self, &'static str> {
         Err("Sixel decoding not yet implemented")
     }
 
+    /// Returns the width of the image in pixels.
     pub fn width(&self) -> usize {
         self.width
     }
 
+    /// Returns the height of the image in pixels.
     pub fn height(&self) -> usize {
         self.height
     }

@@ -1,8 +1,10 @@
 # Project State
 
 ## Current Focus
-Introduce a `SixelImage` struct to represent sixel‑encoded images.
+Adds constructor, width/height accessors, and a stub decoder to SixelImage.
 
 ## Completed
-- [x] Add `SixelImage` with `data` and `width` fields
-- [x] Update Cargo.lock with newer dependency versions
+- [x] Added `new` method to create a SixelImage with specified width and height
+- [x] Added `width` method to return the image width
+- [x] Added `height` method to return the image height
+- [x] Added `from_sixel` method that currently returns an error for decoding data
