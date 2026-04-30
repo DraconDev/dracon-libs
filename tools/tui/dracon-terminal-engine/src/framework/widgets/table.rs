@@ -50,6 +50,7 @@ impl<T: Clone + ToString> Table<T> {
             theme: Theme::default(),
             on_select: None,
             area: Cell::new(Rect::new(0, 0, 80, 20)),
+            dirty: true,
         }
     }
 
@@ -65,6 +66,7 @@ impl<T: Clone + ToString> Table<T> {
             theme: Theme::default(),
             on_select: None,
             area: Cell::new(Rect::new(0, 0, 80, 20)),
+            dirty: true,
         }
     }
 
@@ -160,6 +162,18 @@ impl<T: Clone + ToString> crate::framework::widget::Widget for Table<T> {
 
     fn z_index(&self) -> u16 {
         10
+    }
+
+    fn needs_render(&self) -> bool {
+        self.dirty
+    }
+
+    fn mark_dirty(&mut self) {
+        self.dirty = true;
+    }
+
+    fn clear_dirty(&mut self) {
+        self.dirty = false;
     }
 
     fn render(&self, area: Rect) -> Plane {
