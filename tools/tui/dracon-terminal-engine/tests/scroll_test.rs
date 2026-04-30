@@ -406,7 +406,7 @@ fn test_scroll_container_handle_mouse_scroll_down_at_max() {
 
 #[test]
 fn test_scroll_container_handle_mouse_other_returns_false() {
-    let sc = ScrollContainer::new()
+    let mut sc = ScrollContainer::new()
         .with_content_height(100)
         .with_viewport_height(20);
 
