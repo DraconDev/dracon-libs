@@ -60,6 +60,10 @@ impl crate::framework::widget::Widget for Button {
         self.id
     }
 
+    fn set_id(&mut self, id: WidgetId) {
+        self.id = id;
+    }
+
     fn area(&self) -> Rect {
         self.area.get()
     }

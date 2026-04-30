@@ -144,6 +144,10 @@ impl<T: Clone + ToString> crate::framework::widget::Widget for List<T> {
         self.id
     }
 
+    fn set_id(&mut self, id: WidgetId) {
+        self.id = id;
+    }
+
     fn area(&self) -> Rect {
         self.area.get()
     }

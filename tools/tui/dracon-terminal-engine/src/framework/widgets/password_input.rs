@@ -64,6 +64,10 @@ impl Widget for PasswordInput {
         self.id
     }
 
+    fn set_id(&mut self, id: WidgetId) {
+        self.id = id;
+    }
+
     fn area(&self) -> Rect {
         self.base.area.get()
     }
