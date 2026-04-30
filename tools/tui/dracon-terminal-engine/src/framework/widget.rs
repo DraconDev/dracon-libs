@@ -58,6 +58,11 @@ pub trait Widget {
         true
     }
 
+    /// Marks the widget as dirty, requiring re-render on the next frame.
+    /// Override this for widgets with internal state that can change without
+    /// explicit invalidation (e.g., cursor blink, animations, live data).
+    fn mark_dirty(&mut self) {}
+
     /// Returns the cursor position for text input widgets.
     /// Returns `None` if the widget does not show a cursor.
     fn cursor_position(&self) -> Option<(u16, u16)> {
