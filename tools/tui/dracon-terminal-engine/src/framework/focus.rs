@@ -201,8 +201,6 @@ impl FocusManager {
             cb(new, old);
         }
     }
-        }
-    }
 }
 
 #[cfg(test)]
