@@ -133,7 +133,7 @@ mod tests {
 
     #[test]
     fn test_animation_linear() {
-        let mut anim = Animation::new(0.0, 100.0, Duration::from_secs(1));
+        let anim = Animation::new(0.0, 100.0, Duration::from_secs(1));
         let _ = anim.value();
         assert!(!anim.is_done());
     }

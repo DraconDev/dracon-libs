@@ -3,7 +3,7 @@
 //! Shows timing and resource usage data for UI operations.
 
 use std::time::Duration;
-use crate::compositor::{Cell, Color, Plane, Styles};
+use crate::compositor::{Cell, Plane, Styles};
 use crate::framework::theme::Theme;
 use crate::framework::widget::WidgetId;
 use ratatui::layout::Rect;

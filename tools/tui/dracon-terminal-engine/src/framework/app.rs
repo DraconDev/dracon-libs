@@ -221,24 +221,21 @@ impl App {
                                 }
                             }
                             Event::Mouse(mouse_event) => {
-                                let mut target_id = None;
-                                for zone in self.event_dispatcher.groups.iter_mut() {
-                                    if let Some(id) = zone.dispatch_mouse(
-                                        mouse_event.kind,
-                                        mouse_event.column,
-                                        mouse_event.row,
-                                        mouse_event.modifiers,
-                                    ) {
-                                        target_id = Some(id);
-                                        break;
-                                    }
-                                }
+                                let col = mouse_event.column;
+                                let row = mouse_event.row;
+                                let target_id = {
+                                    let widgets = self.widgets.borrow();
+                                    widgets.iter().find(|w| {
+                                        let a = w.area();
+                                        col >= a.x && col < a.x + a.width && row >= a.y && row < a.y + a.height
+                                    }).map(|w| w.id())
+                                };
                                 if let Some(id) = target_id {
                                     if let Some(mut widget) = self.widget_mut(id) {
                                         let _ = widget.handle_mouse(
                                             mouse_event.kind,
-                                            mouse_event.column,
-                                            mouse_event.row,
+                                            col,
+                                            row,
                                         );
                                     }
                                 }

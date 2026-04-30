@@ -3,7 +3,7 @@
 //! Tracks which screen regions have changed and need redrawing,
 //! enabling targeted rendering instead of fullscreen refreshes.
 
-use ratatui::layout::Rect;
+
 
 /// A rectangular dirty region.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

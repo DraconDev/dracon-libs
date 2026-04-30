@@ -3,7 +3,7 @@
 //! Shows a scrolling list of recent input events for debugging.
 
 use std::collections::VecDeque;
-use crate::compositor::{Cell, Color, Plane, Styles};
+use crate::compositor::{Cell, Plane, Styles};
 use crate::framework::theme::Theme;
 use crate::framework::widget::WidgetId;
 use ratatui::layout::Rect;
