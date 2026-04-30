@@ -1,11 +1,10 @@
 # Project State
 
 ## Current Focus
-Add area propagation on resize and dispatch key/mouse events to widgets, and render sorted widget layers
+Refactor event handling and thread spawning to use struct fields and simplify API
 
 ## Completed
-- [x] On terminal resize, compute full terminal area and set it for every widget via `set_area`.
-- [x] Dispatch all non‑Ctrl‑C key events through `event_dispatcher` for per‑widget handling.
-- [x] Dispatch mouse events through `event_dispatcher` for per‑widget handling.
-- [x] Sort widgets by `z_index` before rendering and add each rendered plane to the compositor.
-- [x] Integrate area‑setting logic into the resize handling path.
+- [x] Use dereferenced key reference `*k` and wrap dispatch in `let _ =` to suppress result
+- [x] Restructure mouse event dispatch by pattern‑matching into a struct and forwarding its fields
+- [x] Remove the explicit `app: &mut self` argument from the `spawn_thread` call
+- [x] Update Cargo.lock (binary update, no functional change)

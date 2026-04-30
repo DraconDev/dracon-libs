@@ -209,7 +209,7 @@ impl App {
                                 {
                                     running.store(false, Ordering::SeqCst);
                                 } else {
-                                    self.event_dispatcher.dispatch_key(k, &mut |id, key| {
+                                    let _ = self.event_dispatcher.dispatch_key(*k, &mut |id, key| {
                                         if let Some(widget) = self.widget_mut(id) {
                                             widget.handle_key(key)
                                         } else {
@@ -218,14 +218,20 @@ impl App {
                                     });
                                 }
                             }
-                            Event::Mouse(kind, col, row, modifiers) => {
-                                self.event_dispatcher.dispatch_mouse(kind, col, row, modifiers, &mut |id, kind, col, row, modifiers| {
-                                    if let Some(widget) = self.widget_mut(id) {
-                                        widget.handle_mouse(kind, col, row)
-                                    } else {
-                                        false
-                                    }
-                                });
+                            Event::Mouse(mouse_event) => {
+                                let _ = self.event_dispatcher.dispatch_mouse(
+                                    mouse_event.kind,
+                                    mouse_event.column,
+                                    mouse_event.row,
+                                    mouse_event.modifiers,
+                                    &mut |id, kind, col, row, modifiers| {
+                                        if let Some(widget) = self.widget_mut(id) {
+                                            widget.handle_mouse(kind, col, row)
+                                        } else {
+                                            false
+                                        }
+                                    },
+                                );
                             }
                             _ => {}
                         }
@@ -238,7 +244,6 @@ impl App {
                 theme: &self.theme,
                 frame_count: frame_count.load(Ordering::SeqCst),
                 last_frame: &self.last_frame_time,
-                app: &mut self,
             };
 
             if self.last_tick_time.elapsed() >= self.tick_interval {
