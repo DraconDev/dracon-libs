@@ -1,7 +1,5 @@
 //! Tab bar widget.
 
-use std::cell::Cell;
-
 use unicode_width::UnicodeWidthStr;
 
 use crate::compositor::{Cell, Plane, Styles};
@@ -16,7 +14,7 @@ pub struct TabBar {
     tabs: Vec<String>,
     active: usize,
     theme: Theme,
-    area: Cell<Rect>,
+    area: std::cell::Cell<Rect>,
 }
 
 impl TabBar {
