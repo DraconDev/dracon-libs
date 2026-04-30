@@ -1,14 +1,12 @@
 # Project State
 
 ## Current Focus
-Removed direct App reference and focused widget management functions from Ctx.
+Refactor tick handling by passing the app context to tick callbacks and simplify frame/event logic.
 
 ## Completed
-- [x] Deleted `pub(crate) app:&'a App` field from `Ctx`.
-- [x] Removed `focused_widget()` method.
-- [x] Removed `set_focus(&mut self, id)` method.
-- [x] Removed `widget_count(&self)` method.
-- [x] Removed `widget(&self, id)` method.
-- [x] Removed `widget_mut(&mut self, id)` method.
-- [x] Removed generic `widget_ref<T>` method.
-- [x] Removed generic `widget_mut_ref<T>` method.
+- [x] Updated `.on_tick` closure signature to accept `(ctx, tick, app)` and passed `&mut self` to the tick function
+- [x] Updated `.run` closure signature to accept `(ctx, app)` and passed `&mut self` to the frame function
+- [x] Modified tick function invocation to call `tick_fn(&mut ctx, self.tick_count, &mut self)`
+- [x] Removed redundant `last_tick_time` elapsed duplication and frame count increment logic
+- [x] Simplified rendering loop by removing widget sorting and calling `f(&mut ctx, &mut self)` directly
+- [x] Updated `Cargo.lock` to newer dependency versions (binary change)

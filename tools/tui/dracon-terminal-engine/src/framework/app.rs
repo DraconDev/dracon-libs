@@ -32,8 +32,8 @@ use std::time::{Duration, Instant};
 /// App::new()?
 ///     .title("My App")
 ///     .fps(60)
-///     .on_tick(|ctx, tick| { /* update every 250ms */ })
-///     .run(|ctx| { /* render per frame */ });
+///     .on_tick(|ctx, tick, app| { /* update every 250ms */ })
+///     .run(|ctx, app| { /* render per frame */ });
 /// ```
 pub struct App {
     terminal: Terminal<io::Stdout>,
@@ -246,11 +246,6 @@ impl App {
                 }
             }
 
-            if self.last_tick_time.elapsed() >= self.tick_interval {
-                self.tick_count += 1;
-                self.last_tick_time = Instant::now();
-            }
-
             {
                 let mut widgets = self.widgets.borrow_mut();
                 let mut sorted: Vec<_> = widgets.iter_mut().collect();
@@ -271,112 +266,13 @@ impl App {
 
             if self.last_tick_time.elapsed() >= self.tick_interval {
                 if let Some(ref mut tick_fn) = *self.on_tick.borrow_mut() {
-                    tick_fn(&mut ctx, &mut self);
+                    tick_fn(&mut ctx, self.tick_count, &mut self);
                 }
+                self.tick_count += 1;
+                self.last_tick_time = Instant::now();
             }
 
             f(&mut ctx, &mut self);
-
-            self.compositor.render(&mut self.terminal)?;
-
-            frame_count.fetch_add(1, Ordering::SeqCst);
-            self.last_frame_time = Instant::now();
-
-            let elapsed = frame_start.elapsed();
-            if elapsed < frame_duration {
-                std::thread::sleep(frame_duration - elapsed);
-            }
-        }
-
-        Ok(())
-    }
-            }
-
-            while let Ok(n) = stdin.read(&mut buf) {
-                if n == 0 {
-                    break;
-                }
-                for byte in buf.iter().take(n) {
-                    if let Some(event) = self.parser.advance(*byte) {
-                        match &event {
-                            Event::Resize(w, h) => {
-                                self.compositor.resize(*w, *h);
-                                let area = Rect::new(0, 0, *w, *h);
-                                for w in self.widgets.borrow_mut().iter_mut() {
-                                    w.set_area(area);
-                                }
-                            }
-                            Event::Key(k) => {
-                                if k.code == crate::input::event::KeyCode::Char('c')
-                                    && k.modifiers.contains(crate::input::event::KeyModifiers::CONTROL)
-                                {
-                                    running.store(false, Ordering::SeqCst);
-                                } else if k.code == crate::input::event::KeyCode::Tab {
-                                    if k.modifiers.contains(crate::input::event::KeyModifiers::SHIFT) {
-                                        let _ = self.focus_manager.tab_prev();
-                                    } else {
-                                        let _ = self.focus_manager.tab_next();
-                                    }
-                                } else if let Some(focused) = self.focus_manager.focused() {
-                                    if let Some(mut widget) = self.widget_mut(focused) {
-                                        let _ = widget.handle_key(*k);
-                                    }
-                                }
-                            }
-                            Event::Mouse(mouse_event) => {
-                                let col = mouse_event.column;
-                                let row = mouse_event.row;
-                                let target_id = {
-                                    let widgets = self.widgets.borrow();
-                                    widgets.iter().find(|w| {
-                                        let a = w.area();
-                                        col >= a.x && col < a.x + a.width && row >= a.y && row < a.y + a.height
-                                    }).map(|w| w.id())
-                                };
-                                if let Some(id) = target_id {
-                                    if let Some(mut widget) = self.widget_mut(id) {
-                                        let _ = widget.handle_mouse(
-                                            mouse_event.kind,
-                                            col,
-                                            row,
-                                        );
-                                    }
-                                }
-                            }
-                            _ => {}
-                        }
-                    }
-                }
-            }
-
-            let mut ctx = Ctx {
-                compositor: &mut self.compositor,
-                theme: &self.theme,
-                frame_count: frame_count.load(Ordering::SeqCst),
-                last_frame: &self.last_frame_time,
-                app: &self,
-            };
-
-            if self.last_tick_time.elapsed() >= self.tick_interval {
-                if let Some(ref mut tick_fn) = *self.on_tick.borrow_mut() {
-                    tick_fn(&mut ctx, self.tick_count);
-                }
-                self.tick_count += 1;
-                self.last_tick_time = Instant::now();
-            }
-
-            f(&mut ctx);
-
-            {
-                let mut widgets = self.widgets.borrow_mut();
-                let mut sorted: Vec<_> = widgets.iter_mut().collect();
-                sorted.sort_by_key(|w| w.z_index());
-                for w in sorted {
-                    let area = w.area();
-                    let plane = w.render(area);
-                    self.compositor.add_plane(plane);
-                }
-            }
 
             self.compositor.render(&mut self.terminal)?;
 
