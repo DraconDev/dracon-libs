@@ -1,7 +1,7 @@
 //! Tests for ScrollState and ScrollContainer.
 
 use dracon_terminal_engine::framework::scroll::{ScrollContainer, ScrollState};
-use dracon_terminal_engine::input::event::{KeyCode, KeyEvent, KeyEventKind, MouseEventKind};
+use dracon_terminal_engine::input::event::{KeyCode, KeyEvent, KeyEventKind, MouseButton, MouseEventKind};
 use ratatui::layout::Rect;
 
 fn make_key(code: KeyCode) -> KeyEvent {
@@ -9,16 +9,14 @@ fn make_key(code: KeyCode) -> KeyEvent {
         code,
         kind: KeyEventKind::Press,
         modifiers: dracon_terminal_engine::input::event::KeyModifiers::empty(),
-        repeat: false,
     }
 }
 
 fn make_key_repeat(code: KeyCode) -> KeyEvent {
     KeyEvent {
         code,
-        kind: KeyEventKind::Press,
+        kind: KeyEventKind::Repeat,
         modifiers: dracon_terminal_engine::input::event::KeyModifiers::empty(),
-        repeat: true,
     }
 }
 
@@ -412,7 +410,7 @@ fn test_scroll_container_handle_mouse_other_returns_false() {
         .with_content_height(100)
         .with_viewport_height(20);
 
-    let consumed = sc.handle_mouse(MouseEventKind::LeftPress, 0, 0);
+    let consumed = sc.handle_mouse(MouseEventKind::Down(MouseButton::Left), 0, 0);
     assert!(!consumed);
 }
 
@@ -467,7 +465,7 @@ fn test_scroll_container_render_scrollbar_thumb_in_middle() {
     let thumb_cells: Vec<_> = plane.cells.iter().filter(|c| c.char == '█').collect();
     assert!(!thumb_cells.is_empty());
     let first_thumb_idx = plane.cells.iter().position(|c| c.char == '█').unwrap();
-    let last_thumb_idx = plane.cells.len() - 1 - plane.cells.iter().rev().position(|c| c.char == '█').unwrap();
+    let _last_thumb_idx = plane.cells.len() - 1 - plane.cells.iter().rev().position(|c| c.char == '█').unwrap();
 
     let expected_pos = (40 * 19) / 80;
     assert!(

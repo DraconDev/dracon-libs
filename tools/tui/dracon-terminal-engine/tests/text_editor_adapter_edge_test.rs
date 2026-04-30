@@ -213,8 +213,8 @@ fn test_handle_key_typing_char_advances() {
     adapter.handle_key(make_key(KeyCode::Char('h')));
     adapter.handle_key(make_key(KeyCode::Char('i')));
 
-    assert_eq!(editor.lines.len(), 1);
-    assert!(editor.lines[0].contains('h') || editor.lines[0].contains('i'));
+    assert_eq!(adapter.editor().lines.len(), 1);
+    assert!(adapter.editor().lines[0].contains('h') || adapter.editor().lines[0].contains('i'));
 }
 
 // === handle_mouse edge cases ===
