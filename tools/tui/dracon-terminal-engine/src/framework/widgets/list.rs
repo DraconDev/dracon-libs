@@ -26,7 +26,23 @@ pub struct List<T> {
 
 impl<T: Clone + ToString> List<T> {
     /// Creates a new `List` with the given items and default theme.
-    pub fn new(id: WidgetId, items: Vec<T>) -> Self {
+    pub fn new(items: Vec<T>) -> Self {
+        Self {
+            id: WidgetId::default_id(),
+            items,
+            selected: 0,
+            offset: 0,
+            visible_count: 10,
+            theme: Theme::default(),
+            on_select: None,
+            item_height: 1,
+            width: 40,
+            area: std::cell::Cell::new(Rect::new(0, 0, 40, 10)),
+        }
+    }
+
+    /// Creates a new `List` with the given widget ID and items.
+    pub fn new_with_id(id: WidgetId, items: Vec<T>) -> Self {
         Self {
             id,
             items,

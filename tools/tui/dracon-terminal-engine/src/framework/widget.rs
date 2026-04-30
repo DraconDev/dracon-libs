@@ -22,6 +22,11 @@ impl WidgetId {
     pub fn new(id: usize) -> Self {
         Self(id)
     }
+
+    /// Creates a default `WidgetId` with value 0.
+    pub fn default_id() -> Self {
+        Self(0)
+    }
 }
 
 /// Trait implemented by all framework widgets.
