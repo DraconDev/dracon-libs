@@ -13,7 +13,7 @@ pub struct PasswordInput {
 impl PasswordInput {
     /// Creates a new password input with the given ID.
     pub fn new(id: WidgetId) -> Self {
-        let mut base = super::text_input_base::BaseInput::new(id, "Password...");
+        let mut base = text_input_base::BaseInput::new(id, "Password...");
         base.mask_char = Some('*');
         Self { id, base }
     }

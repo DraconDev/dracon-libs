@@ -1,10 +1,13 @@
 # Project State
 
 ## Current Focus
-Refactor input widgets to share a common text-input base, extracting duplicated logic into text_input_base and simplifying PasswordInput and SearchInput.
+Refactored `with_area` method in `Label` and updated `PasswordInput` to use new `textInputBase`.
 
 ## Completed
-- [x] Introduce text_input_base module and BaseInput to centralize text buffer, cursor, masking, theming, and submit behavior
-- [x] Migrate PasswordInput to delegate to BaseInput, retain mask configuration and password accessor, and reduce per-widget boilerplate
-- [x] Migrate SearchInput to delegate to BaseInput, retain search-specific placeholders/behavior, and reduce per-widget boilerplate
-- [x] Expose text_input_base in framework/widgets/mod to enable reuse across input widgets
+- [x] Refactored `with_area` method in `Label` to be non-mutating
+- [x] Updated `PasswordInput` to use new `textInputBase` with masking character feature
+- [x] Removed unnecessary mutability on `Label` and used static method for creating label directly
+
+## Upcoming
+- [ ] Continue improving input widget shared base
+- [ ] Refine `PasswordInput` functionality and UI integration

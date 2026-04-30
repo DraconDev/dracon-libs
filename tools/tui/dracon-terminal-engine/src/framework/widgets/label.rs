@@ -50,7 +50,7 @@ impl Label {
     }
 
     /// Sets the area for this label.
-    pub fn with_area(mut self, area: Rect) -> Self {
+    pub fn with_area(self, area: Rect) -> Self {
         self.area.set(area);
         self
     }
