@@ -1,8 +1,9 @@
 # Project State
 
 ## Current Focus
-Integrate WidgetId tracking and simplify EventDispatcher initialization
+Add area handling and rendering metadata to the Checkbox widget.
 
 ## Completed
-- [x] Add import of `Widget` and `WidgetId` from `framework::widget`
-- [x] Replace `EventDispatcher::with_focus(FocusManager::new())` with `EventDispatcher::new()`
+- [x] Added `area` field to `Checkbox` struct
+- [x] Initialized `area` in constructor with default dimensions
+- [x] Implemented `area()` getter and `set_area()` setter methods

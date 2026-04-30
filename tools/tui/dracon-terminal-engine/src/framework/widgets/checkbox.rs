@@ -16,6 +16,7 @@ pub struct Checkbox {
     label: String,
     theme: Theme,
     on_change: Option<Box<dyn FnMut(bool)>>,
+    area: std::cell::Cell<Rect>,
 }
 
 impl Checkbox {
@@ -27,6 +28,7 @@ impl Checkbox {
             label: label.to_string(),
             theme: Theme::default(),
             on_change: None,
+            area: std::cell::Cell::new(Rect::new(0, 0, 20, 1)),
         }
     }
 
@@ -66,6 +68,14 @@ impl Checkbox {
 impl crate::framework::widget::Widget for Checkbox {
     fn id(&self) -> WidgetId {
         self.id
+    }
+
+    fn area(&self) -> Rect {
+        self.area.get()
+    }
+
+    fn set_area(&mut self, area: Rect) {
+        self.area.set(area);
     }
 
     fn render(&self, area: Rect) -> Plane {
