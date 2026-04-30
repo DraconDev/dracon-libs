@@ -47,7 +47,7 @@
 //!
 //! ## Version
 //!
-//! v26.0.2
+//! v27.0.0
 
 #[doc = "Terminal backend (POSIX tty ioctls, raw mode setup)."]
 pub mod backend;

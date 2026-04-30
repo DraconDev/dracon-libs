@@ -1,10 +1,9 @@
 # Project State
 
 ## Current Focus
-Add type annotations and simplify table tests; remove unused ContextMenu test stub
+Bump project version to 27.0.0 and update dependencies in Cargo.lock and tooling Cargo.toml.
 
 ## Completed
-- [x] Add explicit `Table<String>` annotation in `test_table_new` and `test_table_render`
-- [x] Simplify `test_table_new` by removing unnecessary dummy Table entry
-- [x] Remove unused dummy ContextMenu test code
-- [x] Adjust test logic to match new type signature
+- [x] Updated version comment in tools/tui/dracon-terminal-engine/src/lib.rs from v26.0.2 to v27.0.0
+- [x] Updated project metadata in tools/tui/dracon-terminal-engine/Cargo.toml
+- [x] Updated dependency resolutions in Cargo.lock to newer versions
