@@ -132,6 +132,7 @@ impl App {
     pub fn add_widget(&mut self, mut widget: Box<dyn Widget>, area: Rect) -> WidgetId {
         let id = WidgetId(self.next_widget_id);
         widget.set_area(area);
+        widget.on_mount();
         let focusable = widget.focusable();
         self.widgets.borrow_mut().push(widget);
         self.focus_manager.register(id, focusable);
@@ -141,6 +142,9 @@ impl App {
 
     /// Removes a widget by its ID.
     pub fn remove_widget(&mut self, id: WidgetId) {
+        if let Some(mut w) = self.widgets.borrow_mut().iter_mut().find(|w| w.id() == id) {
+            w.on_unmount();
+        }
         self.widgets.borrow_mut().retain(|w| w.id() != id);
         self.focus_manager.unregister(id);
     }

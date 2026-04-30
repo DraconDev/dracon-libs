@@ -67,6 +67,18 @@ pub trait Widget {
     /// Renders the widget into a `Plane` at the given area.
     fn render(&self, area: Rect) -> Plane;
 
+    /// Called when the widget gains focus.
+    fn on_focus(&mut self) {}
+
+    /// Called when the widget loses focus.
+    fn on_blur(&mut self) {}
+
+    /// Called when the widget is added to the application.
+    fn on_mount(&mut self) {}
+
+    /// Called when the widget is removed from the application.
+    fn on_unmount(&mut self) {}
+
     /// Handles a keyboard event.
     /// Returns `true` if the event was consumed, `false` if it should bubble.
     fn handle_key(&mut self, _key: KeyEvent) -> bool {

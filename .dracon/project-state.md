@@ -1,9 +1,9 @@
 # Project State
 
 ## Current Focus
-Adds clickable Button widget and enhances animation management for improved UI interactivity.
+Added automatic mount/unmount lifecycle hooks to widgets and integrated them into the application's widget management.
 
 ## Completed
-- [x] Introduces a fully functional Button widget with theme styling and click event handling, enabling user interaction in terminal UI
-- [x] Adds `tick()`, `len()`, and `is_empty()` methods to AnimationManager for frame-based animation management and state tracking
-- [x] Integrates animation management into the application lifecycle through App struct updates and main loop execution
+- [x] Call `widget.on_mount()` when a widget is added via `add_widget`.
+- [x] Call `widget.on_unmount()` when a widget is removed via `remove_widget`.
+- [x] Declare `on_focus`, `on_blur`, `on_mount`, and `on_unmount` methods in the `Widget` trait with default empty implementations.
