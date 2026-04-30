@@ -1,6 +1,7 @@
-# Project State## Current Focus
-Add TextEditorAdapter widget to integrate text editing functionality into the TUI framework
+# Project State
+
+## Current Focus
+refactor(text_editor): use `map_color` helper for foreground and background color mapping
 
 ## Completed
-- [x] Added TextEditorAdapter to widgets module for public exposure
-- [x] Refactored text editor adapter to use unified Event handling (including KeyEvent and MouseEvent) instead of separate handlers
+- [x] refactor(text_editor_adapter): replace direct Color::Ansi construction with map_color helper function for fg and bg color mapping

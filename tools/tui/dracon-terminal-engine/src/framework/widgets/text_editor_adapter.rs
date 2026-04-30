@@ -75,6 +75,7 @@ impl crate::framework::widget::Widget for TextEditorAdapter {
     }
 
     fn render(&self, area: Rect) -> Plane {
+        use crate::compositor::engine::map_color;
         use crate::compositor::Cell;
         use crate::compositor::Styles;
         use ratatui::buffer::Buffer;
@@ -94,8 +95,8 @@ impl crate::framework::widget::Widget for TextEditorAdapter {
                 if idx < plane.cells.len() {
                     plane.cells[idx] = Cell {
                         char: cell.symbol().chars().next().unwrap_or(' '),
-                        fg: crate::compositor::Color::Ansi(cell.fg),
-                        bg: crate::compositor::Color::Ansi(cell.bg),
+                        fg: map_color(cell.fg),
+                        bg: map_color(cell.bg),
                         style: Styles::empty(),
                         transparent: false,
                         skip: false,
