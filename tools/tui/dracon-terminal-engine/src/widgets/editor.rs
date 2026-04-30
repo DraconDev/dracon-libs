@@ -11,6 +11,7 @@ use ratatui::widgets::{Scrollbar, ScrollbarOrientation, ScrollbarState, Stateful
 use unicode_width::{UnicodeWidthChar, UnicodeWidthStr};
 
 use regex::Regex;
+use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
 use std::path::PathBuf;
 
@@ -20,6 +21,27 @@ enum EditorMode {
     Search,
     Replace,
     GotoLine,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+struct EditorConfig {
+    tab_size: u8,
+    show_line_numbers: bool,
+    word_wrap: bool,
+    show_indent_guides: bool,
+    show_status_bar: bool,
+}
+
+impl Default for EditorConfig {
+    fn default() -> Self {
+        Self {
+            tab_size: 4,
+            show_line_numbers: true,
+            word_wrap: false,
+            show_indent_guides: false,
+            show_status_bar: true,
+        }
+    }
 }
 
 /// A tactical multiline text editor widget for quick edits.
@@ -291,14 +313,17 @@ impl TextEditor {
         if let Some(ext) = path.extension().and_then(|e| e.to_str()) {
             editor.language = ext.to_string();
         }
+        let _ = editor.load_undo_stack();
         Ok(editor)
     }
 
     /// Saves the editor content to the current file path.
+    /// Also saves the undo stack to `.filename.undo`.
     /// Returns an error if no file path is set.
     pub fn save(&mut self) -> std::io::Result<()> {
         if let Some(ref path) = self.file_path {
             std::fs::write(path, self.get_content())?;
+            self.save_undo_stack()?;
             self.modified = false;
             Ok(())
         } else {
@@ -320,6 +345,99 @@ impl TextEditor {
     /// Returns the current file path, if set.
     pub fn file_path(&self) -> Option<&PathBuf> {
         self.file_path.as_ref()
+    }
+
+    fn undo_path(&self) -> Option<PathBuf> {
+        self.file_path.as_ref().map(|p| {
+            let mut undo_path = p.clone();
+            let stem = undo_path.file_stem().unwrap_or_default().to_string_lossy();
+            let ext = undo_path.extension().map(|e| e.to_string_lossy().to_string()).unwrap_or_default();
+            let parent = undo_path.parent().unwrap_or(std::path::Path::new("."));
+            let undo_name = format!(".{}.undo", stem);
+            if ext.is_empty() {
+                undo_path = parent.join(&undo_name);
+            } else {
+                undo_path = parent.join(format!(".{}.{}", stem, ext));
+                undo_path.set_extension("undo");
+            }
+            undo_path
+        })
+    }
+
+    fn config_path(&self) -> Option<PathBuf> {
+        self.file_path.as_ref().map(|p| {
+            let mut cfg_path = p.clone();
+            let stem = cfg_path.file_stem().unwrap_or_default().to_string_lossy();
+            let ext = cfg_path.extension().map(|e| e.to_string_lossy().to_string()).unwrap_or_default();
+            let parent = cfg_path.parent().unwrap_or(std::path::Path::new("."));
+            if ext.is_empty() {
+                cfg_path = parent.join(format!(".{}.dte.json", stem));
+            } else {
+                cfg_path = parent.join(format!(".{}.{}", stem, ext));
+                cfg_path.set_extension("dte.json");
+            }
+            cfg_path
+        })
+    }
+
+    /// Loads editor settings from a `.filename.dte.json` config file.
+    pub fn load_config(&mut self) -> std::io::Result<()> {
+        if let Some(cfg_path) = self.config_path() {
+            if cfg_path.exists() {
+                let content = std::fs::read_to_string(cfg_path)?;
+                if let Ok(config) = serde_json::from_str::<EditorConfig>(&content) {
+                    self.show_line_numbers = config.show_line_numbers;
+                    self.wrap = config.word_wrap;
+                    self.show_indent_guides = config.show_indent_guides;
+                    self.show_status_bar = config.show_status_bar;
+                }
+            }
+        }
+        Ok(())
+    }
+
+    /// Saves editor settings to a `.filename.dte.json` config file.
+    pub fn save_config(&self) -> std::io::Result<()> {
+        if let Some(cfg_path) = self.config_path() {
+            let config = EditorConfig {
+                tab_size: 4,
+                show_line_numbers: self.show_line_numbers,
+                word_wrap: self.wrap,
+                show_indent_guides: self.show_indent_guides,
+                show_status_bar: self.show_status_bar,
+            };
+            let content = serde_json::to_string_pretty(&config).unwrap_or_default();
+            std::fs::write(cfg_path, content)?;
+        }
+        Ok(())
+    }
+
+    /// Saves the undo stack to a `.filename.undo` file alongside the original file.
+    pub fn save_undo_stack(&self) -> std::io::Result<()> {
+        if let Some(undo_path) = self.undo_path() {
+            let encoded: Vec<String> = self.history.iter()
+                .map(|lines| lines.join("\n"))
+                .collect();
+            std::fs::write(undo_path, encoded.join("\n---\n"))?;
+        }
+        Ok(())
+    }
+
+    /// Loads the undo stack from a `.filename.undo` file.
+    pub fn load_undo_stack(&mut self) -> std::io::Result<()> {
+        if let Some(undo_path) = self.undo_path() {
+            if undo_path.exists() {
+                let content = std::fs::read_to_string(undo_path)?;
+                self.history = content
+                    .split("\n---\n")
+                    .map(|chunk| chunk.lines().map(|l| l.to_string()).collect())
+                    .collect();
+                if self.history.len() > 100 {
+                    self.history = self.history.split_off(self.history.len() - 100);
+                }
+            }
+        }
+        Ok(())
     }
 
     /// Returns the filename (not full path) of the current file, or "Untitled".
