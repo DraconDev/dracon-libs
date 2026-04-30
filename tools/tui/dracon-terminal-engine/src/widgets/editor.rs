@@ -2417,6 +2417,25 @@ impl Widget for &TextEditor {
                 );
             }
 
+            // Render Indent Guides
+            if self.show_indent_guides {
+                let indent_width = 4;
+                let max_indent = (content_area.width as usize / indent_width).min(16);
+                for indent_level in 1..=max_indent {
+                    let indent_col = indent_level * indent_width;
+                    if indent_col > self.scroll_col {
+                        let visual_x = indent_col - self.scroll_col;
+                        if visual_x < content_area.width as usize {
+                            let guide_x = content_area.x + visual_x as u16;
+                            let guide_style = Style::default()
+                                .fg(Color::Rgb(50, 55, 65))
+                                .bg(line_bg);
+                            buf.set_string(guide_x, area.y + i as u16, "│", guide_style);
+                        }
+                    }
+                }
+            }
+
             // Render Content
             let mut current_visual_x = 0;
             for span in &line.spans {
