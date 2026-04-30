@@ -331,7 +331,7 @@ impl App {
                     }
                     let area = w.area();
                     let plane = w.render(area);
-                    w.mark_dirty();
+                    w.clear_dirty();
                     self.compositor.add_plane(plane);
                 }
             }

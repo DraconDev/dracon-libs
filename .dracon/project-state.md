@@ -1,10 +1,10 @@
 # Project State
 
 ## Current Focus
-Implement dirty‑state tracking for the `List` widget to enable selective re‑rendering.
+Enhance rendering performance through improved dirty region tracking and expose text cursor management for input widgets
 
 ## Completed
-- [x] Added a `dirty: bool` field to `List` to record when its visual state has changed.
-- [x] Initialized `dirty` to `true` in constructors so new lists render on first draw.
-- [x] Implemented `needs_render` and `mark_dirty` methods required by the `Widget` trait.
-- [x] Updated event handling (keyboard navigation, mouse scroll, selection) to set `dirty = true` after any state change that affects rendering.
+- [x] Replaced `mark_dirty()` with `clear_dirty()` in App framework to refresh rendering state after draw operations (fixes double-marking race condition)
+- [x] Implemented trait `clear_dirty()` and `cursor_position()` methods across widget system to enable precise state tracking and input handling
+- [x] Updated `List<T>` widget to implement new clear_dirty() method maintaining internal dirty state synchronization with framework
+- [x] Enhanced text input widget support through cursor position detection capability for cursor management

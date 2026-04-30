@@ -164,6 +164,10 @@ impl<T: Clone + ToString> crate::framework::widget::Widget for List<T> {
         self.dirty = true;
     }
 
+    fn clear_dirty(&mut self) {
+        self.dirty = false;
+    }
+
     fn render(&self, area: Rect) -> Plane {
         let mut plane = Plane::new(0, area.width, area.height);
         plane.z_index = 10;
