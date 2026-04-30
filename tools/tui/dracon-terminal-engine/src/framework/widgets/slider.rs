@@ -64,6 +64,7 @@ impl Slider {
         self.value
     }
 
+    #[allow(unused)]
     fn value_to_position(&self) -> usize {
         let ratio = if self.max > self.min {
             (self.value - self.min) / (self.max - self.min)
