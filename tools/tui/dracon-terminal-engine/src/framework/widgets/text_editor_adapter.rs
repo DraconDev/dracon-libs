@@ -134,19 +134,25 @@ impl crate::framework::widget::Widget for TextEditorAdapter {
 
     fn handle_key(&mut self, key: KeyEvent) -> bool {
         let area = self.area.get();
-        self.editor.handle_event(&Event::Key(key), area)
+        let result = self.editor.handle_event(&Event::Key(key), area);
+        if result {
+            self.dirty = true;
+        }
+        result
     }
 
     fn handle_mouse(&mut self, kind: MouseEventKind, col: u16, row: u16) -> bool {
         let area = self.area.get();
-        // Convert local coordinates (relative to widget area) back to absolute
-        // because the editor expects absolute screen coordinates.
         let mouse = MouseEvent {
             kind,
             column: area.x + col,
             row: area.y + row,
             modifiers: crate::input::event::KeyModifiers::empty(),
         };
-        self.editor.handle_mouse_event(mouse, area)
+        let result = self.editor.handle_mouse_event(mouse, area);
+        if result {
+            self.dirty = true;
+        }
+        result
     }
 }

@@ -1,10 +1,8 @@
 # Project State
 
 ## Current Focus
-Added `dirty` state tracking to several widgets to enable selective redraw optimization.
+Implement dirty‑state tracking in `TextEditorAdapter` so that key and mouse events that modify the editor mark the widget as dirty for selective redraw.
 
 ## Completed
-- [x] Added `dirty` boolean to `SplitPane` widget
-- [x] Implemented `needs_render`, `mark_dirty`, and `clear_dirty` methods in `TextEditorAdapter` widget
-- [x] Added `dirty` state to `Toast` widget and implemented related methods
-- [x] Integrated `dirty` state tracking into `Tooltip` widget with corresponding methods for rendering control
+- [x] Update `handle_key` to set `self.dirty = true` when the editor reports a state‑changing key event.
+- [x] Update `handle_mouse` to set `self.dirty = true` when the editor reports a state‑changing mouse event.
