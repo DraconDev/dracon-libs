@@ -66,6 +66,19 @@ impl crate::framework::widget::Widget for Button {
 
     fn set_area(&mut self, area: Rect) {
         self.area.set(area);
+        self.dirty = true;
+    }
+
+    fn needs_render(&self) -> bool {
+        self.dirty
+    }
+
+    fn mark_dirty(&mut self) {
+        self.dirty = true;
+    }
+
+    fn clear_dirty(&mut self) {
+        self.dirty = false;
     }
 
     fn render(&self, area: Rect) -> Plane {
@@ -119,6 +132,7 @@ impl crate::framework::widget::Widget for Button {
             if let Some(ref mut cb) = self.on_click {
                 cb();
             }
+            self.dirty = true;
             true
         } else {
             false
@@ -132,6 +146,7 @@ impl crate::framework::widget::Widget for Button {
                 if let Some(ref mut cb) = self.on_click {
                     cb();
                 }
+                self.dirty = true;
                 return true;
             }
         }

@@ -17,6 +17,7 @@ pub struct Toggle {
     theme: Theme,
     on_change: Option<Box<dyn FnMut(bool)>>,
     area: std::cell::Cell<Rect>,
+    dirty: bool,
 }
 
 impl Toggle {
@@ -29,6 +30,7 @@ impl Toggle {
             theme: Theme::default(),
             on_change: None,
             area: std::cell::Cell::new(Rect::new(0, 0, 20, 1)),
+            dirty: true,
         }
     }
 
@@ -66,6 +68,19 @@ impl crate::framework::widget::Widget for Toggle {
 
     fn set_area(&mut self, area: Rect) {
         self.area.set(area);
+        self.dirty = true;
+    }
+
+    fn needs_render(&self) -> bool {
+        self.dirty
+    }
+
+    fn mark_dirty(&mut self) {
+        self.dirty = true;
+    }
+
+    fn clear_dirty(&mut self) {
+        self.dirty = false;
     }
 
     fn render(&self, area: Rect) -> Plane {
@@ -116,6 +131,7 @@ impl crate::framework::widget::Widget for Toggle {
                 if let Some(ref mut cb) = self.on_change {
                     cb(self.state);
                 }
+                self.dirty = true;
                 true
             }
             _ => false,
@@ -129,6 +145,7 @@ impl crate::framework::widget::Widget for Toggle {
                 if let Some(ref mut cb) = self.on_change {
                     cb(self.state);
                 }
+                self.dirty = true;
                 true
             }
             _ => false,
