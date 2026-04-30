@@ -20,6 +20,7 @@ pub struct SplitPane {
     ratio: f32,
     orientation: Orientation,
     divider_char: char,
+    divider_color: Color,
     min_size: u16,
     area: std::cell::Cell<Rect>,
 }
@@ -32,6 +33,7 @@ impl SplitPane {
             ratio: 0.5,
             orientation,
             divider_char: '│',
+            divider_color: Color::Rgb(80, 80, 100),
             min_size: 10,
             area: std::cell::Cell::new(Rect::new(0, 0, 80, 24)),
         }
@@ -44,6 +46,7 @@ impl SplitPane {
             ratio: 0.5,
             orientation,
             divider_char: '│',
+            divider_color: Color::Rgb(80, 80, 100),
             min_size: 10,
             area: std::cell::Cell::new(Rect::new(0, 0, 80, 24)),
         }
@@ -62,6 +65,7 @@ impl SplitPane {
             ratio: 0.5,
             orientation,
             divider_char: '│',
+            divider_color: Color::Rgb(80, 80, 100),
             min_size: 10,
             area: std::cell::Cell::new(rect),
         }
@@ -133,7 +137,7 @@ impl SplitPane {
 
         for cell in &mut plane.cells {
             cell.char = self.divider_char;
-            cell.fg = Color::Rgb(80, 80, 100);
+            cell.fg = self.divider_color;
             cell.bg = Color::Reset;
             cell.style = Styles::empty();
             cell.transparent = false;
@@ -211,5 +215,9 @@ impl crate::framework::widget::Widget for SplitPane {
             }
             _ => false,
         }
+    }
+
+    fn on_theme_change(&mut self, theme: &Theme) {
+        self.divider_color = theme.inactive_fg;
     }
 }

@@ -119,6 +119,7 @@ impl Theme {
         }
     }
 
+    /// Creates the Dracula theme — iconic dark purple aesthetic with vivid accents.
     pub fn dracula() -> Self {
         Self {
             name: "dracula",
@@ -143,6 +144,7 @@ impl Theme {
         }
     }
 
+    /// Creates the Nord theme — arctic blue-gray palette.
     pub fn nord() -> Self {
         Self {
             name: "nord",
@@ -167,6 +169,7 @@ impl Theme {
         }
     }
 
+    /// Creates the Catppuccin Mocha theme — warm, soothing pastel dark theme.
     pub fn catppuccin_mocha() -> Self {
         Self {
             name: "catppuccin-mocha",
@@ -191,6 +194,7 @@ impl Theme {
         }
     }
 
+    /// Creates the Gruvbox Dark theme — retro warm dark theme with earthy tones.
     pub fn gruvbox_dark() -> Self {
         Self {
             name: "gruvbox-dark",
@@ -215,6 +219,7 @@ impl Theme {
         }
     }
 
+    /// Creates the Tokyo Night theme — vivid blue accents on a dark background.
     pub fn tokyo_night() -> Self {
         Self {
             name: "tokyo-night",
@@ -239,6 +244,7 @@ impl Theme {
         }
     }
 
+    /// Creates the Solarized Dark theme — precision-engineered dark theme.
     pub fn solarized_dark() -> Self {
         Self {
             name: "solarized-dark",
@@ -263,6 +269,7 @@ impl Theme {
         }
     }
 
+    /// Creates the Solarized Light theme — precision-engineered light theme.
     pub fn solarized_light() -> Self {
         Self {
             name: "solarized-light",
@@ -287,6 +294,7 @@ impl Theme {
         }
     }
 
+    /// Creates the One Dark theme — Atom editor's iconic dark theme.
     pub fn one_dark() -> Self {
         Self {
             name: "one-dark",
@@ -311,6 +319,7 @@ impl Theme {
         }
     }
 
+    /// Creates the Rosé Pine theme — elegant muted rose tones.
     pub fn rose_pine() -> Self {
         Self {
             name: "rose-pine",
@@ -335,6 +344,7 @@ impl Theme {
         }
     }
 
+    /// Creates the Kanagawa theme — inspired by Hokusai's art with deep blues and golds.
     pub fn kanagawa() -> Self {
         Self {
             name: "kanagawa",
@@ -359,6 +369,7 @@ impl Theme {
         }
     }
 
+    /// Creates the Everforest theme — comfortable forest green dark theme.
     pub fn everforest() -> Self {
         Self {
             name: "everforest",
@@ -383,6 +394,7 @@ impl Theme {
         }
     }
 
+    /// Creates the Monokai theme — classic syntax highlighting colors.
     pub fn monokai() -> Self {
         Self {
             name: "monokai",
