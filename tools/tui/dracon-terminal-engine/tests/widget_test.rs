@@ -51,7 +51,7 @@ fn test_list_visible_count() {
 
 #[test]
 fn test_table_new() {
-    let table = Table::new(vec![]);
+    let table: Table<String> = Table::new(vec![]);
     assert_eq!(table.len(), 0);
 }
 
@@ -62,7 +62,7 @@ fn test_table_render() {
         Column { header: "Name".to_string(), width: 20 },
         Column { header: "Age".to_string(), width: 10 },
     ];
-    let table = Table::new(cols);
+    let table: Table<String> = Table::new(cols);
     let area = Rect::new(0, 0, 80, 20);
     let plane = table.render(area);
     assert!(plane.width > 0);
@@ -137,9 +137,6 @@ fn test_modal_new() {
 
 #[test]
 fn test_context_menu_new() {
-    let items = vec![
-        ("Open", ContextMenu::new(vec![]).id()), // just check it builds
-    ];
     let menu = ContextMenu::new(vec![("Open", ContextAction::Open)]);
     let area = Rect::new(0, 0, 20, 10);
     let plane = menu.render(area);
