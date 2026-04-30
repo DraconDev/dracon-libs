@@ -1,9 +1,9 @@
 # Project State
 
 ## Current Focus
-Refactor event handling and simplify tick context creation in the terminal application.
+Added Tab key navigation (Shift+Tab moves focus previous, Tab moves focus next) and refactored mouse event dispatch to iterate over event dispatcher groups for target selection.
 
 ## Completed
-- [x] Removed the redundant `dispatch_key` call for non‑Control key events in the `Event::Key` branch.
-- [x] Simplified mouse event processing by capturing the target widget ID and invoking `widget.handle_mouse` directly.
-- [x] Added creation of a `Ctx` instance for the tick callback and passed it to `on_tick` without redundant context creation.
+- [x] Implement Tab key handling that toggles focus direction based on Shift modifier before exiting the event loop
+- [x] Replace closure-based `dispatch_mouse` with a loop over `event_dispatcher.groups` that captures the first matching widget ID
+- [x] Preserve existing focus management and widget key handling for both keyboard and mouse events

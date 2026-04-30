@@ -208,22 +208,30 @@ impl App {
                                     && k.modifiers.contains(crate::input::event::KeyModifiers::CONTROL)
                                 {
                                     running.store(false, Ordering::SeqCst);
+                                } else if k.code == crate::input::event::KeyCode::Tab {
+                                    if k.modifiers.contains(crate::input::event::KeyModifiers::SHIFT) {
+                                        let _ = self.focus_manager.tab_prev();
+                                    } else {
+                                        let _ = self.focus_manager.tab_next();
+                                    }
+                                } else if let Some(focused) = self.focus_manager.focused() {
+                                    if let Some(mut widget) = self.widget_mut(focused) {
+                                        let _ = widget.handle_key(*k);
+                                    }
                                 }
                             }
                             Event::Mouse(mouse_event) => {
                                 let mut target_id = None;
-                                {
-                                    let mut ed = &mut self.event_dispatcher;
-                                    ed.dispatch_mouse(
+                                for zone in self.event_dispatcher.groups.iter_mut() {
+                                    if let Some(id) = zone.dispatch_mouse(
                                         mouse_event.kind,
                                         mouse_event.column,
                                         mouse_event.row,
                                         mouse_event.modifiers,
-                                        &mut |id, _, _, _, _| {
-                                            target_id = Some(id);
-                                            true
-                                        },
-                                    );
+                                    ) {
+                                        target_id = Some(id);
+                                        break;
+                                    }
                                 }
                                 if let Some(id) = target_id {
                                     if let Some(mut widget) = self.widget_mut(id) {
