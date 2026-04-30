@@ -13,6 +13,9 @@ pub type FocusCallback = Box<dyn Fn(WidgetId, Option<WidgetId>) + Send + Sync>;
 /// Callback invoked when focus trap is entered/exited.
 pub type TrapCallback = Box<dyn Fn(bool) + Send + Sync>;
 
+/// Callback invoked when focus changes, providing old and new widget IDs.
+pub type FocusChangeCallback = Arc<dyn Fn(Option<WidgetId>, Option<WidgetId>) + Send + Sync>;
+
 /// Manages widget focus ordering, tab navigation, and focus trapping.
 pub struct FocusManager {
     tab_order: Vec<WidgetId>,
@@ -20,6 +23,7 @@ pub struct FocusManager {
     focusable: HashMap<WidgetId, bool>,
     on_focus_change: Vec<Arc<FocusCallback>>,
     on_trap_change: Vec<Arc<TrapCallback>>,
+    on_focus_change_internal: Vec<FocusChangeCallback>,
     trapped: bool,
     trap_exit_disabled: bool,
 }
@@ -39,6 +43,7 @@ impl FocusManager {
             focusable: HashMap::new(),
             on_focus_change: Vec::new(),
             on_trap_change: Vec::new(),
+            on_focus_change_internal: Vec::new(),
             trapped: false,
             trap_exit_disabled: false,
         }
