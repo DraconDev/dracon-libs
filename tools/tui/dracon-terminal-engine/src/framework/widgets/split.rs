@@ -232,6 +232,7 @@ impl crate::framework::widget::Widget for SplitPane {
                         }
                     }
                 }
+                self.dirty = true;
                 true
             }
             _ => false,

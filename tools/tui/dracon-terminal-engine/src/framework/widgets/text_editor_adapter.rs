@@ -19,6 +19,7 @@ pub struct TextEditorAdapter {
     id: WidgetId,
     editor: TextEditor,
     area: std::cell::Cell<Rect>,
+    dirty: bool,
 }
 
 impl TextEditorAdapter {
@@ -28,6 +29,7 @@ impl TextEditorAdapter {
             id,
             editor,
             area: std::cell::Cell::new(Rect::new(0, 0, 80, 24)),
+            dirty: true,
         }
     }
 
@@ -58,6 +60,19 @@ impl crate::framework::widget::Widget for TextEditorAdapter {
 
     fn set_area(&mut self, area: Rect) {
         self.area.set(area);
+        self.dirty = true;
+    }
+
+    fn needs_render(&self) -> bool {
+        self.dirty
+    }
+
+    fn mark_dirty(&mut self) {
+        self.dirty = true;
+    }
+
+    fn clear_dirty(&mut self) {
+        self.dirty = false;
     }
 
     fn z_index(&self) -> u16 {

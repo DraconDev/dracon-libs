@@ -13,6 +13,7 @@ pub struct Tooltip {
     text: String,
     theme: Theme,
     area: std::cell::Cell<Rect>,
+    dirty: bool,
 }
 
 impl Tooltip {
@@ -23,6 +24,7 @@ impl Tooltip {
             text: text.to_string(),
             theme: Theme::default(),
             area: std::cell::Cell::new(Rect::new(0, 0, 30, 3)),
+            dirty: true,
         }
     }
 
@@ -49,10 +51,23 @@ impl crate::framework::widget::Widget for Tooltip {
 
     fn set_area(&mut self, area: Rect) {
         self.area.set(area);
+        self.dirty = true;
     }
 
     fn z_index(&self) -> u16 {
         100
+    }
+
+    fn needs_render(&self) -> bool {
+        self.dirty
+    }
+
+    fn mark_dirty(&mut self) {
+        self.dirty = true;
+    }
+
+    fn clear_dirty(&mut self) {
+        self.dirty = false;
     }
 
     fn render(&self, area: Rect) -> Plane {
