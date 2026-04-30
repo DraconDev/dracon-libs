@@ -222,12 +222,27 @@ impl<'a> crate::framework::widget::Widget for Modal<'a> {
         let btn_start = (self.width.saturating_sub(total_btn_width)) / 2;
         let btn_y = self.height - 2;
 
-        for (i, (_, _result)) in self.buttons.iter().enumerate() {
+        for (i, (_, result)) in self.buttons.iter().enumerate() {
             let bx = btn_start + (i as u16) * (btn_width + 1);
             let in_btn = local_col >= bx && local_col < bx + btn_width && local_row == btn_y;
 
             if in_btn {
                 if let crate::input::event::MouseEventKind::Down(_) = kind {
+                    self.focused_btn = i;
+                    self.result = Some(*result);
+                    match result {
+                        ModalResult::Confirm => {
+                            if let Some(ref mut cb) = self.on_confirm {
+                                cb();
+                            }
+                        }
+                        ModalResult::Cancel => {
+                            if let Some(ref mut cb) = self.on_cancel {
+                                cb();
+                            }
+                        }
+                        ModalResult::Custom(_) => {}
+                    }
                     return true;
                 }
             }
@@ -247,9 +262,10 @@ impl<'a> crate::framework::widget::Widget for Modal<'a> {
                 true
             }
             KeyCode::BackTab => {
-                self.focused_btn = self.focused_btn.saturating_sub(1);
-                if self.focused_btn == usize::MAX {
+                if self.focused_btn == 0 {
                     self.focused_btn = self.buttons.len().saturating_sub(1);
+                } else {
+                    self.focused_btn -= 1;
                 }
                 true
             }

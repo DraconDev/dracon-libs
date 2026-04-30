@@ -1,14 +1,11 @@
 # Project State
 
 ## Current Focus
-Added a line of code to push the current node index into the path during tree navigation.
+Enhancing UI framework components with new input mechanisms and improved modal interaction handling.
 
 ## Completed
-- [x] Push node index into path during tree row handling.
-
-## In Progress
-- [ ] Continue development of mouse event handling features for widgets.
-- [ ] Proceed with focus management refinement and resize handling simplification.
-- [ ] Advance with comprehensive integration testing for widget event handling.
-- [ ] Further refine dependencies and input handling in form widgets.
-- [ ] Conclude with explicit `z_index` implementations for UI widgets.
+- [x] Refactor `Label.area()` to `with_area()` for fluent builder pattern with mutable self parameter
+- [x] Fix modal focus navigation: Correct backtab button cycling logic to handle edge cases and maintain logical selection order
+- [x] Implement foundational `BaseInput` widget with text masking, cursor management, and themed rendering
+- [x] Add text input submission handling with customizable callback for form operations
+- [x] Improve modal button focus management through explicit positional calculations using width/height properties
