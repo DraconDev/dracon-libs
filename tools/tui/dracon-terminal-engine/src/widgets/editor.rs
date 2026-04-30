@@ -97,6 +97,8 @@ pub struct TextEditor {
     pub show_status_bar: bool,
     /// Whether to show indent guides (vertical lines at indentation).
     pub show_indent_guides: bool,
+    /// Additional cursor positions for multi-cursor editing (row, col).
+    extra_cursors: Vec<(usize, usize)>,
     /// Current editor mode for search/goto UI.
     mode: EditorMode,
     /// Input buffer for search/goto dialogs.
