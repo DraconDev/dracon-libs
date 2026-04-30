@@ -49,6 +49,7 @@ impl Toggle {
     /// Toggles the switch state.
     pub fn toggle(&mut self) {
         self.state = !self.state;
+        self.dirty = true;
     }
 
     /// Returns whether the toggle is on.
