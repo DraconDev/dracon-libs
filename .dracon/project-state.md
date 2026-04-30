@@ -1,10 +1,8 @@
 # Project State
 
 ## Current Focus
-Remove manual ID tracking in favor of widget-provided IDs for registration
+Replace manual auto‑generated IDs in registry tests with explicit WidgetId values.
 
 ## Completed
-- [x] Removed `next_id` field from `WidgetRegistry`
-- [x] Eliminated `next_id` initialization in `Default`
-- [x] Added explicit `new()` constructor returning empty registry
-- [x] Refactored `register()` to use `widget.id()` and push container directly
+- [x] Changed test `test_registry_register_and_get` to use `WidgetId::new(1)` instead of `registry.next_id()`
+- [x] Changed test `test_registry_unregister` to use `WidgetId::new(2)` instead of `registry.next_id()`

@@ -121,7 +121,7 @@ mod tests {
     #[test]
     fn test_registry_register_and_get() {
         let mut registry = WidgetRegistry::new();
-        let id = registry.next_id();
+        let id = WidgetId::new(1);
         let widget = Box::new(DummyWidget { id });
         registry.register(widget);
 
@@ -131,7 +131,7 @@ mod tests {
     #[test]
     fn test_registry_unregister() {
         let mut registry = WidgetRegistry::new();
-        let id = registry.next_id();
+        let id = WidgetId::new(2);
         let widget = Box::new(DummyWidget { id });
         registry.register(widget);
         registry.unregister(id);
