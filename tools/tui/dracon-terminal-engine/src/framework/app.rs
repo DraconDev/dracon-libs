@@ -534,4 +534,28 @@ impl<'a> Ctx<'a> {
         let mut right = crate::framework::widgets::split::SplitPane::from_rect(r2);
         f(&mut left, &mut right);
     }
+
+    /// Lays out child rectangles using the given constraints within the screen area.
+    ///
+    /// This is a convenience method that uses the [`Layout`] engine to compute
+    /// widget rectangles from constraint specifications (percentage, fixed, min, max, ratio).
+    ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// use dracon_terminal_engine::framework::prelude::*;
+    ///
+    /// App::new().unwrap().run(|ctx| {
+    ///     let rects = ctx.layout(vec![
+    ///         Constraint::Percentage(30),
+    ///         Constraint::Percentage(70),
+    ///     ]);
+    ///     // Use rects[0] and rects[1] for widget areas
+    /// });
+    /// ```
+    pub fn layout(&self, constraints: Vec<crate::framework::layout::Constraint>) -> Vec<Rect> {
+        let (w, h) = self.compositor.size();
+        let layout = crate::framework::layout::Layout::new(constraints);
+        layout.layout(Rect::new(0, 0, w, h))
+    }
 }
