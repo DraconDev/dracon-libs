@@ -1,12 +1,10 @@
 # Project State
 
 ## Current Focus
-feat(editor): Add configurable UI options for line numbers, word wrap, status bar, and syntax highlighting language in the TextEditor widget
+Added a configurable status bar to the text editor widget with position, filename, modification status, and language information.
 
 ## Completed
-- [x] Added `show_status_bar` field to TextEditor struct to control status bar visibility
-- [x] Added `with_show_line_numbers()` method to enable/disable line number rendering
-- [x] Added `with_word_wrap()` method to enable/disable word wrapping
-- [x] Added `with_status_bar()` method to enable/disable the status bar display
-- [x] Added `with_language()` method to set syntax highlighting language with cache invalidation
-- [x] Updated render logic to adjust available text area height based on status bar visibility and calculate scrollbar accordingly
+- [x] Implemented customized status bar in `TextEditor` widget rendering.
+- [x] Configured background and foreground colors for the status bar sections.
+- [x] Added position information of the cursor in the file (line and column formatting).
+- [x] Included optional display of the filename, modification status, and language information.
