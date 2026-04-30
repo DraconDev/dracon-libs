@@ -153,7 +153,7 @@ impl App {
 
     /// Returns a mutable reference to a widget by ID.
     pub fn widget_mut(&mut self, id: WidgetId) -> Option<RefMut<'_, Box<dyn Widget>>> {
-        let mut widgets = self.widgets.borrow_mut();
+        let widgets = self.widgets.borrow_mut();
         let idx = widgets.iter().position(|w| w.id() == id)?;
         Some(RefMut::map(widgets, |w| &mut w[idx]))
     }

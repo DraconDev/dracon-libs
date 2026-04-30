@@ -1,6 +1,5 @@
 //! Demonstrates framework widgets working together.
 
-use std::time::Duration;
 use dracon_terminal_engine::framework::widget::{Widget, WidgetId};
 use dracon_terminal_engine::framework::widgets::{
     Checkbox, Form, ProgressBar, Radio, Slider, Spinner,
@@ -13,7 +12,7 @@ fn main() {
     println!("========================");
     println!();
 
-    let theme = Theme::dark();
+    let _theme = Theme::dark();
 
     let cb = Checkbox::new(WidgetId::new(1), "Enable feature");
     let plane = cb.render(ratatui::layout::Rect::new(0, 0, 40, 3));
