@@ -1,9 +1,9 @@
 //! Edge case tests for TextEditorAdapter.
 
 use dracon_terminal_engine::compositor::{Color, Plane, Styles};
-use dracon_terminal_engine::framework::widget::WidgetId;
+use dracon_terminal_engine::framework::widget::{Widget, WidgetId};
 use dracon_terminal_engine::framework::widgets::TextEditorAdapter;
-use dracon_terminal_engine::input::event::{Event, KeyCode, KeyEvent, KeyEventKind, MouseEventKind};
+use dracon_terminal_engine::input::event::{Event, KeyCode, KeyEvent, KeyEventKind, MouseButton, MouseEventKind};
 use dracon_terminal_engine::widgets::editor::TextEditor;
 use ratatui::layout::Rect;
 
@@ -12,16 +12,6 @@ fn make_key(code: KeyCode) -> KeyEvent {
         code,
         kind: KeyEventKind::Press,
         modifiers: dracon_terminal_engine::input::event::KeyModifiers::empty(),
-        repeat: false,
-    }
-}
-
-fn make_key_with_kind(code: KeyCode, kind: KeyEventKind) -> KeyEvent {
-    KeyEvent {
-        code,
-        kind,
-        modifiers: dracon_terminal_engine::input::event::KeyModifiers::empty(),
-        repeat: false,
     }
 }
 
@@ -42,7 +32,6 @@ fn test_cursor_position_origin_inside_scrolled_view() {
     adapter.set_area(rect(5, 5, 20, 10));
 
     let pos = adapter.cursor_position();
-    let expected_x = 5 + 0; // area.x + (visual_x - scroll_col), but visual_x=0 and scroll_col=3 so clamped
     assert_eq!(pos, Some((5, 5)));
 }
 
@@ -191,9 +180,8 @@ fn test_handle_key_repeat_is_forwarded() {
 
     let repeat_key = KeyEvent {
         code: KeyCode::Right,
-        kind: KeyEventKind::Press,
+        kind: KeyEventKind::Repeat,
         modifiers: dracon_terminal_engine::input::event::KeyModifiers::empty(),
-        repeat: true,
     };
     let result = adapter.handle_key(repeat_key);
 
@@ -206,22 +194,14 @@ fn test_handle_key_release_returns_false() {
     let mut adapter = TextEditorAdapter::new(WidgetId::new(1), editor);
     adapter.set_area(rect(0, 0, 20, 5));
 
-    let release_key = make_key_with_kind(KeyCode::Right, KeyEventKind::Release);
+    let release_key = KeyEvent {
+        code: KeyCode::Right,
+        kind: KeyEventKind::Release,
+        modifiers: dracon_terminal_engine::input::event::KeyModifiers::empty(),
+    };
     let result = adapter.handle_key(release_key);
 
     assert!(!result, "Release key kind should not be consumed (event ignored by editor)");
-}
-
-#[test]
-fn test_handle_key_none_returns_false() {
-    let mut editor = TextEditor::with_content("abc");
-    let mut adapter = TextEditorAdapter::new(WidgetId::new(1), editor);
-    adapter.set_area(rect(0, 0, 20, 5));
-
-    let none_key = make_key_with_kind(KeyCode::Right, KeyEventKind::None);
-    let result = adapter.handle_key(none_key);
-
-    assert!(!result, "None key kind should return false");
 }
 
 #[test]
@@ -245,7 +225,7 @@ fn test_handle_mouse_left_press_at_origin() {
     let mut adapter = TextEditorAdapter::new(WidgetId::new(1), editor);
     adapter.set_area(rect(0, 0, 20, 5));
 
-    let result = adapter.handle_mouse(MouseEventKind::LeftPress, 0, 0);
+    let result = adapter.handle_mouse(MouseEventKind::Down(MouseButton::Left), 0, 0);
     assert!(result, "left press should be consumed");
 }
 
@@ -255,7 +235,7 @@ fn test_handle_mouse_out_of_bounds_coords() {
     let mut adapter = TextEditorAdapter::new(WidgetId::new(1), editor);
     adapter.set_area(rect(0, 0, 20, 5));
 
-    let result = adapter.handle_mouse(MouseEventKind::LeftPress, 100, 100);
+    let result = adapter.handle_mouse(MouseEventKind::Down(MouseButton::Left), 100, 100);
     assert!(!result, "mouse far outside area should not be consumed");
 }
 
@@ -281,7 +261,7 @@ fn test_handle_mouse_left_drag() {
     let mut adapter = TextEditorAdapter::new(WidgetId::new(1), editor);
     adapter.set_area(rect(0, 0, 30, 5));
 
-    let result = adapter.handle_mouse(MouseEventKind::Drag(MouseEventKind::LeftPress), 5, 0);
+    let result = adapter.handle_mouse(MouseEventKind::Drag(MouseButton::Left), 5, 0);
     assert!(result, "left drag should be consumed");
 }
 

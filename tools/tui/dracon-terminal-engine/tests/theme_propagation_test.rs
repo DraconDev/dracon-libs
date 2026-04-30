@@ -6,8 +6,8 @@ use std::rc::Rc;
 use dracon_terminal_engine::compositor::{Color, Plane};
 use dracon_terminal_engine::framework::theme::Theme;
 use dracon_terminal_engine::framework::widget::{Widget, WidgetId};
+use dracon_terminal_engine::framework::widgets::split::Orientation;
 use dracon_terminal_engine::framework::widgets::SplitPane;
-use ratatui::layout::Rect;
 
 /// A mock widget that tracks on_theme_change calls.
 #[derive(Default)]
@@ -15,7 +15,7 @@ struct MockWidget {
     id: WidgetId,
     theme_changes: Rc<Cell<usize>>,
     current_theme: Rc<Cell<Option<&'static str>>>,
-    area: std::cell::Cell<Rect>,
+    area: std::cell::Cell<ratatui::layout::Rect>,
 }
 
 impl MockWidget {
@@ -24,7 +24,7 @@ impl MockWidget {
             id: WidgetId::new(id),
             theme_changes: Rc::new(Cell::new(0)),
             current_theme: Rc::new(Cell::new(None)),
-            area: std::cell::Cell::new(Rect::new(0, 0, 80, 24)),
+            area: std::cell::Cell::new(ratatui::layout::Rect::new(0, 0, 80, 24)),
         }
     }
 
@@ -38,15 +38,15 @@ impl Widget for MockWidget {
         self.id
     }
 
-    fn area(&self) -> Rect {
+    fn area(&self) -> ratatui::layout::Rect {
         self.area.get()
     }
 
-    fn set_area(&mut self, area: Rect) {
+    fn set_area(&mut self, area: ratatui::layout::Rect) {
         self.area.set(area);
     }
 
-    fn render(&self, _area: Rect) -> Plane {
+    fn render(&self, _area: ratatui::layout::Rect) -> Plane {
         Plane::new(0, 80, 24)
     }
 
@@ -60,7 +60,7 @@ impl Widget for MockWidget {
 
 #[test]
 fn test_splitpane_on_theme_change_updates_divider_color() {
-    let mut split = SplitPane::new(crate::framework::widgets::Orientation::Horizontal);
+    let mut split = SplitPane::new(Orientation::Horizontal);
 
     let original_color = split.divider_color;
     assert!(matches!(original_color, Color::Rgb(_, _, _)));
@@ -76,7 +76,7 @@ fn test_splitpane_on_theme_change_updates_divider_color() {
 
 #[test]
 fn test_splitpane_on_theme_change_dracula() {
-    let mut split = SplitPane::new(crate::framework::widgets::Orientation::Vertical);
+    let mut split = SplitPane::new(Orientation::Vertical);
 
     split.on_theme_change(&Theme::dracula());
 
@@ -89,7 +89,7 @@ fn test_splitpane_on_theme_change_dracula() {
 
 #[test]
 fn test_splitpane_on_theme_change_light() {
-    let mut split = SplitPane::new(crate::framework::widgets::Orientation::Horizontal);
+    let mut split = SplitPane::new(Orientation::Horizontal);
 
     split.on_theme_change(&Theme::light());
 
@@ -102,7 +102,7 @@ fn test_splitpane_on_theme_change_light() {
 
 #[test]
 fn test_splitpane_theme_change_idempotent() {
-    let mut split = SplitPane::new(crate::framework::widgets::Orientation::Horizontal);
+    let mut split = SplitPane::new(Orientation::Horizontal);
 
     split.on_theme_change(&Theme::dark());
     let first = split.divider_color;
@@ -147,11 +147,11 @@ impl Widget for NoopWidget {
     fn id(&self) -> WidgetId {
         WidgetId::new(99)
     }
-    fn area(&self) -> Rect {
-        Rect::new(0, 0, 80, 24)
+    fn area(&self) -> ratatui::layout::Rect {
+        ratatui::layout::Rect::new(0, 0, 80, 24)
     }
-    fn set_area(&mut self, _area: Rect) {}
-    fn render(&self, _area: Rect) -> Plane {
+    fn set_area(&mut self, _area: ratatui::layout::Rect) {}
+    fn render(&self, _area: ratatui::layout::Rect) -> Plane {
         Plane::new(0, 80, 24)
     }
     fn on_theme_change(&mut self, _theme: &Theme) {
