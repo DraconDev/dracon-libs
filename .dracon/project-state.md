@@ -1,7 +1,8 @@
 # Project State
 
 ## Current Focus
-Add verification that a widget removed after a theme change is no longer present in the app.
+Synchronize widget IDs between the `App` and individual widgets by assigning the ID during widget addition.
 
 ## Completed
-- [x] test(theme_propagation): assert removed widget is absent after removal.
+- [x] Added `set_id` method to `Widget` trait for ID synchronization.
+- [x] Modified `App::add_widget` to invoke `widget.set_id(id)` after generating a new `WidgetId`.

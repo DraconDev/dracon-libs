@@ -88,6 +88,10 @@ pub trait Widget {
     /// Called when the widget is removed from the application.
     fn on_unmount(&mut self) {}
 
+    /// Sets the widget's ID.
+    /// Called by `App::add_widget` to sync the App-assigned ID with the widget.
+    fn set_id(&mut self, _id: WidgetId) {}
+
     /// Called when the theme is changed via `App::set_theme()`.
     /// Allows widgets to update their internal theme-dependent state.
     fn on_theme_change(&mut self, _theme: &crate::framework::theme::Theme) {}

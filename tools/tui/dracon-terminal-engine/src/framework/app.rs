@@ -157,6 +157,7 @@ impl App {
     /// Returns the assigned `WidgetId`.
     pub fn add_widget(&mut self, mut widget: Box<dyn Widget>, area: Rect) -> WidgetId {
         let id = WidgetId(self.next_widget_id);
+        widget.set_id(id);
         widget.set_area(area);
         widget.on_mount();
         let focusable = widget.focusable();
