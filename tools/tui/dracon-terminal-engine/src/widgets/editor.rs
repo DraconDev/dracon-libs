@@ -1709,8 +1709,8 @@ impl TextEditor {
 impl Widget for &TextEditor {
     fn render(self, area: Rect, buf: &mut Buffer) {
         let gutter_w = self.gutter_width();
-        let status_bar_h = if self.show_status_bar && area.height >= 2 { 1 } else { 0 };
-        let scrollbar_w = if self.effective_len() > (area.height as usize).saturating_sub(status_bar_h) {
+        let status_bar_h: u16 = if self.show_status_bar && area.height >= 2 { 1 } else { 0 };
+        let scrollbar_w = if self.effective_len() > (area.height as usize).saturating_sub(status_bar_h as usize) {
             1
         } else {
             0
@@ -2061,6 +2061,60 @@ impl Widget for &TextEditor {
                     .position(self.scroll_row)
                     .viewport_content_length(area.height as usize);
                 StatefulWidget::render(sb, area, buf, &mut ss);
+            }
+
+            // Render Status Bar for wrap mode
+            if status_bar_h > 0 {
+                let status_y = area.y + area.height - 1;
+                let status_style = Style::default()
+                    .bg(Color::Rgb(30, 30, 35))
+                    .fg(Color::Rgb(180, 180, 180));
+                let status_bg = Color::Rgb(30, 30, 35);
+
+                for x in area.x..area.x + area.width {
+                    if let Some(cell) = buf.cell_mut((x, status_y)) {
+                        cell.set_bg(status_bg);
+                        cell.set_fg(Color::Rgb(180, 180, 180));
+                        cell.set_symbol(" ");
+                    }
+                }
+
+                let pos_text = format!("Ln {} Col {}", self.cursor_row + 1, self.cursor_col + 1);
+                let filename_text = self.filename();
+                let modified_text = if self.modified { " *" } else { "" };
+                let lang_text = if !self.language.is_empty() {
+                    format!(" [{}]", self.language)
+                } else {
+                    String::new()
+                };
+
+                let left_text = pos_text;
+                let right_text = format!("{}{}", modified_text, lang_text);
+
+                buf.set_string(area.x, status_y, &left_text, status_style);
+
+                let right_width = right_text.len() as u16;
+                let right_x = area.x + area.width.saturating_sub(right_width);
+                buf.set_string(right_x, status_y, &right_text, status_style);
+
+                if !filename_text.is_empty() && filename_text != "Untitled" {
+                    let total_left_len = left_text.len() as u16;
+                    let total_right_len = right_text.len() as u16;
+                    let available = area.width.saturating_sub(total_left_len + total_right_len + 4);
+                    if available > filename_text.len() as u16 {
+                        let center_x = area.x + total_left_len + 2;
+                        let filename_style = Style::default()
+                            .bg(Color::Rgb(30, 30, 35))
+                            .fg(Color::Rgb(120, 200, 255));
+                        buf.set_string(center_x, status_y, &filename_text, filename_style);
+                    }
+                }
+
+                if let Some(cell) = buf.cell_mut((area.x, status_y)) {
+                    cell.set_bg(status_bg);
+                    cell.set_fg(Color::Rgb(88, 166, 255));
+                    cell.set_symbol("●");
+                }
             }
 
             return;
