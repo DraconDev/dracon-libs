@@ -1,6 +1,7 @@
 use crate::input::event::{
     Event, KeyCode, KeyEventKind, KeyModifiers, MouseButton, MouseEvent, MouseEventKind,
 };
+use crate::utils::{get_clipboard_text, set_clipboard_text};
 use crate::utils::highlight_code;
 use ratatui::buffer::Buffer;
 use ratatui::layout::Rect;
@@ -10,6 +11,7 @@ use ratatui::widgets::{Scrollbar, ScrollbarOrientation, ScrollbarState, Stateful
 use unicode_width::{UnicodeWidthChar, UnicodeWidthStr};
 
 use std::cell::RefCell;
+use std::path::PathBuf;
 
 /// A tactical multiline text editor widget for quick edits.
 #[derive(Clone, Debug)]
@@ -58,6 +60,8 @@ pub struct TextEditor {
     pub highlighted_cache: RefCell<Vec<Line<'static>>>,
     /// First line number that needs re-highlighting (None = all valid).
     pub first_invalid_line: RefCell<Option<usize>>,
+    /// Path to the currently open file.
+    pub file_path: Option<PathBuf>,
 }
 
 impl Default for TextEditor {
@@ -88,6 +92,7 @@ impl Default for TextEditor {
             wrap: false,
             highlighted_cache: RefCell::new(Vec::new()),
             first_invalid_line: RefCell::new(Some(0)),
+            file_path: None,
         }
     }
 }

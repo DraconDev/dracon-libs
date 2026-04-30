@@ -1,7 +1,8 @@
 # Project State
 
 ## Current Focus
-Dependency lock file refresh - Cargo.lock regenerated without source changes
+Add clipboard integration and file-path tracking to the TUI text editor.
 
 ## Completed
-- [x] Refresh Cargo.lock dependency resolution (no version changes, lock file regenerated)
+- [x] Wire clipboard read/write utilities into the editor widget to enable copy/paste operations.
+- [x] Track the currently open file via an optional `PathBuf` on `TextEditor` for persistence/context.
