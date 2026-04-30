@@ -1,9 +1,6 @@
-# Project State
-
-## Current Focus
-feat(editor): add TextEditorAdapter to integrate TextEditor widget with framework's Widget trait system
+# Project State## Current Focus
+Add TextEditorAdapter widget to integrate text editing functionality into the TUI framework
 
 ## Completed
-- [x] Add TextEditorAdapter struct that wraps TextEditor widget for framework integration
-- [x] Implement Widget trait for TextEditorAdapter with render, input handling, and focus management
-- [x] Add text_editor_adapter module to widgets/mod.rs exports
+- [x] Added TextEditorAdapter to widgets module for public exposure
+- [x] Refactored text editor adapter to use unified Event handling (including KeyEvent and MouseEvent) instead of separate handlers

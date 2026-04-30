@@ -6,7 +6,7 @@
 use crate::compositor::Plane;
 use crate::framework::theme::Theme;
 use crate::framework::widget::WidgetId;
-use crate::input::event::{KeyEvent, KeyEventKind, MouseButton, MouseEventKind};
+use crate::input::event::{Event, KeyEvent, KeyEventKind, MouseEvent, MouseEventKind};
 use crate::widgets::editor::TextEditor;
 use ratatui::layout::Rect;
 
@@ -66,10 +66,6 @@ impl crate::framework::widget::Widget for TextEditorAdapter {
         true
     }
 
-    fn needs_render(&self) -> bool {
-        self.editor.needs_render()
-    }
-
     fn cursor_position(&self) -> Option<(u16, u16)> {
         let area = self.area.get();
         Some((
@@ -82,11 +78,12 @@ impl crate::framework::widget::Widget for TextEditorAdapter {
         use crate::compositor::Cell;
         use crate::compositor::Styles;
         use ratatui::buffer::Buffer;
+        use ratatui::prelude::Widget;
 
         let mut plane = Plane::new(0, area.width, area.height);
         plane.z_index = 10;
 
-        let mut buf = Buffer::with_shape(area);
+        let mut buf = Buffer::empty(area);
         (&self.editor).render(area, &mut buf);
 
         for (i, cell) in buf.content().iter().enumerate() {
@@ -97,8 +94,8 @@ impl crate::framework::widget::Widget for TextEditorAdapter {
                 if idx < plane.cells.len() {
                     plane.cells[idx] = Cell {
                         char: cell.symbol().chars().next().unwrap_or(' '),
-                        fg: crate::compositor::Color::Ansi(cell.fg().unwrap_or(231)),
-                        bg: crate::compositor::Color::Ansi(cell.bg().unwrap_or(0)),
+                        fg: crate::compositor::Color::Ansi(cell.fg),
+                        bg: crate::compositor::Color::Ansi(cell.bg),
                         style: Styles::empty(),
                         transparent: false,
                         skip: false,
@@ -120,12 +117,10 @@ impl crate::framework::widget::Widget for TextEditorAdapter {
         }
 
         let area = self.area.get();
-        self.editor.handle_key(key, area)
+        self.editor.handle_event(&Event::Key(key), area)
     }
 
     fn handle_mouse(&mut self, kind: MouseEventKind, col: u16, row: u16) -> bool {
-        use crate::input::event::MouseEvent;
-
         let area = self.area.get();
         let mouse = MouseEvent {
             kind,
