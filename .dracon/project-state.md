@@ -1,10 +1,12 @@
 # Project State
 
 ## Current Focus
-Add GitHub issue templates, CI/CD workflows, release automation, and Apache 2.0 license for dracon-terminal-engine TUI crate
+Introduce project governance, contribution documentation, CI templates, and publish the initial v27.0.0 changelog.
 
 ## Completed
-- [x] Add structured GitHub bug report issue template for dracon-terminal-engine with fields for description, reproduction steps, expected/actual behavior, environment, screenshots, and additional context
-- [x] Add CI workflow triggering on push/PR to master, testing Rust stable/beta/nightly on Ubuntu and stable on macOS/Windows, running formatting checks, clippy linting, full test suite, minimal dependency version validation, and RustSec security audits
-- [x] Add release workflow triggered by version tags that publishes dracon-terminal-engine to crates.io and creates GitHub releases with license, README, and changelog artifacts
-- [x] Add Apache License 2.0 (LICENSE-APACHE) to dracon-terminal-engine to support proper open source licensing
+- [x] Added `.github/ISSUE_TEMPLATE/feature_request.md` with structured sections for problem, solution, alternatives, and context.
+- [x] Added `.github/PULL_REQUEST_TEMPLATE.md` containing description, change type checklist, and verification steps.
+- [x] Added `CHANGELOG.md` documenting the v27.0.0 release, including framework modules, compositor features, input handling, text editor capabilities, utilities, and breaking changes.
+- [x] Added `CODE_OF_CONDUCT.md` establishing a Contributor Covenant Code of Conduct.
+- [x] Added `CONTRIBUTING.md` outlining contribution workflow and standards.
+- [x] Updated `Cargo.toml` (binary size increased from 863 bytes to 1055 bytes) reflecting new dependencies and configuration for the TUI engine.
