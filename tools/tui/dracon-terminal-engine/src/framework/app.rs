@@ -142,7 +142,7 @@ impl App {
 
     /// Removes a widget by its ID.
     pub fn remove_widget(&mut self, id: WidgetId) {
-        if let Some(mut w) = self.widgets.borrow_mut().iter_mut().find(|w| w.id() == id) {
+        if let Some(w) = self.widgets.borrow_mut().iter_mut().find(|w| w.id() == id) {
             w.on_unmount();
         }
         self.widgets.borrow_mut().retain(|w| w.id() != id);
