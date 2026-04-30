@@ -1,12 +1,12 @@
 # Project State
 
 ## Current Focus
-Adding widget identifier and area handling to Table and TabBar for unified widget integration.
+Add Widget trait implementation and refactor interaction handling for TabBar
 
 ## Completed
-- [x] TabBar now stores `WidgetId` and `area` via `Cell<Rect>` and provides `new_with_id`.
-- [x] Table implements `Widget` trait with `id()`, `area()`, `z_index()` and a simplified `render()` returning only `Plane`.
-- [x] Table gains `set_area()` to update its bounding rectangle.
-- [x] Table's `handle_key` method signature updated to accept only `KeyEvent` and return `bool`.
-- [x] Partial `handle_mouse` method added to Table for basic mouse interaction, removing old complex logic.
-- [x] Dependency updates reflected in Cargo.lock (binary unchanged).
+- [x] Added Widget trait implementation for TabBar, providing id() and area() accessors
+- [x] Refactored render() to return only Plane and remove the hit‑zone vector
+- [x] Replaced area parameter with stored area via self.area.get()
+- [x] Moved mouse handling logic into dedicated handle_mouse() that uses stored area
+- [x] Simplified key handling by removing unused parameters and early returns
+- [x] Updated Cargo.lock to newer dependency versions

@@ -59,13 +59,27 @@ impl TabBar {
             self.active = idx;
         }
     }
+}
 
-    /// Renders the tab bar into a `Plane` and returns hit zones for each tab.
-    ///
-    /// Returns `(plane, hit_zones)` where hit zones have `id = tab_index`.
-    pub fn render(&self, area: Rect) -> (Plane, Vec<HitZone<usize>>) {
+impl crate::framework::widget::Widget for TabBar {
+    fn id(&self) -> WidgetId {
+        self.id
+    }
+
+    fn area(&self) -> Rect {
+        self.area.get()
+    }
+
+    fn set_area(&mut self, area: Rect) {
+        self.area.set(area);
+    }
+
+    fn z_index(&self) -> u16 {
+        10
+    }
+
+    fn render(&self, area: Rect) -> Plane {
         let mut plane = Plane::new(0, area.width, area.height);
-        let mut zones = Vec::new();
         let tab_count = self.tabs.len().max(1);
         let tab_width = (area.width / tab_count as u16).max(1);
 
@@ -103,33 +117,13 @@ impl TabBar {
                 }
             }
 
-            let zone = HitZone::new(i, x, area.y, tab_width, area.height);
-            zones.push(zone);
+            let _zone = HitZone::new(i, x, area.y, tab_width, area.height);
         }
 
-        (plane, zones)
+        plane
     }
 
-    /// Handles a mouse event. Returns `true` if the event was consumed.
-    pub fn handle_mouse(&mut self, kind: crate::input::event::MouseEventKind, col: u16, _row: u16, width: u16) -> bool {
-        let tab_count = self.tabs.len().max(1);
-        let tab_width = (width / tab_count as u16).max(1);
-        let idx = col / tab_width;
-        if idx >= tab_count as u16 {
-            return false;
-        }
-
-        match kind {
-            crate::input::event::MouseEventKind::Down(crate::input::event::MouseButton::Left) => {
-                self.active = idx as usize;
-                true
-            }
-            _ => false,
-        }
-    }
-
-    /// Handles a key event for tab navigation. Returns `true` if consumed.
-    pub fn handle_key(&mut self, key: crate::input::event::KeyEvent) -> bool {
+    fn handle_key(&mut self, key: crate::input::event::KeyEvent) -> bool {
         use crate::input::event::{KeyCode, KeyEventKind};
         if key.kind != KeyEventKind::Press {
             return false;
@@ -145,6 +139,23 @@ impl TabBar {
                 if self.active + 1 < self.tabs.len() {
                     self.active += 1;
                 }
+                true
+            }
+            _ => false,
+        }
+    }
+
+    fn handle_mouse(&mut self, kind: crate::input::event::MouseEventKind, col: u16, _row: u16) -> bool {
+        let tab_count = self.tabs.len().max(1);
+        let tab_width = (self.area.get().width / tab_count as u16).max(1);
+        let idx = col / tab_width;
+        if idx >= tab_count as u16 {
+            return false;
+        }
+
+        match kind {
+            crate::input::event::MouseEventKind::Down(crate::input::event::MouseButton::Left) => {
+                self.active = idx as usize;
                 true
             }
             _ => false,
