@@ -6,6 +6,7 @@ use crate::framework::widget::WidgetId;
 use crate::framework::widget::Widget;
 use ratatui::layout::Rect;
 
+/// A search input widget with a query buffer and submit callback.
 pub struct SearchInput {
     id: WidgetId,
     base: super::text_input_base::BaseInput,
@@ -14,26 +15,23 @@ pub struct SearchInput {
 impl SearchInput {
     /// Creates a new search input with the given ID.
     pub fn new(id: WidgetId) -> Self {
-        Self {
-            id,
-            base: super::text_input_base::BaseInput::new(id, "Search..."),
-        }
+        let id = id;
+        let base = super::text_input_base::BaseInput::new(id, "Search...");
+        Self { id, base }
     }
 
     /// Sets the theme for this widget.
     pub fn with_theme(self, theme: crate::framework::theme::Theme) -> Self {
-        Self {
-            base: self.base.with_theme(theme),
-            ..self
-        }
+        let id = self.id;
+        let base = self.base.with_theme(theme);
+        Self { id, base }
     }
 
     /// Registers a callback when the user submits the search (Enter key).
     pub fn on_submit(self, f: impl FnMut(&str) + 'static) -> Self {
-        Self {
-            base: self.base.on_submit(f),
-            ..self
-        }
+        let id = self.id;
+        let base = self.base.on_submit(f);
+        Self { id, base }
     }
 
     /// Clears the search query.

@@ -20,32 +20,32 @@ impl PasswordInput {
 
     /// Sets the theme for this widget.
     pub fn with_theme(self, theme: crate::framework::theme::Theme) -> Self {
-        Self {
-            base: self.base.with_theme(theme),
-            ..self
-        }
+        let id = self.id;
+        let base = self.base.with_theme(theme);
+        Self { id, base }
     }
 
     /// Sets the mask character (default is '*').
     pub fn with_mask_char(self, ch: char) -> Self {
+        let id = self.id;
         let mut base = self.base;
         base.mask_char = Some(ch);
-        Self { base, ..self }
+        Self { id, base }
     }
 
     /// Sets the placeholder text shown when empty.
     pub fn with_placeholder(self, text: &str) -> Self {
+        let id = self.id;
         let mut base = self.base;
         base.placeholder = text.to_string();
-        Self { base, ..self }
+        Self { id, base }
     }
 
     /// Registers a callback when the user submits the password (Enter key).
     pub fn on_submit(self, f: impl FnMut(&str) + 'static) -> Self {
-        Self {
-            base: self.base.on_submit(f),
-            ..self
-        }
+        let id = self.id;
+        let base = self.base.on_submit(f);
+        Self { id, base }
     }
 
     /// Clears the password.
