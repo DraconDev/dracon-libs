@@ -1,8 +1,18 @@
 # Project State
 
 ## Current Focus
-Enhance text editor demo to use actual terminal size and prevent cursor coordinates from exceeding widget bounds.
+Add comprehensive integration tests for TextEditorAdapter to validate cursor position translation, rendering output, and keyboard event forwarding between the ratatui TextEditor widget and the framework's Widget trait.
 
 ## Completed
-- [x] Update demo to query terminal dimensions via `tty::get_window_size` and set widget area accordingly
-- [x] Clamp cursor screen coordinates to the widget’s visible area in `TextEditorAdapter::cursor_position` to avoid reporting positions outside the widget bounds
+- [x] Test TextEditorAdapter construction with ID, area, focusable status, and z-index verification
+- [x] Test area setter/getter for runtime dimension updates
+- [x] Test immutable and mutable editor accessor methods
+- [x] Test cursor position calculation at origin without scroll
+- [x] Test cursor position with scroll offset applied (screen_row = cursor_row - scroll_row)
+- [x] Test cursor position with area offset (x/y translation applied)
+- [x] Test cursor column clamping to area width bounds
+- [x] Test cursor row clamping to area height bounds
+- [x] Test render produces correctly sized plane with expected z-index
+- [x] Test render fills cells with expected character content
+- [x] Test keyboard events forward correctly to underlying TextEditor
+- [x] Test repeat key events are ignored by the adapter
