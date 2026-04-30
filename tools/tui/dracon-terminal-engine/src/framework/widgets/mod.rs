@@ -1,6 +1,7 @@
 //! Built-in framework widgets.
 
 pub mod breadcrumbs;
+pub mod button;
 pub mod checkbox;
 pub mod context_menu;
 pub mod debug_overlay;
@@ -29,6 +30,7 @@ pub mod tree;
 pub mod widget_inspector;
 
 pub use breadcrumbs::Breadcrumbs;
+pub use button::Button;
 pub use checkbox::Checkbox;
 pub use context_menu::{ContextAction, ContextMenu};
 pub use debug_overlay::DebugOverlay;

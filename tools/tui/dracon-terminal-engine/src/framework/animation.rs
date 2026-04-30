@@ -119,6 +119,22 @@ impl AnimationManager {
     pub fn clear(&mut self) {
         self.animations.clear();
     }
+
+    /// Advances all animations by cleaning up completed ones.
+    /// Call this each frame.
+    pub fn tick(&mut self) {
+        self.cleanup();
+    }
+
+    /// Returns the number of active animations.
+    pub fn len(&self) -> usize {
+        self.animations.len()
+    }
+
+    /// Returns true if there are no active animations.
+    pub fn is_empty(&self) -> bool {
+        self.animations.is_empty()
+    }
 }
 
 impl Default for AnimationManager {

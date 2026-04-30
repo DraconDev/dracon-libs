@@ -272,6 +272,7 @@ impl App {
                         last_frame: &self.last_frame_time,
                         terminal: &mut self.terminal,
                         focus_manager: &mut self.focus_manager,
+                        animations: &mut self.animations,
                     }, self.tick_count);
                     self.tick_count += 1;
                     self.last_tick_time = Instant::now();
@@ -285,9 +286,12 @@ impl App {
                 last_frame: &self.last_frame_time,
                 terminal: &mut self.terminal,
                 focus_manager: &mut self.focus_manager,
+                animations: &mut self.animations,
             });
 
             self.compositor.render(&mut self.terminal)?;
+
+            self.animations.tick();
 
             frame_count.fetch_add(1, Ordering::SeqCst);
             self.last_frame_time = Instant::now();
@@ -324,6 +328,7 @@ pub struct Ctx<'a> {
     pub(crate) last_frame: &'a Instant,
     pub(crate) terminal: &'a mut crate::Terminal<io::Stdout>,
     pub(crate) focus_manager: &'a mut FocusManager,
+    pub(crate) animations: &'a mut AnimationManager,
 }
 
 impl<'a> Ctx<'a> {
@@ -355,6 +360,11 @@ impl<'a> Ctx<'a> {
     /// Returns the currently focused widget ID, if any.
     pub fn focused(&self) -> Option<WidgetId> {
         self.focus_manager.focused()
+    }
+
+    /// Returns the animation manager for managing toasts, progress bars, etc.
+    pub fn animations(&mut self) -> &mut AnimationManager {
+        self.animations
     }
 
     /// Returns an immutable reference to the compositor.
