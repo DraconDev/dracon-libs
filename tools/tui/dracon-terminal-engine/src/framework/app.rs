@@ -211,7 +211,13 @@ impl App {
                                 if k.code == crate::input::event::KeyCode::Char('c')
                                     && k.modifiers.contains(crate::input::event::KeyModifiers::CONTROL)
                                 {
-                                    running.store(false, Ordering::SeqCst);
+                                    let focused = self.focus_manager.focused();
+                                    let dominated = focused.and_then(|id| self.widget_mut(id))
+                                        .map(|mut w| w.handle_key(*k))
+                                        .unwrap_or(false);
+                                    if !dominated {
+                                        running.store(false, Ordering::SeqCst);
+                                    }
                                 } else if k.code == crate::input::event::KeyCode::Tab {
                                     let old = self.focus_manager.focused();
                                     if k.modifiers.contains(crate::input::event::KeyModifiers::SHIFT) {
