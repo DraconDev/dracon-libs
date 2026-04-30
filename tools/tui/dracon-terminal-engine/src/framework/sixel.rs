@@ -65,6 +65,7 @@ impl SixelImage {
 pub struct SixelRenderer {
     id: WidgetId,
     image: Option<SixelImage>,
+    #[allow(unused)]
     theme: Color,
     area: std::cell::Cell<Rect>,
 }

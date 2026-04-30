@@ -52,8 +52,11 @@ pub struct App {
     on_tick: RefCell<Option<Box<dyn FnMut(&mut Ctx, u64) + 'static>>>,
     widgets: RefCell<Vec<Box<dyn Widget>>>,
     focus_manager: FocusManager,
+    #[allow(unused)]
     event_dispatcher: EventDispatcher,
+    #[allow(unused)]
     dirty_tracker: DirtyRegionTracker,
+    #[allow(unused)]
     animations: AnimationManager,
     next_widget_id: usize,
 }

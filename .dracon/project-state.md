@@ -1,7 +1,11 @@
 # Project State
 
 ## Current Focus
-Update project dependencies to latest versions as recorded in Cargo.lock revision
+Add unused placeholder fields for EventDispatcher, DirtyRegionTracker, AnimationManager, theme, and area to App and SixelRenderer structs.
 
 ## Completed
-- [x] Upgrade Cargo.lock to newer dependency versions (index 57687a4..c4b5b50)
+- [x] Added `event_dispatcher: EventDispatcher` to `App`
+- [x] Added `dirty_tracker: DirtyRegionTracker` to `App`
+- [x] Added `animations: AnimationManager` to `App`
+- [x] Added `theme: Color` to `SixelRenderer`
+- [x] Added `area: std::cell::Cell<Rect>` to `SixelRenderer`
