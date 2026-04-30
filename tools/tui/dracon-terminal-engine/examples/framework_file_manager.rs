@@ -4,6 +4,7 @@
 //! Mouse: click to select, right-click for context menu, scroll to browse.
 
 use dracon_terminal_engine::framework::prelude::*;
+use dracon_terminal_engine::framework::widget::Widget;
 use dracon_terminal_engine::framework::widgets::SplitPane;
 use std::path::PathBuf;
 use ratatui::layout::Rect;

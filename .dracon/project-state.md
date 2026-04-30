@@ -1,7 +1,7 @@
 # Project State
 
 ## Current Focus
-feat: import Widget trait to enable test usage
+Added import of the `Widget` trait to enable test usage.
 
 ## Completed
-- [x] Added `use dracon_terminal_engine::framework::widget::Widget;` import to enable testing
+- [x] added import of `Widget` trait from `dracon_terminal_engine::framework::widget`
