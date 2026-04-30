@@ -1,36 +1,6 @@
 use crate::backend::tty::{get_terminal_attr, make_raw, set_terminal_attr, Termios};
 use std::io::{self, Write};
-use std::os::fd::{AsFd, BorrowedFd, AsRawFd, RawFd};
-
-#[cfg(test)]
-struct NullWriter {
-    data: Vec<u8>,
-}
-
-#[cfg(test)]
-impl NullWriter {
-    fn new() -> Self {
-        Self { data: Vec::new() }
-    }
-}
-
-#[cfg(test)]
-impl Write for NullWriter {
-    fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
-        self.data.extend_from_slice(buf);
-        Ok(buf.len())
-    }
-    fn flush(&mut self) -> io::Result<()> {
-        Ok(())
-    }
-}
-
-#[cfg(test)]
-impl AsFd for NullWriter {
-    fn as_fd(&self) -> BorrowedFd<'_> {
-        unsafe { BorrowedFd::borrow_raw(-1) }
-    }
-}
+use std::os::fd::{AsFd, BorrowedFd};
 
 /// The main RAII wrapper for the terminal.
 /// When this struct is dropped, the terminal is restored to its original state.
@@ -86,17 +56,6 @@ impl<W: Write + AsFd> Terminal<W> {
         write!(self.output, "\x1b[?25h").map_err(|e| io::Error::new(io::ErrorKind::Other, e))
     }
 
-    /// Creates a null terminal that discards all output and uses zeroed termios.
-    /// Use this for headless testing where no real terminal is available.
-    #[cfg(test)]
-    pub fn new_null() -> io::Result<Self> {
-        let null_output = NullWriter::new();
-        Ok(Self {
-            original_termios: unsafe { std::mem::zeroed() },
-            output: null_output,
-        })
-    }
-
     /// Hides the terminal cursor.
     pub fn hide_cursor(&mut self) -> io::Result<()> {
         write!(self.output, "\x1b[?25l").map_err(|e| io::Error::new(io::ErrorKind::Other, e))
@@ -121,5 +80,47 @@ impl<W: Write + AsFd> Write for Terminal<W> {
 impl<W: Write + AsFd> AsFd for Terminal<W> {
     fn as_fd(&self) -> BorrowedFd<'_> {
         self.output.as_fd()
+    }
+}
+
+#[cfg(test)]
+pub(crate) mod test_support {
+    use super::*;
+    use std::io::{self, Write};
+    use std::os::fd::{AsFd, BorrowedFd};
+
+    struct NullWriter {
+        data: Vec<u8>,
+    }
+
+    impl NullWriter {
+        fn new() -> Self {
+            Self { data: Vec::new() }
+        }
+    }
+
+    impl Write for NullWriter {
+        fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
+            self.data.extend_from_slice(buf);
+            Ok(buf.len())
+        }
+        fn flush(&mut self) -> io::Result<()> {
+            Ok(())
+        }
+    }
+
+    impl AsFd for NullWriter {
+        fn as_fd(&self) -> BorrowedFd<'_> {
+            unsafe { BorrowedFd::borrow_raw(-1) }
+        }
+    }
+
+    impl Terminal<NullWriter> {
+        pub fn new_null() -> io::Result<Self> {
+            Ok(Self {
+                original_termios: unsafe { std::mem::zeroed() },
+                output: NullWriter::new(),
+            })
+        }
     }
 }
