@@ -245,9 +245,9 @@ fn test_handle_mouse_scroll_propagates() {
     let mut adapter = TextEditorAdapter::new(WidgetId::new(1), editor);
     adapter.set_area(rect(0, 0, 20, 5));
 
-    let initial_row = editor.cursor_row;
+    let initial_row = adapter.editor().cursor_row;
     adapter.handle_mouse(MouseEventKind::ScrollDown, 5, 2);
-    let new_row = editor.cursor_row;
+    let new_row = adapter.editor().cursor_row;
 
     assert_ne!(
         initial_row, new_row,
