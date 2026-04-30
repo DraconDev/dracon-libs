@@ -109,6 +109,11 @@ impl<T: Clone + ToString> Table<T> {
         self.rows.len()
     }
 
+    /// Returns true if there are no rows.
+    pub fn is_empty(&self) -> bool {
+        self.rows.is_empty()
+    }
+
     /// Returns `(start, end)` indices of the currently visible rows.
     pub fn viewport(&self) -> (usize, usize) {
         let start = self.offset;

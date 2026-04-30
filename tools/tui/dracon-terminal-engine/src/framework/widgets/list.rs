@@ -96,6 +96,11 @@ impl<T: Clone + ToString> List<T> {
         self.items.len()
     }
 
+    /// Returns true if there are no items.
+    pub fn is_empty(&self) -> bool {
+        self.items.is_empty()
+    }
+
     /// Returns `(start, end)` indices of the currently visible items.
     pub fn viewport(&self) -> (usize, usize) {
         let start = self.offset;

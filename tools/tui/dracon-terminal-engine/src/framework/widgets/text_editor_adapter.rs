@@ -9,7 +9,8 @@ use crate::input::event::{Event, KeyEvent, MouseEvent, MouseEventKind};
 use crate::widgets::editor::TextEditor;
 use ratatui::layout::Rect;
 
-/// Adapter that wraps a [`TextEditor`] to implement the framework's [`Widget`] trait.
+/// Adapter that wraps a [`TextEditor`] to implement the framework's
+/// [`Widget`](crate::framework::widget::Widget) trait.
 ///
 /// This allows the standalone text editor (which implements ratatui's `Widget`)
 /// to be used inside the framework's `App` with focus management, event routing,
