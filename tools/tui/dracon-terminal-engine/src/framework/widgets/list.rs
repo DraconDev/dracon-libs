@@ -5,12 +5,14 @@ use unicode_width::UnicodeWidthStr;
 use crate::compositor::{Cell, Plane, Styles};
 use crate::framework::scroll::ScrollState;
 use crate::framework::theme::Theme;
+use crate::framework::widget::WidgetId;
 use ratatui::layout::Rect;
 
 /// A generic selectable list widget.
 ///
 /// Renders items with selection highlighting and provides keyboard/mouse navigation.
 pub struct List<T> {
+    id: WidgetId,
     items: Vec<T>,
     selected: usize,
     offset: usize,
@@ -19,12 +21,14 @@ pub struct List<T> {
     on_select: Option<Box<dyn FnMut(&T)>>,
     item_height: u16,
     width: u16,
+    area: std::cell::Cell<Rect>,
 }
 
 impl<T: Clone + ToString> List<T> {
     /// Creates a new `List` with the given items and default theme.
-    pub fn new(items: Vec<T>) -> Self {
+    pub fn new(id: WidgetId, items: Vec<T>) -> Self {
         Self {
+            id,
             items,
             selected: 0,
             offset: 0,
@@ -33,6 +37,7 @@ impl<T: Clone + ToString> List<T> {
             on_select: None,
             item_height: 1,
             width: 40,
+            area: std::cell::Cell::new(Rect::new(0, 0, 40, 10)),
         }
     }
 

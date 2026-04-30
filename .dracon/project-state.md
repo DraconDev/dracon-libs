@@ -1,8 +1,11 @@
 # Project State
 
 ## Current Focus
-Refactor tick callbacks to accept only `Ctx`, removing `&mut App` and updating dependencies
+Add widget identifier and area handling to the List widget for improved widget management
 
 ## Completed
-- [x] Refactor tick callback signature in `run` to accept only `&mut Ctx`
-- [x] Update Cargo.lock to newer dependency versions
+- [x] Added `WidgetId` import
+- [x] Added `id: WidgetId` field to `List` struct
+- [x] Modified `List::new` to accept and store `WidgetId`
+- [x] Added `area: std::cell::Cell<Rect>` field
+- [x] Initialized `area` with a default `Rect` in `new`
