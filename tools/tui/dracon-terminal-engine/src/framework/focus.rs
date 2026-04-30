@@ -185,9 +185,23 @@ impl FocusManager {
         self.on_trap_change.push(Arc::new(Box::new(f)));
     }
 
-    fn notify_focus_change(&self, new: WidgetId, old: Option<WidgetId>) {
+    pub(crate) fn on_focus_change_internal<F>(&mut self, f: F)
+    where
+        F: Fn(Option<WidgetId>, Option<WidgetId>) + Send + Sync + 'static,
+    {
+        self.on_focus_change_internal.push(Arc::new(f));
+    }
+
+    fn notify_focus_change(&self, new: Option<WidgetId>, old: Option<WidgetId>) {
         for cb in &self.on_focus_change {
+            if let Some(n) = new {
+                cb(n, old);
+            }
+        }
+        for cb in &self.on_focus_change_internal {
             cb(new, old);
+        }
+    }
         }
     }
 }
