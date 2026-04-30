@@ -1,9 +1,11 @@
 # Project State
 
 ## Current Focus
-Bump project version to 27.0.0 and update dependencies in Cargo.lock and tooling Cargo.toml.
+Adjust widget focus registration, simplify resize handling, and refine mouse click targeting with z-index ordering and local coordinates.
 
 ## Completed
-- [x] Updated version comment in tools/tui/dracon-terminal-engine/src/lib.rs from v26.0.2 to v27.0.0
-- [x] Updated project metadata in tools/tui/dracon-terminal-engine/Cargo.toml
-- [x] Updated dependency resolutions in Cargo.lock to newer versions
+- [x] Register widget focusability (`widget.focusable()`) instead of always `true` in the focus manager.
+- [x] Remove the redundant area recomputation and `set_area` loop that previously ran on every resize event.
+- [x] Reorder widget hit‑testing by sorting on `z_index()` and select the topmost matching widget.
+- [x] Use localized click coordinates (`local_col`, `local_row`) when dispatching mouse events to the target widget.
+- [x] Update the application’s focus state when a widget is identified as the click target.

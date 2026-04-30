@@ -132,8 +132,9 @@ impl App {
     pub fn add_widget(&mut self, mut widget: Box<dyn Widget>, area: Rect) -> WidgetId {
         let id = WidgetId(self.next_widget_id);
         widget.set_area(area);
+        let focusable = widget.focusable();
         self.widgets.borrow_mut().push(widget);
-        self.focus_manager.register(id, true);
+        self.focus_manager.register(id, focusable);
         self.next_widget_id += 1;
         id
     }
@@ -201,10 +202,6 @@ impl App {
                         match &event {
                             Event::Resize(w, h) => {
                                 self.compositor.resize(*w, *h);
-                                let area = Rect::new(0, 0, *w, *h);
-                                for w in self.widgets.borrow_mut().iter_mut() {
-                                    w.set_area(area);
-                                }
                             }
                             Event::Key(k) => {
                                 if k.code == crate::input::event::KeyCode::Char('c')
@@ -228,17 +225,23 @@ impl App {
                                 let row = mouse_event.row;
                                 let target_id = {
                                     let widgets = self.widgets.borrow();
-                                    widgets.iter().find(|w| {
+                                    let mut sorted: Vec<_> = widgets.iter().collect();
+                                    sorted.sort_by_key(|w| w.z_index());
+                                    sorted.into_iter().find(|w| {
                                         let a = w.area();
                                         col >= a.x && col < a.x + a.width && row >= a.y && row < a.y + a.height
                                     }).map(|w| w.id())
                                 };
                                 if let Some(id) = target_id {
+                                    self.focus_manager.set_focus(id);
                                     if let Some(mut widget) = self.widget_mut(id) {
+                                        let a = widget.area();
+                                        let local_col = col.saturating_sub(a.x);
+                                        let local_row = row.saturating_sub(a.y);
                                         let _ = widget.handle_mouse(
                                             mouse_event.kind,
-                                            col,
-                                            row,
+                                            local_col,
+                                            local_row,
                                         );
                                     }
                                 }
