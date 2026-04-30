@@ -53,14 +53,13 @@ pub trait Widget {
         0
     }
 
-    /// Returns true if this widget needs to be rendered (dirty).
+    /// Returns true if this widget needs to be rendered.
+    /// When false, the widget is skipped during the render pass.
     fn needs_render(&self) -> bool {
         true
     }
 
-    /// Marks the widget as dirty, requiring re-render on the next frame.
-    /// Override this for widgets with internal state that can change without
-    /// explicit invalidation (e.g., cursor blink, animations, live data).
+    /// Marks the widget as dirty, so the next render pass will re-render it.
     fn mark_dirty(&mut self) {}
 
     /// Returns the cursor position for text input widgets.

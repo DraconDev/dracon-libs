@@ -54,9 +54,7 @@ pub struct App {
     focus_manager: FocusManager,
     #[allow(unused)]
     event_dispatcher: EventDispatcher,
-    #[allow(unused)]
     dirty_tracker: DirtyRegionTracker,
-    #[allow(unused)]
     animations: AnimationManager,
     next_widget_id: usize,
 }
