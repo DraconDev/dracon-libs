@@ -39,7 +39,7 @@ fn test_text_editor_demo_smoke() {
     while attempts < 30 {
         match child.try_wait() {
             Ok(Some(status)) => {
-                final_status = Some((status, None));
+                final_status = Some(status);
                 break;
             }
             Ok(None) => {
@@ -51,7 +51,7 @@ fn test_text_editor_demo_smoke() {
     }
 
     let status = match final_status {
-        Some((s, _)) => s,
+        Some(s) => s,
         None => {
             child.kill().ok();
             panic!("text_editor_demo did not exit within 3 seconds");
