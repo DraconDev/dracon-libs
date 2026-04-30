@@ -1,7 +1,7 @@
 # Project State
 
 ## Current Focus
-Add a `move_cursor` method to `TextEditor` that programmatically sets the cursor row and column.
+Lockfile updated to reflect resolved dependency versions without functional changes.
 
 ## Completed
-- [x] Add `move_cursor` method that sets `self.cursor_row` and `self.cursor_col`.
+- [x] Cargo.lock updated (binary diff) with no source changes or version bumps.
