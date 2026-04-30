@@ -275,28 +275,21 @@ impl App {
                 }
             }
 
-            let tick_count = self.tick_count;
             if self.last_tick_time.elapsed() >= self.tick_interval {
                 if let Some(ref mut tick_fn) = *self.on_tick.borrow_mut() {
-                    let ctx = Ctx {
-                        compositor: &mut self.compositor,
-                        theme: &self.theme,
-                        frame_count: frame_count.load(Ordering::SeqCst),
-                        last_frame: &self.last_frame_time,
-                    };
-                    tick_fn(ctx, tick_count, &mut *self);
+                    let tc = self.tick_count;
+                    let cmp = &mut self.compositor;
+                    let thm = &self.theme;
+                    let fc = frame_count.load(Ordering::SeqCst);
+                    let lf = &self.last_frame_time;
+                    tick_fn(&mut Ctx {
+                        compositor: cmp,
+                        theme: thm,
+                        frame_count: fc,
+                        last_frame: lf,
+                    }, tc, self);
+                    self.tick_count += 1;
                     self.last_tick_time = Instant::now();
-                }
-            }
-
-            {
-                let mut widgets = self.widgets.borrow_mut();
-                let mut sorted: Vec<_> = widgets.iter_mut().collect();
-                sorted.sort_by_key(|w| w.z_index());
-                for w in sorted {
-                    let area = w.area();
-                    let plane = w.render(area);
-                    self.compositor.add_plane(plane);
                 }
             }
 
