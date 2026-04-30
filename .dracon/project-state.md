@@ -1,10 +1,12 @@
 # Project State
 
 ## Current Focus
-Add clipboard integration and keybindings (Ctrl+C/Cut/Paste/Delete) to the text editor widget
+feat(editor): Add configurable UI options for line numbers, word wrap, status bar, and syntax highlighting language in the TextEditor widget
 
 ## Completed
-- [x] Added Ctrl+C keybinding to copy selected text to clipboard
-- [x] Added Ctrl+X keybinding to cut selected text to clipboard and delete it
-- [x] Added Ctrl+V keybinding to paste clipboard text at cursor position
-- [x] Added Ctrl+D keybinding to delete selected text at cursor position
+- [x] Added `show_status_bar` field to TextEditor struct to control status bar visibility
+- [x] Added `with_show_line_numbers()` method to enable/disable line number rendering
+- [x] Added `with_word_wrap()` method to enable/disable word wrapping
+- [x] Added `with_status_bar()` method to enable/disable the status bar display
+- [x] Added `with_language()` method to set syntax highlighting language with cache invalidation
+- [x] Updated render logic to adjust available text area height based on status bar visibility and calculate scrollbar accordingly

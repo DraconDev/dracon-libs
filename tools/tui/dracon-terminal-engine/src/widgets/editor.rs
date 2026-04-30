@@ -62,6 +62,8 @@ pub struct TextEditor {
     pub first_invalid_line: RefCell<Option<usize>>,
     /// Path to the currently open file.
     pub file_path: Option<PathBuf>,
+    /// Whether to show the status bar at the bottom.
+    pub show_status_bar: bool,
 }
 
 impl Default for TextEditor {
@@ -93,6 +95,7 @@ impl Default for TextEditor {
             highlighted_cache: RefCell::new(Vec::new()),
             first_invalid_line: RefCell::new(Some(0)),
             file_path: None,
+            show_status_bar: true,
         }
     }
 }
@@ -305,6 +308,27 @@ impl TextEditor {
             self.cursor_col = 0;
             self.ensure_cursor_visible(area);
         }
+    }
+
+    /// Enables or disables line number rendering.
+    pub fn with_show_line_numbers(&mut self, show: bool) {
+        self.show_line_numbers = show;
+    }
+
+    /// Enables or disables word wrapping.
+    pub fn with_word_wrap(&mut self, wrap: bool) {
+        self.wrap = wrap;
+    }
+
+    /// Enables or disables the status bar.
+    pub fn with_status_bar(&mut self, show: bool) {
+        self.show_status_bar = show;
+    }
+
+    /// Sets the language for syntax highlighting (e.g., "rust", "python").
+    pub fn with_language(&mut self, language: &str) {
+        self.language = language.to_string();
+        self.invalidate_from(0);
     }
 
     /// Returns the full editor content joined by newlines.
@@ -1685,7 +1709,8 @@ impl TextEditor {
 impl Widget for &TextEditor {
     fn render(self, area: Rect, buf: &mut Buffer) {
         let gutter_w = self.gutter_width();
-        let scrollbar_w = if self.effective_len() > area.height as usize {
+        let status_bar_h = if self.show_status_bar && area.height >= 2 { 1 } else { 0 };
+        let scrollbar_w = if self.effective_len() > (area.height as usize).saturating_sub(status_bar_h) {
             1
         } else {
             0
@@ -1696,7 +1721,7 @@ impl Widget for &TextEditor {
             area.y,
             area.width
                 .saturating_sub(gutter_w as u16 + scrollbar_w as u16),
-            area.height,
+            area.height.saturating_sub(status_bar_h),
         );
 
         let mut highlighted = {
