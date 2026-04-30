@@ -26,6 +26,7 @@ impl Button {
             theme: Theme::default(),
             on_click: None,
             area: std::cell::Cell::new(Rect::new(0, 0, 10, 1)),
+            dirty: true,
         }
     }
 
@@ -37,6 +38,7 @@ impl Button {
             theme: Theme::default(),
             on_click: None,
             area: std::cell::Cell::new(Rect::new(0, 0, 10, 1)),
+            dirty: true,
         }
     }
 
