@@ -34,6 +34,7 @@ pub struct Table<T> {
     theme: Theme,
     on_select: Option<Box<dyn FnMut(&T)>>,
     area: Cell<Rect>,
+    dirty: bool,
 }
 
 impl<T: Clone + ToString> Table<T> {
