@@ -74,6 +74,10 @@ impl crate::framework::widget::Widget for Profiler {
         self.area.set(area);
     }
 
+    fn z_index(&self) -> u16 {
+        160
+    }
+
     fn render(&self, area: Rect) -> Plane {
         let mut plane = Plane::new(0, area.width, area.height);
         plane.z_index = 160;

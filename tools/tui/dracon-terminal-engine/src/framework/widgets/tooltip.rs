@@ -51,6 +51,10 @@ impl crate::framework::widget::Widget for Tooltip {
         self.area.set(area);
     }
 
+    fn z_index(&self) -> u16 {
+        100
+    }
+
     fn render(&self, area: Rect) -> Plane {
         let mut plane = Plane::new(0, area.width, area.height);
         plane.z_index = 100;

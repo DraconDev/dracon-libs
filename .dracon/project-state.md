@@ -1,11 +1,14 @@
 # Project State
 
 ## Current Focus
-Implement widget trait methods and refine UI component behavior through explicit type annotations and event handling
+Add explicit `z_index` implementations for UI widgets to define proper rendering order.
 
 ## Completed
-- [x] Implement `z_index` method for DebugOverlay to establish rendering layer priority (200)
-- [x] Refactor Hud's key handling to exclusively process KeyEvent::Press events
-- [x] Update Slider widget's on_change event handler to return false when no callback exists
-- [x] Complete Widget trait implementation for all three widgets
-- [x] Enhance rendering consistency through explicit plane z-index configuration
+- [x] Implement `z_index` method for EventLogger (z-index 170).
+- [x] Implement `z_index` method for MenuBar (z-index 60).
+- [x] Implement `z_index` method for Profiler (z-index 160).
+- [x] Set `z_index` for SplitPane divider plane to 5.
+- [x] Implement `z_index` method for StatusBar (z-index 50).
+- [x] Implement `z_index` method for Toast (z-index 90).
+- [x] Implement `z_index` method for Tooltip (z-index 100).
+- [x] Implement `z_index` method for WidgetInspector (z-index 180).

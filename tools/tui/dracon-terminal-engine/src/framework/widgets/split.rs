@@ -183,7 +183,9 @@ impl crate::framework::widget::Widget for SplitPane {
     }
 
     fn render(&self, area: Rect) -> Plane {
-        self.render_divider(area)
+        let mut plane = self.render_divider(area);
+        plane.z_index = 5;
+        plane
     }
 
     fn handle_mouse(&mut self, kind: crate::input::event::MouseEventKind, col: u16, row: u16) -> bool {
