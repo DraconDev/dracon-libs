@@ -13,6 +13,14 @@ use unicode_width::{UnicodeWidthChar, UnicodeWidthStr};
 use std::cell::RefCell;
 use std::path::PathBuf;
 
+#[derive(Clone, Copy, Debug, PartialEq)]
+enum EditorMode {
+    Normal,
+    Search,
+    Replace,
+    GotoLine,
+}
+
 /// A tactical multiline text editor widget for quick edits.
 #[derive(Clone, Debug)]
 pub struct TextEditor {
@@ -64,6 +72,12 @@ pub struct TextEditor {
     pub file_path: Option<PathBuf>,
     /// Whether to show the status bar at the bottom.
     pub show_status_bar: bool,
+    /// Current editor mode for search/goto UI.
+    mode: EditorMode,
+    /// Input buffer for search/goto dialogs.
+    mode_input: String,
+    /// Whether we are searching (false) or replacing (true).
+    is_replacing: bool,
 }
 
 impl Default for TextEditor {
@@ -96,6 +110,9 @@ impl Default for TextEditor {
             first_invalid_line: RefCell::new(Some(0)),
             file_path: None,
             show_status_bar: true,
+            mode: EditorMode::Normal,
+            mode_input: String::new(),
+            is_replacing: false,
         }
     }
 }
