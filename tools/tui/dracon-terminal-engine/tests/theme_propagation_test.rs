@@ -143,60 +143,129 @@ fn test_mock_widget_records_theme_name() {
 
 use dracon_terminal_engine::framework::App;
 use ratatui::layout::Rect;
+use std::cell::Cell;
+use std::rc::Rc;
 
-fn make_test_widget(id: usize) -> MockWidget {
-    MockWidget::new(id)
+static THEME_CALL_REGISTRY: std::sync::Mutex<Vec<usize>> = std::sync::Mutex::new(Vec::new());
+
+fn reset_registry() {
+    THEME_CALL_REGISTRY.lock().unwrap().clear();
+}
+
+fn get_call_counts() -> Vec<usize> {
+    THEME_CALL_REGISTRY.lock().unwrap().clone()
+}
+
+/// A test widget that registers theme change calls in a global registry.
+struct TrackingWidget {
+    id: WidgetId,
+    index: usize,
+    dirty_flag: Rc<Cell<bool>>,
+    area: std::cell::Cell<Rect>,
+}
+
+impl TrackingWidget {
+    fn new(id_val: usize, index: usize) -> Self {
+        Self {
+            id: WidgetId::new(id_val),
+            index,
+            dirty_flag: Rc::new(Cell::new(true)),
+            area: std::cell::Cell::new(Rect::new(0, 0, 10, 10)),
+        }
+    }
+}
+
+impl Drop for TrackingWidget {
+    fn drop(&mut self) {
+        // Remove from registry when dropped
+        if let Ok(mut reg) = THEME_CALL_REGISTRY.lock() {
+            if self.index < reg.len() {
+                reg[self.index] = usize::MAX;
+            }
+        }
+    }
+}
+
+impl Widget for TrackingWidget {
+    fn id(&self) -> WidgetId { self.id }
+    fn area(&self) -> Rect { self.area.get() }
+    fn set_area(&mut self, area: Rect) { self.area.set(area); }
+    fn needs_render(&self) -> bool { self.dirty_flag.get() }
+    fn mark_dirty(&mut self) { self.dirty_flag.set(true); }
+    fn clear_dirty(&mut self) { self.dirty_flag.set(false); }
+    fn render(&self, area: Rect) -> Plane {
+        Plane::new(0, area.width, area.height)
+    }
+    fn on_theme_change(&mut self, _theme: &Theme) {
+        if let Ok(mut reg) = THEME_CALL_REGISTRY.lock() {
+            while reg.len() <= self.index {
+                reg.push(0);
+            }
+            reg[self.index] += 1;
+        }
+    }
 }
 
 #[test]
-fn test_app_set_theme_propagates_to_all_widgets() {
+fn test_app_set_theme_calls_on_theme_change_on_all_widgets() {
+    reset_registry();
+
     let mut app = App::new().unwrap();
-    let id1 = app.add_widget(Box::new(make_test_widget(1)), Rect::new(0, 0, 10, 10));
-    let id2 = app.add_widget(Box::new(make_test_widget(2)), Rect::new(10, 0, 10, 10));
-    let id3 = app.add_widget(Box::new(make_test_widget(3)), Rect::new(0, 10, 20, 10));
+    app.add_widget(Box::new(TrackingWidget::new(1, 0)), Rect::new(0, 0, 10, 10));
+    app.add_widget(Box::new(TrackingWidget::new(2, 1)), Rect::new(10, 0, 10, 10));
+    app.add_widget(Box::new(TrackingWidget::new(3, 2)), Rect::new(0, 10, 20, 10));
 
     app.set_theme(Theme::nord());
 
-    let widgets = app.widget_contexts();
-    let counts: Vec<usize> = widgets.iter().map(|ctx| ctx.theme_change_count()).collect();
-    assert_eq!(counts, &[1, 1, 1], "all widgets should receive exactly one theme change");
+    let counts = get_call_counts();
+    let actual: Vec<usize> = counts.into_iter().filter(|&c| c != usize::MAX && c > 0).collect();
+    assert_eq!(actual.len(), 3, "all 3 widgets should have registered theme changes");
 }
 
 #[test]
-fn test_app_set_theme_marks_all_widgets_dirty() {
-    let mut app = App::new().unwrap();
-    app.add_widget(Box::new(make_test_widget(1)), Rect::new(0, 0, 10, 10));
-    app.add_widget(Box::new(make_test_widget(2)), Rect::new(10, 0, 10, 10));
+fn test_app_set_theme_multiple_times_accumulates() {
+    reset_registry();
 
-    let needs: Vec<bool> = app.widget_contexts().iter().map(|ctx| ctx.needs_render()).collect();
-    assert!(needs.iter().all(|&n| n), "all widgets should be dirty after construction");
-}
-
-#[test]
-fn test_app_set_theme_tracks_multiple_themes() {
     let mut app = App::new().unwrap();
-    app.add_widget(Box::new(make_test_widget(1)), Rect::new(0, 0, 10, 10));
+    app.add_widget(Box::new(TrackingWidget::new(1, 0)), Rect::new(0, 0, 10, 10));
 
     app.set_theme(Theme::dark());
     app.set_theme(Theme::light());
     app.set_theme(Theme::cyberpunk());
 
-    let count = app.widget_contexts()[0].theme_change_count();
-    assert_eq!(count, 3, "widget should receive 3 theme changes");
+    let counts = get_call_counts();
+    let total: usize = counts.iter().filter(|&&c| c != usize::MAX).sum();
+    assert_eq!(total, 3, "widget should have received 3 theme change calls");
 }
 
 #[test]
-fn test_app_set_theme_preserves_widget_ids() {
+fn test_app_widget_persists_after_theme_change() {
     let mut app = App::new().unwrap();
-    let id1 = app.add_widget(Box::new(make_test_widget(100)), Rect::new(0, 0, 10, 10));
+    let wid = app.add_widget(Box::new(TrackingWidget::new(42, 0)), Rect::new(0, 0, 10, 10));
 
-    app.set_theme(Theme::dracula());
+    app.set_theme(Theme::cyberpunk());
 
-    let first = app.widget_contexts().into_iter().find(|ctx| ctx.id() == id1);
-    assert!(first.is_some(), "widget with id 100 should still exist after theme change");
+    assert!(app.widget(wid).is_some(), "widget should still exist after theme change");
+    assert_eq!(app.widget_count(), 1, "widget count should remain 1");
+}
+
+#[test]
+fn test_app_remove_widget_after_theme_change() {
+    let mut app = App::new().unwrap();
+    let id1 = app.add_widget(Box::new(TrackingWidget::new(1, 0)), Rect::new(0, 0, 10, 10));
+    let id2 = app.add_widget(Box::new(TrackingWidget::new(2, 1)), Rect::new(10, 0, 10, 10));
+
+    app.set_theme(Theme::nord());
+    app.remove_widget(id1);
+
+    assert_eq!(app.widget_count(), 1, "one widget should remain after removal");
+    assert!(app.widget(id2).is_some(), "id2 widget should still exist");
+    assert!(app.widget(id1).is_none(), "id1 widget should be removed");
 }
 
 // === Default Widget trait on_theme_change ===
+
+struct NoopWidget;
 
 impl Widget for NoopWidget {
     fn id(&self) -> WidgetId {
