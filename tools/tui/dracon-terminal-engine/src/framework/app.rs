@@ -239,13 +239,6 @@ impl App {
                 }
             }
 
-            let mut ctx = Ctx {
-                compositor: &mut self.compositor,
-                theme: &self.theme,
-                frame_count: frame_count.load(Ordering::SeqCst),
-                last_frame: &self.last_frame_time,
-            };
-
             if self.last_tick_time.elapsed() >= self.tick_interval {
                 if let Some(ref mut tick_fn) = *self.on_tick.borrow_mut() {
                     tick_fn(&mut ctx, self.tick_count);
@@ -253,6 +246,8 @@ impl App {
                 self.tick_count += 1;
                 self.last_tick_time = Instant::now();
             }
+
+            f(&mut ctx);
 
             {
                 let mut widgets = self.widgets.borrow_mut();
@@ -264,8 +259,6 @@ impl App {
                     self.compositor.add_plane(plane);
                 }
             }
-
-            f(&mut ctx);
 
             self.compositor.render(&mut self.terminal)?;
 

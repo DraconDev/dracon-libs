@@ -1,10 +1,10 @@
 # Project State
 
 ## Current Focus
-Refactor event handling and thread spawning to use struct fields and simplify API
+Refactor tick handling to eliminate redundant context creation and streamline widget processing
 
 ## Completed
-- [x] Use dereferenced key reference `*k` and wrap dispatch in `let _ =` to suppress result
-- [x] Restructure mouse event dispatch by pattern‑matching into a struct and forwarding its fields
-- [x] Remove the explicit `app: &mut self` argument from the `spawn_thread` call
-- [x] Update Cargo.lock (binary update, no functional change)
+- [x] Removed the local `Ctx` variable creation and its associated block
+- [x] Moved the `f(&mut ctx)` call to execute immediately after updating `last_tick_time`
+- [x] Eliminated the duplicate `f(&mut ctx)` call that previously occurred after widget collection
+- [x] Adjusted the order of widget sorting and rendering to reflect the removed calls
