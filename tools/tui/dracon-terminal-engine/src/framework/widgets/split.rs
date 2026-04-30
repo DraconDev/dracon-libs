@@ -84,6 +84,11 @@ impl SplitPane {
         self
     }
 
+    /// Returns the current split ratio.
+    pub fn get_ratio(&self) -> f32 {
+        self.ratio
+    }
+
     /// Splits `area` into two `Rect`s according to the current ratio and orientation.
     pub fn split(&self, area: Rect) -> (Rect, Rect) {
         match self.orientation {
@@ -136,6 +141,28 @@ impl SplitPane {
 
         plane
     }
+
+    /// Handles a mouse drag event to interactively resize the split ratio.
+    ///
+    /// Returns `true` if the event was consumed.
+    pub fn handle_resize(&mut self, kind: crate::input::event::MouseEventKind, col: u16, row: u16, area: Rect) -> bool {
+        match kind {
+            crate::input::event::MouseEventKind::Drag(_) => {
+                match self.orientation {
+                    Orientation::Horizontal => {
+                        let total_w = area.width as f32;
+                        self.ratio = (col as f32 / total_w).clamp(0.1, 0.9);
+                    }
+                    Orientation::Vertical => {
+                        let total_h = area.height as f32;
+                        self.ratio = (row as f32 / total_h).clamp(0.1, 0.9);
+                    }
+                }
+                true
+            }
+            _ => false,
+        }
+    }
 }
 
 impl crate::framework::widget::Widget for SplitPane {
@@ -162,42 +189,19 @@ impl crate::framework::widget::Widget for SplitPane {
     fn handle_mouse(&mut self, kind: crate::input::event::MouseEventKind, col: u16, row: u16) -> bool {
         match kind {
             crate::input::event::MouseEventKind::Drag(_) => {
+                let current_area = self.area.get();
                 match self.orientation {
                     Orientation::Horizontal => {
-                        let total_w = area().width as f32;
-                        self.ratio = (col as f32 / total_w).clamp(0.1, 0.9);
+                        let total_w = current_area.width as f32;
+                        if total_w > 0.0 {
+                            self.ratio = (col as f32 / total_w).clamp(0.1, 0.9);
+                        }
                     }
                     Orientation::Vertical => {
-                        let total_h = area().height as f32;
-                        self.ratio = (row as f32 / total_h).clamp(0.1, 0.9);
-                    }
-                }
-                true
-            }
-            _ => false,
-        }
-    }
-}
-
-impl SplitPane {
-    fn area(&self) -> Rect {
-        self.area.get()
-    }
-
-    /// Handles a mouse drag event to interactively resize the split ratio.
-    ///
-    /// Returns `true` if the event was consumed.
-    pub fn handle_resize(&mut self, kind: crate::input::event::MouseEventKind, col: u16, row: u16, area: Rect) -> bool {
-        match kind {
-            crate::input::event::MouseEventKind::Drag(_) => {
-                match self.orientation {
-                    Orientation::Horizontal => {
-                        let total_w = area.width as f32;
-                        self.ratio = (col as f32 / total_w).clamp(0.1, 0.9);
-                    }
-                    Orientation::Vertical => {
-                        let total_h = area.height as f32;
-                        self.ratio = (row as f32 / total_h).clamp(0.1, 0.9);
+                        let total_h = current_area.height as f32;
+                        if total_h > 0.0 {
+                            self.ratio = (row as f32 / total_h).clamp(0.1, 0.9);
+                        }
                     }
                 }
                 true
