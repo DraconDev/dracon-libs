@@ -1,7 +1,11 @@
 # Project State
 
 ## Current Focus
-Expose the full application context to tick callbacks for richer tick handling
+Refactor tick handling to pass a richer application context to callbacks and restructure widget rendering by sorting and adding planes before compositing.
 
 ## Completed
-- [x] Modified App's `on_tick` field to accept an additional `&mut App` parameter in tick callbacks.
+- [x] Sorted widgets by `z_index` and added each rendered plane to the compositor before processing ticks.
+- [x] Created a new `Ctx` with `compositor`, `theme`, `frame_count`, and `last_frame` and passed it to tick callbacks.
+- [x] Removed direct increment of `tick_count` and redundant `last_tick_time` updates from tick handling.
+- [x] Added a duplicated widget‑sorting/plane‑addition block to ensure widgets are rendered prior to the rendering function `f`.
+- [x] Eliminated reliance on the `App` reference in tick callbacks, focusing interaction through widget‑level functions.

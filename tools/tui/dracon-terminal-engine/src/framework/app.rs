@@ -264,13 +264,48 @@ impl App {
                 last_frame: &self.last_frame_time,
             };
 
+            {
+                let mut widgets = self.widgets.borrow_mut();
+                let mut sorted: Vec<_> = widgets.iter_mut().collect();
+                sorted.sort_by_key(|w| w.z_index());
+                for w in sorted {
+                    let area = w.area();
+                    let plane = w.render(area);
+                    self.compositor.add_plane(plane);
+                }
+            }
+
+            let tick_count = self.tick_count;
             if self.last_tick_time.elapsed() >= self.tick_interval {
                 if let Some(ref mut tick_fn) = *self.on_tick.borrow_mut() {
-                    tick_fn(&mut ctx, self.tick_count, &mut self);
+                    let ctx = Ctx {
+                        compositor: &mut self.compositor,
+                        theme: &self.theme,
+                        frame_count: frame_count.load(Ordering::SeqCst),
+                        last_frame: &self.last_frame_time,
+                    };
+                    tick_fn(ctx, tick_count, &mut *self);
+                    self.last_tick_time = Instant::now();
                 }
-                self.tick_count += 1;
-                self.last_tick_time = Instant::now();
             }
+
+            {
+                let mut widgets = self.widgets.borrow_mut();
+                let mut sorted: Vec<_> = widgets.iter_mut().collect();
+                sorted.sort_by_key(|w| w.z_index());
+                for w in sorted {
+                    let area = w.area();
+                    let plane = w.render(area);
+                    self.compositor.add_plane(plane);
+                }
+            }
+
+            let mut ctx = Ctx {
+                compositor: &mut self.compositor,
+                theme: &self.theme,
+                frame_count: frame_count.load(Ordering::SeqCst),
+                last_frame: &self.last_frame_time,
+            };
 
             f(&mut ctx, &mut self);
 
