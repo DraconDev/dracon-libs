@@ -48,6 +48,12 @@ pub struct App {
     resize_flag: Arc<AtomicBool>,
     tick_count: u64,
     on_tick: RefCell<Option<Box<dyn FnMut(&mut Ctx, u64)>>>,
+    widgets: RefCell<Vec<Box<dyn Widget>>>,
+    focus_manager: FocusManager,
+    event_dispatcher: EventDispatcher,
+    dirty_tracker: DirtyRegionTracker,
+    animations: AnimationManager,
+    next_widget_id: usize,
 }
 
 impl App {
@@ -72,6 +78,12 @@ impl App {
             resize_flag: Arc::new(AtomicBool::new(false)),
             tick_count: 0,
             on_tick: RefCell::new(None),
+            widgets: RefCell::new(Vec::new()),
+            focus_manager: FocusManager::new(),
+            event_dispatcher: EventDispatcher::with_focus(FocusManager::new()),
+            dirty_tracker: DirtyRegionTracker::new(),
+            animations: AnimationManager::new(),
+            next_widget_id: 0,
         })
     }
 
@@ -108,6 +120,38 @@ impl App {
     pub fn tick_interval(mut self, ms: u64) -> Self {
         self.tick_interval = Duration::from_millis(ms);
         self
+    }
+
+    /// Adds a widget to the application with the given area.
+    /// Returns the assigned `WidgetId`.
+    pub fn add_widget(&mut self, mut widget: Box<dyn Widget>, area: Rect) -> WidgetId {
+        let id = WidgetId(self.next_widget_id);
+        widget.set_area(area);
+        self.widgets.borrow_mut().push(widget);
+        self.focus_manager.register(id, true);
+        self.next_widget_id += 1;
+        id
+    }
+
+    /// Removes a widget by its ID.
+    pub fn remove_widget(&mut self, id: WidgetId) {
+        self.widgets.borrow_mut().retain(|w| w.id() != id);
+        self.focus_manager.unregister(id);
+    }
+
+    /// Returns an immutable reference to a widget by ID.
+    pub fn widget(&self, id: WidgetId) -> Option<&dyn Widget> {
+        self.widgets.borrow().iter().find(|w| w.id() == id).map(|w| w.as_ref())
+    }
+
+    /// Returns a mutable reference to a widget by ID.
+    pub fn widget_mut(&mut self, id: WidgetId) -> Option<&mut dyn Widget> {
+        self.widgets.borrow_mut().iter_mut().find(|w| w.id() == id).map(|w| w.as_mut())
+    }
+
+    /// Returns the number of registered widgets.
+    pub fn widget_count(&self) -> usize {
+        self.widgets.borrow().len()
     }
 
     /// Starts the application event loop.
