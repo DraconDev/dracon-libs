@@ -193,7 +193,7 @@ impl ScrollContainer {
 
         let mut plane = Plane::new(0, self.scrollbar_width as u16, area.height);
 
-        if total <= visible {
+        if total <= visible || !self.scrollbar_visible {
             return plane;
         }
 

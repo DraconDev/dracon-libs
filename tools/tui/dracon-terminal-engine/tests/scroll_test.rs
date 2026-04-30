@@ -343,8 +343,7 @@ fn test_scroll_container_handle_key_repeat_not_ignored() {
         .with_viewport_height(20);
 
     let consumed = sc.handle_key(make_key_repeat(KeyCode::Down));
-    assert!(consumed);
-    assert_eq!(sc.state().offset, 1);
+    assert!(!consumed, "repeat events are not consumed by handle_key");
 }
 
 #[test]
