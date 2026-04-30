@@ -21,7 +21,6 @@ use crate::backend::tty;
 use crate::compositor::{Compositor, Plane};
 use crate::framework::animation::AnimationManager;
 use crate::framework::dirty_regions::DirtyRegionTracker;
-use crate::framework::event_dispatcher::EventDispatcher;
 use crate::framework::focus::FocusManager;
 use crate::framework::theme::Theme;
 use crate::framework::widget::{Widget, WidgetId};
@@ -69,8 +68,6 @@ pub struct App {
     on_tick: RefCell<Option<Box<dyn FnMut(&mut Ctx, u64) + 'static>>>,
     widgets: RefCell<Vec<Box<dyn Widget>>>,
     focus_manager: FocusManager,
-    #[allow(unused)]
-    event_dispatcher: EventDispatcher,
     dirty_tracker: DirtyRegionTracker,
     animations: AnimationManager,
     next_widget_id: usize,
@@ -100,7 +97,6 @@ impl App {
             on_tick: RefCell::new(None),
             widgets: RefCell::new(Vec::new()),
             focus_manager: FocusManager::new(),
-            event_dispatcher: EventDispatcher::new(),
             dirty_tracker: DirtyRegionTracker::new(),
             animations: AnimationManager::new(),
             next_widget_id: 0,

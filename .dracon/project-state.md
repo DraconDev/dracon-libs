@@ -1,10 +1,9 @@
 # Project State
 
 ## Current Focus
-Add `is_empty()` convenience methods to List and Table widgets, and fix documentation links for Theme and Widget types.
+Refactor the `App` framework to clean up unused event dispatching infrastructure, simplifying the struct and its initialization, and synchronize dependency state.
 
 ## Completed
-- [x] feat(widget): add `is_empty()` method to List widget for checking if list has no items
-- [x] feat(widget): add `is_empty()` method to Table widget for checking if table has no rows
-- [x] docs(theme): fix fully qualified path for Theme type in documentation
-- [x] docs(text_editor_adapter): fix fully qualified path for Widget trait in documentation
+- [x] Removed the `EventDispatcher` field from `App`, eliminating unused import and struct member.
+- [x] Updated `App::new()` to no longer instantiate `EventDispatcher`.
+- [x] Updated Cargo.lock to reflect the current dependency resolution state, ensuring lock file consistency.
