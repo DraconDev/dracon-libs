@@ -1,11 +1,9 @@
 # Project State
 
 ## Current Focus
-Refactor Hud widget to use fully qualified `std::cell::Cell` and drop unused `area` parameter in `render`
+Refactor Breadcrumbs rendering to remove zone plane additions and adjust Z-index type to i32 in HUD widget
 
 ## Completed
-- [x] Updated Cargo.lock reflecting dependency version changes
-- [x] Replaced imported `Cell` with fully qualified `std::cell::Cell` for the `area` field
-- [x] Updated `area` field initialization to use `std::cell::Cell::new`
-- [x] Modified `render` method signature to remove the unused `area: Rect` parameter
-- [x] Adjusted `render` method body to reference the qualified `Cell` type where needed
+- [x] Eliminate the loop that added individual breadcrumb zone planes after rendering the breadcrumb plane
+- [x] Simplify Breadcrumbs rendering in example by removing bc_zones handling
+- [x] Cast Z-index from u32 to i32 in Hud::render_text, render_gauge, and render method

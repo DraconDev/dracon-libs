@@ -73,7 +73,7 @@ impl Hud {
     /// Renders a text string at offset `(x, y)` with the given foreground and background colors.
     pub fn render_text(&self, x: u16, y: u16, text: &str, fg: Color, bg: Color) -> Plane {
         let mut plane = Plane::new(0, self.width, self.height);
-        plane.z_index = self.z_index;
+        plane.z_index = self.z_index as i32;
 
         let text_len = text.width().min((self.width as usize).saturating_sub(x as usize));
         let start_idx = (y * self.width + x) as usize;
@@ -101,7 +101,7 @@ impl Hud {
     /// The gauge uses '█' for filled cells and '░' for empty cells.
     pub fn render_gauge(&self, x: u16, y: u16, label: &str, value: f32, max: f32, width: u16) -> Plane {
         let mut plane = Plane::new(0, self.width, self.height);
-        plane.z_index = self.z_index;
+        plane.z_index = self.z_index as i32;
 
         let label_len = label.width().min(width as usize);
         let start_idx = (y * self.width + x) as usize;
@@ -158,7 +158,7 @@ impl crate::framework::widget::Widget for Hud {
 
     fn render(&self, _area: Rect) -> Plane {
         let mut plane = Plane::new(0, self.width, self.height);
-        plane.z_index = self.z_index;
+        plane.z_index = self.z_index as i32;
 
         if !self.visible {
             for cell in &mut plane.cells {
