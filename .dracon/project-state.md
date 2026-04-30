@@ -1,10 +1,12 @@
 # Project State
 
 ## Current Focus
-Add mutable widget ID support across all widget types.
+Add comprehensive integration tests for widget dirty‑state tracking.
 
 ## Completed
-- [x] feat(widget_id): add `set_id` method to Breadcrumbs, Button, Checkbox, ContextMenu, DebugOverlay, EventLogger, Form, Hud, Label, List, MenuBar, Modal, PasswordInput, Profiler, ProgressBar, Radio, SearchInput, Select, Slider, Spinner, Split, StatusBar, TabBar, Table, TextEditorAdapter, Toast, Toggle, Tooltip, Tree, WidgetInspector
-- [x] docs(widget_id): explain that widget IDs can now be changed after construction
-- [x] test(support): update tests to use mutable IDs where needed
-- [x] chore(binaries): update Cargo.lock to reflect stable dependencies
+- [x] Implement tests confirming a widget is dirty immediately after construction.
+- [x] Verify that calling `render` followed by `clear_dirty` marks the widget as clean.
+- [x] Ensure state‑changing actions (e.g., toggle, set value, select) correctly set the dirty flag.
+- [x] Add explicit `mark_dirty` test to confirm it overrides a clean state.
+- [x] Test that multiple sequential state changes still result in a single dirty condition.
+- [x] Extend dirty‑state tests to various widget types: Checkbox, Slider, ProgressBar, and Radio.
