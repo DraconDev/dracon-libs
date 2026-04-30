@@ -1,7 +1,8 @@
 # Project State
 
 ## Current Focus
-Update dependencies in Cargo.lock to newer versions
+Add import of `Widget` trait to modules to enable test usage
 
 ## Completed
-- [x] Update Cargo.lock to reflect newer dependency versions
+- [x] Added `use dracon_terminal_engine::framework::widget::Widget;` to `framework/mod.rs`
+- [x] Added `use dracon_terminal_engine::framework::widget::Widget;` to `lib.rs`

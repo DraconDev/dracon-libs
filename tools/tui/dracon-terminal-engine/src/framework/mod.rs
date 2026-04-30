@@ -7,6 +7,7 @@
 //!
 //! ```no_run
 //! use dracon_terminal_engine::framework::prelude::*;
+//! use dracon_terminal_engine::framework::widget::Widget;
 //! use ratatui::layout::Rect;
 //!
 //! App::new().unwrap()
