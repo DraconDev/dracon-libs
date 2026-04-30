@@ -116,8 +116,10 @@ impl App {
     /// configuration of each widget.
     pub fn set_theme(&mut self, theme: Theme) -> &mut Self {
         self.theme = theme;
+        self.dirty_tracker.mark_all_dirty();
         for widget in self.widgets.borrow_mut().iter_mut() {
             widget.on_theme_change(&theme);
+            widget.mark_dirty();
         }
         self
     }
@@ -205,6 +207,10 @@ impl App {
                 resize_flag.store(false, Ordering::SeqCst);
                 if let Ok((w, h)) = tty::get_window_size(io::stdout().as_fd()) {
                     self.compositor.resize(w, h);
+                    self.dirty_tracker.mark_all_dirty();
+                    for w in self.widgets.borrow_mut().iter_mut() {
+                        w.mark_dirty();
+                    }
                 }
             }
 
@@ -217,6 +223,10 @@ impl App {
                         match &event {
                             Event::Resize(w, h) => {
                                 self.compositor.resize(*w, *h);
+                                self.dirty_tracker.mark_all_dirty();
+                                for w in self.widgets.borrow_mut().iter_mut() {
+                                    w.mark_dirty();
+                                }
                             }
                             Event::Key(k) => {
                                 if k.code == crate::input::event::KeyCode::Char('c')
@@ -303,8 +313,12 @@ impl App {
                 let mut sorted: Vec<_> = widgets.iter_mut().collect();
                 sorted.sort_by_key(|w| w.z_index());
                 for w in sorted {
+                    if !w.needs_render() {
+                        continue;
+                    }
                     let area = w.area();
                     let plane = w.render(area);
+                    w.mark_dirty();
                     self.compositor.add_plane(plane);
                 }
             }
@@ -319,6 +333,7 @@ impl App {
                         terminal: &mut self.terminal,
                         focus_manager: &mut self.focus_manager,
                         animations: &mut self.animations,
+                        dirty_tracker: &mut self.dirty_tracker,
                     }, self.tick_count);
                     self.tick_count += 1;
                     self.last_tick_time = Instant::now();
@@ -333,6 +348,7 @@ impl App {
                 terminal: &mut self.terminal,
                 focus_manager: &mut self.focus_manager,
                 animations: &mut self.animations,
+                dirty_tracker: &mut self.dirty_tracker,
             });
 
             self.compositor.render(&mut self.terminal)?;
@@ -375,6 +391,7 @@ pub struct Ctx<'a> {
     pub(crate) terminal: &'a mut crate::Terminal<io::Stdout>,
     pub(crate) focus_manager: &'a mut FocusManager,
     pub(crate) animations: &'a mut AnimationManager,
+    pub(crate) dirty_tracker: &'a mut DirtyRegionTracker,
 }
 
 impl<'a> Ctx<'a> {
@@ -416,6 +433,21 @@ impl<'a> Ctx<'a> {
     /// Returns a mutable reference to the animation manager.
     pub fn animations_mut(&mut self) -> &mut AnimationManager {
         &mut self.animations
+    }
+
+    /// Marks a screen region as dirty, so it will be re-rendered on the next frame.
+    pub fn mark_dirty(&mut self, x: u16, y: u16, width: u16, height: u16) {
+        self.dirty_tracker.mark_dirty(x, y, width, height);
+    }
+
+    /// Marks the entire screen as dirty, requiring a full refresh.
+    pub fn mark_all_dirty(&mut self) {
+        self.dirty_tracker.mark_all_dirty();
+    }
+
+    /// Returns true if a full screen refresh is needed.
+    pub fn needs_full_refresh(&self) -> bool {
+        self.dirty_tracker.needs_full_refresh()
     }
 
     /// Returns an immutable reference to the compositor.

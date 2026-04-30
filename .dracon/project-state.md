@@ -1,9 +1,10 @@
 # Project State
 
 ## Current Focus
-refactor(app): remove unused attribute annotations from dirty_tracker and animations fields, enable widget render optimization documentation
+Implement dirty region tracking to optimize screen redraws and expose related APIs in the framework context.
 
 ## Completed
-- [x] Remove `#[allow(unused)]` from `dirty_tracker` and `animations` fields in App struct, indicating these components are now actively utilized
-- [x] Update `needs_render()` documentation to clarify that returning false skips the widget during render pass
-- [x] Simplify `mark_dirty()` documentation to describe its role in triggering re-render
+- [x] Added `DirtyRegionTracker` usage in `App::set_theme`, resize handling, and event processing to mark all widgets as dirty when layout changes.
+- [x] Updated widget rendering loop to skip rendering when a widget does not need a refresh, and to mark widgets dirty after rendering.
+- [x] Exposed `DirtyRegion`, `DirtyRegionTracker` and related methods (`mark_dirty`, `mark_all_dirty`, `needs_full_refresh`) through `Ctx`.
+- [x] Imported `dirty_regions` module and `FocusManager`, `Layout`, and animation types into the framework prelude for easier access.

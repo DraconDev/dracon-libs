@@ -39,9 +39,13 @@ pub mod widgets;
 /// The prelude module.
 pub mod prelude {
     pub use crate::framework::{
+        animation::{Animation, AnimationManager, Easing},
         app::{App, Ctx},
+        dirty_regions::{DirtyRegion, DirtyRegionTracker},
         dragdrop::{DragGhost, DragManager, DragPhase},
+        focus::FocusManager,
         hitzone::{DragState, HitZone, HitZoneGroup, ScopedZone, ScopedZoneRegistry},
+        layout::{Constraint, Layout},
         scroll::ScrollContainer,
         theme::Theme,
         widgets::*,
