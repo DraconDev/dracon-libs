@@ -1,13 +1,8 @@
 # Project State
 
 ## Current Focus
-Refactored `with_area` method in `Label` and updated `PasswordInput` to use new `textInputBase`.
+Refined access to animation management in the app framework and adjusted the initialization of a password input widget.
 
 ## Completed
-- [x] Refactored `with_area` method in `Label` to be non-mutating
-- [x] Updated `PasswordInput` to use new `textInputBase` with masking character feature
-- [x] Removed unnecessary mutability on `Label` and used static method for creating label directly
-
-## Upcoming
-- [ ] Continue improving input widget shared base
-- [ ] Refine `PasswordInput` functionality and UI integration
+- [x] Modified the `animations` method in `app.rs` to return an immutable reference and added a new method for mutable access.
+- [x] Updated `PasswordInput`'s `new` method to use the updated `text_input_base` module path and added character masking for password inputs.

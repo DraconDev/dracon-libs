@@ -367,8 +367,13 @@ impl<'a> Ctx<'a> {
     }
 
     /// Returns the animation manager for managing toasts, progress bars, etc.
-    pub fn animations(&mut self) -> &mut AnimationManager {
-        self.animations
+    pub fn animations(&self) -> &AnimationManager {
+        &self.animations
+    }
+
+    /// Returns a mutable reference to the animation manager.
+    pub fn animations_mut(&mut self) -> &mut AnimationManager {
+        &mut self.animations
     }
 
     /// Returns an immutable reference to the compositor.
