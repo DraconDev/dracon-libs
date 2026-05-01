@@ -1,20 +1,22 @@
 # Project State
 
 ## Current Focus
-Update Cargo.lock with dependency version changes
+Added explicit quit flag to showcase example for cleaner exit handling
 
 ## Context
-This change reflects updates to dependency versions in the `dracon-terminal-engine` framework, which were made in recent commits to ensure compatibility and security.
+The showcase example previously relied on an implicit exit mechanism (commented out). This change makes the quit behavior explicit and more maintainable.
 
 ## Completed
-- [x] Updated Cargo.lock to reflect new dependency versions
+- [x] Added `should_quit` boolean field to `Showcase` struct
+- [x] Updated 'q' key handler to set `should_quit` flag
+- [x] Removed `Cell` import which was no longer needed
 
 ## In Progress
-- [x] No active work in progress beyond this change
+- [ ] None
 
 ## Blockers
-- None reported
+- None
 
 ## Next Steps
-1. Verify that all dependencies are properly resolved
-2. Test the updated dependencies in the showcase examples
+1. Verify the new quit behavior works as expected
+2. Consider adding similar quit handling to other examples if needed

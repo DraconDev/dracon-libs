@@ -8,8 +8,9 @@
 use std::cell::RefCell;
 use std::io;
 use std::rc::Rc;
+use std::sync::atomic::{AtomicBool, Ordering};
 
-use dracon_terminal_engine::compositor::{Cell, Color, Plane, Styles};
+use dracon_terminal_engine::compositor::{Color, Plane, Styles};
 use dracon_terminal_engine::framework::prelude::*;
 use dracon_terminal_engine::framework::widget::Widget;
 use ratatui::layout::Rect;
@@ -201,6 +202,7 @@ struct Showcase {
     dirty: bool,
     show_modal: bool,
     theme_idx: usize,
+    should_quit: bool,
 }
 
 impl Showcase {
@@ -213,6 +215,7 @@ impl Showcase {
             dirty: true,
             show_modal: false,
             theme_idx: 0,
+            should_quit: false,
         }
     }
 
@@ -588,7 +591,7 @@ impl Widget for Showcase {
                 true
             }
             KeyCode::Char('q') => {
-                // Exit is handled by the main loop checking a flag
+                self.should_quit = true;
                 true
             }
             _ => false,
