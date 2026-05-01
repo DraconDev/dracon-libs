@@ -310,7 +310,7 @@ impl Widget for MenuApp {
         if let Some(ref mut cm) = self.context_menu {
             if cm.handle_mouse(kind, col, row) {
                 if let MouseEventKind::Down(MouseButton::Left) = kind {
-                    let local_row = row.saturating_sub(cm.area.get().y) as usize;
+                    let local_row = row.saturating_sub(cm.area().y) as usize;
                     self.selected_idx = Some(local_row);
                     self.do_ctx(local_row);
                 }
