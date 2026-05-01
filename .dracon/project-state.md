@@ -1,8 +1,8 @@
 # Project State
 
 ## Current Focus
-Updated dependency versions in the `dracon-terminal-engine` framework to ensure security and compatibility.
+Refactored the game loop exit condition in the terminal engine example to improve code readability and maintainability.
 
 ## Completed
-- [x] Updated dependency versions in `dracon-terminal-engine` to address security vulnerabilities and maintain compatibility with other components.
-```
+- [x] Refactored the game loop exit condition to reduce indentation and improve clarity
+- [x] Maintained the same functionality while making the code more straightforward
