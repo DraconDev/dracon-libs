@@ -592,7 +592,7 @@ fn test_app_remove_first_widget_others_still_mounted() {
     impl SimpleTracker {
         fn new(which: usize) -> Self {
             Self {
-                id: WidgetId::new(which),
+                id: WidgetId::default_id(),
                 area: std::cell::Cell::new(Rect::new(0, 0, 80, 24)),
                 which,
             }
@@ -602,6 +602,7 @@ fn test_app_remove_first_widget_others_still_mounted() {
     impl Widget for SimpleTracker {
         fn id(&self) -> WidgetId { self.id }
         fn area(&self) -> Rect { self.area.get() }
+        fn set_id(&mut self, id: WidgetId) { self.id = id; }
         fn set_area(&mut self, area: Rect) { self.area.set(area); }
         fn focusable(&self) -> bool { true }
         fn on_mount(&mut self) {
