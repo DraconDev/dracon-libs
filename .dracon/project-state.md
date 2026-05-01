@@ -1,30 +1,27 @@
 # Project State
 
 ## Current Focus
-Added a modal dialog demonstration example to showcase modal interactions, keyboard shortcuts, and focus management in the terminal UI framework.
+Added comprehensive resize handling tests for the terminal engine
 
 ## Context
-This example demonstrates core modal interaction patterns needed for terminal applications, including:
-- Blocking input with modal dialogs
-- Global keyboard shortcuts
-- Focus trapping
-- Z-index layering for modal composition
+The terminal engine needs robust resize handling to properly manage widget areas during terminal resizing. This change adds integration tests to verify the resize cycle from event handling to rendering.
 
 ## Completed
-- [x] Added `modal_demo.rs` example showing:
-  - Confirmation dialog with blocking behavior
-  - Help overlay with keyboard shortcuts
-  - Global shortcut handling (quit, save, help)
-  - Modal composition with proper z-index layering
-- [x] Implemented focus management patterns
-- [x] Added visual demonstration of modal interactions
+- [x] Added resize_test.rs with 525 lines of test coverage
+- [x] Tests verify widget area updates during resize
+- [x] Tests verify dirty flag propagation during resize
+- [x] Tests verify render cycle after resize
+- [x] Tests verify minimal resize behavior
+- [x] Tests verify multi-widget resize handling
+- [x] Added TrackingWidget helper for resize testing
 
 ## In Progress
-- [ ] None (complete implementation)
+- [ ] No active work in progress
 
 ## Blockers
-- None (standalone example)
+- None identified
 
 ## Next Steps
-1. Review modal interaction patterns for consistency
-2. Document modal usage patterns in framework documentation
+1. Review test coverage for edge cases
+2. Implement resize handling in production code
+```
