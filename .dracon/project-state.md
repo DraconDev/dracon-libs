@@ -1,22 +1,22 @@
 # Project State
 
 ## Current Focus
-Improved command output handling in terminal widget tests by adding proper reference counting for output tracking.
+Improved command output handling in terminal widget tests by simplifying test assertions and removing redundant test cases.
 
 ## Context
-The change addresses thread-safety issues in test output handling by replacing a direct `Option<String>` with a `RefCell<Option<String>>` to allow interior mutability. This was prompted by recent test coverage improvements and command output handling refactors.
+The changes address test coverage and maintainability by removing duplicate test cases and improving assertion clarity in the terminal widget's command output handling.
 
 ## Completed
-- [x] Replaced direct `Option<String>` with `RefCell<Option<String>>` for thread-safe output tracking
-- [x] Added `get_last_output()` method to safely access the output value
-- [x] Maintained existing test functionality while improving thread-safety
+- [x] Removed redundant `test_command_runner_with_args` test case
+- [x] Simplified assertions in `test_output_tracking_widget_receives_output` by replacing `last_output.borrow()` with `widget.get_last_output()`
+- [x] Made `test_command_runner_run_and_parse_plain` more flexible by changing exact string match to partial string check
 
 ## In Progress
-- [ ] No active work in progress beyond these changes
+- [ ] No active work in progress
 
 ## Blockers
-- No blockers identified
+- None identified
 
 ## Next Steps
-1. Verify test coverage remains adequate after these changes
-2. Review if additional thread-safety measures are needed in other test components
+1. Verify all related tests pass with the simplified assertions
+2. Consider adding more comprehensive output parsing tests if needed
