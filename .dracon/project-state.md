@@ -1,8 +1,9 @@
 # Project State
 
 ## Current Focus
-Removed unused log filtering functionality and added dead code allowance for test utilities.
+Updated dependency versions in the `dracon-terminal-engine` framework to address security vulnerabilities and ensure compatibility with the latest ecosystem standards.
 
 ## Completed
-- [x] Removed unused `matches_filter_by_raw` method from `LogViewer` widget
-- [x] Added `#![allow(dead_code)]` to test utilities to suppress warnings about unused code
+- [x] Updated dependency versions in `dracon-terminal-engine` Cargo.toml
+- [x] Updated Cargo.lock to reflect the new dependency versions
+```
