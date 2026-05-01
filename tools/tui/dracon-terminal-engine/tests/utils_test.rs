@@ -409,9 +409,3 @@ fn test_selection_state_multi_selected_indices() {
     assert!(indices.contains(&1));
     assert!(indices.contains(&2));
 }
-
-#[test]
-fn test_truncate_to_width_with_unicode() {
-    let result = truncate_to_width("héllo", 5, "...");
-    assert!(result.ends_with("..."));
-}

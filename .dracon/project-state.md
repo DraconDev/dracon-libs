@@ -1,8 +1,8 @@
 # Project State
 
 ## Current Focus
-Improved testing for utterance truncation when dealing with non-ASCII characters and wider text lengths.
+Remove obsolete unicode truncation test and resynchronize Cargo.lock.
 
 ## Completed
-- [x] Added a test for truncation with Unicode characters.
-- [x] Updated truncation test to correctly handle suffix widths and character counts.
+- [x] Drop `test_truncate_to_width_with_unicode` from terminal-engine utils tests as the function no longer exists.
+- [x] Regenerate Cargo.lock to align dependencies with current manifest.
