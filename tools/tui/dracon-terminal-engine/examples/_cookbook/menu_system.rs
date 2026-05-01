@@ -26,8 +26,6 @@ use dracon_terminal_engine::input::event::{KeyCode, KeyEventKind, MouseButton, M
 use ratatui::layout::Rect;
 
 struct MenuLabel(&'static str);
-struct MenuItemLabel(&'static str);
-struct MenuAction(usize);
 
 struct MenuApp {
     id: WidgetId,
@@ -127,7 +125,7 @@ impl MenuApp {
         plane
     }
 
-    fn render_dropdown(&self, menu_idx: usize, area: Rect) -> Plane {
+    fn render_dropdown(&self, menu_idx: usize, _area: Rect) -> Plane {
         let item_count = self.menu_item_count(menu_idx) as u16;
         let label = self.menu_bar.get(menu_idx).map(|m| m.0).unwrap_or("");
         let w = 20.max(label.len() as u16 + 4);
