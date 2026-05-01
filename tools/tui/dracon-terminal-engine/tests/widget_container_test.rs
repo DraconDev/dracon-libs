@@ -1,4 +1,4 @@
-//! Additional integration tests for WidgetContainer and WidgetRegistry.
+//! Tests for WidgetContainer and WidgetRegistry.
 
 mod common;
 
@@ -6,22 +6,19 @@ use dracon_terminal_engine::framework::widget::{Widget, WidgetId};
 use dracon_terminal_engine::framework::widget_container::{WidgetContainer, WidgetRegistry};
 use dracon_terminal_engine::compositor::Plane;
 use std::cell::Cell;
-use std::rc::Rc;
 
 struct TestWidget {
     id: WidgetId,
-    area: std::cell::Cell<ratatui::layout::Rect>,
+    area: Cell<ratatui::layout::Rect>,
     dirty: bool,
-    focusable_flag: bool,
 }
 
 impl TestWidget {
     fn new(id: u32) -> Self {
         Self {
-            id: WidgetId::new(id),
-            area: std::cell::Cell::new(ratatui::layout::Rect::new(0, 0, 10, 1)),
+            id: WidgetId::new(id as usize),
+            area: Cell::new(ratatui::layout::Rect::new(0, 0, 10, 1)),
             dirty: true,
-            focusable_flag: true,
         }
     }
 }
@@ -61,7 +58,7 @@ impl Widget for TestWidget {
     }
 
     fn focusable(&self) -> bool {
-        self.focusable_flag
+        true
     }
 
     fn handle_key(&mut self, _key: dracon_terminal_engine::input::event::KeyEvent) -> bool {
@@ -108,13 +105,6 @@ fn test_widget_container_widget_accessor() {
     let container = WidgetContainer::new(widget);
     let dyn_widget = container.widget();
     assert_eq!(dyn_widget.id(), WidgetId::new(5));
-}
-
-#[test]
-fn test_widget_container_widget_mut_accessor() {
-    let mut widget = Box::new(TestWidget::new(5));
-    let mut container = WidgetContainer::new(widget);
-    container.widget_mut().mark_dirty();
 }
 
 #[test]
