@@ -1,7 +1,8 @@
 # Project State
 
 ## Current Focus
-Updated dependency versions in the `dracon-terminal-engine` framework to ensure compatibility and security.
+The documentation for the `Layout` engine in the terminal framework was updated to remove unnecessary markdown formatting.
 
 ## Completed
-- [x] Updated `Cargo.lock` to reflect new dependency versions, maintaining project stability and security.
+- [x] docs(terminal engine): Updated `Layout` documentation to use plain text instead of markdown links
+```
