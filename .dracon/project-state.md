@@ -1,8 +1,8 @@
 # Project State
 
 ## Current Focus
-The command dashboard example was refactored to remove the `Widget` trait import, which simplifies the codebase by reducing unnecessary dependencies.
+Added command configuration support to the terminal engine framework
 
 ## Completed
-- [x] Removed unused `Widget` trait import from command_dashboard.rs
-```
+- [x] Added `commands` field to `AppConfig` with default empty vector
+- [x] Added `commands` field to default `AppConfig` implementation
