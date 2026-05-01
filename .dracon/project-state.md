@@ -1,13 +1,8 @@
 # Project State
-
-## Current Focus
-refactor(framework): remove unnecessary references, add Default derives, fix exit code handling and layout calculations
+This commit documents the updates to the Dracon Terminal Engine project's changelog. Key improvements include the introduction of new widget UI components, expanded command-driven architecture, and enhanced test coverage across core features. The project now supports TOML-based configuration and enriches documentation for upcoming releases (27.0.2 and newer).
 
 ## Completed
-- [x] Remove unnecessary `&` references from animation manager accesses in `app.rs`
-- [x] Add `Default` derives to `OutputParser`, `WidgetConfig`, and `LayoutConfig`
-- [x] Simplify command output parsing by using `flatten` and removing redundant checks
-- [x] Fix exit code extraction to preserve full `i32` value instead of casting
-- [x] Remove redundant `Default` implementations for `LayoutConfig` and `WidgetConfig`
-- [x] Correct layout ratio calculation by removing unnecessary `as u32` cast
-- [x] Add `Default` derive to `ScrollState` and adjust its definition
+- Updated widget trait implementations to enhance interactivity
+- Added documentation for new widget rendering logic and configuration
+- Expanded test suite to include 609 tests, covering all major new features
+- Improved performance optimizations for terminal UI and CLI output handling
