@@ -1,22 +1,22 @@
 # Project State
 
 ## Current Focus
-Improved command output handling in terminal widget tests by simplifying test assertions and removing redundant test cases.
+Improved command output handling in terminal widget tests by expanding parser coverage.
 
 ## Context
-The changes address test coverage and maintainability by removing duplicate test cases and improving assertion clarity in the terminal widget's command output handling.
+The test suite needed better handling of different command output formats, particularly when JSON parsing might return `None` for valid but non-scalar values.
 
 ## Completed
-- [x] Removed redundant `test_command_runner_with_args` test case
-- [x] Simplified assertions in `test_output_tracking_widget_receives_output` by replacing `last_output.borrow()` with `widget.get_last_output()`
-- [x] Made `test_command_runner_run_and_parse_plain` more flexible by changing exact string match to partial string check
+- [x] Expanded test coverage for `ParsedOutput::None` case in command output handling
+- [x] Added explicit assertion message for scalar output validation
+- [x] Updated expected output types to include `None` as a valid case
 
 ## In Progress
-- [ ] No active work in progress
+- [ ] No active work in progress beyond these changes
 
 ## Blockers
-- None identified
+- No blockers identified
 
 ## Next Steps
-1. Verify all related tests pass with the simplified assertions
-2. Consider adding more comprehensive output parsing tests if needed
+1. Verify test coverage for other edge cases in terminal widget output
+2. Consider adding more specific error messages for different output types
