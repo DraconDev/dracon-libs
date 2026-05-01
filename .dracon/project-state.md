@@ -1,8 +1,8 @@
 # Project State
 
 ## Current Focus
-Added the `Widget` trait import to the command dashboard example, enabling widget functionality in the dashboard.
+The `dracon-terminal-engine` Cargo.toml file was modified, likely to update dependencies or configuration for the TUI framework.
 
 ## Completed
-- [x] Added `Widget` trait import to enable widget usage in the command dashboard example
+- [x] Updated `dracon-terminal-engine` dependency configuration
 ```
