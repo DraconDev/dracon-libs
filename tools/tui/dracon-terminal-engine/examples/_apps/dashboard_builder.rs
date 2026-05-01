@@ -145,15 +145,22 @@ fn main() -> std::io::Result<()> {
     let theme_idx_clone = theme_idx.clone();
     let paused_clone = paused.clone();
 
-    let mut app = App::new()?;
-    app.title("Dashboard Builder").fps(30).theme(Theme::nord()).tick_interval(1000);
-    app.on_tick(move |ctx, tick| {
-        if tick % 3 == 0 && !paused_clone.load(Ordering::SeqCst) { theme_idx_clone.fetch_add(1, Ordering::SeqCst); }
-    });
+    let mut app = App::new()?
+        .title("Dashboard Builder")
+        .fps(30)
+        .theme(Theme::nord())
+        .tick_interval(1000);
+
+    {
+        let tick_cb = move |_ctx: &mut Ctx, tick: u64| {
+            if tick % 3 == 0 && !paused_clone.load(Ordering::SeqCst) { theme_idx_clone.fetch_add(1, Ordering::SeqCst); }
+        };
+        app.on_tick(tick_cb);
+    }
+
     app.add_widget(Box::new(Dashboard::new()), Rect::new(0, 0, 80, 24));
 
-    let theme_idx_r = theme_idx.clone();
-    let paused_r = paused.clone();
+    let _paused_r = paused.clone();
 
     app.run(move |ctx| {
         ctx.hide_cursor().ok();
