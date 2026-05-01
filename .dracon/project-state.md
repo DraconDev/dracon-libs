@@ -1,9 +1,7 @@
 # Project State
 
 ## Current Focus
-Updated dependency versions in the `dracon-terminal-engine` framework to address security vulnerabilities and maintain compatibility.
+The `ScrollContainer` widget in the `dracon-terminal-engine` framework now exposes its internal `ScrollState` for better control over scroll behavior.
 
 ## Completed
-- [x] Updated dependency versions in `dracon-terminal-engine` Cargo.toml
-- [x] Regenerated Cargo.lock to reflect updated dependencies
-```
+- [x] Added `ScrollState` to the public API of `ScrollContainer` to enable external manipulation of scroll position and behavior
