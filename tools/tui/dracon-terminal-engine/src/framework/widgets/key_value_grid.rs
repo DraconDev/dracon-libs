@@ -149,9 +149,7 @@ impl KeyValueGrid {
         }
 
         if row % 2 == 1 {
-            for i in val_start..cells.len() {
-                cells[i].bg = alt_bg;
-            }
+            cells[val_start..].iter_mut().for_each(|cell| cell.bg = alt_bg);
         }
 
         cells
@@ -201,8 +199,7 @@ impl Widget for KeyValueGrid {
         let key_fg = self.theme.fg;
         let val_fg = self.theme.inactive_fg;
 
-        let mut row = 0;
-        for (key, value) in &self.pairs {
+        for (row, (key, value)) in self.pairs.iter().enumerate() {
             if row >= area.height as usize {
                 break;
             }
