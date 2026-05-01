@@ -30,8 +30,9 @@ use std::time::Duration;
 
 use dracon_terminal_engine::compositor::{Cell, Color, Plane, Styles};
 use dracon_terminal_engine::framework::prelude::*;
+use dracon_terminal_engine::framework::widget::Widget;
 use dracon_terminal_engine::framework::widgets::{
-    Modal, StatusBar, StatusSegment, Toast, ToastKind,
+    Modal, Toast, ToastKind,
 };
 use dracon_terminal_engine::input::event::{KeyCode, KeyEventKind, MouseEventKind, MouseButton};
 use ratatui::layout::Rect;
@@ -484,7 +485,6 @@ fn main() -> io::Result<()> {
     app.set_theme(theme);
 
     let mut chat = ChatState::new();
-    let mut show_toast = false;
 
     let _ = app.run(move |ctx| {
         if ctx.needs_full_refresh() {
