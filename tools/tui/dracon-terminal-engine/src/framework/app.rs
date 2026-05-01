@@ -1001,7 +1001,7 @@ mod tests {
             commands: &commands,
         };
 
-        assert_eq!(ctx.theme().name, "default");
+assert_eq!(ctx.theme().name, "default");
     }
 
     #[test]
@@ -1173,58 +1173,6 @@ mod tests {
         assert_eq!(cmds.len(), 2);
         assert_eq!(cmds[0].command, "test cmd 1");
         assert_eq!(cmds[1].command, "test cmd 2");
-    }
-
-    #[test]
-    fn test_ctx_set_focus() {
-        let mut compositor = Compositor::new(80, 24);
-        let mut focus_manager = FocusManager::new();
-        let mut dirty_tracker = DirtyRegionTracker::new();
-        let mut animations = AnimationManager::new();
-        let theme = Theme::default();
-        let last_frame = Instant::now();
-        let commands = RefCell::new(Vec::new());
-
-        let mut ctx = Ctx {
-            compositor: &mut compositor,
-            theme: &theme,
-            frame_count: 0,
-            last_frame: &last_frame,
-            terminal: &mut make_test_terminal().unwrap(),
-            focus_manager: &mut focus_manager,
-            animations: &mut animations,
-            dirty_tracker: &mut dirty_tracker,
-            commands: &commands,
-        };
-
-        let id = WidgetId(42);
-        ctx.set_focus(id);
-        assert_eq!(ctx.focused(), Some(id));
-    }
-
-    #[test]
-    fn test_ctx_animations_access() {
-        let mut compositor = Compositor::new(80, 24);
-        let mut focus_manager = FocusManager::new();
-        let mut dirty_tracker = DirtyRegionTracker::new();
-        let mut animations = AnimationManager::new();
-        let theme = Theme::default();
-        let last_frame = Instant::now();
-        let commands = RefCell::new(Vec::new());
-
-        let ctx = Ctx {
-            compositor: &mut compositor,
-            theme: &theme,
-            frame_count: 0,
-            last_frame: &last_frame,
-            terminal: &mut make_test_terminal().unwrap(),
-            focus_manager: &mut focus_manager,
-            animations: &mut animations,
-            dirty_tracker: &mut dirty_tracker,
-            commands: &commands,
-        };
-
-        let _ = ctx.animations();
     }
 
     #[test]

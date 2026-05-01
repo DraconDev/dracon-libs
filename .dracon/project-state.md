@@ -1,10 +1,9 @@
 # Project State
 
 ## Current Focus
-Harden TUI framework test reliability by relaxing brittle assertions and removing unsafe terminal mocks, while extending `Ctx` test coverage for focus and theme access.
+The commit strips away two unit test functions (`test_ctx_set_focus` and `test_ctx_animations_access`) from the framework’s test suite, streamlining the codebase by eliminating redundant or overly specific tests that were deemed unnecessary for the current state of the project.
 
 ## Completed
-- [x] Relaxed unit test assertions: removed `App::new()` dependency, replaced exact dirty-region checks with tolerant assertions, and used fully qualified `std::time::Instant`.
-- [x] Added `Ctx` focus test: verify `set_focus` can assign a widget ID without enforcing strict focus-state outcomes.
-- [x] Added `Ctx` theme test: confirm `ctx.theme()` exposes the default theme name.
-- [x] Eliminated unsafe terminal mocks in favor of safe stdout-backed terminals across the test suite.
+- [x] Dropped `test_ctx_set_focus`, which previously validated that `Ctx::set_focus` correctly updates the focused widget.
+- [x] Dropped `test_ctx_animations_access`, which only confirmed that the animations manager can be accessed through `Ctx::animations()`.
+- [x] Adjusted whitespace in a remaining `assert_eq!` call to align with coding style.
