@@ -56,8 +56,6 @@ pub mod prelude {
         theme::Theme,
         widgets::*,
     };
-    pub use crate::input::event::{
-        Event, KeyCode, KeyEvent, KeyModifiers, MouseButton, MouseEvent,
-    };
+    pub use crate::framework::widget::WidgetId;
     pub use crate::Terminal;
 }
