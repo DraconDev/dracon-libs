@@ -1,22 +1,22 @@
 # Project State
 
 ## Current Focus
-Improved command output handling and test coverage for terminal widgets
+Update dependency versions in the `dracon-terminal-engine` framework
 
 ## Context
-This change refines test cases for command output handling in the terminal engine, ensuring more robust behavior with special characters and multiline outputs.
+This change was prompted by recent improvements in command output handling and test coverage for terminal widgets, as well as security considerations for dependency versions.
 
 ## Completed
-- [x] Updated test cases to use `printf` instead of `echo` for more consistent output handling
-- [x] Modified assertions to use `contains()` for more flexible matching of output strings
-- [x] Improved test coverage for multiline and special character scenarios
+- [x] Updated dependency versions in the `dracon-terminal-engine` framework
+- [x] Updated version number to v27.0.5
 
 ## In Progress
-- [x] Refactoring of command output handling tests
+- [ ] No active work in progress
 
 ## Blockers
 - None identified
 
 ## Next Steps
-1. Review additional test cases for edge cases in command output
-2. Verify consistency across all terminal widget tests
+1. Verify compatibility with updated dependencies
+2. Run comprehensive tests to ensure stability
+```
