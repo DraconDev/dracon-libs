@@ -38,12 +38,14 @@ mod gauge_command_output {
 
     #[test]
     fn test_gauge_with_bound_command() {
-        let cmd = BoundCommand::new(r#"printf "{\"value\":\"42.5\"}""#)
+        let json_input = r#"{"value":"42.5"}"#;
+        let cmd = BoundCommand::new(&format!(r#"printf '{}'"#, json_input))
             .parser(OutputParser::JsonKey { key: "value".to_string() });
         let mut gauge = Gauge::new("Memory").bind_command(cmd.clone());
         let runner = CommandRunner::new(&cmd.command);
         let (stdout, stderr, exit_code) = runner.run_sync();
         let output = cmd.parse_output(&stdout, &stderr, exit_code);
+        eprintln!("DEBUG: cmd.command=[{}]", cmd.command);
         eprintln!("DEBUG: stdout=[{}] stderr=[{}] exit_code={}", stdout, stderr, exit_code);
         eprintln!("DEBUG: output={:?}", output);
         Widget::apply_command_output(&mut gauge, &output);
