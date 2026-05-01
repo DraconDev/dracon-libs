@@ -297,9 +297,27 @@ fn test_drag_state_variants() {
     let started = DragState::Started { x: 1, y: 2 };
     let moved = DragState::Moved { x: 3, y: 4 };
     let ended = DragState::Ended { x: 5, y: 6 };
-    assert_eq!(started.x, 1);
-    assert_eq!(moved.y, 4);
-    assert_eq!(ended.x, 5);
+    match started {
+        DragState::Started { x, y } => {
+            assert_eq!(x, 1);
+            assert_eq!(y, 2);
+        }
+        _ => panic!("expected Started"),
+    }
+    match moved {
+        DragState::Moved { x, y } => {
+            assert_eq!(x, 3);
+            assert_eq!(y, 4);
+        }
+        _ => panic!("expected Moved"),
+    }
+    match ended {
+        DragState::Ended { x, y } => {
+            assert_eq!(x, 5);
+            assert_eq!(y, 6);
+        }
+        _ => panic!("expected Ended"),
+    }
 }
 
 #[test]

@@ -100,24 +100,27 @@ fn test_label_set_text_empty() {
 #[test]
 fn test_label_clear_dirty() {
     let mut label = Label::new("test");
+    assert!(label.needs_render());
     label.clear_dirty();
-    assert!(!label.dirty);
+    assert!(!label.needs_render());
 }
 
 #[test]
 fn test_label_mark_dirty() {
     let mut label = Label::new("test");
     label.clear_dirty();
+    assert!(!label.needs_render());
     label.mark_dirty();
-    assert!(label.dirty);
+    assert!(label.needs_render());
 }
 
 #[test]
-fn test_label_set_area() {
+fn test_label_set_area_marks_dirty() {
     let mut label = Label::new("test");
+    label.clear_dirty();
+    assert!(!label.needs_render());
     label.set_area(make_area(5, 1));
-    assert_eq!(label.area().width, 5);
-    assert!(label.dirty);
+    assert!(label.needs_render());
 }
 
 #[test]
