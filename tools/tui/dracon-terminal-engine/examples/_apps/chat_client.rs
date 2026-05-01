@@ -37,20 +37,19 @@ use dracon_terminal_engine::framework::widgets::{
 use dracon_terminal_engine::input::event::{KeyCode, KeyEventKind, MouseEventKind, MouseButton};
 use ratatui::layout::Rect;
 
-#[derive(Clone)]
 struct Message {
-    sender: String,
-    text: String,
-    time: String,
+    sender: &'static str,
+    text: &'static str,
+    time: &'static str,
     is_read: bool,
 }
 
 static MESSAGES: &[Message] = &[
-    Message { sender: String::from("Alice"), text: String::from("Hey, how's the project going?"), time: String::from("14:32"), is_read: true },
-    Message { sender: String::from("Bob"), text: String::from("Going well! Just finished the new widget."), time: String::from("14:33"), is_read: true },
-    Message { sender: String::from("Alice"), text: String::from("Nice! Can you send me the code?"), time: String::from("14:34"), is_read: true },
-    Message { sender: String::from("Bob"), text: String::from("Sure, I'll share it after review."), time: String::from("14:35"), is_read: true },
-    Message { sender: String::from("Alice"), text: String::from("Perfect, thanks!"), time: String::from("14:36"), is_read: false },
+    Message { sender: "Alice", text: "Hey, how's the project going?", time: "14:32", is_read: true },
+    Message { sender: "Bob", text: "Going well! Just finished the new widget.", time: "14:33", is_read: true },
+    Message { sender: "Alice", text: "Nice! Can you send me the code?", time: "14:34", is_read: true },
+    Message { sender: "Bob", text: "Sure, I'll share it after review.", time: "14:35", is_read: true },
+    Message { sender: "Alice", text: "Perfect, thanks!", time: "14:36", is_read: false },
 ];
 
 struct ChatState {
