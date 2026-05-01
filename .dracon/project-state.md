@@ -1,21 +1,21 @@
 # Project State
 
 ## Current Focus
-Refactored tabbed panel example with improved widget architecture
+Dependency version updates in the `dracon-terminal-engine` framework
 
 ## Context
-This change continues the ongoing refactoring of widget examples to improve architecture and key handling. The tabbed panel example was updated to remove unused dependencies and simplify the implementation.
+This change updates the framework dependencies to ensure compatibility with the latest widget architecture improvements in the tabbed panel and tree navigator examples.
 
 ## Completed
-- [x] Removed unused `BTreeMap` import from tabbed panel example
-- [x] Updated Cargo.lock with dependency version changes
+- [x] Updated framework dependencies to align with refactored widget architecture
 
 ## In Progress
-- [x] Refactoring of widget examples with improved architecture
+- [x] Dependency version updates
 
 ## Blockers
-- None identified
+- None reported
 
 ## Next Steps
-1. Continue refactoring other widget examples
-2. Review and test the updated tabbed panel example
+1. Verify compatibility with all widget examples
+2. Prepare documentation updates for the new dependency versions
+```
