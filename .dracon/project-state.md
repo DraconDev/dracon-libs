@@ -1,10 +1,8 @@
 # Project State
 
 ## Current Focus
-ONE LINE: Add default implementation for layout configuration, improve widget type deserialization, and adjust related unit test.
+Expose widget-level command capabilities so AI and external tooling can enumerate and invoke CLI-bound actions per widget.
 
 ## Completed
-- [x] Implement `Default` for `LayoutConfig` with explicit `None` values and add `serde(default)` to each field.
-- [x] Move `LayoutConfig` definition after `WidgetConfig` and enhance its serialization handling.
-- [x] Add `alias = "type"` to the `widget_type` field in `WidgetConfig` to better support deserialization of the renamed key.
-- [x] Update unit test to use the new TOML key (`kind`) and simplify widget existence check.
+- [x] Add `commands()` method to `Widget` trait returning `Vec<BoundCommand>` with a default empty implementation.
+- [x] Wire `BoundCommand` import into the widget module to enable command-driven widget architecture.
