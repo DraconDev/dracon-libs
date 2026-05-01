@@ -188,14 +188,17 @@ impl Widget for KeyValueGrid {
             row += 1;
         }
 
-        if self.pairs.is_empty() {
+if self.pairs.is_empty() {
             let empty_msg = "(no data)";
-            let start = (area.width.saturating_sub(empty_msg.len() as u16)) / 2;
+            let mid = plane.cells.len() / 2;
+            let start = mid.saturating_sub(empty_msg.len() / 2);
             for (i, c) in empty_msg.chars().enumerate() {
-                let idx = ((area.height / 2) as usize * area.width as usize) + start as usize + i;
+                let idx = start + i;
                 if idx < plane.cells.len() {
                     plane.cells[idx] = Cell { char: c, fg: self.theme.inactive_fg, bg: self.theme.bg, style: Styles::empty(), transparent: false, skip: false };
                 }
+            }
+        }
             }
         }
 

@@ -150,7 +150,7 @@ impl LogViewer {
 
     fn parse_line(&self, raw: &str) -> LogLine {
         let (timestamp, rest) = raw.split_once(' ').unwrap_or(("", raw));
-        let level = self.detect_level(rest);
+        let level = self.detect_level(raw);
         let message = rest.to_string();
         LogLine {
             timestamp: timestamp.to_string(),
@@ -162,13 +162,13 @@ impl LogViewer {
 
     fn detect_level(&self, text: &str) -> LogLevel {
         let upper = text.to_uppercase();
-        if upper.contains("FATAL") || upper.contains("CRITICAL") {
+        if upper.starts_with("FATAL") || upper.starts_with("CRITICAL") {
             LogLevel::Fatal
-        } else if upper.contains("ERROR") || upper.contains("ERR") {
+        } else if upper.starts_with("ERROR") || upper.starts_with("ERR") {
             LogLevel::Error
-        } else if upper.contains("WARN") || upper.contains("WARNING") {
+        } else if upper.starts_with("WARN") || upper.starts_with("WARNING") {
             LogLevel::Warn
-        } else if upper.contains("DEBUG") || upper.contains("DBG") {
+        } else if upper.starts_with("DEBUG") || upper.starts_with("DBG") {
             LogLevel::Debug
         } else {
             LogLevel::Info
@@ -177,7 +177,7 @@ impl LogViewer {
 
     fn matches_filter(&self, line: &LogLine) -> bool {
         if let Some(ref f) = self.filter {
-            line.raw.contains(f)
+            line.raw.to_lowercase().contains(&f.to_lowercase())
         } else {
             true
         }
@@ -253,10 +253,10 @@ impl Widget for LogViewer {
 
         if self.lines.is_empty() {
             let msg = "(no log output)";
-            let start = (area.width.saturating_sub(msg.len() as u16)) / 2;
-            let row = area.height / 2;
+            let mid = plane.cells.len() / 2;
+            let start = mid.saturating_sub(msg.len() / 2);
             for (i, c) in msg.chars().enumerate() {
-                let idx = (row as usize * area.width as usize) + start as usize + i;
+                let idx = start + i;
                 if idx < plane.cells.len() {
                     plane.cells[idx] = Cell { char: c, fg: self.theme.inactive_fg, bg: self.theme.bg, style: Styles::empty(), transparent: false, skip: false };
                 }
