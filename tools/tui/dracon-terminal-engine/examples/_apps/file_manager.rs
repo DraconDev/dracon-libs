@@ -270,7 +270,7 @@ impl Widget for FileManager {
                         name = node.name.into();
                         is_dir = node.is_dir;
                     }
-                    self.selected = Some(FileEntry { name, is_dir });
+                    self.selected = Some(FileEntry { name, _is_dir: is_dir });
                     self.dirty = true;
                     true
                 } else { false }
