@@ -1,21 +1,20 @@
 # Project State
 
 ## Current Focus
-Removed a failing test assertion in the multi-widget test suite
+Dependency version updates in the `dracon-terminal-engine` framework
 
 ## Context
-The test was temporarily disabled with a failing assertion (`assert!(false)`) to investigate widget removal behavior in the terminal engine. This change removes the failing assertion while keeping the test structure intact for further investigation.
+The Cargo.lock file was modified, indicating dependency version updates were applied. This is part of ongoing maintenance work to ensure the project uses compatible and up-to-date dependencies.
 
 ## Completed
-- [x] Removed failing test assertion in `multi_widget_test.rs`
-- [x] Preserved test structure for future widget lifecycle testing
+- [x] Updated dependency versions in the `dracon-terminal-engine` framework
 
 ## In Progress
-- [ ] Investigating proper widget removal behavior
+- [x] Dependency version updates are being applied
 
 ## Blockers
-- Need to determine correct assertions for widget removal verification
+- None reported in this commit
 
 ## Next Steps
-1. Implement proper assertions for widget removal verification
-2. Complete widget lifecycle testing refactor
+1. Verify that the updated dependencies don't introduce breaking changes
+2. Continue with other ongoing refactoring and testing work in the terminal engine
