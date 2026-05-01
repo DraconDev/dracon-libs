@@ -359,7 +359,7 @@ impl Widget for Showcase {
         } else {
             self.selected.saturating_sub(visible_count / 2)
         };
-        let end_idx = (start_idx + visible_count).min(total);
+        let _end_idx = (start_idx + visible_count).min(total);
 
         for row in 0..visible_count {
             let idx = start_idx + row;
