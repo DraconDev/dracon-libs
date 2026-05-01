@@ -1,9 +1,8 @@
 # Project State
 
 ## Current Focus
-Refactored the `Glitch` filter test to improve assertion clarity by adding a counter for changed cells and verifying that very few cells change at time=0.
+The commit updates dependency versions in the `dracon-terminal-engine` framework and refreshes the Cargo.lock file, ensuring all dependencies are at their latest compatible versions.
 
 ## Completed
-- [x] Added a counter to track changed cells in the `Glitch` filter test
-- [x] Changed the assertion to verify that fewer than 5 cells change at time=0
-- [x] Improved test clarity by making the expectation explicit about minimal changes at zero time
+- [x] Updated dependency versions in the `dracon-terminal-engine` framework
+- [x] Refreshed the Cargo.lock file to reflect the latest dependency versions
