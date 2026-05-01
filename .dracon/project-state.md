@@ -1,22 +1,22 @@
 # Project State
 
 ## Current Focus
-Refactored file directory reading to simplify the `FileEntry` struct and improve type safety.
+Refactored file directory reading to improve type safety and display formatting
 
 ## Context
-The previous `FileEntry` struct was overly complex with redundant fields. The refactor simplifies the file manager example by focusing on essential string-based directory entries.
+The file manager example was refactoring to better handle directory entries with additional metadata (file type and size) and improved display formatting.
 
 ## Completed
-- [x] Removed redundant `FileEntry` struct and its fields
-- [x] Simplified `read_dir` to return `Vec<String>` instead of structured entries
-- [x] Updated Cargo.toml (binary file change, likely dependency version update)
+- [x] Refactored `FileEntry` struct to include `is_dir` and `size` fields
+- [x] Implemented `Display` trait for `FileEntry` to show directory status and file size
+- [x] Updated `read_dir` to return `Vec<FileEntry>` instead of `Vec<String>`
 
 ## In Progress
-- [ ] None
+- [ ] No active work in progress
 
 ## Blockers
-- None
+- None identified
 
 ## Next Steps
-1. Verify the file manager example still functions correctly with simplified directory entries
-2. Consider adding back file metadata if needed for future features
+1. Verify display formatting in terminal UI
+2. Add sorting options for directory listings
