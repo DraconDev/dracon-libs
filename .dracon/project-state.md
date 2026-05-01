@@ -1,10 +1,10 @@
 # Project State
 
 ## Current Focus
-Implemented new functionality for handling command output in the Gauge widget, allowing it to accept and apply scalar command outputs directly and ignore non-scalar ones, with robustness against invalid input.
+Adding comprehensive unit tests for the `apply_command_output` method across TUI framework widgets to verify correct handling of different `ParsedOutput` variants (Scalar, Text, Lines, None).
 
 ## Completed
-- [x] Implemented processing and application of scalar command outputs to the Gauge widget.
-- [x] Enhanced the Gauge widget to ignore non-scalar command outputs, maintaining the previously set value.
-- [x] Added functionality to parse invalid inputs as zero for the Gauge widget.
-- [x] Added corresponding unit tests for the new Gauge command output handling features.
+- [x] Added test for KeyValueGrid parsing key-value pairs from text output (e.g., "CPU: i9\nRAM: 64GB")
+- [x] Added tests for LogViewer handling Text output (splits on newlines) and Lines output (structured LoggedLine objects)
+- [x] Added tests for StatusBadge handling Scalar output updates and ignoring non-Scalar output to preserve existing status
+- [x] Added tests for StreamingText handling Scalar output (single line) and Text output (multiple lines split by newlines)
