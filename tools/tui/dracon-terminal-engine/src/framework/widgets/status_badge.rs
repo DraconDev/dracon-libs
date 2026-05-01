@@ -80,9 +80,8 @@ impl StatusBadge {
         &self.label
     }
 
-    fn render_badge(&self, text: &str, fg: Color, bg: Color) -> Plane {
-        let mut plane = Plane::new(10, self.area.get().width.max(4), 1);
-        plane.z_index = 10;
+    fn render_badge(&self, text: &str, fg: Color, bg: Color, width: u16) -> Plane {
+        let mut plane = Plane::new(0, width, 1);
 
         let content = format!("[{}]", text);
         let max = plane.width.min(content.len() as u16);
@@ -147,7 +146,7 @@ impl Widget for StatusBadge {
             (self.theme.fg, self.theme.bg, l)
         };
 
-        let mut plane = self.render_badge(label, fg, bg);
+        let mut plane = self.render_badge(label, fg, bg, area.width);
         plane.z_index = 0;
         plane
     }

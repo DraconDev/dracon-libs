@@ -1,8 +1,10 @@
 # Project State
 
-## Current Focus
-refactor(StatusBadge): remove redundant render state updates and set explicit z-index 0 on rendered badge plane
+## CurrentFocus
+One line: Update `StatusBadge::render_badge` to accept an explicit width parameter, initialize the plane with that width, and set its `z_index` to 0 for correct layering.
 
 ## Completed
-- [x] Remove self.area.set(area) and self.dirty = true calls from StatusBadge's render method
-- [x] Set z_index to 0 on the Plane returned by StatusBadge's render_badge call before returning
+- [x] Modified `render_badge` signature to include `width: u16` and use the provided width instead of a hard‑coded `10` and `self.area.get().width.max(4)`.
+- [x] Changed plane creation to `Plane::new(0, width, 1)` so the badge width matches the caller‑supplied value.
+- [x] Updated `z_index` assignment from `10` to `0` in `render_badge` to ensure proper stacking order.
+- [x] Adjusted the call site in `impl Widget for StatusBadge` to pass `area.width` as the width argument to `render_badge`.
