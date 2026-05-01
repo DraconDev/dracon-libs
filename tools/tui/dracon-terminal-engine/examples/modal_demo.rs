@@ -40,7 +40,7 @@ struct HelpOverlay<'a> {
     visible: bool,
 }
 
-impl HelpOverlay {
+impl<'a> HelpOverlay<'a> {
     fn new() -> Self {
         let mut modal = Modal::new("Keyboard Shortcuts").with_size(40, 12);
         modal = modal.with_buttons(vec![("OK", ModalResult::Confirm)]);
@@ -74,7 +74,7 @@ impl HelpOverlay {
     }
 }
 
-impl Widget for HelpOverlay {
+impl<'a> Widget for HelpOverlay<'a> {
     fn id(&self) -> WidgetId {
         self.modal.id()
     }
@@ -170,19 +170,19 @@ impl Widget for HelpOverlay {
     }
 }
 
-struct ModalDemoApp {
+struct ModalDemoApp<'a> {
     show_confirm: bool,
     help_visible: bool,
     show_save_toast: bool,
     toast_message: String,
     label: Label,
     confirm_dialog: ConfirmDialog,
-    help_overlay: HelpOverlay,
+    help_overlay: HelpOverlay<'a>,
     confirm_btn: Button,
     help_btn: Button,
 }
 
-impl ModalDemoApp {
+impl<'a> ModalDemoApp<'a> {
     fn new() -> Self {
         let label = Label::new(
             "Main content area\n\n\

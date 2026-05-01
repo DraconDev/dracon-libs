@@ -181,7 +181,7 @@ impl Widget for ThemeHeader {
 
         for y in 0..area.height {
             for x in 0..area.width {
-                let idx = (y * area.width + x) as usize;
+                let idx = y as usize * area.width as usize + x as usize;
                 if idx < plane.cells.len() {
                     plane.cells[idx] = Cell {
                         char: ' ',
