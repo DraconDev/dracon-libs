@@ -33,6 +33,7 @@ use dracon_terminal_engine::compositor::{Cell, Color, Plane, Styles};
 use dracon_terminal_engine::framework::hitzone::{HitZone, HitZoneGroup};
 use dracon_terminal_engine::framework::prelude::*;
 use dracon_terminal_engine::framework::theme::Theme;
+use dracon_terminal_engine::framework::widget::Widget;
 use dracon_terminal_engine::framework::widget::WidgetId;
 use dracon_terminal_engine::input::event::{KeyCode, KeyEventKind, MouseEventKind};
 use ratatui::layout::Rect;
@@ -511,7 +512,7 @@ impl Widget for ColorPicker {
         &mut self,
         kind: MouseEventKind,
         local_col: u16,
-        local_row: u16,
+        _local_row: u16,
     ) -> bool {
         // Handle left-click on the swatch area (col 0-5) to cycle color.
         if let MouseEventKind::Down(_) = kind {

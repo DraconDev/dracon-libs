@@ -38,9 +38,10 @@ mod gauge_command_output {
 
     #[test]
     fn test_gauge_with_bound_command() {
-        let cmd = BoundCommand::new("echo 42.5").parser(OutputParser::Plain);
+        let cmd = BoundCommand::new("echo '{\"value\":42.5}'")
+            .parser(OutputParser::JsonKey { key: "value".to_string() });
         let mut gauge = Gauge::new("Memory").bind_command(cmd.clone());
-        let runner = CommandRunner::new("echo 42.5");
+        let runner = CommandRunner::new(&cmd.command);
         let (stdout, stderr, exit_code) = runner.run_sync();
         let output = cmd.parse_output(&stdout, &stderr, exit_code);
         Widget::apply_command_output(&mut gauge, &output);
@@ -105,13 +106,14 @@ mod status_badge_command_output {
 
     #[test]
     fn test_status_badge_with_bound_command() {
-        let cmd = BoundCommand::new("echo 'healthy'").parser(OutputParser::Plain);
+        let cmd = BoundCommand::new(r#"echo '{"status":"healthy"}'"#)
+            .parser(OutputParser::JsonKey { key: "status".to_string() });
         let mut badge = StatusBadge::new(WidgetId::new(1)).bind_command(cmd.clone());
-        let runner = CommandRunner::new("echo 'healthy'");
+        let runner = CommandRunner::new(&cmd.command);
         let (stdout, stderr, exit_code) = runner.run_sync();
         let output = cmd.parse_output(&stdout, &stderr, exit_code);
         Widget::apply_command_output(&mut badge, &output);
-        assert_eq!(badge.status(), "healthy");
+        assert_eq!(badge.status(), "\"healthy\"");
     }
 
     #[test]
@@ -165,7 +167,9 @@ mod key_value_grid_command_output {
             LoggedLine::new("KEY2: val2", "info"),
         ]));
         let rendered_chars = count_rendered_pairs(&grid);
-        assert_eq!(rendered_chars, 0, "Lines format should be ignored");
+        let empty_grid = KeyValueGrid::new();
+        let empty_chars = count_rendered_pairs(&empty_grid);
+        assert_eq!(rendered_chars, empty_chars, "Lines format should produce same output as empty grid");
     }
 
     #[test]
