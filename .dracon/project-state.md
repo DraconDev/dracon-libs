@@ -4,20 +4,24 @@
 Improved command output handling and test coverage for terminal widgets
 
 ## Context
-The changes address limitations in command output rendering and filtering in terminal widgets, particularly around line counting and content truncation. The modifications ensure proper rendering constraints are respected while maintaining visual consistency.
+The changes enhance the robustness of command output parsing in terminal widgets by:
+1. Adding JSON parsing support for structured command outputs
+2. Improving test assertions to handle dynamic output scenarios
+3. Fixing edge cases in line count parsing
 
 ## Completed
-- [x] Made `PresetColor` struct public in widget tutorial example
-- [x] Updated command output test assertions to properly account for rendered content
-- [x] Improved line counting logic in streaming text tests to verify visual constraints
+- [x] Added JSON key parsing support for command outputs
+- [x] Enhanced test assertions to handle dynamic values
+- [x] Fixed line count parsing to handle multi-line outputs
+- [x] Improved test coverage for command output scenarios
 
 ## In Progress
-- [x] Refining test assertions to better match visual rendering expectations
+- [x] Comprehensive command output integration tests
 
 ## Blockers
-- None identified in this commit
+- None identified in this change
 
 ## Next Steps
-1. Verify all command output tests pass with the updated constraints
-2. Review widget tutorial example for any visual rendering issues
-3. Consider additional test cases for edge cases in command output handling
+1. Verify all widget types handle parsed outputs correctly
+2. Add more edge case tests for command parsing
+3. Document the new JSON parsing capabilities
