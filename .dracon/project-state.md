@@ -1,22 +1,20 @@
 # Project State
 
 ## Current Focus
-Refactored thread safety in the split resizer example by replacing Mutex with RefCell for single-threaded use.
+Dependency version updates in the `dracon-terminal-engine` framework
 
 ## Context
-The split resizer example was previously using Arc<Mutex<>> for thread safety, but since it's a single-threaded example, we can simplify the implementation by using Rc<RefCell<>> instead.
+This change updates dependency versions in the `dracon-terminal-engine` framework, likely to incorporate bug fixes, security patches, or new features from upstream dependencies.
 
 ## Completed
-- [x] Replaced Mutex with RefCell for thread safety in the split resizer example
-- [x] Simplified the tick handling logic by removing lock() calls
-- [x] Updated the example documentation to reflect the new approach
+- [x] Updated dependency versions in Cargo.lock
 
 ## In Progress
-- [ ] No active work in progress
+- [x] Dependency version updates in progress
 
 ## Blockers
-- None
+- None reported in this commit
 
 ## Next Steps
-1. Verify the example still functions correctly with the new implementation
-2. Consider if this pattern can be applied to other single-threaded examples
+1. Verify updated dependencies work as expected in integration tests
+2. Prepare release notes for the dependency updates
