@@ -11,6 +11,7 @@ fn test_context_menu_action_variants() {
     let actions = [
         Open,
         OpenNewTab,
+        OpenWith,
         Edit,
         Run,
         RunTerminal,
@@ -51,7 +52,7 @@ fn test_context_menu_action_variants() {
         SetColor(None),
         SetColor(Some(128)),
     ];
-    assert_eq!(actions.len(), 39);
+    assert_eq!(actions.len(), 42);
 }
 
 #[test]

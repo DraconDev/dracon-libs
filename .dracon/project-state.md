@@ -1,8 +1,8 @@
-# Project State
+#Project State
 
 ## Current Focus
-Update button test semantics: rename test and assert that right‑click inside area returns true
+feat(context menu): add OpenWith variant to actions and adjust test length
 
 ## Completed
-- [x] Rename test `test_framework_button_handle_mouse_right_click_returns_false` to `test_framework_button_handle_mouse_right_click_returns_true_when_in_area`
-- [x] Modify assertions to expect `result` to be true (right‑click inside area should return true)
+- [x] Added OpenWith enum variant to actions array
+- [x] Updated test assertion to reflect new total action count (42)
