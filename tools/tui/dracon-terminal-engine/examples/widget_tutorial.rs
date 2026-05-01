@@ -472,9 +472,7 @@ impl Widget for ColorPicker {
     /// Arrow keys cycle through colors:
     /// - Left/Right: cycle prev/next color
     /// - Enter/Space: cycle to next color
-    fn handle_key(&mut self, key: crate::input::event::KeyEvent) -> bool {
-        use crate::input::event::{KeyCode, KeyEventKind};
-
+    fn handle_key(&mut self, key: KeyEvent) -> bool {
         // Only handle key press events (not release or repeat).
         if key.kind != KeyEventKind::Press {
             return false;

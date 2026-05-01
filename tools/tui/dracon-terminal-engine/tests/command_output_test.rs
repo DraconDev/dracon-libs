@@ -5,10 +5,6 @@
 //!
 //! These tests verify the full pipeline: CommandRunner -> OutputParser -> Widget::apply_command_output
 
-use std::collections::BTreeMap;
-
-mod test_helpers;
-
 use dracon_terminal_engine::framework::command::{
     BoundCommand, CommandRunner, LoggedLine, OutputParser, ParsedOutput,
 };
@@ -16,21 +12,6 @@ use dracon_terminal_engine::framework::widget::WidgetId;
 use dracon_terminal_engine::framework::widget::Widget;
 use dracon_terminal_engine::framework::widgets::{
     Gauge, KeyValueGrid, LogViewer, StatusBadge, StreamingText,
-};
-
-mod test_helpers {
-    pub fn temp_file_with_content(content: &str) -> std::path::PathBuf {
-        use std::io::Write;
-        let mut path = std::env::temp_dir();
-        let id: u64 = rand::random();
-        path.push(format!("dracon_test_{}", id));
-        std::fs::write(&path, content).unwrap();
-        path
-    }
-
-    pub fn cleanup_temp_file(path: &std::path::PathBuf) {
-        let _ = std::fs::remove_file(path);
-    }
 }
 
 #[cfg(test)]
