@@ -185,12 +185,17 @@ struct ModalDemoApp<'a> {
 impl<'a> ModalDemoApp<'a> {
     fn new() -> Self {
         let label = Label::new(
-            "Main content area\n\n\
-             Click [Show Confirm Dialog] to trigger confirm\n\
-             Click [Show Help] to toggle help overlay",
+            "Modal Demo\n\
+             ──────────\n\
+             Click buttons below to interact\n\
+             \n\
+             This demonstrates:\n\
+             • ConfirmDialog (z=110) renders above help (z=100)\n\
+             • Help overlay renders above main content (z=0)\n\
+             • ESC closes modals, Enter confirms",
         );
 
-        let confirm_dialog = ConfirmDialog::new("Confirm Action", "Are you sure you want to proceed?")
+        let confirm_dialog = ConfirmDialog::new("Confirm Action", "Are you sure?")
             .confirm_label("OK")
             .cancel_label("Cancel")
             .danger(true);
@@ -217,7 +222,7 @@ impl<'a> ModalDemoApp<'a> {
 fn main() -> io::Result<()> {
     println!("Modal Demo");
     println!("==========");
-    println!("Click buttons to interact");
+    println!("Click buttons to interact with modals");
     println!();
 
     std::thread::sleep(Duration::from_millis(300));
@@ -229,28 +234,28 @@ fn main() -> io::Result<()> {
 
     let mut demo = ModalDemoApp::new();
 
-    demo.label.set_area(Rect::new(2, 2, 55, 10));
+    demo.label.set_area(Rect::new(2, 2, 55, 12));
     demo.confirm_dialog.set_area(Rect::new(0, 0, 80, 24));
     demo.help_overlay.set_area(Rect::new(0, 0, 80, 24));
-    demo.confirm_btn.set_area(Rect::new(2, 14, 25, 1));
-    demo.help_btn.set_area(Rect::new(30, 14, 18, 1));
+    demo.confirm_btn.set_area(Rect::new(2, 16, 25, 1));
+    demo.help_btn.set_area(Rect::new(30, 16, 18, 1));
 
     let _confirm_result = app.run(move |ctx| {
         if ctx.needs_full_refresh() {
             ctx.mark_all_dirty();
         }
 
-        let label_area = Rect::new(2, 2, 55, 10);
+        let label_area = Rect::new(2, 2, 55, 12);
         demo.label.mark_dirty();
         let label_plane = demo.label.render(label_area);
         ctx.add_plane(label_plane);
 
-        let confirm_btn_area = Rect::new(2, 14, 25, 1);
+        let confirm_btn_area = Rect::new(2, 16, 25, 1);
         demo.confirm_btn.mark_dirty();
         let btn_plane = demo.confirm_btn.render(confirm_btn_area);
         ctx.add_plane(btn_plane);
 
-        let help_btn_area = Rect::new(30, 14, 18, 1);
+        let help_btn_area = Rect::new(30, 16, 18, 1);
         demo.help_btn.mark_dirty();
         let help_btn_plane = demo.help_btn.render(help_btn_area);
         ctx.add_plane(help_btn_plane);
