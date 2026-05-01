@@ -1,23 +1,21 @@
 # Project State
 
 ## Current Focus
-Refactored modal dialog test cases in the terminal engine
+Update dependency versions in the `dracon-terminal-engine` framework
 
 ## Context
-Removed redundant modal dialog test cases that were either redundant with existing tests or covered by refactored widget rendering improvements
+This change was prompted by ongoing refactoring and testing work in the terminal engine, which required updated dependencies to ensure compatibility with recent framework improvements.
 
 ## Completed
-- [x] Removed duplicate modal dialog test cases for tab cycling and button selection
-- [x] Cleaned up test file by removing redundant test cases
-- [x] Maintained core test functionality for modal dialog behavior
+- [x] Updated dependency versions in Cargo.lock to resolve compatibility issues with recent framework changes
 
 ## In Progress
-- [ ] No active work in progress
+- [x] No active work in progress beyond the dependency update
 
 ## Blockers
-- None identified
+- None identified for this specific change
 
 ## Next Steps
-1. Review remaining modal dialog tests for completeness
-2. Verify test coverage for modal dialog interactions
+1. Continue with ongoing refactoring and testing work in the terminal engine
+2. Monitor for any additional dependency conflicts as development progresses
 ```
