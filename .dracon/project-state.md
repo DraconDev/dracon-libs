@@ -1,21 +1,21 @@
 # Project State
 
 ## Current Focus
-Removed redundant theme retrieval in theme switcher example
+Dependency version updates in the `dracon-terminal-engine` framework
 
 ## Context
-The theme switching system was recently refactored to use centralized theme management. The example code was updated to reflect this change, but the redundant `get_current_theme()` calls remained.
+The Cargo.lock file was modified due to dependency version updates in the `dracon-terminal-engine` framework. This is part of ongoing maintenance to ensure compatibility and stability across the project's dependencies.
 
 ## Completed
-- [x] Removed duplicate `get_current_theme()` calls in theme switcher example
-- [x] Maintained the same functionality by keeping `mark_all_dirty()` calls
+- [x] Updated dependency versions in the `dracon-terminal-engine` framework
 
 ## In Progress
-- [x] No active work in progress
+- [x] Dependency version updates in progress
 
 ## Blockers
-- None
+- None identified at this time
 
 ## Next Steps
-1. Verify theme switching behavior remains consistent
-2. Consider further refactoring of the theme switcher example if needed
+1. Verify all dependencies are properly resolved in Cargo.lock
+2. Continue with ongoing refactoring and feature development
+```
