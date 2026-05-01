@@ -8,7 +8,6 @@
 use std::cell::RefCell;
 use std::io;
 use std::rc::Rc;
-use std::sync::atomic::{AtomicBool, Ordering};
 
 use dracon_terminal_engine::compositor::{Color, Plane, Styles};
 use dracon_terminal_engine::framework::prelude::*;
