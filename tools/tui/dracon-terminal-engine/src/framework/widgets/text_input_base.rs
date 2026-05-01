@@ -277,8 +277,11 @@ mod tests {
     fn test_base_input_handle_key_enter() {
         let id = WidgetId::new(1);
         let mut base = BaseInput::new(id, "placeholder");
-        let mut submitted = false;
-        base.on_submit = Some(Box::new(|_| { submitted = true; }));
+        let submitted = std::rc::Rc::new(std::cell::Cell::new(false));
+        let captured = submitted.clone();
+        base.on_submit = Some(std::rc::Rc::new(std::cell::RefCell::new(Some(Box::new(move |_| {
+            captured.set(true);
+        })))).into());
         let key = crate::input::event::KeyEvent {
             kind: crate::input::event::KeyEventKind::Press,
             code: crate::input::event::KeyCode::Enter,
@@ -286,7 +289,7 @@ mod tests {
         };
         let result = base.handle_key(key);
         assert!(result);
-        assert!(submitted);
+        assert!(submitted.get());
     }
 
     #[test]

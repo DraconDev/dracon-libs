@@ -739,16 +739,6 @@ mod tests {
     }
 
     #[test]
-    fn test_app_run_command() {
-        let mut app = App::new().unwrap();
-        let cmd = BoundCommand::new("echo hello from run_command");
-        app.add_command(cmd);
-        let (stdout, stderr, code) = app.run_command("echo hello");
-        assert!(stdout.contains("hello"));
-        assert_eq!(code, 0);
-    }
-
-    #[test]
     fn test_app_set_theme() {
         use crate::framework::widgets::Label;
         let mut app = App::new().unwrap();

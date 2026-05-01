@@ -285,9 +285,9 @@ mod tests {
     #[test]
     fn test_password_input_handle_key_enter() {
         let id = WidgetId::new(1);
-        let mut submitted = false;
+        let submitted = std::cell::Cell::new(false);
         let mut input = PasswordInput::new(id);
-        input.base.on_submit = Some(Box::new(|_| { submitted = true; }));
+        input.base.on_submit = Some(Box::new(|_| { submitted.set(true); }));
         input.base.text = "secret".to_string();
         let key = crate::input::event::KeyEvent {
             kind: crate::input::event::KeyEventKind::Press,
@@ -296,7 +296,7 @@ mod tests {
         };
         let result = input.handle_key(key);
         assert!(result);
-        assert!(submitted);
+        assert!(submitted.get());
     }
 
     #[test]
