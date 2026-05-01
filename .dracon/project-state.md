@@ -1,11 +1,7 @@
 # Project State
 
 ## Current Focus
-Added new example applications to demonstrate the terminal engine's capabilities
+The `Cargo.lock` file was updated, indicating dependency version changes in the `dracon-terminal-engine` framework.
 
 ## Completed
-- [x] Added `cyberpunk_dashboard` example showing Ratatui chart dashboard with simulation
-- [x] Added `demo` example for general engine demonstration with charts
-- [x] Added `desktop` example for desktop-style window management
-- [x] Added `game_loop` example showing 60fps game loop with mouse tracking
-```
+- [x] Updated dependency versions in the `dracon-terminal-engine` framework to ensure compatibility and security.
