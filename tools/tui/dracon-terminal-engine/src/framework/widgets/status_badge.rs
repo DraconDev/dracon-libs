@@ -252,7 +252,7 @@ mod tests {
     #[test]
     fn test_status_badge_focusable_returns_true_by_default() {
         let badge = StatusBadge::new(WidgetId::new(1));
-        assert!(!badge.focusable());
+        assert!(badge.focusable());
     }
 
     #[test]
