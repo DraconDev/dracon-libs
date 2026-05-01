@@ -277,7 +277,7 @@ let list = List::new(items).with_theme(Theme::dark());
 
 ---
 
-## 6. The Compositor Pattern (Engine-level)
+## 7. The Compositor Pattern (Engine-level)
 
 Planes have z-indices. Higher z = on top. The compositor uses painter's algorithm.
 
@@ -305,7 +305,7 @@ let frame = compositor.render();
 
 ---
 
-## 7. Input Handling
+## 8. Input Handling
 
 ### Framework (App event loop)
 
@@ -338,7 +338,7 @@ if let Some(Event::Mouse(me)) = reader.read()? {
 
 ---
 
-## 8. Color
+## 9. Color
 
 Use `Color::Rgb(r, g, b)` for 24-bit color or `Color::Ansi(n)` for 256-color.
 
@@ -352,7 +352,7 @@ let c = Color::Reset;                // reset to terminal default
 
 ---
 
-## 9. Ratatui Integration
+## 10. Ratatui Integration
 
 Use `RatatuiBackend` for ratatui widgets combined with floating Planes:
 
@@ -371,7 +371,7 @@ Note: `RatatuiBackend` wraps the raw-mode Terminal. When `terminal` is dropped, 
 
 ---
 
-## 10. Sync Mode 2026 (Visual Polish)
+## 11. Sync Mode 2026 (Visual Polish)
 
 For tear-free rendering, wrap output in sync mode:
 
@@ -385,7 +385,7 @@ end_sync(writer)?;
 
 ---
 
-## 11. Unicode & Wide Characters
+## 12. Unicode & Wide Characters
 
 Characters like Kanji and Emoji take 2 columns. Use utilities to stay safe:
 
@@ -396,7 +396,7 @@ When a wide char occupies `(x, y)`, cell `(x+1, y)` must have `skip: true`.
 
 ---
 
-## 12. Re-exports
+## 13. Re-exports
 
 Most common types are re-exported at crate root:
 
@@ -415,7 +415,7 @@ use dracon_terminal_engine::{InputReader, Parser, SystemMonitor};
 
 | Concept | Key API |
 |---|---|
-| Entry point | `App::new()?.title().fps().run(\|ctx\|)` |
+| Entry point | `App::new()?.title().fps().run(\|ctx\|)` or `App::from_toml(path)` |
 | Add content | `ctx.add_plane(plane)` |
 | List | `List::new(items).on_select(f).render(area)` |
 | Breadcrumbs | `Breadcrumbs::new(crumbs).render(area)` |
@@ -425,3 +425,5 @@ use dracon_terminal_engine::{InputReader, Parser, SystemMonitor};
 | Colors | `Color::Rgb(r, g, b)` or `Color::Ansi(n)` |
 | Z-indexed layers | `Plane::new(id, w, h)` + `set_z_index(n)` |
 | Raw mode | `Terminal::new(stdout())?` |
+| Commands | `ctx.run_command("cli")` / `ctx.available_commands()` |
+| TOML config | `App::from_toml("config.toml")?` |
