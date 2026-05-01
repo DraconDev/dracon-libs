@@ -1,24 +1,28 @@
 # Project State
 
 ## Current Focus
-Added comprehensive test coverage for the BaseInput widget in the terminal UI framework
+Added comprehensive test coverage for the StreamingText widget with field visibility improvements
 
 ## Context
-To ensure robust functionality of the text input components in the terminal UI, we're implementing a full suite of unit tests for the BaseInput widget. This follows recent work on other widget test suites and aligns with the framework's focus on reliability.
+The StreamingText widget was refactored to make its fields public, enabling better testability and integration with other components. This change was necessary to support the new test suite which verifies all core functionality including content handling, rendering, and command binding.
 
 ## Completed
-- [x] Added 332 lines of test coverage for BaseInput widget
-- [x] Tested core functionality: initialization, text handling, cursor movement
-- [x] Tested rendering scenarios: empty input, text input, masked input
-- [x] Tested key event handling: character input, backspace, arrow keys, enter
-- [x] Tested area management and dirty state tracking
+- [x] Made all StreamingText fields public for better testability
+- [x] Added 23 comprehensive unit tests covering:
+  - Basic widget initialization
+  - Content handling (append, clear, multiline)
+  - Command binding and output processing
+  - Rendering behavior (empty state, word wrap)
+  - Theme application
+  - Auto-scroll functionality
+  - Dirty state management
 
 ## In Progress
-- [x] Comprehensive test suite for BaseInput widget
+- [ ] No active work in progress
 
 ## Blockers
 - None identified
 
 ## Next Steps
-1. Review test coverage for edge cases (multi-line input, special characters)
-2. Integrate with CI pipeline for automated test execution
+1. Verify test coverage with integration tests
+2. Document the public API changes in widget documentation
