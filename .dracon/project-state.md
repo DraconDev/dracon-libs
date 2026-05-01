@@ -1,22 +1,16 @@
 # Project State
 
 ## Current Focus
-Added comprehensive async command execution test suite for the terminal engine
+Added comprehensive test coverage for the LogViewer widget and improved async command execution tests
 
 ## Context
-To ensure robust async command handling in the terminal engine, we need to verify:
-- Non-blocking async execution patterns
-- Proper timeout handling
-- Separate stdout/stderr capture
-- Working directory support
-- Poll vs await semantics
-- Error handling scenarios
+The LogViewer widget needed more robust testing to ensure reliability, and the async command execution tests were improved to handle edge cases better.
 
 ## Completed
-- [x] Added 452-line test suite covering async command execution patterns
-- [x] Tests verify timeout handling, output capture, and process management
-- [x] Includes scenarios for working directory changes and error cases
-- [x] Covers poll vs await semantics for async command execution
+- [x] Added comprehensive test suite for LogViewer widget (181 new test cases)
+- [x] Improved async command execution tests with better error handling
+- [x] Made LogViewer's level_color and level_prefix methods public for better accessibility
+- [x] Enhanced async command test to properly check exit codes
 
 ## In Progress
 - [ ] No active work in progress
@@ -25,6 +19,5 @@ To ensure robust async command handling in the terminal engine, we need to verif
 - None identified
 
 ## Next Steps
-1. Integrate these tests into CI pipeline
-2. Add similar test coverage for sync command execution patterns
-```
+1. Review test coverage for other widgets
+2. Consider adding integration tests for LogViewer with command binding

@@ -180,7 +180,7 @@ impl LogViewer {
         }
     }
 
-    fn level_color(&self, level: LogLevel) -> Color {
+    pub fn level_color(&self, level: LogLevel) -> Color {
         match level {
             LogLevel::Fatal => self.theme.error_fg,
             LogLevel::Error => self.theme.error_fg,
@@ -190,7 +190,7 @@ impl LogViewer {
         }
     }
 
-    fn level_prefix(&self, level: LogLevel) -> &'static str {
+    pub fn level_prefix(&self, level: LogLevel) -> &'static str {
         match level {
             LogLevel::Debug => "[D]",
             LogLevel::Info => "[I]",

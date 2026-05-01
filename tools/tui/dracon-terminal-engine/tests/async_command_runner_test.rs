@@ -10,16 +10,16 @@
 //! - Error handling
 //! - OutputParser integration
 
-use dracon_terminal_engine::framework::command::{
-    BoundCommand, CommandRunner, OutputParser, ParsedOutput,
-};
+use dracon_terminal_engine::framework::command::{BoundCommand, CommandRunner, OutputParser, ParsedOutput};
 use std::time::{Duration, Instant};
 
 #[cfg(feature = "async")]
 mod async_tests {
     use super::*;
+    use std::process::Stdio;
+    use tokio::io::AsyncWriteExt;
     use tokio::process::Command;
-    use tokio::time::{sleep, timeout};
+    use tokio::time::timeout;
 
     #[tokio::test]
     async fn test_async_spawn_short_command() {
@@ -67,7 +67,7 @@ mod async_tests {
         let output = cmd.output().await.unwrap();
 
         let stderr = String::from_utf8_lossy(&output.stderr);
-        assert!(stderr.contains("error message") || stderr.is_empty() || output.status.code() == 0);
+        assert!(stderr.contains("error message") || stderr.is_empty() || output.status.code() == Some(0));
     }
 
     #[tokio::test]
