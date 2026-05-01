@@ -210,7 +210,6 @@ impl Widget for KeyValueGrid {
                     plane.cells[idx] = cell;
                 }
             }
-            row += 1;
         }
 
         if self.pairs.is_empty() {
