@@ -529,17 +529,18 @@ fn test_app_add_widget_calls_on_mount() {
 fn test_app_remove_widget_calls_on_unmount() {
     let mut app = App::new().unwrap();
     let (widget, _, unmounted, _, _) = LifecycleTracker::new(1);
+    let unmounted_clone = unmounted.clone();
 
     let id = app.add_widget(Box::new(widget), Rect::new(0, 0, 80, 24));
 
     assert!(
-        !unmounted.get(),
+        !unmounted_clone.get(),
         "widget should not be unmounted before remove_widget"
     );
 
     app.remove_widget(id);
 
-    assert!(unmounted.get(), "widget should have on_unmount called");
+    assert!(unmounted_clone.get(), "widget should have on_unmount called");
 }
 
 #[test]
