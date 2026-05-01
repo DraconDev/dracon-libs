@@ -354,8 +354,22 @@ pub struct AppConfig {
     pub title: String,
     pub theme: Option<String>,
     pub fps: Option<u32>,
-    pub layout: LayoutConfig,
+    #[serde(default)]
+    pub layout: Option<LayoutConfig>,
+    #[serde(default)]
     pub widgets: Vec<WidgetConfig>,
+}
+
+impl Default for AppConfig {
+    fn default() -> Self {
+        Self {
+            title: "Dracon App".to_string(),
+            theme: None,
+            fps: None,
+            layout: None,
+            widgets: Vec::new(),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

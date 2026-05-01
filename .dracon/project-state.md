@@ -1,10 +1,8 @@
 # Project State
 
-## Current Focus
-fix(command): improve error handling and fix pattern matching in command execution with TOML deserialization migration
+# Current Focus
+This commit modifies the `AppConfig` struct to include a new `layout` field with optional `LayoutConfig` and updates `widgets` to a vector. It also adjusts the default implementation of `AppConfig::default()`.
 
 ## Completed
-- [x] fix(pattern matching): add `.as_str()` call to pattern variable in severity detection, resolving type mismatch when checking line contents
-- [x] fix(error handling): replace `unwrap_or_default()` with explicit match on command execution, returning empty output and -1 exit code on spawn failure instead of panicking
-- [x] refactor(toml): migrate from `toml_edit::de::from_str` to `toml::from_str` for AppConfig deserialization in both `from_toml` and `from_toml_str` methods
-- [x] sync(deps): update Cargo.toml and Cargo.lock to reflect `toml` crate dependency change
+- Added new `layout` option with default value to allow config flexibility.
+- Refactored `default()` method to initialize configuration fields properly.
