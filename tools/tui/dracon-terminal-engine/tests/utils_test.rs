@@ -378,7 +378,7 @@ fn test_file_category_cyber_color() {
 
 #[test]
 fn test_selection_state_is_empty() {
-    let state = SelectionState::new();
+    let mut state = SelectionState::new();
     assert!(state.is_empty());
     state.add(1);
     assert!(!state.is_empty());
