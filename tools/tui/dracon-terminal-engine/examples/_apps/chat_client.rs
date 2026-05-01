@@ -37,13 +37,6 @@ use dracon_terminal_engine::framework::widgets::{
 use dracon_terminal_engine::input::event::{KeyCode, KeyEventKind, MouseEventKind, MouseButton};
 use ratatui::layout::Rect;
 
-struct Message {
-    sender: String,
-    text: String,
-    time: String,
-    is_read: bool,
-}
-
 #[derive(Clone)]
 struct Message {
     sender: String,
