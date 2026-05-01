@@ -5,7 +5,7 @@
 //! Demonstrates all 5 command-bound widgets: Gauge, KeyValueGrid, StatusBadge, LogViewer, StreamingText
 //! with auto-refresh, theme cycling (t), pause (p), and manual refresh (r).
 
-use dracon_terminal_engine::compositor::{Cell, Plane, Styles};
+use dracon_terminal_engine::compositor::{Cell, Color, Plane, Styles};
 use dracon_terminal_engine::framework::command::{BoundCommand, OutputParser};
 use dracon_terminal_engine::framework::prelude::*;
 use dracon_terminal_engine::framework::widget::{Widget, WidgetId};
@@ -14,8 +14,6 @@ use dracon_terminal_engine::input::event::{KeyCode, KeyEventKind};
 use ratatui::layout::{Constraint, Layout, Rect};
 use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use std::sync::Arc;
-
-const THEMES: &[(&str, fn() -> Theme)] = &[("Nord", Theme::nord), ("Cyberpunk", Theme::cyberpunk), ("Dracula", Theme::dracula)];
 
 struct Dashboard {
     gauge: Gauge,
@@ -156,7 +154,7 @@ fn main() -> std::io::Result<()> {
         .tick_interval(1000)
         .on_tick(tick_cb);
 
-    let widget_id = app.add_widget(Box::new(Dashboard::new()), Rect::new(0, 0, 80, 24));
+    app.add_widget(Box::new(Dashboard::new()), Rect::new(0, 0, 80, 24));
 
     app.run(move |ctx| {
         ctx.hide_cursor().ok();
