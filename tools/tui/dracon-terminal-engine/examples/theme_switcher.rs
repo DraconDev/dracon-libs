@@ -729,23 +729,7 @@ fn main() -> io::Result<()> {
     let demo = WidgetDemoPanel::new(WidgetId::new(6));
     let _demo_id = app.add_widget(Box::new(demo), Rect::new(0, 17, 80, 12));
 
-    let mut last_theme_idx = CURRENT_THEME_INDEX.load(Ordering::SeqCst);
-
-    app.on_tick(move |ctx, _tick| {
-        let current_idx = CURRENT_THEME_INDEX.load(Ordering::SeqCst);
-        if current_idx != last_theme_idx {
-            last_theme_idx = current_idx;
-            ctx.mark_all_dirty();
-        }
-    });
-
-    app.run(|ctx| {
-        let current_idx = CURRENT_THEME_INDEX.load(Ordering::SeqCst);
-        if current_idx != last_theme_idx {
-            last_theme_idx = current_idx;
-            ctx.mark_all_dirty();
-        }
-    })?;
+    app.run(|_ctx| {});
 
     println!("\nTheme Switcher Demo Ended");
     println!("All 15 themes demonstrated:");
