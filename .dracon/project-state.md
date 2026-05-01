@@ -1,22 +1,22 @@
 # Project State
 
 ## Current Focus
-Refactored `Gauge` widget fields to public for better accessibility and improved async command runner test robustness.
+Refactored async command runner test to simplify process status checking
 
 ## Context
-The `Gauge` widget refactoring makes its fields public to improve accessibility and maintainability. The async command runner test improvements ensure proper process status checking and error handling.
+The change improves test reliability by properly handling the `Result` type in process status checks, preventing potential panics and making the test more robust.
 
 ## Completed
-- [x] Made `Gauge` widget fields public for better accessibility
-- [x] Improved async command runner test with proper process status checking
-- [x] Enhanced error handling in async command runner tests
+- [x] Refactored process status checking in async command runner test
+- [x] Improved error handling by using `as_ref()` to safely inspect the `Result` type
+- [x] Maintained the same test behavior while making the code more robust
 
 ## In Progress
-- [ ] No active work in progress
+- [x] No active work in progress beyond this refactor
 
 ## Blockers
 - None identified
 
 ## Next Steps
-1. Review and test the public field changes in `Gauge` widget
-2. Verify async command runner test improvements in CI pipeline
+1. Review test coverage for other async command scenarios
+2. Consider additional test improvements for edge cases
