@@ -1,7 +1,8 @@
 # Project State
 
 ## Current Focus
-Refactored area height assertions in the terminal engine framework for better readability and maintainability.
+Updated dependency versions in the `dracon-terminal-engine` framework to address security vulnerabilities and maintain compatibility.
 
 ## Completed
-- [x] Consolidated two separate assertions into a single combined assertion for checking both top and bottom area heights
+- [x] Updated dependency versions in `dracon-terminal-engine/Cargo.toml` to resolve security vulnerabilities
+- [x] Regenerated `Cargo.lock` to reflect updated dependency versions
