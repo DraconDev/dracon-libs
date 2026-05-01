@@ -37,6 +37,7 @@ use dracon_terminal_engine::framework::widgets::{
 use dracon_terminal_engine::input::event::{KeyCode, KeyEventKind, MouseEventKind, MouseButton};
 use ratatui::layout::Rect;
 
+#[derive(Clone)]
 struct Message {
     sender: &'static str,
     text: &'static str,
@@ -117,12 +118,11 @@ impl ChatState {
         if self.input_text.trim().is_empty() {
             return;
         }
-        let text = self.input_text.clone();
-        self.input_text.clear();
+        let text = std::mem::take(&mut self.input_text);
         let msg = Message {
-            sender: String::from("You"),
-            text,
-            time: String::from("Now"),
+            sender: "You",
+            text: Box::leak(text.into_boxed_str()),
+            time: "Now",
             is_read: true,
         };
         self.messages.push(msg);

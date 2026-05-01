@@ -1,22 +1,23 @@
 # Project State
 
 ## Current Focus
-Refactored chat client message handling to use static string references instead of owned Strings
+Refactored chat client message handling to use static string references for sender and time fields
 
 ## Context
-The previous implementation used heap-allocated Strings for message data, which was unnecessary for static example content. This change reduces memory allocations and improves performance for the example.
+This change follows previous refactoring efforts to improve the chat client's widget architecture and message handling. The goal was to optimize memory usage by using static string references instead of owned String types for the sender and time fields.
 
 ## Completed
-- [x] Changed Message struct fields from String to &'static str
-- [x] Updated message data to use string literals
-- [x] Maintained all existing functionality while improving memory efficiency
+- [x] Changed `sender` field from `String` to `&'static str`
+- [x] Changed `time` field from `String` to `&'static str`
+- [x] Used `Box::leak` to convert the input text to a static string reference
+- [x] Simplified message construction by using static strings for sender and time
 
 ## In Progress
-- [x] Refactoring of message handling in chat client example
+- [ ] No active work in progress
 
 ## Blockers
 - None identified
 
 ## Next Steps
-1. Verify no runtime behavior changes in the chat client example
-2. Consider if other examples could benefit from similar optimizations
+1. Verify the refactored code maintains all functionality
+2. Consider if additional optimizations are needed for the message handling
