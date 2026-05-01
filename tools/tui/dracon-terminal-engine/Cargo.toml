@@ -37,6 +37,10 @@ tempfile = "3.10"
 name = "system_monitor"
 path = "examples/_apps/system_monitor.rs"
 
+[[example]]
+name = "chat_client"
+path = "examples/_apps/chat_client.rs"
+
 [features]
 default = []
 async = ["tokio"]
