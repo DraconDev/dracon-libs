@@ -1,7 +1,6 @@
-# Project State
-
-## Current Focus
-Refactoring the TUI framework's dependency management and test infrastructure to eliminate unsafe practices, particularly in terminal mocking and test assertions. Changes include updating Cargo.toml to support safer configurations aligned with hardened test requirements.
+# Project State## Current Focus
+Adds a new `apply_command_output` method to the `Widget` trait, imports `ParsedOutput`, and documents that the method is called automatically by the app tick loop after `refresh_seconds` to let widgets update their internal state from a bound command's parsed output.
 
 ## Completed
-- [x] Updated Cargo.toml to align with refactored test infrastructure, ensuring compatibility with safer stdout-backed terminal mocks and relaxed assertion tests.
+- [x] Added `apply_command_output(&mut self, _output: &ParsedOutput)` method to `Widget` with documentation and a default no‑op implementation.
+- [x] Updated the `Widget` trait import to include `ParsedOutput`, enabling command output handling.
