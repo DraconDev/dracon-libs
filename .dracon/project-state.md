@@ -1,22 +1,23 @@
 # Project State
 
 ## Current Focus
-Refactored `Message` struct to use `Display` trait instead of manual `ToString` implementation
+Improved terminal animation handling and smoke test robustness in the Dracon Terminal Engine.
 
 ## Context
-The previous implementation had redundant `Clone` and `ToString` implementations for the `Message` struct. This refactoring simplifies the code by leveraging Rust's built-in traits.
+The changes address two areas:
+1. Simplified rain animation logic in the desktop example
+2. Added proper process cleanup in the editor smoke test
 
 ## Completed
-- [x] Removed manual `Clone` implementation for `Message`
-- [x] Replaced `ToString` with `Display` trait implementation
-- [x] Simplified message formatting logic
+- [x] Refactored rain animation to remove unused index parameter
+- [x] Added process cleanup in editor smoke test to prevent zombie processes
 
 ## In Progress
-- [x] No active work in progress
+- [x] No active work in progress beyond these changes
 
 ## Blockers
-- None
+- None identified from these changes
 
 ## Next Steps
-1. Verify the refactored implementation maintains all functionality
-2. Check if any dependent code needs updates due to the trait change
+1. Verify animation performance with the simplified logic
+2. Test smoke test behavior across different terminal environments
