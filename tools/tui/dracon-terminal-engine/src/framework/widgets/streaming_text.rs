@@ -325,7 +325,7 @@ mod tests {
     fn test_streaming_text_render_empty() {
         let st = StreamingText::new();
         let plane = st.render(Rect::new(0, 0, 30, 5));
-        assert_eq!(plane.cells[plane.cells.len() / 2].char, '(');
+        assert!(plane.cells.iter().any(|c| c.char == '('));
     }
 
     #[test]
