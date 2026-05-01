@@ -233,6 +233,44 @@ impl Default for Showcase {
     fn default() -> Self { Self::new() }
 }
 
+struct ShowcaseWidget(Rc<RefCell<Showcase>>);
+
+impl ShowcaseWidget {
+    fn new(inner: Rc<RefCell<Showcase>>) -> Self {
+        Self(inner)
+    }
+}
+
+impl Widget for ShowcaseWidget {
+    fn id(&self) -> WidgetId { self.0.borrow().id() }
+    fn set_id(&mut self, id: WidgetId) { self.0.borrow_mut().set_id(id); }
+    fn area(&self) -> Rect { self.0.borrow().area() }
+    fn set_area(&mut self, area: Rect) { self.0.borrow_mut().set_area(area); }
+    fn z_index(&self) -> u16 { self.0.borrow().z_index() }
+    fn needs_render(&self) -> bool { true }
+    fn mark_dirty(&mut self) { self.0.borrow_mut().mark_dirty(); }
+    fn clear_dirty(&mut self) { self.0.borrow_mut().clear_dirty(); }
+    fn focusable(&self) -> bool { self.0.borrow().focusable() }
+
+    fn render(&self, area: Rect) -> Plane {
+        self.0.borrow().render(area)
+    }
+
+    fn handle_key(&mut self, key: KeyEvent) -> bool {
+        self.0.borrow_mut().handle_key(key)
+    }
+
+    fn handle_mouse(&mut self, kind: MouseEventKind, col: u16, row: u16) -> bool {
+        self.0.borrow_mut().handle_mouse(kind, col, row)
+    }
+
+    fn on_mount(&mut self) { self.0.borrow_mut().on_mount(); }
+    fn on_unmount(&mut self) { self.0.borrow_mut().on_unmount(); }
+    fn on_focus(&mut self) { self.0.borrow_mut().on_focus(); }
+    fn on_blur(&mut self) { self.0.borrow_mut().on_blur(); }
+    fn on_theme_change(&mut self, theme: &Theme) { self.0.borrow_mut().on_theme_change(theme); }
+}
+
 impl Widget for Showcase {
     fn id(&self) -> WidgetId { self.id }
     fn set_id(&mut self, id: WidgetId) { self.id = id; }
