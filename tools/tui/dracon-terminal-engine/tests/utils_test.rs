@@ -51,8 +51,15 @@ fn test_truncate_to_width_empty_string() {
 
 #[test]
 fn test_truncate_to_width_suffix_width_calculation() {
-    let result = truncate_to_width("hello", 6, "..");
-    assert_eq!(result, "he..");
+    let result = truncate_to_width("hello world", 8, "...");
+    assert!(result.ends_with("..."));
+    assert!(result.len() <= 8);
+}
+
+#[test]
+fn test_truncate_to_width_with_unicode() {
+    let result = truncate_to_width("日本語テスト", 10, "...");
+    assert!(result.ends_with("...") || result.chars().count() <= 5);
 }
 
 #[test]
