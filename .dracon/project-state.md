@@ -1,21 +1,21 @@
 # Project State
 
 ## Current Focus
-Organize example code by moving terminal engine examples to a dedicated cookbook directory
+Dependency version updates in the `dracon-terminal-engine` framework
 
 ## Context
-The terminal engine examples were previously in the main examples directory, which could be confusing for users. Moving them to a dedicated `_cookbook` subdirectory provides better organization and makes it clearer these are example implementations.
+This change updates dependency versions in the terminal engine framework to ensure compatibility and security. The updates were prompted by recent refactoring work in the file manager and dashboard builder components.
 
 ## Completed
-- [x] Moved terminal engine examples to `_cookbook` subdirectory
-- [x] Maintained identical content during the move (100% file similarity)
+- [x] Updated dependency versions in `dracon-terminal-engine` framework
+- [x] Updated `Cargo.lock` to reflect new dependency versions
 
 ## In Progress
-- [x] Example organization cleanup
+- [ ] No active work in progress beyond dependency updates
 
 ## Blockers
-- None identified
+- None identified for this specific change
 
 ## Next Steps
-1. Verify all examples still function correctly after the move
-2. Update documentation to reflect the new example organization
+1. Verify updated dependencies work with current codebase
+2. Continue with ongoing refactoring of file manager and dashboard builder components
