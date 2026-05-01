@@ -647,12 +647,11 @@ impl<'a> Ctx<'a> {
 mod tests {
     use super::*;
     use crate::framework::command::{AppConfig, AreaConfig, LayoutConfig, ParserConfig, WidgetConfig};
+    use std::fs::File;
+    use std::io;
 
     fn make_test_terminal() -> io::Result<crate::Terminal<File>> {
-        let file = File::options()
-            .read(true)
-            .write(true)
-            .open("/dev/null")?;
+        let file = File::open("/dev/null")?;
         crate::Terminal::new(file)
     }
 
