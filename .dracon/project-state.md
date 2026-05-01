@@ -1,8 +1,9 @@
 # Project State
 
 ## Current Focus
-ONE LINE: Update drag‑and‑drop test to use the correct `DragState` location after the type was moved to the `hitzone` module.
+ONE LINE: Refactor terminal-engine widget tests to verify rendering behavior and state via public API instead of inspecting internals.
 
 ## Completed
-- [x] Adjusted imports in `dragdrop_test.rs` to reference `DragState` from `dracon_terminal_engine::framework::hitzone` instead of `framework::dragdrop`.
-- [x] Regenerated `Cargo.lock` to reflect the updated dependency lockfile.
+- [x] Update button tests to assert rendered plane dimensions, id exposure, and idempotent render; replace direct field checks with render/area/style assertions.
+- [x] Update label tests to assert rendered plane dimensions and style application; remove direct field access in favor of render-based verification.
+- [x] Regenerate Cargo.lock to synchronize lockfile without dependency version changes.
