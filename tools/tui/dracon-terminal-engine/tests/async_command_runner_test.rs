@@ -159,8 +159,6 @@ mod async_tests {
 
     #[tokio::test]
     async fn test_async_poll_before_completion() {
-        use tokio::process::Child;
-
         let mut child = Command::new("sleep")
             .arg("0.05")
             .stdout(Stdio::piped())
