@@ -161,7 +161,103 @@ if let Some(id) = group.dispatch_mouse(kind, col, row, modifiers) {
 
 ---
 
-## 5. Theme
+## 5. Command-driven architecture
+
+Every widget binds a CLI command. AI can enumerate all available actions and trigger them.
+
+### The AI surface
+
+```rust
+// List every action the TUI can perform
+let cmds = ctx.available_commands();
+for cmd in &cmds {
+    println!("{}: {} ({})", cmd.label, cmd.description, cmd.command);
+}
+```
+
+### Execute a command
+
+```rust
+// Run any CLI command directly
+let (stdout, stderr, code) = ctx.run_command("dracon-sync status --json");
+if code == 0 {
+    // Parse stdout for display
+} else {
+    // Show error from stderr
+}
+```
+
+### Command binding
+
+A `BoundCommand` carries everything needed to run and parse CLI output:
+
+```rust
+let cmd = BoundCommand::new("df -h")
+    .label("disk usage")
+    .description("Show disk space info")
+    .parser(OutputParser::Plain);
+
+let gauge = Gauge::new("Disk")
+    .bind_command(cmd);
+```
+
+### Output parsers
+
+| Parser | Use case |
+|--------|----------|
+| `OutputParser::JsonKey { key: "status" }` | Extract single field from JSON |
+| `OutputParser::JsonPath { path: "data.cpu" }` | Navigate nested JSON path |
+| `OutputParser::Regex { pattern: "([0-9]+)%", group: 1 }` | Extract via regex capture |
+| `OutputParser::ExitCode` | Map process exit code to status |
+| `OutputParser::SeverityLine` | Detect ERROR/WARN/INFO from log lines |
+| `OutputParser::Plain` | Raw text output |
+
+### TOML configuration
+
+Entire apps can be defined in TOML — no Rust code needed for new dashboards:
+
+```toml
+title = "My Dashboard"
+theme = "nord"
+fps = 30
+
+[[widget]]
+type = "StatusBadge"
+id = 1
+bind = "dracon-sync status --json"
+parser = { type = "json_key", key = "status" }
+refresh = 5
+
+[[widget]]
+type = "Gauge"
+id = 2
+bind = "dracon-sync cpu --percent"
+refresh = 2
+```
+
+```rust
+// Load app from TOML
+let app = App::from_toml("/path/to/dashboard.toml")?;
+```
+
+### Ctx in callbacks
+
+`ctx.run_command()` and `ctx.available_commands()` work in tick callbacks and render closures:
+
+```rust
+App::new()?
+    .on_tick(|ctx, tick| {
+        if tick % 60 == 0 {  // Every 15 seconds at 4Hz tick
+            let (out, _, _) = ctx.run_command("uptime");
+            // Update widget state from output
+        }
+    })
+    .run(|ctx| { /* render */ });
+```
+
+---
+
+## 6. Theme
 
 Three presets: `Theme::dark()` (default), `Theme::light()`, `Theme::cyberpunk()`. Each provides bg/fg/accent/selection/border colors plus scrollbar/hover/active/input variants.
 
