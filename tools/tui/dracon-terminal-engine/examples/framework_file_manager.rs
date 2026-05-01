@@ -9,14 +9,7 @@ use dracon_terminal_engine::framework::widgets::SplitPane;
 use ratatui::layout::Rect;
 use std::path::PathBuf;
 
-#[derive(Clone, Display)]
-struct FileEntry {
-    name: String,
-    is_dir: bool,
-    size: u64,
-}
-
-fn read_dir(path: &PathBuf) -> Vec<FileEntry> {
+fn read_dir(path: &PathBuf) -> Vec<String> {
     std::fs::read_dir(path)
         .map(|entries| {
             entries

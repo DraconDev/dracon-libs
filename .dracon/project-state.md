@@ -1,21 +1,22 @@
 # Project State
 
 ## Current Focus
-Refactored `FileEntry` struct to use `Display` trait instead of `ToString` for better string formatting control.
+Refactored file directory reading to simplify the `FileEntry` struct and improve type safety.
 
 ## Context
-The change was prompted by a need for more consistent string formatting across the file manager UI. The `Display` trait provides more control over how `FileEntry` instances are rendered as strings compared to the generic `ToString` implementation.
+The previous `FileEntry` struct was overly complex with redundant fields. The refactor simplifies the file manager example by focusing on essential string-based directory entries.
 
 ## Completed
-- [x] Changed `FileEntry` struct to derive `Display` instead of `ToString`
-- [x] Maintained all existing functionality while improving string formatting capabilities
+- [x] Removed redundant `FileEntry` struct and its fields
+- [x] Simplified `read_dir` to return `Vec<String>` instead of structured entries
+- [x] Updated Cargo.toml (binary file change, likely dependency version update)
 
 ## In Progress
-- [ ] No active work in progress related to this change
+- [ ] None
 
 ## Blockers
-- None identified
+- None
 
 ## Next Steps
-1. Verify that all string formatting in the file manager UI works as expected with the new `Display` implementation
-2. Consider if additional formatting methods should be added to the `FileEntry` struct for specialized display needs
+1. Verify the file manager example still functions correctly with simplified directory entries
+2. Consider adding back file metadata if needed for future features
