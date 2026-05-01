@@ -1,12 +1,8 @@
 # Project State
 
 ## Current Focus
-Enhanced the command dashboard example with automatic command execution for widgets, including CPU, memory, and disk gauges with periodic refresh intervals.
+Enhanced the command dashboard example by removing the default status from the StatusBadge widget and adding WidgetId import for future widget management.
 
 ## Completed
-- [x] Added automatic command execution for widgets with configurable refresh intervals
-- [x] Implemented command output parsing with regex support for gauge widgets
-- [x] Updated example to show real system metrics (CPU, memory, disk) with periodic updates
-- [x] Improved widget layout with proper spacing and positioning
-- [x] Added status badge and key-value grid with static system information
-```
+- [x] Removed default "OK" status from StatusBadge in command dashboard example
+- [x] Added WidgetId import to enable widget identification in the dashboard
