@@ -66,7 +66,7 @@ fn test_text_editor_demo_smoke() {
     if code == Some(0) || code == Some(1) {
         return;
     }
-        let mut stderr_buf = Vec::new();
+    let mut stderr_buf = Vec::new();
         if let Some(mut stderr) = child.stderr.take() {
             stderr.read_to_end(&mut stderr_buf).ok();
         }
