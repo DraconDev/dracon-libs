@@ -20,6 +20,7 @@
 use crate::backend::tty;
 use crate::compositor::{Compositor, Plane};
 use crate::framework::animation::AnimationManager;
+use crate::framework::command::{AppConfig, BoundCommand, CommandRunner};
 use crate::framework::dirty_regions::DirtyRegionTracker;
 use crate::framework::focus::FocusManager;
 use crate::framework::theme::Theme;
