@@ -246,7 +246,7 @@ cargo test --test scroll_test          # Scroll behavior tests
 
 ## Version
 
-**v27.0.5** — See [CHANGELOG](CHANGELOG.md) for full history.
+**v27.24.0** — See [CHANGELOG](CHANGELOG.md) for full history.
 
 ## License
 
