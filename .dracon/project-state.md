@@ -1,8 +1,8 @@
 # Project State
 
 ## Current Focus
-Updated dependency versions in the `dracon-terminal-engine` framework to address security vulnerabilities and ensure compatibility with latest ecosystem standards.
+Refactored command execution system in the terminal engine framework to improve error handling and stream processing
 
 ## Completed
-- [x] Updated dependency versions in the `dracon-terminal-engine` framework to resolve security vulnerabilities and maintain compatibility with the latest ecosystem standards.
-```
+- [x] Replaced `filter_map` with `map_while` in stdout/stderr line processing for more efficient error handling
+- [x] Improved stream processing by using more appropriate iterator combinators
