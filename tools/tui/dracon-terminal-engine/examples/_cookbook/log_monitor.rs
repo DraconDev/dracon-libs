@@ -40,10 +40,8 @@ struct LogMonitor {
 
 impl LogMonitor {
     fn new() -> Self {
-        let mut log_viewer = LogViewer::with_id(WidgetId::new(2));
-        log_viewer.max_lines(500);
-        let mut status = StatusBadge::new(WidgetId::new(3));
-        status.with_label("lines");
+        let log_viewer = LogViewer::with_id(WidgetId::new(2)).max_lines(500);
+        let status = StatusBadge::new(WidgetId::new(3));
         Self {
             id: WidgetId::new(1),
             log_viewer,
@@ -68,7 +66,8 @@ impl LogMonitor {
 
     fn refresh_status(&mut self) {
         let s = self.last_log.elapsed().as_secs();
-        self.status.set_status(if s < 1 { "just now" } else { &format!("{}s ago", s) });
+        let status_str = if s < 1 { "just now".to_string() } else { format!("{}s ago", s) };
+        self.status.set_status(&status_str);
     }
 
     fn clear(&mut self) {

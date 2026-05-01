@@ -20,6 +20,7 @@
 //! - `p` — pause/resume auto-refresh
 //! - `Ctrl+C` — quit
 
+use std::collections::BTreeMap;
 use std::time::Duration;
 
 use dracon_terminal_engine::compositor::{Cell, Color, Plane, Styles};
@@ -63,13 +64,13 @@ impl CommandBindings {
 
     fn refresh_all(&mut self) {
         self.cpu_value = 30.0 + (self.tick % 50) as f32;
-        self.gauge.set_value(self.cpu_value);
-        self.kv_grid.set_pairs(vec![
-            ("Memory".to_string(), format!("{:.1} GB", 8.0 + (self.tick % 10) as f32 * 0.1)),
-            ("Disk".to_string(), format!("{}%", 40 + (self.tick % 20) as u32)),
-            ("Network".to_string(), format!("{} Mbps", 100 + (self.tick % 50) as u32)),
-            ("Uptime".to_string(), format!("{}h", self.tick / 60)),
-        ]);
+        self.gauge.set_value(self.cpu_value as f64);
+        let mut pairs = BTreeMap::new();
+        pairs.insert("Memory".to_string(), format!("{:.1} GB", 8.0 + (self.tick % 10) as f32 * 0.1));
+        pairs.insert("Disk".to_string(), format!("{}%", 40 + (self.tick % 20) as u32));
+        pairs.insert("Network".to_string(), format!("{} Mbps", 100 + (self.tick % 50) as u32));
+        pairs.insert("Uptime".to_string(), format!("{}h", self.tick / 60));
+        self.kv_grid.set_pairs(pairs);
         let status_text = if self.tick % 20 < 15 { "OK" } else { "WARNING" };
         self.status.set_status(status_text);
         self.log_viewer.clear();
@@ -88,13 +89,13 @@ impl CommandBindings {
         if self.paused { return; }
         if elapsed_secs % 2 == 0 {
             self.cpu_value = 30.0 + (self.tick % 50) as f32;
-            self.gauge.set_value(self.cpu_value);
+            self.gauge.set_value(self.cpu_value as f64);
         }
         if elapsed_secs % 5 == 0 {
-            self.kv_grid.set_pairs(vec![
-                ("Memory".to_string(), format!("{:.1} GB", 8.0 + (self.tick % 10) as f32 * 0.1)),
-                ("Disk".to_string(), format!("{}%", 40 + (self.tick % 20) as u32)),
-            ]);
+            let mut pairs = BTreeMap::new();
+            pairs.insert("Memory".to_string(), format!("{:.1} GB", 8.0 + (self.tick % 10) as f32 * 0.1));
+            pairs.insert("Disk".to_string(), format!("{}%", 40 + (self.tick % 20) as u32));
+            self.kv_grid.set_pairs(pairs);
         }
         if elapsed_secs % 10 == 0 {
             let status_text = if self.tick % 20 < 15 { "OK" } else { "WARNING" };
