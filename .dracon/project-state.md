@@ -1,22 +1,20 @@
 # Project State
 
 ## Current Focus
-Refactored system monitor example with improved widget architecture and thread safety
+Update dependency versions in the `dracon-terminal-engine` framework
 
 ## Context
-The system monitor example was refactored to improve widget architecture and address thread safety concerns in the UI rendering system.
+This change was prompted by the ongoing refactoring efforts in the TUI system, particularly in the system monitor and interactive split pane examples. The updates ensure compatibility with the latest versions of dependencies while maintaining stability in the terminal engine.
 
 ## Completed
-- [x] Replaced `RefCell` with `Arc<Mutex<>>` for thread-safe state management
-- [x] Simplified theme handling by extracting theme retrieval into a separate method
-- [x] Improved widget consistency by removing redundant theme updates
+- [x] Updated dependency versions in `dracon-terminal-engine/Cargo.toml`
 
 ## In Progress
-- [ ] No active work in progress
+- [x] No active work in progress beyond the dependency update
 
 ## Blockers
-- None identified
+- None reported; the change is a maintenance update
 
 ## Next Steps
-1. Verify thread safety of all widget interactions
-2. Test performance impact of mutex-based synchronization
+1. Verify compatibility with the latest dependency versions
+2. Continue with ongoing refactoring of TUI examples
