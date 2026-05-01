@@ -1,8 +1,8 @@
 # Project State
 
 ## Current Focus
-Add two unit tests for the App component in the dracon-terminal-engine TUI framework to validate command tracking behavior when adding and removing widgets.
+Refactor dracon-terminal-engine App unit tests to remove redundant explicit drop invocations for variables that are either moved or automatically scoped
 
 ## Completed
-- [x] Add test verifying command tracking remains empty after adding a widget with no associated bound command
-- [x] Add test verifying command tracking is empty following widget removal
+- [x] Remove explicit drop(label) calls in two test cases, as Label instances are consumed when boxed and added to the app, making post-add_widget drops invalid or redundant
+- [x] Remove unnecessary explicit drop(tracking) call in a test case, as the RefCell borrow guard automatically releases when exiting scope

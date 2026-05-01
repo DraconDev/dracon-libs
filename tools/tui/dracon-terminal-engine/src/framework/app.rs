@@ -1365,10 +1365,8 @@ let config = AppConfig::from_toml_str(toml).unwrap();
         let cmd = BoundCommand::new("echo test").refresh(5);
         let label = crate::framework::widgets::Label::new("test");
         let id = app.add_widget(Box::new(label), Rect::new(0, 0, 10, 1));
-        drop(label);
         let tracking = app.command_tracking.borrow();
         assert!(tracking.is_empty());
-        drop(tracking);
     }
 
     #[test]
@@ -1378,7 +1376,6 @@ let config = AppConfig::from_toml_str(toml).unwrap();
         let cmd = BoundCommand::new("echo test").refresh(5);
         let mut label = crate::framework::widgets::Label::new("test");
         let id = app.add_widget(Box::new(label), Rect::new(0, 0, 10, 1));
-        drop(label);
         app.remove_widget(id);
         assert!(app.command_tracking.borrow().is_empty());
     }
