@@ -1,21 +1,20 @@
 # Project State
 
 ## Current Focus
-Removal of the test suite for the `ConfirmDialog` widget in the terminal framework
+Update dependency versions in the `dracon-terminal-engine` framework
 
 ## Context
-This follows a pattern of removing test suites for other widgets in the framework, suggesting a strategic cleanup of test coverage to focus on more critical areas.
+This change updates dependency versions in the framework to ensure compatibility and security. The recent removal of test suites for various terminal widgets suggests this is part of a broader effort to refactor and optimize the framework.
 
 ## Completed
-- [x] Removed all test cases for the `ConfirmDialog` widget
-- [x] Eliminated test module for the widget
+- [x] Updated dependency versions in the `dracon-terminal-engine` framework
 
 ## In Progress
-- [x] Ongoing removal of test suites for other widgets
+- [x] Framework dependency updates
 
 ## Blockers
-- None identified in this change
+- None reported
 
 ## Next Steps
-1. Continue removing test suites for remaining widgets
-2. Evaluate whether to add new test coverage for core functionality
+1. Verify framework stability with updated dependencies
+2. Continue refactoring and test coverage improvements for terminal widgets
