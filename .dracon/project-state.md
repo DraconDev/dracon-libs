@@ -1,20 +1,26 @@
 # Project State
 
 ## Current Focus
-Dependency version updates in the `dracon-terminal-engine` framework
+Added interactive split pane resizing example with nested layouts and mouse/keyboard controls
 
 ## Context
-This change updates dependency versions across the project to ensure compatibility and security with the latest framework updates.
+To demonstrate complex TUI layout management and user interaction patterns, particularly for nested split panes with resizable components
 
 ## Completed
-- [x] Updated dependency versions in Cargo.lock
+- [x] Added SplitResizer example with nested horizontal/vertical split panes
+- [x] Implemented mouse drag resizing of dividers
+- [x] Added keyboard controls for adjusting split ratios
+- [x] Included visual divider selection highlighting
+- [x] Created status display showing current split ratios
+- [x] Implemented reset functionality for default ratios
 
 ## In Progress
-- [x] Dependency version updates in progress
+- [ ] None (complete feature implementation)
 
 ## Blockers
-- None reported in this commit
+- None (feature complete)
 
 ## Next Steps
-1. Verify framework compatibility with updated dependencies
-2. Test terminal UI examples for any breaking changes
+1. Add unit tests for the split resizing logic
+2. Document the example in the framework's cookbook
+```
