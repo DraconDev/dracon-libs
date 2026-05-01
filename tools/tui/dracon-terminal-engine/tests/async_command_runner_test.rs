@@ -80,7 +80,7 @@ mod async_tests {
         let stderr = String::from_utf8_lossy(&output.stderr);
 
         assert!(stdout.contains("stdout content") || stdout.contains("stdout"));
-        assert!(stderr.contains("stderr content") || stderr.contains("stderr") || stderr.is_empty() || output.status.code() == 0);
+        assert!(stderr.contains("stderr content") || stderr.contains("stderr") || stderr.is_empty() || output.status.code() == Some(0));
     }
 
     #[tokio::test]
