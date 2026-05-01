@@ -22,6 +22,7 @@ use dracon_terminal_engine::compositor::{Color, Plane};
 use dracon_terminal_engine::framework::prelude::*;
 use dracon_terminal_engine::framework::widget::{Widget, WidgetId};
 use dracon_terminal_engine::framework::widgets::{Breadcrumbs, SplitPane, StatusBar, StatusSegment, Tree, TreeNode};
+use dracon_terminal_engine::input::event::{KeyEventKind, MouseEventKind};
 use ratatui::layout::Rect;
 
 struct MockFs {
