@@ -125,7 +125,7 @@ impl OutputParser {
                     .map(|line| {
                         let severity = patterns
                             .iter()
-                            .find(|(pat, _)| line.contains(pat))
+                            .find(|(pat, _)| line.contains(pat.as_str()))
                             .map(|(_, sev)| sev.clone())
                             .unwrap_or_else(|| "default".to_string());
                         LoggedLine {
@@ -317,10 +317,13 @@ impl CommandRunner {
             return (String::new(), String::new(), -1);
         }
 
-        let output = Command::new(parts[0])
+        let output = match Command::new(parts[0])
             .args(&parts[1..])
             .output()
-            .unwrap_or_default();
+        {
+            Ok(o) => o,
+            Err(_) => return (String::new(), String::new(), -1),
+        };
 
         let stdout = String::from_utf8_lossy(&output.stdout).to_string();
         let stderr = String::from_utf8_lossy(&output.stderr).to_string();
@@ -399,12 +402,12 @@ pub struct ParserConfig {
 impl AppConfig {
     pub fn from_toml(path: &std::path::Path) -> std::io::Result<Self> {
         let content = std::fs::read_to_string(path)?;
-        toml_edit::de::from_str(&content)
+        toml::from_str(&content)
             .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))
     }
 
     pub fn from_toml_str(content: &str) -> std::io::Result<Self> {
-        toml_edit::de::from_str(content)
+        toml::from_str(content)
             .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))
     }
 
