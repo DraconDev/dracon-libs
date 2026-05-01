@@ -2,6 +2,7 @@
 //! Controls: click divider=select, drag=resize, ←/→=A split, ↑/↓=B split, r=reset
 
 use std::io::Result;
+use std::sync::{Arc, Mutex};
 use rand::Rng;
 use dracon_terminal_engine::compositor::{Cell, Color, Plane, Styles};
 use dracon_terminal_engine::framework::prelude::*;
@@ -163,17 +164,22 @@ fn main() -> Result<()> {
     println!("Split Resizer — drag dividers | ←/→:A | ↑/↓:B | r:reset");
     std::thread::sleep(std::time::Duration::from_millis(300));
 
-    let mut app = SplitResizerApp::new(WidgetId::new(1));
+    let app = Arc::new(Mutex::new(SplitResizerApp::new(WidgetId::new(1))));
 
+    let app_tick = app.clone();
     App::new()?
         .title("Split Resizer")
         .fps(30)
         .tick_interval(200)
-        .on_tick(|ctx, tick| {
-            if tick % 2 == 0 { app.tick(); }
-            let (w, h) = ctx.compositor().size();
-            if app.area.width != w || app.area.height != h { app.set_area(Rect::new(0, 0, w, h)); }
-            if app.needs_render() { ctx.add_plane(app.render(app.area())); app.clear_dirty(); }
+        .on_tick(move |ctx, tick| {
+            if tick % 2 == 0 {
+                if let Ok(mut a) = app_tick.lock() { a.tick(); }
+            }
+            if let Ok(a) = app_tick.lock() {
+                let (w, h) = ctx.compositor().size();
+                if a.area.width != w || a.area.height != h { a.set_area(Rect::new(0, 0, w, h)); }
+                if a.needs_render() { ctx.add_plane(a.render(a.area())); a.clear_dirty(); }
+            }
         })
         .run(|_| {})
 }
