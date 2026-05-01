@@ -371,7 +371,7 @@ mod tests {
     fn test_log_viewer_append_line_max_lines() {
         let mut lv = LogViewer::new().max_lines(3);
         for i in 0..5 {
-            lv.append_line(format!("line {}", i));
+            lv.append_line(&format!("line {}", i));
         }
         assert_eq!(lv.lines.len(), 3);
         assert_eq!(lv.lines[0].raw, "line 2");

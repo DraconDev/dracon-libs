@@ -298,7 +298,7 @@ mod tests {
         let mut g = Gauge::new("CPU");
         g.set_value(50.0);
         let plane = g.render(Rect::new(0, 0, 20, 3));
-        let bar_cell = plane.cells[21];
+        let bar_cell = &plane.cells[21];
         assert_eq!(bar_cell.char, '█');
     }
 

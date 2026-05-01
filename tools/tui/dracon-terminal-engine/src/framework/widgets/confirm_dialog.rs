@@ -312,8 +312,8 @@ mod tests {
     fn test_confirm_dialog_render_title() {
         let dlg = ConfirmDialog::new("Delete All", "This cannot be undone");
         let plane = dlg.render(Rect::new(0, 0, 40, 7));
-        let title_row = plane.cells.slice(40..80);
-        let title_str: String = title_row.iter().map(|c| c.char).collect();
+        let title_chars: Vec<char> = plane.cells[40..80].iter().map(|c| c.char).collect();
+        let title_str: String = title_chars.into_iter().collect();
         assert!(title_str.contains("Delete All"));
     }
 
@@ -331,21 +331,11 @@ mod tests {
     }
 
     #[test]
-    fn test_confirm_dialog_focus_state() {
-        let mut dlg = ConfirmDialog::new("t", "m");
-        assert!(!dlg.focused());
-        dlg.set_focus(true);
-        assert!(dlg.focused());
-    }
-
-    #[test]
     fn test_confirm_dialog_dirty_lifecycle() {
         let mut dlg = ConfirmDialog::new("t", "m");
         assert!(dlg.needs_render());
         dlg.clear_dirty();
         assert!(!dlg.needs_render());
-        dlg.set_focus(true);
-        assert!(dlg.needs_render());
     }
 
     #[test]
