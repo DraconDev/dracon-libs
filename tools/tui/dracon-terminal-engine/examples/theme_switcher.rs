@@ -19,7 +19,7 @@ use dracon_terminal_engine::framework::app::App;
 use dracon_terminal_engine::framework::theme::Theme;
 use dracon_terminal_engine::framework::widget::{Widget, WidgetId};
 use ratatui::layout::Rect;
-use std::io::Result;
+use std::sync::atomic::{AtomicUsize, Ordering};
 
 const ALL_THEMES: &[(&str, fn() -> Theme)] = &[
     ("Dark", Theme::dark),
@@ -706,7 +706,7 @@ impl Widget for WidgetDemoPanel {
     }
 }
 
-fn main() -> io::Result<()> {
+fn main() -> Result<()> {
     let mut app = App::new()?.title("Theme Switcher Demo").fps(30);
 
     let header = ThemeHeader::new(WidgetId::new(1));
@@ -727,7 +727,7 @@ fn main() -> io::Result<()> {
     let demo = WidgetDemoPanel::new(WidgetId::new(6));
     let _demo_id = app.add_widget(Box::new(demo), Rect::new(0, 17, 80, 12));
 
-    app.run(|_ctx| {});
+    let _ = app.run(|_ctx| {});
 
     println!("\nTheme Switcher Demo Ended");
     println!("All 15 themes demonstrated:");
