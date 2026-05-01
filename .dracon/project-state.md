@@ -1,8 +1,8 @@
 # Project State
 
 ## Current Focus
-Refactored the FPS clamping logic in the terminal engine framework for better readability and consistency.
+The `dracon-terminal-engine` framework underwent dependency version updates, likely to address security vulnerabilities or compatibility issues. The `Cargo.lock` file was updated to reflect these changes.
 
 ## Completed
-- [x] Replaced `max(1).min(120)` with `clamp(1, 120)` in the `App::fps` method for more idiomatic Rust code
+- [x] Updated dependency versions in the `dracon-terminal-engine` framework to address security vulnerabilities or compatibility issues
 ```
