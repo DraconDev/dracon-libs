@@ -369,7 +369,7 @@ impl Widget for Showcase {
 
             // Example name
             x_pos = 15;
-            for (i, c) in ex.name.chars().take(18) {
+            for (i, c) in ex.name.chars().take(18).enumerate() {
                 let cell_idx = (y * area.width + x_pos + i as u16) as usize;
                 if cell_idx < p.cells.len() {
                     p.cells[cell_idx].char = c;
@@ -379,7 +379,7 @@ impl Widget for Showcase {
 
             // Description
             x_pos = 35;
-            for (i, c) in ex.description.chars().take(28) {
+            for (i, c) in ex.description.chars().take(28).enumerate() {
                 let cell_idx = (y * area.width + x_pos + i as u16) as usize;
                 if cell_idx < p.cells.len() {
                     p.cells[cell_idx].char = c;
@@ -389,7 +389,7 @@ impl Widget for Showcase {
 
             // Widgets (truncated)
             x_pos = 65;
-            for (i, c) in ex.widgets.chars().take(30) {
+            for (i, c) in ex.widgets.chars().take(30).enumerate() {
                 let cell_idx = (y * area.width + x_pos + i as u16) as usize;
                 if cell_idx < p.cells.len() {
                     p.cells[cell_idx].char = c;
