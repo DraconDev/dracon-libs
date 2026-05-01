@@ -27,9 +27,11 @@ use dracon_terminal_engine::compositor::{Cell, Color, Plane, Styles};
 use dracon_terminal_engine::framework::prelude::*;
 use dracon_terminal_engine::framework::widget::{Widget, WidgetId};
 use dracon_terminal_engine::framework::widgets::{
-    Breadcrumbs, Button, Checkbox, List, Orientation, ProgressBar, Radio, Select, SearchInput,
-    Slider, Spinner, SplitPane, Toggle,
+    Button, Checkbox, List, Orientation, ProgressBar, Radio, Select, SearchInput, Slider,
+    Spinner, SplitPane, Toggle,
 };
+use dracon_terminal_engine::input::event::{KeyCode, KeyEventKind};
+use ratatui::layout::Rect;
 
 const WIDGET_NAMES: &[&str] = &[
     "Checkbox",
