@@ -1,8 +1,7 @@
 # Project State
 
 ## Current Focus
-Added command configuration support to the terminal engine framework
+Added command configuration support to the terminal engine framework by initializing the command system with configurable commands rather than an empty vector.
 
 ## Completed
-- [x] Added `commands` field to `AppConfig` with default empty vector
-- [x] Added `commands` field to default `AppConfig` implementation
+- [x] feat(command configuration): Initialized the command system with configurable commands instead of an empty vector in the App framework
