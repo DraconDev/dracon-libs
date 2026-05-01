@@ -44,6 +44,14 @@ struct Message {
     is_read: bool,
 }
 
+#[derive(Clone)]
+struct Message {
+    sender: String,
+    text: String,
+    time: String,
+    is_read: bool,
+}
+
 static MESSAGES: &[Message] = &[
     Message { sender: String::from("Alice"), text: String::from("Hey, how's the project going?"), time: String::from("14:32"), is_read: true },
     Message { sender: String::from("Bob"), text: String::from("Going well! Just finished the new widget."), time: String::from("14:33"), is_read: true },
@@ -78,7 +86,12 @@ impl ChatState {
             .with_buttons(vec![("Done", ModalResult::Confirm)]);
 
         let mut state = Self {
-            messages: MESSAGES.iter().map(|m| (*m).clone()).collect(),
+            messages: MESSAGES.iter().map(|m| Message {
+                sender: m.sender.clone(),
+                text: m.text.clone(),
+                time: m.time.clone(),
+                is_read: m.is_read,
+            }).collect(),
             input_text: String::new(),
             cursor_pos: 0,
             show_emoji_modal: false,
