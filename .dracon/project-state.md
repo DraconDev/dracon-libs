@@ -1,8 +1,9 @@
 # Project State
 
 ## Current Focus
-The `dracon-terminal-engine` Cargo.toml file was modified, likely to update dependency versions or other metadata. This change appears to be part of ongoing security and dependency management efforts in the terminal engine framework.
+Refactored the `List` widget to improve type safety and code organization by extracting the selection callback type into a dedicated type alias.
 
 ## Completed
-- [x] Updated dependency versions in the `dracon-terminal-engine` framework (binary file modification)
-```
+- [x] Extracted `SelectCallback<T>` type alias for better type safety in the `List` widget
+- [x] Removed unused `ScrollState` import
+- [x] Simplified the `List` struct documentation by removing redundant comments
