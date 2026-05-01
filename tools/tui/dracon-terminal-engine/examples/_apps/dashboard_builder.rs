@@ -145,25 +145,21 @@ fn main() -> std::io::Result<()> {
     let theme_idx_clone = theme_idx.clone();
     let paused_clone = paused.clone();
 
-    let mut app = App::new()?
+    let tick_cb = move |_ctx: &mut Ctx, tick: u64| {
+        if tick % 3 == 0 && !paused_clone.load(Ordering::SeqCst) { theme_idx_clone.fetch_add(1, Ordering::SeqCst); }
+    };
+
+    let app_result = App::new()?
         .title("Dashboard Builder")
         .fps(30)
         .theme(Theme::nord())
-        .tick_interval(1000);
+        .tick_interval(1000)
+        .on_tick(tick_cb)
+        .add_widget(Box::new(Dashboard::new()), Rect::new(0, 0, 80, 24))
+        .run(move |ctx| {
+            ctx.hide_cursor().ok();
+            ctx.mark_dirty(0, 0, 80, 24);
+        });
 
-    {
-        let tick_cb = move |_ctx: &mut Ctx, tick: u64| {
-            if tick % 3 == 0 && !paused_clone.load(Ordering::SeqCst) { theme_idx_clone.fetch_add(1, Ordering::SeqCst); }
-        };
-        app.on_tick(tick_cb);
-    }
-
-    app.add_widget(Box::new(Dashboard::new()), Rect::new(0, 0, 80, 24));
-
-    let _paused_r = paused.clone();
-
-    app.run(move |ctx| {
-        ctx.hide_cursor().ok();
-        ctx.mark_dirty(0, 0, 80, 24);
-    })
+    app_result
 }
