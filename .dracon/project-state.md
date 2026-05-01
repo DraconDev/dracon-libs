@@ -1,24 +1,22 @@
 # Project State
 
 ## Current Focus
-Refactored tree navigator example with improved path selection handling
+Refactored tabbed panel example with improved widget key handling
 
 ## Context
-The tree navigator example was refactored to better encapsulate path selection logic within the Tree widget, reducing direct manipulation of the selected_path field.
+The tabbed panel example was updated to simplify the key handling logic for the theme selection and notifications widgets, making the code more straightforward and maintainable.
 
 ## Completed
-- [x] Removed direct access to Tree's selected_path field
-- [x] Added Tree::set_selected_path() and Tree::get_selected_path() methods
-- [x] Updated TreeNav to use the new Tree methods instead of direct field access
-- [x] Removed unused MockEntry struct
-- [x] Updated Cargo.lock for dependency changes
+- [x] Simplified key handling for theme selection widget
+- [x] Improved key handling for notifications toggle
+- [x] Added missing Rect import for layout calculations
 
 ## In Progress
-- [x] Refactoring of tree widget path selection
+- [x] Refactoring of widget interaction logic
 
 ## Blockers
 - None identified
 
 ## Next Steps
-1. Verify all tree navigation functionality remains intact
-2. Consider additional Tree widget improvements for path handling
+1. Verify the refactored key handling works as expected
+2. Consider additional widget interaction improvements
