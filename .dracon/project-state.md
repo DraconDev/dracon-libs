@@ -1,8 +1,8 @@
 # Project State
 
 ## Current Focus
-Updated dependency versions in the `dracon-terminal-engine` framework to ensure security and compatibility.
+Removed unused log filtering functionality and added dead code allowance for test utilities.
 
 ## Completed
-- [x] Updated dependency versions in `dracon-terminal-engine` to resolve potential security vulnerabilities and maintain compatibility
-- [x] Updated `Cargo.lock` to reflect the new dependency versions
+- [x] Removed unused `matches_filter_by_raw` method from `LogViewer` widget
+- [x] Added `#![allow(dead_code)]` to test utilities to suppress warnings about unused code
