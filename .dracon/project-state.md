@@ -1,28 +1,24 @@
 # Project State
 
 ## Current Focus
-Added comprehensive test coverage for the StreamingText widget with field visibility improvements
+Improved async command handling and refactored StatusBadge fields to public for better accessibility
 
 ## Context
-The StreamingText widget was refactored to make its fields public, enabling better testability and integration with other components. This change was necessary to support the new test suite which verifies all core functionality including content handling, rendering, and command binding.
+The changes address two areas:
+1. Fixed a potential panic in async command runner tests by properly handling child process states
+2. Made StatusBadge fields public to enable better widget customization and testing
 
 ## Completed
-- [x] Made all StreamingText fields public for better testability
-- [x] Added 23 comprehensive unit tests covering:
-  - Basic widget initialization
-  - Content handling (append, clear, multiline)
-  - Command binding and output processing
-  - Rendering behavior (empty state, word wrap)
-  - Theme application
-  - Auto-scroll functionality
-  - Dirty state management
+- [x] Fixed async command test by properly checking child process states
+- [x] Refactored StatusBadge to make fields public for better accessibility
+- [x] Improved async command test with proper stdin handling using async I/O
 
 ## In Progress
-- [ ] No active work in progress
+- [ ] None - all changes are complete
 
 ## Blockers
-- None identified
+- None - all changes are complete
 
 ## Next Steps
-1. Verify test coverage with integration tests
-2. Document the public API changes in widget documentation
+1. Verify the StatusBadge changes don't break existing widget implementations
+2. Update any dependent tests that might need to access the public fields

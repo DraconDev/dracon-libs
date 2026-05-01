@@ -173,7 +173,7 @@ mod async_tests {
         assert!(output.status.success());
 
         let poll_after = child.try_wait();
-        assert!(poll_after.unwrap().is_some() || !poll_after.is_err());
+        assert!(poll_after.unwrap().is_some() || poll_after.is_err());
     }
 
     #[tokio::test]
@@ -272,12 +272,16 @@ mod async_tests {
 
     #[tokio::test]
     async fn test_async_command_with_stdin() {
-        let mut cmd = Command::new("cat");
-        let mut child = cmd.spawn().unwrap();
+        let mut child = Command::new("cat")
+            .stdin(Stdio::piped())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .spawn()
+            .unwrap();
 
         if let Some(ref mut stdin) = child.stdin {
-            use std::io::Write;
-            stdin.write_all(b"input data").unwrap();
+            AsyncWriteExt::write_all(stdin, b"input data").await.unwrap();
+            AsyncWriteExt::shutdown(stdin).await.unwrap();
         }
 
         let output = child.wait_with_output().await.unwrap();
