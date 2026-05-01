@@ -1,8 +1,9 @@
 # Project State
 
 ## Current Focus
-Updated dependency versions in the `dracon-terminal-engine` framework to address security concerns and maintain compatibility.
+Refactored the `List` and `Select` widgets to improve type safety and code organization by removing redundant type aliases and simplifying the callback definitions.
 
 ## Completed
-- [x] Updated dependency versions in `dracon-terminal-engine` framework
+- [x] Removed redundant `SelectCallback` type alias in `list.rs` and simplified to direct `Option<Box<dyn FnMut(&T)>>` usage
+- [x] Removed redundant `ChangeCallback` type alias in `select.rs` and simplified to direct `Option<Box<dyn FnMut(&str)>>` usage
 ```
