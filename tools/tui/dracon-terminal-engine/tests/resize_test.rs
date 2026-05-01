@@ -678,11 +678,8 @@ fn test_splitpane_ratio_preserved_on_resize() {
 fn test_render_count_increments_after_resize() {
     let mut app = App::new().unwrap();
     let set_area_count = Rc::new(Cell::new(0u32));
-    let render_count = Rc::new(Cell::new(0u32));
 
     let widget = TrackingWidget::new(1, set_area_count.clone());
-    // Can't easily get render_count since TrackingWidget is local, need a different approach
-    // Actually we can test via the widget's render method
     let id = app.add_widget(Box::new(widget), Rect::new(0, 0, 80, 24));
 
     // Clear dirty to start fresh
