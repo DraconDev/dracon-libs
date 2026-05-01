@@ -42,35 +42,12 @@ struct HelpOverlay<'a> {
 
 impl<'a> HelpOverlay<'a> {
     fn new() -> Self {
-        let mut modal = Modal::new("Keyboard Shortcuts").with_size(40, 12);
-        modal = modal.with_buttons(vec![("OK", ModalResult::Confirm)]);
+        let modal = Modal::new("Keyboard Shortcuts").with_size(40, 12);
 
         Self {
             modal,
             visible: false,
         }
-    }
-
-    fn show(&mut self) {
-        self.visible = true;
-        self.modal.mark_dirty();
-    }
-
-    fn hide(&mut self) {
-        self.visible = false;
-        self.modal.mark_dirty();
-    }
-
-    fn toggle(&mut self) {
-        if self.visible {
-            self.hide();
-        } else {
-            self.show();
-        }
-    }
-
-    fn is_visible(&self) -> bool {
-        self.visible
     }
 }
 
@@ -150,7 +127,8 @@ impl<'a> Widget for HelpOverlay<'a> {
         }
         match key.code {
             KeyCode::Esc => {
-                self.hide();
+                self.visible = false;
+                self.modal.mark_dirty();
                 true
             }
             _ => self.modal.handle_key(key),

@@ -1,20 +1,22 @@
 # Project State
 
 ## Current Focus
-Dependency version updates in the `dracon-terminal-engine` framework
+Simplified modal dialog visibility management in the terminal engine
 
 ## Context
-The changes in Cargo.lock indicate version updates to dependencies in the terminal engine framework. This is part of ongoing maintenance to ensure compatibility and security with updated library versions.
+The modal dialog system was refactored to reduce boilerplate code while maintaining the same functionality. The previous implementation had separate show/hide/toggle methods that were redundant since the visibility state could be managed directly.
 
 ## Completed
-- [x] Updated dependency versions in Cargo.lock
+- [x] Removed redundant show/hide/toggle methods from HelpOverlay
+- [x] Simplified ESC key handling to directly modify visibility state
+- [x] Maintained dirty flag marking for proper UI updates
 
 ## In Progress
-- [x] Dependency version updates in progress
+- [ ] No active work in progress
 
 ## Blockers
-- None reported in this commit
+- None identified
 
 ## Next Steps
-1. Verify updated dependencies work as expected
-2. Continue with other framework improvements
+1. Verify modal dialog behavior remains consistent after refactoring
+2. Consider further simplifying modal dialog construction patterns
