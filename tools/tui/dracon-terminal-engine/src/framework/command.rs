@@ -275,10 +275,10 @@ impl CommandRunner {
 
         let (stdout_tx, stdout_rx) = channel();
         let (stderr_tx, stderr_rx) = channel();
-        let stderr_tx2 = stderr_tx.clone();
+        let exit_tx = stdout_tx.clone();
 
         if let Some(stdout) = child.stdout.take() {
-            let tx = stdout_tx;
+            let tx = stdout_tx.clone();
             thread::spawn(move || {
                 for line in BufReader::new(stdout).lines() {
                     if let Ok(l) = line {
@@ -289,23 +289,24 @@ impl CommandRunner {
         }
 
         if let Some(stderr) = child.stderr.take() {
+            let tx2 = stderr_tx.clone();
             thread::spawn(move || {
                 for line in BufReader::new(stderr).lines() {
                     if let Ok(l) = line {
-                        let _ = stderr_tx2.send(l);
+                        let _ = tx2.send(l);
                     }
                 }
             });
         }
 
-        self.stdout_rx = Some(stdout_rx);
-        self.stderr_rx = Some(stderr_rx);
-
         thread::spawn(move || {
             if let Ok(code) = child.wait() {
-                let _ = stdout_tx.send(format!("__EXIT_CODE__{}", code.code().map(|c| c as i32).unwrap_or(-1)));
+                let _ = exit_tx.send(format!("__EXIT_CODE__{}", code.code().map(|c| c as i32).unwrap_or(-1)));
             }
         });
+
+        self.stdout_rx = Some(stdout_rx);
+        self.stderr_rx = Some(stderr_rx);
 
         Ok(())
     }
