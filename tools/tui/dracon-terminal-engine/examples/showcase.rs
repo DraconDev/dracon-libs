@@ -688,7 +688,7 @@ fn main() -> io::Result<()> {
         .title("Example Showcase")
         .fps(30)
         .theme(Theme::nord())
-        .add_widget(Box::new(ShowcaseWidget::new(showcase)), Rect::new(0, 0, 80, 24))?
+        .add_widget(Box::new(ShowcaseWidget::new(showcase)), Rect::new(0, 0, 80, 24))
         .on_tick(move |ctx, _tick| {
             let mut s = showcase_tick.borrow_mut();
             let (w, h) = ctx.compositor().size();
