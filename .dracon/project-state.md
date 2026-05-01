@@ -1,8 +1,7 @@
 # Project State
 
 ## Current Focus
-The `dracon-terminal-engine` framework underwent dependency version updates, likely to address security vulnerabilities or compatibility issues. The `Cargo.lock` file was updated to reflect these changes.
+Refactored area height assertions in the terminal engine framework for better readability and maintainability.
 
 ## Completed
-- [x] Updated dependency versions in the `dracon-terminal-engine` framework to address security vulnerabilities or compatibility issues
-```
+- [x] Consolidated two separate assertions into a single combined assertion for checking both top and bottom area heights
