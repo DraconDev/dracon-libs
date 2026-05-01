@@ -125,7 +125,7 @@ mod async_tests {
         let mut cmd = Command::new("nonexistent_binary_12345678");
         let result = cmd.output().await;
 
-        assert!(result.is_err() || result.unwrap().status.code() != 0);
+        assert!(result.is_err() || result.unwrap().status.code() != Some(0));
     }
 
     #[tokio::test]
@@ -284,7 +284,7 @@ mod async_tests {
 
         let output = child.wait_with_output().await.unwrap();
         let stdout = String::from_utf8_lossy(&output.stdout);
-        assert!(stdout.contains("input data") || stdout.is_empty() || output.status.code() == 0);
+        assert!(stdout.contains("input data") || stdout.is_empty() || output.status.code() == Some(0));
     }
 
     #[tokio::test]
