@@ -282,7 +282,7 @@ mod log_viewer_command_output {
     #[test]
     fn test_log_viewer_with_bound_command() {
         let cmd = BoundCommand::new("printf 'ERROR fail\\nINFO ok\\n'").parser(OutputParser::Plain);
-        let mut lv = LogViewer::new().bind_command(cmd);
+        let mut lv = LogViewer::new().bind_command(cmd.clone());
         let runner = CommandRunner::new("printf 'ERROR fail\\nINFO ok\\n'");
         let (stdout, stderr, exit_code) = runner.run_sync();
         let output = cmd.parse_output(&stdout, &stderr, exit_code);
@@ -355,7 +355,7 @@ mod streaming_text_command_output {
     #[test]
     fn test_streaming_text_with_bound_command() {
         let cmd = BoundCommand::new("printf 'output1\\noutput2\\n'").parser(OutputParser::Plain);
-        let mut st = StreamingText::new().bind_command(cmd);
+        let mut st = StreamingText::new().bind_command(cmd.clone());
         let runner = CommandRunner::new("printf 'output1\\noutput2\\n'");
         let (stdout, stderr, exit_code) = runner.run_sync();
         let output = cmd.parse_output(&stdout, &stderr, exit_code);
@@ -890,7 +890,7 @@ mod end_to_end_command_pipeline {
         let (stdout, stderr, exit_code) = runner.run_sync();
         let output = cmd.parse_output(&stdout, &stderr, exit_code);
 
-        let mut gauge = Gauge::new("CPU").bind_command(cmd);
+        let mut gauge = Gauge::new("CPU").bind_command(cmd.clone());
         Widget::apply_command_output(&mut gauge, &output);
 
         assert!((gauge.value() - 75.5).abs() < 0.001);
@@ -907,7 +907,7 @@ mod end_to_end_command_pipeline {
         let (stdout, stderr, exit_code) = runner.run_sync();
         let output = cmd.parse_output(&stdout, &stderr, exit_code);
 
-        let mut badge = StatusBadge::new(WidgetId::new(1)).bind_command(cmd);
+        let mut badge = StatusBadge::new(WidgetId::new(1)).bind_command(cmd.clone());
         Widget::apply_command_output(&mut badge, &output);
 
         assert_eq!(badge.status(), "OK");
@@ -924,7 +924,7 @@ mod end_to_end_command_pipeline {
         let (stdout, stderr, exit_code) = runner.run_sync();
         let output = cmd.parse_output(&stdout, &stderr, exit_code);
 
-        let mut grid = KeyValueGrid::new().bind_command(cmd);
+        let mut grid = KeyValueGrid::new().bind_command(cmd.clone());
         Widget::apply_command_output(&mut grid, &output);
 
         let rect = ratatui::layout::Rect::new(0, 0, 60, 10);
@@ -942,7 +942,7 @@ mod end_to_end_command_pipeline {
         let (stdout, stderr, exit_code) = runner.run_sync();
         let output = cmd.parse_output(&stdout, &stderr, exit_code);
 
-        let mut lv = LogViewer::new().bind_command(cmd);
+        let mut lv = LogViewer::new().bind_command(cmd.clone());
         Widget::apply_command_output(&mut lv, &output);
 
         let rect = ratatui::layout::Rect::new(0, 0, 80, 20);
@@ -960,7 +960,7 @@ mod end_to_end_command_pipeline {
         let (stdout, stderr, exit_code) = runner.run_sync();
         let output = cmd.parse_output(&stdout, &stderr, exit_code);
 
-        let mut st = StreamingText::new().bind_command(cmd);
+        let mut st = StreamingText::new().bind_command(cmd.clone());
         Widget::apply_command_output(&mut st, &output);
 
         assert!(st.content().len() >= 10, "should contain log content");
@@ -977,7 +977,7 @@ mod end_to_end_command_pipeline {
         let (stdout, stderr, exit_code) = runner.run_sync();
         let output = cmd.parse_output(&stdout, &stderr, exit_code);
 
-        let mut badge = StatusBadge::new(WidgetId::new(1)).bind_command(cmd);
+        let mut badge = StatusBadge::new(WidgetId::new(1)).bind_command(cmd.clone());
         Widget::apply_command_output(&mut badge, &output);
 
         assert_eq!(badge.status(), "\"DEGRADED\"");
@@ -1018,7 +1018,7 @@ mod end_to_end_command_pipeline {
         let (stdout, stderr, exit_code) = runner.run_sync();
         let output = cmd.parse_output(&stdout, &stderr, exit_code);
 
-        let mut lv = LogViewer::new().bind_command(cmd);
+        let mut lv = LogViewer::new().bind_command(cmd.clone());
         Widget::apply_command_output(&mut lv, &output);
 
         let rect = ratatui::layout::Rect::new(0, 0, 80, 20);
@@ -1039,7 +1039,7 @@ mod end_to_end_command_pipeline {
         let (stdout, stderr, exit_code) = runner.run_sync();
         let output = cmd.parse_output(&stdout, &stderr, exit_code);
 
-        let mut gauge = Gauge::new("CPU").bind_command(cmd);
+        let mut gauge = Gauge::new("CPU").bind_command(cmd.clone());
         Widget::apply_command_output(&mut gauge, &output);
 
         assert!((gauge.value() - 75.0).abs() < 0.001);
