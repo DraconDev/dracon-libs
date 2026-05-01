@@ -1,9 +1,11 @@
 # Project State
 
 ## Current Focus
-Expose command execution and registry via the app context while removing Label widget and tightening status badge dependencies.
+Expose command execution and registry via the app context while maintaining widget encapsulation
 
 ## Completed
-- [x] Add synchronous command runner and available-commands getter on Ctx so callers can invoke and inspect registered commands.
-- [x] Remove Label widget from public exports to streamline the widget module surface.
-- [x] Import Widget trait in status_badge.rs to prepare for trait-based rendering or configuration without affecting runtime behavior.
+- [x] Refactor `run_command` method to simplify API by removing redundant closure syntax and centralizing command execution logic (improves testability and integration with CLI tools)
+- [x] Enhance `available_commands` to return cloned command list, enabling external tools to safely query available operations without borrowing constraints
+- [x] Optimize StatusBadge render logic to consistently handle empty labels by falling back to status_upper content (fixes missing header display in edge cases)
+- [x] Remove unnecessary status_upper visibility check in widget render, streamlining code and reducing conditional complexity
+- [x] Align widget configuration refactor with new ID management system, ensuring consistent widget identification across layout changes

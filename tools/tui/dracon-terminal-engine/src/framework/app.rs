@@ -569,17 +569,6 @@ impl<'a> Ctx<'a> {
         self.theme
     }
 
-    /// Runs a command synchronously and returns its output.
-    pub fn run_command(&self, cmd: &str) -> (String, String, i32) {
-        let runner = crate::framework::command::CommandRunner::new(cmd);
-        runner.run_sync()
-    }
-
-    /// Returns all available commands registered with the app.
-    pub fn available_commands(&self) -> Vec<BoundCommand> {
-        self.commands.borrow().clone()
-    }
-
     /// Splits the screen horizontally into two panes and passes them to the closure.
     ///
     /// The closure receives two `SplitPane` instances covering the left and right halves.

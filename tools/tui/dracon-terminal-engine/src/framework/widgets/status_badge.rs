@@ -146,7 +146,7 @@ impl Widget for StatusBadge {
         } else if status_upper.is_empty() {
             (self.theme.inactive_fg, self.theme.bg, "EMPTY")
         } else {
-            let l = if self.label.is_empty() { &status_upper } else { &self.label };
+            let l: &str = if self.label.is_empty() { status_upper.as_str() } else { &self.label };
             (self.theme.fg, self.theme.bg, l)
         };
 
