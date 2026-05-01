@@ -1,8 +1,6 @@
-# Project State
-This commit documents the updates to the Dracon Terminal Engine project's changelog. Key improvements include the introduction of new widget UI components, expanded command-driven architecture, and enhanced test coverage across core features. The project now supports TOML-based configuration and enriches documentation for upcoming releases (27.0.2 and newer).
+# Project State## Current Focus
+Add command-driven architecture support and update widget count in framework documentation
 
 ## Completed
-- Updated widget trait implementations to enhance interactivity
-- Added documentation for new widget rendering logic and configuration
-- Expanded test suite to include 609 tests, covering all major new features
-- Improved performance optimizations for terminal UI and CLI output handling
+- [x] Added bullet point about CLI commands in framework documentation
+- [x] Increased widget count from 23 to 35 in README to reflect current capabilities
