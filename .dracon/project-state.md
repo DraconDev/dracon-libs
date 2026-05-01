@@ -1,22 +1,21 @@
 # Project State
 
 ## Current Focus
-Refactored mouse event handling in the showcase example to remove unused column parameter.
+Refactored mouse event handling in the showcase example to remove unused column parameter
 
 ## Context
-The showcase example was being refactored to improve code organization and remove unnecessary parameters. This change specifically addresses the mouse event handler by removing an unused column parameter.
+The change was prompted by a refactoring effort to clean up the showcase example codebase. The mouse event handler in the `LogMonitor` widget was modified to remove an unused parameter, improving code clarity without affecting functionality.
 
 ## Completed
-- [x] Removed unused `col` parameter from `handle_mouse` method in showcase example
-- [x] Updated Cargo.lock with dependency version changes
-- [x] Updated dracon-terminal-engine Cargo.toml with binary metadata updates
+- [x] Removed unused `col` parameter from `handle_mouse` method in `log_monitor.rs`
+- [x] Updated Cargo.lock and Cargo.toml with dependency version changes
 
 ## In Progress
-- [x] Refactoring of showcase example initialization and widget handling
+- [ ] No active work in progress
 
 ## Blockers
-- None identified in this commit
+- None
 
 ## Next Steps
-1. Continue refactoring showcase example initialization
-2. Review and test updated mouse event handling behavior
+1. Review other showcase examples for similar refactoring opportunities
+2. Continue with ongoing refactoring of the terminal engine examples
