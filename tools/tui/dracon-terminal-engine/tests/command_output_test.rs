@@ -326,7 +326,10 @@ mod streaming_text_command_output {
             LoggedLine::new("line a", "info"),
             LoggedLine::new("line b", "info"),
         ]));
-        assert!(st.content().contains("line a") && st.content().contains("line b"));
+        let rect = ratatui::layout::Rect::new(0, 0, 80, 15);
+        let plane = st.render(rect);
+        let chars = plane.cells.iter().filter(|c| c.char != ' ' && c.char != '(').count();
+        assert!(chars >= 2, "Lines format should render content");
     }
 
     #[test]

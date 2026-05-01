@@ -615,8 +615,7 @@ fn main() -> std::io::Result<()> {
     let _header_id = app.add_widget(Box::new(header), Rect::new(0, 14, 80, 1));
 
     // ---- Add a footer showing theme name ----
-    let footer_text = format!("Theme: {} | Press Ctrl+C to exit", app.theme.name);
-    let footer = dracon_terminal_engine::framework::widgets::Label::new(&footer_text);
+    let footer = dracon_terminal_engine::framework::widgets::Label::new("Theme: nord | Press Ctrl+C to exit");
     let _footer_id = app.add_widget(Box::new(footer), Rect::new(0, 15, 80, 1));
 
     // ---- Run the app ----

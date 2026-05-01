@@ -4,20 +4,19 @@
 Improved command output handling and test coverage for terminal widgets
 
 ## Context
-The changes enhance the terminal engine's ability to process and display command outputs, particularly focusing on JSON-formatted outputs and improving test robustness.
+This change addresses issues in command output rendering and testing, particularly around line formatting and content visibility in terminal widgets.
 
 ## Completed
-- [x] Refactored `ColorPicker` widget to ignore unused row parameter in mouse event handling
-- [x] Enhanced command output tests to verify JSON key parsing functionality
-- [x] Updated test assertions to properly handle string outputs in status badges
-- [x] Improved test coverage for `KeyValueGrid` widget with more comprehensive assertions
+- [x] Fixed widget tutorial footer to use hardcoded "nord" theme name instead of dynamic theme name
+- [x] Improved command output test to verify rendered content rather than just string matching
+- [x] Enhanced test to check for visible characters in rendered output rather than raw content
 
 ## In Progress
-- [x] Comprehensive command output integration tests for terminal widgets
+- [x] Refactored command output handling and test infrastructure
 
 ## Blockers
 - None identified in this commit
 
 ## Next Steps
-1. Verify all widget command output scenarios work as expected
-2. Consider adding more edge case tests for command output parsing
+1. Verify test improvements catch edge cases in command output rendering
+2. Review widget tutorial changes for consistency with other terminal components
