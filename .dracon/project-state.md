@@ -1,18 +1,17 @@
 # Project State
 
 ## Current Focus
-Enhanced modal dialog system with improved keyboard handling and help overlay composition
+Refactored modal dialog system with improved widget management and rendering
 
 ## Context
-The modal dialog system was improved to better handle keyboard interactions, modal composition, and visual feedback. The changes focus on making modals more intuitive and consistent in behavior.
+The modal dialog system was refactored to better handle widget lifecycle and rendering, particularly for modal overlays and toast notifications. This change improves the separation of concerns between widget construction and rendering.
 
 ## Completed
-- [x] Enhanced `ConfirmDialog` with proper keyboard handling (ESC→Cancel, Enter→Confirm)
-- [x] Improved help overlay with button-triggered toggle instead of keyboard shortcut
-- [x] Added toast notifications for success/error feedback
-- [x] Refined modal composition with proper z-index layering
-- [x] Updated widget event flow documentation
-- [x] Added button click support alongside keyboard interactions
+- [x] Refactored widget construction to separate widget creation from rendering
+- [x] Added explicit widget management with `mark_dirty()` and `render()` calls
+- [x] Improved modal rendering with proper z-index handling
+- [x] Updated toast notification system with consistent theme handling
+- [x] Simplified widget ID management in the demo application
 
 ## In Progress
 - [ ] No active work in progress
@@ -21,6 +20,6 @@ The modal dialog system was improved to better handle keyboard interactions, mod
 - None identified
 
 ## Next Steps
-1. Verify modal behavior across different terminal sizes
-2. Add more visual feedback for modal state changes
-3. Consider adding animation effects for modal transitions
+1. Verify modal dialog behavior with keyboard navigation
+2. Test toast notification positioning and timing
+3. Document the new widget lifecycle patterns

@@ -422,7 +422,7 @@ impl Widget for ThemePreviewPanel {
         let fill = (gauge_width * 65) / 100;
 
         if 1 < area.height {
-            plane.cells[(gauge_row * area.width + 1) as usize] = Cell {
+            plane.cells[gauge_row as usize * area.width as usize + 1] = Cell {
                 char: '[',
                 fg: theme.fg,
                 bg: theme.bg,
@@ -430,7 +430,7 @@ impl Widget for ThemePreviewPanel {
                 transparent: false,
                 skip: false,
             };
-            plane.cells[((gauge_row * area.width + area.width - 2) as usize)] = Cell {
+            plane.cells[gauge_row as usize * area.width as usize + area.width as usize - 2] = Cell {
                 char: ']',
                 fg: theme.fg,
                 bg: theme.bg,
@@ -621,7 +621,7 @@ impl Widget for WidgetDemoPanel {
 
         let breadcrumb_row = 11;
         let crumbs = ["home", "projects", "demo"];
-        let total_len: usize = crumbs.iter().map(|s| s.len()).sum() + crumbs.len() - 1;
+        let total_len: usize = crumbs.iter().map(|s| s.len()).sum::<usize>() + crumbs.len() - 1;
         let start_x = (area.width as usize / 2 - total_len / 2) as u16;
 
         let mut x = start_x;

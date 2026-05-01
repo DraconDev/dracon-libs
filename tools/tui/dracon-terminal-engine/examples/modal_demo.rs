@@ -5,7 +5,7 @@
 //! 1. **ConfirmDialog** — Modal confirmation box with OK/Cancel, ESC→Cancel, Enter→Confirm
 //! 2. **Help overlay** — Modal toggled via button, listing keyboard shortcuts
 //! 3. **Modal composition** — Help renders above main content, ConfirmDialog above help
-//! 4. **Toast notifications** — Success toast after confirm, info toast for save
+//! 4. **Toast notifications** — Success toast after confirm
 //!
 //! ## Key Patterns
 //!
@@ -26,8 +26,9 @@
 use std::io;
 use std::time::Duration;
 
+use dracon_terminal_engine::compositor::Plane;
 use dracon_terminal_engine::framework::prelude::*;
-use dracon_terminal_engine::framework::widget::{Widget, WidgetId};
+use dracon_terminal_engine::framework::widget::Widget;
 use dracon_terminal_engine::framework::widgets::{
     Button, ConfirmDialog, Label, Modal, ModalResult, Toast, ToastKind,
 };
@@ -66,6 +67,10 @@ impl HelpOverlay {
         } else {
             self.show();
         }
+    }
+
+    fn is_visible(&self) -> bool {
+        self.visible
     }
 }
 
@@ -170,17 +175,41 @@ struct ModalDemoApp {
     help_visible: bool,
     show_save_toast: bool,
     toast_message: String,
-    label_id: WidgetId,
+    label: Label,
+    confirm_dialog: ConfirmDialog,
+    help_overlay: HelpOverlay,
+    confirm_btn: Button,
+    help_btn: Button,
 }
 
 impl ModalDemoApp {
     fn new() -> Self {
+        let label = Label::new(
+            "Main content area\n\n\
+             Click [Show Confirm Dialog] to trigger confirm\n\
+             Click [Show Help] to toggle help overlay",
+        );
+
+        let confirm_dialog = ConfirmDialog::new("Confirm Action", "Are you sure you want to proceed?")
+            .confirm_label("OK")
+            .cancel_label("Cancel")
+            .danger(true);
+
+        let help_overlay = HelpOverlay::new();
+
+        let confirm_btn = Button::new("Show Confirm Dialog");
+        let help_btn = Button::new("Show Help (?)");
+
         Self {
             show_confirm: false,
             help_visible: false,
             show_save_toast: false,
             toast_message: String::new(),
-            label_id: WidgetId::default_id(),
+            label,
+            confirm_dialog,
+            help_overlay,
+            confirm_btn,
+            help_btn,
         }
     }
 }
@@ -200,34 +229,53 @@ fn main() -> io::Result<()> {
 
     let mut demo = ModalDemoApp::new();
 
-    let label = Label::new(
-        "Main content area\n\n\
-         Click [Show Confirm Dialog] to trigger confirm\n\
-         Click [Show Help] to toggle help overlay",
-    );
-    demo.label_id = app.add_widget(Box::new(label), Rect::new(2, 2, 55, 10));
+    demo.label.set_area(Rect::new(2, 2, 55, 10));
+    demo.confirm_dialog.set_area(Rect::new(0, 0, 80, 24));
+    demo.help_overlay.set_area(Rect::new(0, 0, 80, 24));
+    demo.confirm_btn.set_area(Rect::new(2, 14, 25, 1));
+    demo.help_btn.set_area(Rect::new(30, 14, 18, 1));
 
-    let confirm_dlg = ConfirmDialog::new("Confirm Action", "Are you sure you want to proceed?")
-        .confirm_label("OK")
-        .cancel_label("Cancel")
-        .danger(true);
-    let confirm_id = app.add_widget(Box::new(confirm_dlg), Rect::new(0, 0, 80, 24));
+    let _confirm_result = app.run(move |ctx| {
+        if ctx.needs_full_refresh() {
+            ctx.mark_all_dirty();
+        }
 
-    let help_overlay = HelpOverlay::new();
-    let help_id = app.add_widget(Box::new(help_overlay), Rect::new(0, 0, 80, 24));
+        let label_area = Rect::new(2, 2, 55, 10);
+        demo.label.mark_dirty();
+        let label_plane = demo.label.render(label_area);
+        ctx.add_plane(label_plane);
 
-    let mut confirm_btn = Button::new("Show Confirm Dialog");
-    let confirm_btn_id = app.add_widget(Box::new(confirm_btn), Rect::new(2, 14, 25, 1));
+        let confirm_btn_area = Rect::new(2, 14, 25, 1);
+        demo.confirm_btn.mark_dirty();
+        let btn_plane = demo.confirm_btn.render(confirm_btn_area);
+        ctx.add_plane(btn_plane);
 
-    let mut help_btn = Button::new("Show Help (?)");
-    let help_btn_id = app.add_widget(Box::new(help_btn), Rect::new(30, 14, 18, 1));
+        let help_btn_area = Rect::new(30, 14, 18, 1);
+        demo.help_btn.mark_dirty();
+        let help_btn_plane = demo.help_btn.render(help_btn_area);
+        ctx.add_plane(help_btn_plane);
 
-    app.on_tick(move |ctx, _tick| {
+        if demo.help_visible {
+            demo.help_overlay.mark_dirty();
+            let help_area = Rect::new(0, 0, 80, 24);
+            let mut help_plane = demo.help_overlay.render(help_area);
+            help_plane.z_index = 100;
+            ctx.add_plane(help_plane);
+        }
+
+        if demo.show_confirm {
+            demo.confirm_dialog.mark_dirty();
+            let confirm_area = Rect::new(0, 0, 80, 24);
+            let mut confirm_plane = demo.confirm_dialog.render(confirm_area);
+            confirm_plane.z_index = 110;
+            ctx.add_plane(confirm_plane);
+        }
+
         if demo.show_save_toast {
             let toast = Toast::new(WidgetId::new(200), &demo.toast_message)
                 .with_kind(ToastKind::Success)
                 .with_duration(Duration::from_secs(2))
-                .with_theme(*ctx.theme());
+                .with_theme(Theme::dark());
 
             let toast_area = Rect::new(
                 (ctx.compositor().size().0.saturating_sub(40)) / 2,
@@ -238,69 +286,6 @@ fn main() -> io::Result<()> {
             ctx.add_plane(toast.render(toast_area));
             demo.show_save_toast = false;
         }
-    });
-
-    let _result = app.run(move |ctx| {
-        if ctx.needs_full_refresh() {
-            ctx.mark_all_dirty();
-        }
-
-        if let Some(mut label) = ctx.widget(demo.label_id) {
-            label.mark_dirty();
-            let area = label.area();
-            let plane = label.render(area);
-            ctx.add_plane(plane);
-        }
-
-        let (w, h) = ctx.compositor().size();
-
-        let mut confirm_plane = Plane::new(0, w, h);
-        confirm_plane.z_index = 110;
-
-        if let Some(confirm) = ctx.widget(confirm_id) {
-            let area = confirm.area();
-            let plane = confirm.render(area);
-            if demo.show_confirm {
-                for (i, cell) in plane.cells.iter().enumerate() {
-                    if i < confirm_plane.cells.len() {
-                        confirm_plane.cells[i] = cell.clone();
-                    }
-                }
-                ctx.add_plane(confirm_plane);
-            }
-        }
-
-        let mut help_plane = Plane::new(0, w, h);
-        help_plane.z_index = 100;
-
-        if let Some(help) = ctx.widget(help_id) {
-            let area = help.area();
-            let plane = help.render(area);
-            if demo.help_visible {
-                for (i, cell) in plane.cells.iter().enumerate() {
-                    if i < help_plane.cells.len() {
-                        help_plane.cells[i] = cell.clone();
-                    }
-                }
-                ctx.add_plane(help_plane);
-            }
-        }
-
-        let confirm_btn_plane = if let Some(confirm_btn_widget) = ctx.widget(confirm_btn_id) {
-            let area = confirm_btn_widget.area();
-            confirm_btn_widget.render(area)
-        } else {
-            Plane::new(0, 25, 1)
-        };
-        ctx.add_plane(confirm_btn_plane);
-
-        let help_btn_plane = if let Some(help_btn_widget) = ctx.widget(help_btn_id) {
-            let area = help_btn_widget.area();
-            help_btn_widget.render(area)
-        } else {
-            Plane::new(0, 18, 1)
-        };
-        ctx.add_plane(help_btn_plane);
     });
 
     println!("\nModal demo exited cleanly");
