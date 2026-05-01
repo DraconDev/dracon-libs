@@ -108,7 +108,7 @@ impl KeyValueGrid {
             }
         }
 
-        let remaining = area.width as usize.saturating_sub(cells.len());
+        let remaining = (area.width as usize).saturating_sub(cells.len());
         let val_start = cells.len();
         for c in value.chars().take(remaining) {
             if cells.len() < area.width as usize {
@@ -298,9 +298,9 @@ mod tests {
 
     #[test]
     fn test_key_value_grid_with_theme() {
-        let theme = Theme::gruvbox();
+        let theme = Theme::gruvbox_dark();
         let grid = KeyValueGrid::new().with_theme(theme);
-        assert_eq!(grid.theme.name, "gruvbox");
+        assert_eq!(grid.theme.name, "gruvbox-dark");
     }
 
     #[test]

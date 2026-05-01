@@ -257,7 +257,7 @@ mod tests {
 
     #[test]
     fn test_confirm_dialog_with_id() {
-        let dlg = ConfirmDialog::new_with_id(WidgetId::new(5), "Title", "Msg");
+        let dlg = ConfirmDialog::with_id(WidgetId::new(5), "Title", "Msg");
         assert_eq!(dlg.id, WidgetId::new(5));
     }
 
