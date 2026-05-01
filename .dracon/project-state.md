@@ -1,9 +1,8 @@
 # Project State
 
 ## Current Focus
-Updated dependency versions in the `dracon-terminal-engine` framework to address security vulnerabilities and maintain compatibility with other components.
+Removed redundant color comparison helper function in theme tests to simplify test assertions.
 
 ## Completed
-- [x] Updated dependency versions in `dracon-terminal-engine` Cargo.toml
-- [x] Updated Cargo.lock to reflect new dependency versions
-```
+- [x] Removed `assert_color_eq` helper function from theme tests
+- [x] Simplified theme test assertions by using direct `assert_eq!` comparisons
