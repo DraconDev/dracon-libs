@@ -30,7 +30,7 @@ use std::time::Duration;
 
 use dracon_terminal_engine::compositor::{Cell, Color, Plane, Styles};
 use dracon_terminal_engine::framework::prelude::*;
-use dracon_terminal_engine::framework::widget::Widget;
+use dracon_terminal_engine::framework::widget::{Widget, WidgetId};
 use dracon_terminal_engine::framework::widgets::{
     Modal, Toast, ToastKind,
 };
@@ -115,9 +115,9 @@ impl ChatState {
         let text = self.input_text.clone();
         self.input_text.clear();
         let msg = Message {
-            sender: "You",
-            text: text,
-            time: "Now",
+            sender: String::from("You"),
+            text,
+            time: String::from("Now"),
             is_read: true,
         };
         self.messages.push(msg);
