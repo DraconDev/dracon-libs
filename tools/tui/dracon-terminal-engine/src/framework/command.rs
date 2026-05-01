@@ -310,7 +310,7 @@ impl CommandRunner {
             if let Ok(code) = child.wait() {
                 let _ = exit_tx.send(format!(
                     "__EXIT_CODE__{}",
-                    code.code().map(|c| c).unwrap_or(-1)
+                    code.code().unwrap_or(-1)
                 ));
             }
         });
