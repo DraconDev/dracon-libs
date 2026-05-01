@@ -1,20 +1,22 @@
 # Project State
 
 ## Current Focus
-Refactored showcase example by removing unused loop index variable in terminal engine.
+Refactored mouse event handling in the showcase example to remove unused column parameter.
 
 ## Context
-The showcase example was refactored to improve code clarity and maintainability. The unused loop index variable `_end_idx` was removed to eliminate dead code.
+The showcase example was being refactored to improve code organization and remove unnecessary parameters. This change specifically addresses the mouse event handler by removing an unused column parameter.
 
 ## Completed
-- [x] Removed unused loop index variable `_end_idx` in showcase example
+- [x] Removed unused `col` parameter from `handle_mouse` method in showcase example
+- [x] Updated Cargo.lock with dependency version changes
+- [x] Updated dracon-terminal-engine Cargo.toml with binary metadata updates
 
 ## In Progress
-- [x] No active work in progress related to this change
+- [x] Refactoring of showcase example initialization and widget handling
 
 ## Blockers
-- None
+- None identified in this commit
 
 ## Next Steps
-1. Review other showcase example refactorings for similar optimizations
-2. Verify showcase example functionality remains unchanged after refactoring
+1. Continue refactoring showcase example initialization
+2. Review and test updated mouse event handling behavior
