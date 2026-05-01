@@ -1,7 +1,8 @@
 # Project State
 
 ## Current Focus
-Refactored the `KeyValueGrid` widget to improve code readability and maintainability by removing redundant row increment logic.
+Refactored the game loop exit condition in the terminal engine example to improve readability and maintainability.
 
 ## Completed
-- [x] Removed redundant `row += 1` increment in `KeyValueGrid` widget rendering logic
+- [x] Simplified the key event handling logic by directly matching the 'q' key press in a single pattern match
+- [x] Removed nested if-let statements that previously checked for the event type and then the key code
