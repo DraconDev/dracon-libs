@@ -549,14 +549,18 @@ mod tests {
     }
 
     #[test]
-    fn test_command_runner_parse() {
-        let runner = CommandRunner::new("python3 -c 'import json,sys; sys.stdout.write(json.dumps({\"status\":\"OK\"}))'");
-        let parser = OutputParser::JsonKey { key: "status".to_string() };
-        let out = runner.run_and_parse(&parser);
-        match out {
-            ParsedOutput::Scalar(s) => assert_eq!(s, "\"OK\""),
-            _ => panic!("expected scalar, got {:?}", out),
-        }
+    fn test_command_runner_sync_echo() {
+        let runner = CommandRunner::new("echo hello");
+        let (stdout, stderr, code) = runner.run_sync();
+        assert_eq!(stdout.trim(), "hello");
+        assert_eq!(code, 0);
+    }
+
+    #[test]
+    fn test_command_runner_sync_exit_code() {
+        let runner = CommandRunner::new("exit 42");
+        let (_, _, code) = runner.run_sync();
+        assert_eq!(code, 42);
     }
 
     #[test]

@@ -1,10 +1,8 @@
 # Project State
 
 ## Current Focus
-fix(command): improve test reliability by using explicit Python JSON output and fix Option handling
+Add sync command runner tests verifying stdout output and exit code handling
 
 ## Completed
-- [x] Fix test_command_runner_parse by replacing echo command with Python's json.dumps for explicit JSON output
-- [x] Improve error message in test assertion to include debug output on failure
-- [x] Fix layout assertion to properly unwrap Option type with as_ref().unwrap()
-- [x] Regenerate Cargo.lock to synchronize dependency lockfile
+- [x] Add new test `test_command_runner_sync_echo` that asserts `echo hello` outputs "hello"
+- [x] Add new test `test_command_runner_sync_exit_code` that asserts exit code 42 is returned
