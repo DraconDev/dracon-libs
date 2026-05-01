@@ -30,11 +30,12 @@ use std::time::Duration;
 
 use dracon_terminal_engine::compositor::{Cell, Color, Plane, Styles};
 use dracon_terminal_engine::framework::prelude::*;
-use dracon_terminal_engine::framework::widget::Widget;
+use dracon_terminal_engine::framework::widget::{Widget, WidgetId};
 use dracon_terminal_engine::framework::widgets::{
-    Button, Modal, StatusBar, StatusSegment, Toast, ToastKind,
+    Modal, StatusBar, StatusSegment, Toast, ToastKind,
 };
-use dracon_terminal_engine::input::event::{KeyCode, KeyEventKind};
+use dracon_terminal_engine::input::event::{KeyCode, KeyEventKind, MouseEventKind, MouseButton};
+use ratatui::layout::Rect;
 
 struct Message {
     sender: &'static str,
@@ -55,7 +56,6 @@ struct ChatApp {
     messages: Vec<Message>,
     input_text: String,
     cursor_pos: usize,
-    input_area: Rect,
     show_emoji_modal: bool,
     show_settings_modal: bool,
     emoji_modal: Modal<'static>,
@@ -67,6 +67,7 @@ struct ChatApp {
     status_bar: StatusBar,
     scroll_offset: usize,
     auto_scroll: bool,
+    dirty: bool,
 }
 
 impl ChatApp {
@@ -80,15 +81,14 @@ impl ChatApp {
             .with_buttons(vec![("Done", ModalResult::Confirm)]);
 
         let status_bar = StatusBar::new(WidgetId::new(50))
-            .add_segment(StatusSegment::new("Alice, Bob").with_fg(Color::Cyan))
-            .add_segment(StatusSegment::new("3 unread").with_fg(Color::Yellow))
+            .add_segment(StatusSegment::new("Alice, Bob").with_fg(Color::Ansi(6)))
+            .add_segment(StatusSegment::new("3 unread").with_fg(Color::Ansi(3)))
             .add_segment(StatusSegment::new("Press Enter to send").with_fg(Color::Reset));
 
         let mut app = Self {
-            messages: MESSAGES.iter().cloned().map(|m| Message { is_read: m.is_read, ..*m }).collect(),
+            messages: MESSAGES.iter().map(|m| (*m).clone()).collect(),
             input_text: String::new(),
             cursor_pos: 0,
-            input_area: Rect::new(0, 0, 80, 1),
             show_emoji_modal: false,
             show_settings_modal: false,
             emoji_modal,
@@ -100,6 +100,7 @@ impl ChatApp {
             status_bar,
             scroll_offset: 0,
             auto_scroll: true,
+            dirty: true,
         };
         app.scroll_to_bottom();
         app
@@ -126,8 +127,8 @@ impl ChatApp {
             "All read".to_string()
         };
         self.status_bar = StatusBar::new(WidgetId::new(50))
-            .add_segment(StatusSegment::new("Alice, Bob").with_fg(Color::Cyan))
-            .add_segment(StatusSegment::new(&unread_text).with_fg(if unread > 0 { Color::Yellow } else { Color::Green }))
+            .add_segment(StatusSegment::new("Alice, Bob").with_fg(Color::Ansi(6)))
+            .add_segment(StatusSegment::new(&unread_text).with_fg(if unread > 0 { Color::Ansi(3) } else { Color::Ansi(2) }))
             .add_segment(StatusSegment::new("Press Enter to send").with_fg(Color::Reset));
     }
 
@@ -135,9 +136,10 @@ impl ChatApp {
         if self.input_text.trim().is_empty() {
             return;
         }
+        let text = std::mem::take(&mut self.input_text);
         let msg = Message {
             sender: "You",
-            text: std::mem::take(&mut self.input_text),
+            text: text,
             time: "Now",
             is_read: true,
         };
@@ -151,164 +153,393 @@ impl ChatApp {
     }
 }
 
-fn render_message_row(msg: &Message, area: Rect, theme: &Theme, is_selected: bool, width: u16) -> Plane {
-    let mut plane = Plane::new(0, width, 1);
-    plane.z_index = 10;
-
-    let bg = if !msg.is_read {
-        Color::Rgb(40, 40, 60)
-    } else if is_selected {
-        theme.selection_bg
-    } else {
-        theme.bg
-    };
-
-    for col in 0..width {
-        let idx = col as usize;
-        if idx < plane.cells.len() {
-            plane.cells[idx] = Cell {
-                char: ' ',
-                fg: theme.fg,
-                bg,
-                style: Styles::empty(),
-                transparent: false,
-                skip: false,
-            };
+impl Clone for Message {
+    fn clone(&self) -> Self {
+        Message {
+            sender: self.sender,
+            text: self.text,
+            time: self.time,
+            is_read: self.is_read,
         }
     }
-
-    let sender_color = match msg.sender {
-        "Alice" => Color::Magenta,
-        "Bob" => Color::Cyan,
-        "You" => Color::Green,
-        _ => Color::Yellow,
-    };
-
-    let sender_len = msg.sender.len();
-    for (i, c) in msg.sender.chars().enumerate() {
-        let idx = i;
-        if idx < plane.cells.len() {
-            plane.cells[idx].char = c;
-            plane.cells[idx].fg = sender_color;
-            plane.cells[idx].style = Styles::BOLD;
-        }
-    }
-
-    for (i, c) in "] ".chars().enumerate() {
-        let idx = sender_len + i;
-        if idx < plane.cells.len() {
-            plane.cells[idx].char = c;
-            plane.cells[idx].fg = theme.fg;
-        }
-    }
-
-    let text_start = sender_len + 2;
-    for (i, c) in msg.text.chars().take((width as usize).saturating_sub(text_start + 10)).enumerate() {
-        let idx = text_start + i;
-        if idx < plane.cells.len() {
-            plane.cells[idx].char = c;
-            plane.cells[idx].fg = if !msg.is_read { Color::White } else { theme.fg };
-        }
-    }
-
-    let time_x = (width as usize).saturating_sub(6);
-    for (i, c) in msg.time.chars().enumerate() {
-        let idx = time_x + i;
-        if idx < plane.cells.len() {
-            plane.cells[idx].char = c;
-            plane.cells[idx].fg = Color::Rgb(100, 100, 100);
-        }
-    }
-
-    plane
 }
 
-fn render_input_bar(input_text: &str, cursor_pos: usize, placeholder: &str, theme: &Theme, area: Rect) -> Plane {
-    let mut plane = Plane::new(0, area.width, area.height);
-    plane.z_index = 20;
+impl Widget for ChatApp {
+    fn id(&self) -> WidgetId {
+        WidgetId::new(1)
+    }
 
-    plane.cells[0] = Cell {
-        char: '[',
-        fg: theme.accent,
-        bg: theme.bg,
-        style: Styles::empty(),
-        transparent: false,
-        skip: false,
-    };
+    fn set_id(&mut self, id: WidgetId) {}
 
-    plane.cells[1] = Cell {
-        char: '📎',
-        fg: theme.accent,
-        bg: theme.bg,
-        style: Styles::empty(),
-        transparent: false,
-        skip: false,
-    };
+    fn area(&self) -> Rect {
+        Rect::new(0, 0, 80, 24)
+    }
 
-    plane.cells[2] = Cell {
-        char: ']',
-        fg: theme.accent,
-        bg: theme.bg,
-        style: Styles::empty(),
-        transparent: false,
-        skip: false,
-    };
+    fn set_area(&mut self, area: Rect) {}
 
-    let input_start = 4u16;
-    let display = if input_text.is_empty() { placeholder } else { input_text };
+    fn z_index(&self) -> u16 {
+        10
+    }
 
-    for (i, c) in display.chars().take((area.width as usize).saturating_sub(7)).enumerate() {
-        let idx = (input_start as usize) + i;
-        if idx < plane.cells.len() {
-            let is_cursor = i == cursor_pos && !input_text.is_empty();
-            plane.cells[idx] = Cell {
-                char: c,
-                fg: if is_cursor { theme.bg } else if input_text.is_empty() { Color::Rgb(100, 100, 100) } else { theme.fg },
-                bg: if is_cursor { theme.fg } else { theme.input_bg },
-                style: Styles::empty(),
-                transparent: false,
-                skip: false,
+    fn needs_render(&self) -> bool {
+        self.dirty
+    }
+
+    fn mark_dirty(&mut self) {
+        self.dirty = true;
+    }
+
+    fn clear_dirty(&mut self) {
+        self.dirty = false;
+    }
+
+    fn render(&self, area: Rect) -> Plane {
+        let mut plane = Plane::new(0, area.width, area.height);
+        plane.z_index = 10;
+
+        let input_h = 3u16;
+        let status_h = 1u16;
+        let header_h = 1u16;
+        let list_h = area.height.saturating_sub(input_h + status_h + header_h);
+
+        let header_plane_y = 0u16;
+        for col in 0..area.width {
+            let idx = col as usize;
+            if idx < plane.cells.len() {
+                plane.cells[idx] = Cell {
+                    char: ' ',
+                    fg: Color::Reset,
+                    bg: Color::Ansi(17),
+                    style: Styles::empty(),
+                    transparent: false,
+                    skip: false,
+                };
+            }
+        }
+
+        let title = "Chat Client";
+        for (i, c) in title.chars().enumerate() {
+            let idx = i;
+            if idx < plane.cells.len() {
+                plane.cells[idx].char = c;
+                plane.cells[idx].fg = Color::White;
+                plane.cells[idx].style = Styles::BOLD;
+            }
+        }
+
+        let status_x = (area.width as usize).saturating_sub(12);
+        for (i, c) in "Online".chars().enumerate() {
+            let idx = status_x + i;
+            if idx < plane.cells.len() {
+                plane.cells[idx].char = c;
+                plane.cells[idx].fg = Color::Ansi(2);
+            }
+        }
+
+        let settings_x = (area.width as usize).saturating_sub(6);
+        for (i, c) in "[⚙]".chars().enumerate() {
+            let idx = settings_x + i;
+            if idx < plane.cells.len() {
+                plane.cells[idx].char = c;
+                plane.cells[idx].fg = Color::Ansi(3);
+            }
+        }
+
+        for col in 0..area.width {
+            let idx = (header_h * area.width + col) as usize;
+            if idx < plane.cells.len() {
+                plane.cells[idx].char = '─';
+                plane.cells[idx].fg = Color::Ansi(8);
+            }
+        }
+
+        let visible_count = (list_h as usize).saturating_sub(2).max(1);
+        let start = self.scroll_offset;
+        let end = (start + visible_count).min(self.messages.len());
+
+        for (i, msg) in self.messages[start..end].iter().enumerate() {
+            let row = (header_h + 1 + i as u16);
+            let bg = if !msg.is_read {
+                Color::Ansi(24)
+            } else {
+                Color::Reset
             };
+
+            let sender_color = match msg.sender {
+                "Alice" => Color::Ansi(5),
+                "Bob" => Color::Ansi(6),
+                "You" => Color::Ansi(2),
+                _ => Color::Ansi(3),
+            };
+
+            let base_idx = (row * area.width) as usize;
+            for col in 0..area.width {
+                let idx = base_idx + col as usize;
+                if idx < plane.cells.len() {
+                    plane.cells[idx].bg = bg;
+                    plane.cells[idx].fg = Color::Reset;
+                }
+            }
+
+            let sender_len = msg.sender.len();
+            for (j, c) in msg.sender.chars().enumerate() {
+                let idx = base_idx + j;
+                if idx < plane.cells.len() {
+                    plane.cells[idx].char = c;
+                    plane.cells[idx].fg = sender_color;
+                    plane.cells[idx].style = Styles::BOLD;
+                }
+            }
+
+            for (j, c) in "] ".chars().enumerate() {
+                let idx = base_idx + sender_len + j;
+                if idx < plane.cells.len() {
+                    plane.cells[idx].char = c;
+                    plane.cells[idx].fg = Color::Reset;
+                }
+            }
+
+            let text_start = sender_len + 2;
+            for (j, c) in msg.text.chars().take((area.width as usize).saturating_sub(text_start + 10)).enumerate() {
+                let idx = base_idx + text_start + j;
+                if idx < plane.cells.len() {
+                    plane.cells[idx].char = c;
+                    plane.cells[idx].fg = if !msg.is_read { Color::White } else { Color::Reset };
+                }
+            }
+
+            let time_x = (area.width as usize).saturating_sub(6);
+            for (j, c) in msg.time.chars().enumerate() {
+                let idx = base_idx + time_x + j;
+                if idx < plane.cells.len() {
+                    plane.cells[idx].char = c;
+                    plane.cells[idx].fg = Color::Ansi(8);
+                }
+            }
+        }
+
+        for col in 0..area.width {
+            let idx = ((header_h + list_h - 1) * area.width + col) as usize;
+            if idx < plane.cells.len() {
+                plane.cells[idx].char = '─';
+                plane.cells[idx].fg = Color::Ansi(8);
+            }
+        }
+
+        let input_row = header_h + list_h;
+        let base_idx = (input_row * area.width) as usize;
+        for col in 0..area.width {
+            let idx = base_idx + col as usize;
+            if idx < plane.cells.len() {
+                plane.cells[idx].bg = Color::Ansi(8);
+                plane.cells[idx].fg = Color::Reset;
+            }
+        }
+
+        if base_idx < plane.cells.len() {
+            plane.cells[base_idx].char = '[';
+            plane.cells[base_idx].fg = Color::Ansi(6);
+        }
+        if base_idx + 1 < plane.cells.len() {
+            plane.cells[base_idx + 1].char = '📎';
+            plane.cells[base_idx + 1].fg = Color::Ansi(6);
+        }
+        if base_idx + 2 < plane.cells.len() {
+            plane.cells[base_idx + 2].char = ']';
+            plane.cells[base_idx + 2].fg = Color::Ansi(6);
+        }
+        if base_idx + 3 < plane.cells.len() {
+            plane.cells[base_idx + 3].char = ' ';
+            plane.cells[base_idx + 3].fg = Color::Reset;
+        }
+
+        let display = if self.input_text.is_empty() { "Message..." } else { &self.input_text };
+        let input_start = 4usize;
+        for (j, c) in display.chars().take((area.width as usize).saturating_sub(10)).enumerate() {
+            let idx = base_idx + input_start + j;
+            if idx < plane.cells.len() {
+                let is_cursor = j == self.cursor_pos && !self.input_text.is_empty();
+                plane.cells[idx].char = c;
+                plane.cells[idx].fg = if is_cursor { Color::Ansi(8) } else if self.input_text.is_empty() { Color::Ansi(8) } else { Color::Reset };
+                plane.cells[idx].bg = if is_cursor { Color::Reset } else { Color::Ansi(8) };
+            }
+        }
+
+        let send_x = (area.width as usize).saturating_sub(5);
+        if base_idx + send_x < plane.cells.len() {
+            plane.cells[base_idx + send_x].char = '[';
+            plane.cells[base_idx + send_x].fg = Color::Ansi(6);
+        }
+        if base_idx + send_x + 1 < plane.cells.len() {
+            plane.cells[base_idx + send_x + 1].char = '➤';
+            plane.cells[base_idx + send_x + 1].fg = Color::Ansi(2);
+            plane.cells[base_idx + send_x + 1].style = Styles::BOLD;
+        }
+        if base_idx + send_x + 2 < plane.cells.len() {
+            plane.cells[base_idx + send_x + 2].char = ']';
+            plane.cells[base_idx + send_x + 2].fg = Color::Ansi(6);
+        }
+
+        for col in 0..area.width {
+            let idx = ((input_row + 1) * area.width + col) as usize;
+            if idx < plane.cells.len() {
+                plane.cells[idx].char = '─';
+                plane.cells[idx].fg = Color::Ansi(8);
+            }
+        }
+
+        let status_row = area.height - status_h;
+        let status_base = (status_row * area.width) as usize;
+        for col in 0..area.width {
+            let idx = status_base + col as usize;
+            if idx < plane.cells.len() {
+                plane.cells[idx].bg = Color::Ansi(17);
+                plane.cells[idx].fg = Color::Reset;
+            }
+        }
+
+        let seg1 = "Alice, Bob";
+        for (j, c) in seg1.chars().enumerate() {
+            let idx = status_base + j;
+            if idx < plane.cells.len() {
+                plane.cells[idx].char = c;
+                plane.cells[idx].fg = Color::Ansi(6);
+            }
+        }
+
+        let seg2 = if self.unread_count() > 0 {
+            format!("{} unread", self.unread_count())
+        } else {
+            "All read".to_string()
+        };
+        for (j, c) in seg2.chars().enumerate() {
+            let idx = status_base + 15 + j;
+            if idx < plane.cells.len() {
+                plane.cells[idx].char = c;
+                plane.cells[idx].fg = if self.unread_count() > 0 { Color::Ansi(3) } else { Color::Ansi(2) };
+            }
+        }
+
+        let seg3 = "Press Enter to send";
+        for (j, c) in seg3.chars().enumerate() {
+            let idx = status_base + 30 + j;
+            if idx < plane.cells.len() {
+                plane.cells[idx].char = c;
+                plane.cells[idx].fg = Color::Ansi(8);
+            }
+        }
+
+        plane
+    }
+
+    fn handle_key(&mut self, key: KeyEvent) -> bool {
+        if key.kind != KeyEventKind::Press {
+            return false;
+        }
+        match key.code {
+            KeyCode::Esc => {
+                if self.show_emoji_modal {
+                    self.show_emoji_modal = false;
+                    self.emoji_modal.clear_result();
+                    self.dirty = true;
+                    true
+                } else if self.show_settings_modal {
+                    self.show_settings_modal = false;
+                    self.settings_modal.clear_result();
+                    self.dirty = true;
+                    true
+                } else {
+                    false
+                }
+            }
+            KeyCode::Enter => {
+                if !self.show_emoji_modal && !self.show_settings_modal {
+                    self.send_message();
+                    self.dirty = true;
+                    true
+                } else {
+                    false
+                }
+            }
+            KeyCode::Backspace => {
+                if !self.show_emoji_modal && !self.show_settings_modal && !self.input_text.is_empty() {
+                    self.input_text.pop();
+                    self.cursor_pos = self.input_text.len();
+                    self.dirty = true;
+                    true
+                } else {
+                    false
+                }
+            }
+            KeyCode::Char(ch) => {
+                if !self.show_emoji_modal && !self.show_settings_modal {
+                    self.input_text.push(ch);
+                    self.cursor_pos = self.input_text.len();
+                    self.dirty = true;
+                    true
+                } else {
+                    false
+                }
+            }
+            _ => false,
         }
     }
 
-    let send_x = (area.width as usize).saturating_sub(4);
-    plane.cells[send_x] = Cell {
-        char: '[',
-        fg: theme.accent,
-        bg: theme.bg,
-        style: Styles::empty(),
-        transparent: false,
-        skip: false,
-    };
-    plane.cells[send_x + 1] = Cell {
-        char: '➤',
-        fg: theme.success_fg,
-        bg: theme.bg,
-        style: Styles::BOLD,
-        transparent: false,
-        skip: false,
-    };
-    plane.cells[send_x + 2] = Cell {
-        char: ']',
-        fg: theme.accent,
-        bg: theme.bg,
-        style: Styles::empty(),
-        transparent: false,
-        skip: false,
-    };
+    fn handle_mouse(&mut self, kind: MouseEventKind, col: u16, row: u16) -> bool {
+        let (_w, h) = (80u16, 24u16);
+        let input_h = 3u16;
+        let status_h = 1u16;
+        let header_h = 1u16;
+        let list_h = h.saturating_sub(input_h + status_h + header_h);
+        let input_row = header_h + list_h;
 
-    let border_y = area.height - 1;
-    for col in 0..area.width {
-        let idx = (border_y * area.width + col) as usize;
-        if idx < plane.cells.len() {
-            plane.cells[idx].char = '─';
-            plane.cells[idx].fg = Color::Rgb(60, 60, 80);
-            plane.cells[idx].bg = theme.bg;
+        if self.show_emoji_modal {
+            if let MouseEventKind::Down(_) = kind {
+                self.show_emoji_modal = false;
+                self.dirty = true;
+                return true;
+            }
+            return false;
         }
+
+        if self.show_settings_modal {
+            if let MouseEventKind::Down(_) = kind {
+                self.show_settings_modal = false;
+                self.dirty = true;
+                return true;
+            }
+            return false;
+        }
+
+        if let MouseEventKind::Down(btn) = kind {
+            if btn == MouseButton::Left {
+                if col >= 1 && col <= 3 && row >= input_row && row < input_row + 1 {
+                    self.show_emoji_modal = true;
+                    self.dirty = true;
+                    return true;
+                }
+
+                let settings_x = 74u16;
+                if col >= settings_x && col <= settings_x + 3 && row < 1 {
+                    self.show_settings_modal = true;
+                    self.dirty = true;
+                    return true;
+                }
+
+                let send_x = 75u16;
+                if col >= send_x && col <= send_x + 3 && row >= input_row && row < input_row + 1 {
+                    self.send_message();
+                    self.dirty = true;
+                    return true;
+                }
+            }
+        }
+        false
     }
 
-    plane
+    fn focusable(&self) -> bool {
+        true
+    }
 }
 
 fn main() -> io::Result<()> {
@@ -324,111 +555,20 @@ fn main() -> io::Result<()> {
     app.set_theme(theme);
 
     let mut chat = ChatApp::new();
+    let chat_id = app.add_widget(Box::new(chat), Rect::new(0, 0, 80, 24));
 
-    app.on_key(move |key| {
-        if key.kind != KeyEventKind::Press {
-            return false;
-        }
-        match key.code {
-            KeyCode::Esc => {
-                if chat.show_emoji_modal {
-                    chat.show_emoji_modal = false;
-                    chat.emoji_modal.clear_result();
-                    true
-                } else if chat.show_settings_modal {
-                    chat.show_settings_modal = false;
-                    chat.settings_modal.clear_result();
-                    true
-                } else {
-                    false
-                }
-            }
-            KeyCode::Enter => {
-                if !chat.show_emoji_modal && !chat.show_settings_modal {
-                    chat.send_message();
-                    true
-                } else {
-                    false
-                }
-            }
-            KeyCode::Backspace => {
-                if !chat.show_emoji_modal && !chat.show_settings_modal && chat.cursor_pos > 0 {
-                    chat.input_text.pop();
-                    chat.cursor_pos = chat.input_text.len();
-                    true
-                } else {
-                    false
-                }
-            }
-            KeyCode::Char(ch) => {
-                if !chat.show_emoji_modal && !chat.show_settings_modal {
-                    chat.input_text.push(ch);
-                    chat.cursor_pos = chat.input_text.len();
-                    true
-                } else {
-                    false
-                }
-            }
-            _ => false,
-        }
-    });
+    let mut show_toast = false;
+    let toast_message = String::new();
 
-    app.on_mouse(move |kind, col, row| {
-        let screen_h = 24u16;
-        let input_h = 3u16;
-        let status_h = 1u16;
-        let list_h = screen_h.saturating_sub(input_h + status_h);
-
-        if chat.show_emoji_modal {
-            if let crate::input::event::MouseEventKind::Down(_) = kind {
-                if chat.emoji_modal.area().contains(col, row) {
-                    return chat.emoji_modal.handle_mouse(kind, col, row);
-                }
-                chat.show_emoji_modal = false;
-                chat.emoji_modal.clear_result();
-                return true;
-            }
-            return false;
-        }
-
-        if chat.show_settings_modal {
-            if let crate::input::event::MouseEventKind::Down(_) = kind {
-                if chat.settings_modal.area().contains(col, row) {
-                    return chat.settings_modal.handle_mouse(kind, col, row);
-                }
-                chat.show_settings_modal = false;
-                chat.settings_modal.clear_result();
-                return true;
-            }
-            return false;
-        }
-
-        if let crate::input::event::MouseEventKind::Down(btn) = kind {
-            if btn == crate::input::event::MouseButton::Left {
-                if row < list_h {
-                    return false;
-                }
-
-                let emoji_btn_x = 1u16;
-                if col >= emoji_btn_x && col <= emoji_btn_x + 3 && row >= list_h && row < list_h + 1 {
-                    chat.show_emoji_modal = true;
-                    return true;
-                }
-
-                let settings_x = 70u16;
-                if col >= settings_x && col <= settings_x + 3 && row < 1 {
-                    chat.show_settings_modal = true;
-                    return true;
-                }
-
-                let send_x = 76u16;
-                if col >= send_x && col <= send_x + 3 && row >= list_h && row < list_h + 1 {
-                    chat.send_message();
-                    return true;
-                }
+    app.on_tick(move |ctx, _tick| {
+        let chat_widget = ctx.widget_mut(chat_id);
+        if let Some(mut w) = chat_widget {
+            if w.show_toast {
+                w.show_toast = false;
+                drop(chat_widget);
+                show_toast = true;
             }
         }
-        false
     });
 
     let _ = app.run(move |ctx| {
@@ -436,181 +576,19 @@ fn main() -> io::Result<()> {
             ctx.mark_all_dirty();
         }
 
-        let (w, h) = ctx.compositor().size();
-        let input_h = 3u16;
-        let status_h = 1u16;
-        let header_h = 1u16;
-        let list_h = h.saturating_sub(input_h + status_h + header_h);
-
-        for row in 0..h {
-            for col in 0..w {
-                let idx = (row * w + col) as usize;
-                if idx < 80 * 24 {
-                    ctx.add_plane_at(col, row, Plane::new(0, 1, 1));
-                }
-            }
+        if let Some(mut chat_widget) = ctx.widget_mut(chat_id) {
+            chat_widget.mark_dirty();
+            let plane = chat_widget.render(chat_widget.area());
+            ctx.add_plane(plane);
         }
 
-        let mut header_plane = Plane::new(0, w, header_h);
-        header_plane.z_index = 30;
-        let title = "Chat Client";
-        for (i, c) in title.chars().enumerate() {
-            if i < (w as usize) {
-                header_plane.cells[i].char = c;
-                header_plane.cells[i].fg = Color::White;
-                header_plane.cells[i].style = Styles::BOLD;
-            }
-        }
-
-        let status_x = (w as usize).saturating_sub(12);
-        for (i, c) in "👤 Online".chars().enumerate() {
-            let idx = status_x + i;
-            if idx < header_plane.cells.len() {
-                header_plane.cells[idx].char = c;
-                header_plane.cells[idx].fg = Color::Green;
-            }
-        }
-
-        let settings_x = (w as usize).saturating_sub(6);
-        for (i, c) in "⚙".chars().enumerate() {
-            let idx = settings_x + i;
-            if idx < header_plane.cells.len() {
-                header_plane.cells[idx].char = c;
-                header_plane.cells[idx].fg = Color::Yellow;
-            }
-        }
-
-        for col in 0..w {
-            let idx = (header_h * w + col) as usize;
-            if idx < header_plane.cells.len() {
-                header_plane.cells[idx].char = '─';
-                header_plane.cells[idx].fg = Color::Rgb(60, 60, 80);
-            }
-        }
-        ctx.add_plane(header_plane);
-
-        let mut list_plane = Plane::new(0, w, list_h);
-        list_plane.z_index = 10;
-
-        let visible_count = (list_h as usize).saturating_sub(2).max(1);
-        let start = chat.scroll_offset;
-        let end = (start + visible_count).min(chat.messages.len());
-
-        for (i, msg) in chat.messages[start..end].iter().enumerate() {
-            let row = (i + 1) as u16;
-            let msg_plane = render_message_row(msg, Rect::new(0, row, w, 1), &theme, false, w);
-            for (j, cell) in msg_plane.cells.iter().enumerate() {
-                let idx = (row * w + j as u16) as usize;
-                if idx < list_plane.cells.len() {
-                    list_plane.cells[idx] = *cell;
-                }
-            }
-        }
-
-        for col in 0..w {
-            let idx = ((list_h - 1) * w + col) as usize;
-            if idx < list_plane.cells.len() {
-                list_plane.cells[idx].char = '─';
-                list_plane.cells[idx].fg = Color::Rgb(60, 60, 80);
-            }
-        }
-        ctx.add_plane(list_plane);
-
-        let input_rect = Rect::new(0, list_h + header_h, w, input_h);
-        chat.input_area = input_rect;
-        let input_plane = render_input_bar(&chat.input_text, chat.cursor_pos, "Message...", &theme, input_rect);
-        ctx.add_plane(input_plane);
-
-        let status_rect = Rect::new(0, h - status_h, w, status_h);
-        chat.status_bar.set_area(status_rect);
-        chat.status_bar.mark_dirty();
-        let status_plane = chat.status_bar.render(status_rect);
-        ctx.add_plane(status_plane);
-
-        if chat.show_emoji_modal {
-            chat.emoji_modal.set_area(Rect::new(0, 0, w, h));
-            chat.emoji_modal.mark_dirty();
-            let mut modal_plane = chat.emoji_modal.render(Rect::new(0, 0, w, h));
-            modal_plane.z_index = 100;
-            ctx.add_plane(modal_plane);
-
-            let emojis = ["😀", "😃", "😄", "😁", "😊", "🙂", "🙃", "😊", "😍", "🤔", "🤨", "😅", "😂", "🤣"];
-            let start_y = 2i16;
-            let start_x = ((w as i16 - 30) / 2) as u16;
-            for (i, emoji) in emojis.iter().enumerate() {
-                let x = start_x + (i as u16 % 7) * 4;
-                let y = start_y + (i as u16 / 7) * 2;
-                if y < h as i16 && x < w as i16 {
-                    for (j, c) in emoji.chars().enumerate() {
-                        let idx = (y as u16 * w + x + j as u16) as usize;
-                        if idx < ctx.compositor().size().0 as usize * h as usize {
-                            modal_plane.cells[idx].char = c;
-                            modal_plane.cells[idx].fg = Color::Yellow;
-                        }
-                    }
-                }
-            }
-
-            let hint = "Click emoji to insert";
-            let hint_x = start_x + 5;
-            let hint_y = start_y + 4;
-            for (j, c) in hint.chars().enumerate() {
-                let idx = (hint_y as u16 * w + hint_x + j as u16) as usize;
-                if idx < modal_plane.cells.len() {
-                    modal_plane.cells[idx].char = c;
-                    modal_plane.cells[idx].fg = Color::Rgb(100, 100, 100);
-                }
-            }
-        }
-
-        if chat.show_settings_modal {
-            chat.settings_modal.set_area(Rect::new(0, 0, w, h));
-            chat.settings_modal.mark_dirty();
-            let mut modal_plane = chat.settings_modal.render(Rect::new(0, 0, w, h));
-            modal_plane.z_index = 100;
-            ctx.add_plane(modal_plane);
-
-            let settings_x = ((w as i16 - 35) / 2) as u16;
-            let settings_y = ((h as i16 - 10) / 2) as u16;
-
-            let notif_text = format!("Notifications: {}", if chat.notifications_enabled { "ON" } else { "OFF" });
-            for (i, c) in notif_text.chars().enumerate() {
-                let idx = ((settings_y + 2) as u16 * w + settings_x + 2 + i as u16) as usize;
-                if idx < modal_plane.cells.len() {
-                    modal_plane.cells[idx].char = c;
-                    modal_plane.cells[idx].fg = if chat.notifications_enabled { Color::Green } else { Color::Red };
-                }
-            }
-
-            let theme_text = format!("Theme: {}", chat.theme_mode);
-            for (i, c) in theme_text.chars().enumerate() {
-                let idx = ((settings_y + 3) as u16 * w + settings_x + 2 + i as u16) as usize;
-                if idx < modal_plane.cells.len() {
-                    modal_plane.cells[idx].char = c;
-                    modal_plane.cells[idx].fg = Color::Cyan;
-                }
-            }
-
-            let clear_text = "Clear Chat History";
-            for (i, c) in clear_text.chars().enumerate() {
-                let idx = ((settings_y + 5) as u16 * w + settings_x + 8 + i as u16) as usize;
-                if idx < modal_plane.cells.len() {
-                    modal_plane.cells[idx].char = c;
-                    modal_plane.cells[idx].fg = Color::Red;
-                }
-            }
-        }
-
-        if chat.show_toast {
-            let toast_w = 20u16;
-            let toast_x = (w.saturating_sub(toast_w)) / 2;
-            let toast_y = h.saturating_sub(4);
-            let toast = Toast::new(WidgetId::new(200), &chat.toast_message)
+        if show_toast {
+            let toast = Toast::new(WidgetId::new(200), "Message sent!")
                 .with_kind(ToastKind::Success)
                 .with_duration(Duration::from_secs(2))
-                .with_theme(theme.clone());
-            ctx.add_plane(toast.render(Rect::new(toast_x, toast_y, toast_w, 1)));
-            chat.show_toast = false;
+                .with_theme(Theme::dark());
+            ctx.add_plane(toast.render(Rect::new(30, 20, 20, 1)));
+            show_toast = false;
         }
     });
 
