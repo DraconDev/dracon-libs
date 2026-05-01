@@ -169,8 +169,8 @@ mod async_tests {
         let poll_result = child.try_wait();
         assert!(poll_result.unwrap().is_none(), "process should still be running");
 
-        let output = child.wait_with_output().await.unwrap();
-        assert!(output.status.success());
+        let status = child.wait().await.unwrap();
+        assert!(status.success());
 
         let poll_after = child.try_wait();
         assert!(poll_after.unwrap().is_some() || poll_after.is_err());
@@ -185,8 +185,8 @@ mod async_tests {
             .spawn()
             .unwrap();
 
-        let output = child.wait_with_output().await.unwrap();
-        assert!(output.status.success());
+        let status = child.wait().await.unwrap();
+        assert!(status.success());
 
         let poll_result = child.try_wait();
         assert!(poll_result.is_ok() && poll_result.unwrap().is_some());

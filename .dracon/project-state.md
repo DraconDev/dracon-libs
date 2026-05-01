@@ -1,21 +1,22 @@
 # Project State
 
 ## Current Focus
-Refactored `PasswordInput` to make fields public for better accessibility
+Refactored async command runner test to simplify process status checking
 
 ## Context
-This change improves the accessibility of the `PasswordInput` widget by making its fields public, allowing for more flexible usage and testing scenarios.
+The previous implementation used `wait_with_output()` which captures both status and output, but we only needed the status. This change simplifies the test by directly checking the process status after waiting.
 
 ## Completed
-- [x] Made `id` field public in `PasswordInput` struct
-- [x] Made `base` field public in `PasswordInput` struct
+- [x] Refactored async command runner test to use `wait()` instead of `wait_with_output()`
+- [x] Updated test assertions to check status directly
+- [x] Maintained same test coverage but with cleaner implementation
 
 ## In Progress
-- [ ] None
+- [x] No active work in progress beyond the refactoring
 
 ## Blockers
-- None
+- None identified
 
 ## Next Steps
-1. Update any dependent code that might need to access these fields directly
-2. Consider adding comprehensive tests for the `PasswordInput` widget if not already covered
+1. Verify no test failures after refactoring
+2. Consider additional test cases for edge cases in async command handling
