@@ -647,32 +647,13 @@ impl<'a> Ctx<'a> {
 mod tests {
     use super::*;
     use crate::framework::command::{AppConfig, AreaConfig, LayoutConfig, ParserConfig, WidgetConfig};
-    use std::fs::File;
-    use std::io::{self, Write};
-    use std::os::fd::{AsFd, FromRawFd, OpenOptions};
 
-    fn dummy_terminal() -> crate::Terminal<File> {
-        let file = OpenOptions::new()
+    fn make_test_terminal() -> io::Result<crate::Terminal<File>> {
+        let file = File::options()
+            .read(true)
             .write(true)
-            .create(true)
-            .open("/tmp/dummy_terminal_term.txt")
-            .unwrap();
-        let fd = file.into_raw_fd();
-        unsafe { crate::Terminal::from_raw_fd(fd) }.unwrap()
-    }
-
-    fn dummy_terminal_ref() -> &'static mut crate::Terminal<File> {
-        static mut TERMINAL: Option<crate::Terminal<File>> = None;
-        if unsafe { TERMINAL.is_none() } {
-            let file = OpenOptions::new()
-                .write(true)
-                .create(true)
-                .open("/tmp/dummy_terminal_ref_term.txt")
-                .unwrap();
-            let fd = file.into_raw_fd();
-            unsafe { TERMINAL = Some(crate::Terminal::from_raw_fd(fd).unwrap()) };
-        }
-        unsafe { TERMINAL.as_mut().unwrap() }
+            .open("/dev/null")?;
+        crate::Terminal::new(file)
     }
 
     #[test]
@@ -804,7 +785,7 @@ mod tests {
             theme: &theme,
             frame_count: 0,
             last_frame: &last_frame,
-            terminal: &mut dummy_terminal(),
+            terminal: &mut make_test_terminal()?,
             focus_manager: &mut focus_manager,
             animations: &mut animations,
             dirty_tracker: &mut dirty_tracker,
@@ -831,7 +812,7 @@ mod tests {
             theme: &theme,
             frame_count: 0,
             last_frame: &last_frame,
-            terminal: &mut dummy_terminal(),
+            terminal: &mut make_test_terminal()?,
             focus_manager: &mut focus_manager,
             animations: &mut animations,
             dirty_tracker: &mut dirty_tracker,
@@ -859,7 +840,7 @@ mod tests {
             theme: &theme,
             frame_count: 0,
             last_frame: &last_frame,
-            terminal: &mut dummy_terminal(),
+            terminal: &mut make_test_terminal()?,
             focus_manager: &mut focus_manager,
             animations: &mut animations,
             dirty_tracker: &mut dirty_tracker,
@@ -886,7 +867,7 @@ mod tests {
             theme: &theme,
             frame_count: 0,
             last_frame: &last_frame,
-            terminal: &mut dummy_terminal(),
+            terminal: &mut make_test_terminal()?,
             focus_manager: &mut focus_manager,
             animations: &mut animations,
             dirty_tracker: &mut dirty_tracker,
@@ -913,7 +894,7 @@ mod tests {
             theme: &theme,
             frame_count: 0,
             last_frame: &last_frame,
-            terminal: &mut dummy_terminal(),
+            terminal: &mut make_test_terminal()?,
             focus_manager: &mut focus_manager,
             animations: &mut animations,
             dirty_tracker: &mut dirty_tracker,
@@ -939,7 +920,7 @@ mod tests {
             theme: &theme,
             frame_count: 0,
             last_frame: &last_frame,
-            terminal: &mut dummy_terminal(),
+            terminal: &mut make_test_terminal()?,
             focus_manager: &mut focus_manager,
             animations: &mut animations,
             dirty_tracker: &mut dirty_tracker,
@@ -966,7 +947,7 @@ mod tests {
             theme: &theme,
             frame_count: 0,
             last_frame: &last_frame,
-            terminal: &mut dummy_terminal(),
+            terminal: &mut make_test_terminal()?,
             focus_manager: &mut focus_manager,
             animations: &mut animations,
             dirty_tracker: &mut dirty_tracker,
@@ -991,7 +972,7 @@ mod tests {
             theme: &theme,
             frame_count: 100,
             last_frame: &last_frame,
-            terminal: &mut dummy_terminal(),
+            terminal: &mut make_test_terminal()?,
             focus_manager: &mut focus_manager,
             animations: &mut animations,
             dirty_tracker: &mut dirty_tracker,
@@ -1017,7 +998,7 @@ mod tests {
             theme: &theme,
             frame_count: 0,
             last_frame: &last_frame,
-            terminal: &mut dummy_terminal(),
+            terminal: &mut make_test_terminal()?,
             focus_manager: &mut focus_manager,
             animations: &mut animations,
             dirty_tracker: &mut dirty_tracker,
@@ -1047,7 +1028,7 @@ mod tests {
             theme: &theme,
             frame_count: 0,
             last_frame: &last_frame,
-            terminal: &mut dummy_terminal(),
+            terminal: &mut make_test_terminal()?,
             focus_manager: &mut focus_manager,
             animations: &mut animations,
             dirty_tracker: &mut dirty_tracker,
@@ -1077,7 +1058,7 @@ mod tests {
             theme: &theme,
             frame_count: 0,
             last_frame: &last_frame,
-            terminal: &mut dummy_terminal(),
+            terminal: &mut make_test_terminal()?,
             focus_manager: &mut focus_manager,
             animations: &mut animations,
             dirty_tracker: &mut dirty_tracker,
@@ -1104,7 +1085,7 @@ mod tests {
             theme: &theme,
             frame_count: 0,
             last_frame: &last_frame,
-            terminal: &mut dummy_terminal(),
+            terminal: &mut make_test_terminal()?,
             focus_manager: &mut focus_manager,
             animations: &mut animations,
             dirty_tracker: &mut dirty_tracker,
@@ -1134,7 +1115,7 @@ mod tests {
             theme: &theme,
             frame_count: 0,
             last_frame: &last_frame,
-            terminal: &mut dummy_terminal(),
+            terminal: &mut make_test_terminal()?,
             focus_manager: &mut focus_manager,
             animations: &mut animations,
             dirty_tracker: &mut dirty_tracker,
@@ -1162,7 +1143,7 @@ mod tests {
             theme: &theme,
             frame_count: 0,
             last_frame: &last_frame,
-            terminal: &mut dummy_terminal(),
+            terminal: &mut make_test_terminal()?,
             focus_manager: &mut focus_manager,
             animations: &mut animations,
             dirty_tracker: &mut dirty_tracker,
@@ -1189,7 +1170,7 @@ mod tests {
             theme: &theme,
             frame_count: 0,
             last_frame: &last_frame,
-            terminal: &mut dummy_terminal(),
+            terminal: &mut make_test_terminal()?,
             focus_manager: &mut focus_manager,
             animations: &mut animations,
             dirty_tracker: &mut dirty_tracker,

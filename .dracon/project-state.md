@@ -1,11 +1,11 @@
 # Project State
 
 ## Current Focus
-Refactor the test infrastructure to replace the unsafe zeroed `Vec<u8>` terminal mock with a safe, file‑backed dummy terminal. This eliminates unsound `unsafe` usage and provides a deterministic stdout for unit tests.
+Refactor test infrastructure to replace the unsafe zeroed `Vec<u8` terminal mock with a safe dummy terminal backed by `/dev/null`, and eliminate unsafe static mutable terminal handling.
 
 ## Completed
-- [x] Replaced `make_ctx`‑based unsafe terminal mock with `dummy_terminal()` that opens a `/tmp` file and creates a safe `Terminal<File>`.
-- [x] Updated all relevant test cases to inject `&mut dummy_terminal()` as the terminal argument instead of the previous unsafe construction.
-- [x] Removed the static mutable `DUMMY_STDOUT` and the surrounding `unsafe { std::mem::transmute_copy(&std::io::stdout()) }` logic.
-- [x] Added `dummy_terminal()` and `dummy_terminal_ref()` helper functions to centrally manage safe dummy terminal creation in tests.
-- [x] Cleaned up dead imports and annotations left from the previous test setup (e.g., removed `io::Stdout`, unused `ParserConfig`, etc.).
+- [x] Removed `dummy_terminal()` and `dummy_terminal_ref()` functions and their unsafe static mutable state.
+- [x] Added `make_test_terminal()` that creates a safe `Terminal<File>` using `File::options().read(true).write(true).open("/dev/null")?` and `Terminal::new(file)`.
+- [x] Updated all test functions in `src/framework/app.rs` to call `make_test_terminal()?` instead of `dummy_terminal()`.
+- [x] Removed unused imports (`std::fs::File`, `std::io::{self, Write}`, `std::os::fd::{AsFd, FromRawFd, OpenOptions}`) from the test module.
+- [x] Refactored test setup to use the safe dummy terminal, eliminating unsafe code and improving test reliability.
