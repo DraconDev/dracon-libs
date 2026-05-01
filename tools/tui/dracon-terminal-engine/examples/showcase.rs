@@ -202,7 +202,6 @@ struct Showcase {
     dirty: bool,
     show_modal: bool,
     theme_idx: usize,
-    should_quit: bool,
 }
 
 impl Showcase {
@@ -215,7 +214,6 @@ impl Showcase {
             dirty: true,
             show_modal: false,
             theme_idx: 0,
-            should_quit: false,
         }
     }
 
@@ -629,8 +627,7 @@ impl Widget for Showcase {
                 true
             }
             KeyCode::Char('q') => {
-                self.should_quit = true;
-                true
+                std::process::exit(0);
             }
             _ => false,
         }
