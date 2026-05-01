@@ -45,6 +45,10 @@ path = "examples/_apps/file_manager.rs"
 name = "chat_client"
 path = "examples/_apps/chat_client.rs"
 
+[[example]]
+name = "dashboard_builder"
+path = "examples/_apps/dashboard_builder.rs"
+
 [features]
 default = []
 async = ["tokio"]
