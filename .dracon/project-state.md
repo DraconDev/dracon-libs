@@ -1,8 +1,8 @@
 # Project State
 
 ## Current Focus
-Refactored the game loop exit condition in the terminal engine example to improve readability and maintainability.
+Updated dependency versions in the `dracon-terminal-engine` framework to ensure security and compatibility.
 
 ## Completed
-- [x] Simplified the key event handling logic by directly matching the 'q' key press in a single pattern match
-- [x] Removed nested if-let statements that previously checked for the event type and then the key code
+- [x] Updated dependency versions in `dracon-terminal-engine` to address security vulnerabilities and maintain compatibility with other components.
+```
