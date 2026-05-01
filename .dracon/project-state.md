@@ -1,8 +1,8 @@
 # Project State
 
 ## Current Focus
-Updated dependency versions in the `dracon-terminal-engine` framework to address security vulnerabilities and maintain compatibility.
+Refactored test variable naming in the `Glitch` filter test to improve clarity and avoid potential unused variable warnings.
 
 ## Completed
-- [x] Updated dependency versions in `dracon-terminal-engine/Cargo.toml` to resolve security vulnerabilities
-- [x] Regenerated `Cargo.lock` to reflect updated dependency versions
+- [x] Renamed `changed` to `_changed` in the `test_glitch_at_zero_time_most_cells_unchanged` test to indicate the variable is intentionally unused
+```
