@@ -1,20 +1,22 @@
 # Project State
 
 ## Current Focus
-Update dependency versions in the `dracon-terminal-engine` framework
+Refactored widget lifecycle testing with improved mount/unmount tracking
 
 ## Context
-This change was prompted by recent refactoring work in the widget lifecycle, modal dialogs, and test utilities. The dependency updates ensure compatibility with the latest versions of core dependencies while maintaining stability in the terminal engine framework.
+The test suite needed more reliable tracking of widget lifecycle events to properly verify widget composition behavior. The previous implementation used Cell-based tracking which had limitations, particularly around thread safety.
 
 ## Completed
-- [x] Updated dependency versions in `dracon-terminal-engine/Cargo.toml`
+- [x] Replaced Cell-based tracking with Mutex-protected state
+- [x] Simplified mount/unmount tracking logic
+- [x] Improved test assertions for widget lifecycle verification
 
 ## In Progress
-- [x] Verification of framework stability after dependency updates
+- [x] Refactored test cases to use the new tracking mechanism
 
 ## Blockers
-- None reported; dependency updates are part of ongoing maintenance
+- None identified
 
 ## Next Steps
-1. Verify framework stability through existing test suites
-2. Prepare for integration with upcoming widget composition features
+1. Verify all widget lifecycle tests pass with the new implementation
+2. Consider additional test cases for edge cases in widget composition
