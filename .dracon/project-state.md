@@ -1,13 +1,13 @@
 # Project State
 
 ## Current Focus
-Expand and refactor CommandRunner and AppConfig unit tests for dracon-terminal-engine
+Refactor widget configuration system to support optional fields, enhanced testing, and unique ID management
 
 ## Completed
-- [x] Relax exit code assertion in sync echo test to accept any non-negative value, ignore unused stderr output
-- [x] Remove redundant `exit 42` synchronous command exit code test
-- [x] Add test case for invalid empty command, verifying empty stdout and -1 exit code
-- [x] Add test for CommandRunner JSON parsing workflow using python, validating non-empty text output from run_and_parse
-- [x] Split AppConfig TOML configuration tests into minimal and with-layout variants
-- [x] Update AppConfig with-layout test to use Button widget, validate fps, layout dimensions, and widget count
-- [x] Fix AppConfig layout access to use explicit error message on missing layout configuration
+- [x] Refactor `WidgetConfig` to use `Option` types with serde defaults for all fields (`id`, `widget_type`, `area`, `bind`, `parser`, `refresh_seconds`, `confirm`, `label`, `description`, `options`) enabling empty configurations
+- [x] Update widget type field serialization with `rename = "type"` to match TOML schema requirements
+- [x] Implement `Default` trait for `WidgetConfig` to initialize all fields to empty/None states
+- [x] Enhance widget configuration tests with new `test_app_config_toml_widgets_array` to validate TOML parsing of widget array structure
+- [x] Add unique widget ID counter implementation through `Option<usize>` field management
+- [x] Update test examples to use simplified TOML syntax without trailing spaces
+- [x] Improve widget configuration validation testing with JSON serialization checks

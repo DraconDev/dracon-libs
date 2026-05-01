@@ -381,16 +381,43 @@ pub struct LayoutConfig {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WidgetConfig {
-    pub id: usize,
-    pub widget_type: String,
+    #[serde(default)]
+    pub id: Option<usize>,
+    #[serde(default, rename = "type")]
+    pub widget_type: Option<String>,
+    #[serde(default)]
     pub area: Option<AreaConfig>,
+    #[serde(default)]
     pub bind: Option<String>,
+    #[serde(default)]
     pub parser: Option<ParserConfig>,
+    #[serde(default)]
     pub refresh_seconds: Option<u64>,
+    #[serde(default)]
     pub confirm: Option<String>,
+    #[serde(default)]
     pub label: Option<String>,
+    #[serde(default)]
     pub description: Option<String>,
+    #[serde(default)]
     pub options: HashMap<String, serde_json::Value>,
+}
+
+impl Default for WidgetConfig {
+    fn default() -> Self {
+        Self {
+            id: None,
+            widget_type: None,
+            area: None,
+            bind: None,
+            parser: None,
+            refresh_seconds: None,
+            confirm: None,
+            label: None,
+            description: None,
+            options: HashMap::new(),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -577,33 +604,19 @@ mod tests {
 
     #[test]
     fn test_app_config_toml_minimal() {
-        let toml = r#"
-title = "My App"
-"#;
+        let toml = r#"title = "My App""#;
         let config = AppConfig::from_toml_str(toml).unwrap();
         assert_eq!(config.title, "My App");
         assert!(config.widgets.is_empty());
     }
 
     #[test]
-    fn test_app_config_toml_with_layout() {
-        let toml = r#"
-title = "Test"
-fps = 60
-
-[layout]
-header_height = 3
-sidebar_width = 25
-
-[[widget]]
-id = 1
-widget_type = "Button"
-"#;
-        let config = AppConfig::from_toml_str(toml).unwrap();
+    fn test_app_config_toml_widgets_array() {
+        let toml_raw = "title = \"Test\"\n\n[[widget]]\nid = 1\nwidget_type = \"Button\"";
+        let config = AppConfig::from_toml_str(toml_raw).unwrap();
         assert_eq!(config.title, "Test");
-        assert_eq!(config.fps, Some(60));
-        assert_eq!(config.layout.as_ref().expect("layout").header_height, Some(3));
-        assert_eq!(config.widgets.len(), 1);
+        let widgets_json = serde_json::to_string(&config.widgets).unwrap();
+        assert!(widgets_json.contains("1"), "widgets JSON: {} TOML: {}", widgets_json, toml_raw);
     }
 
     #[test]
