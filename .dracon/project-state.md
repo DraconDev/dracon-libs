@@ -1,20 +1,23 @@
 # Project State
 
 ## Current Focus
-Dependency version updates in the `dracon-terminal-engine` framework
+Added a command bindings example demonstrating auto-refresh widgets via CLI commands
 
 ## Context
-This change updates dependency versions to ensure compatibility and security with the latest framework features. The updates were prompted by recent refactoring work across multiple examples in the terminal UI system.
+This implements a core framework value proposition: binding any widget to CLI commands with custom parsers, enabling real-time data display in terminal applications
 
 ## Completed
-- [x] Updated dependency versions in Cargo.lock to match framework requirements
+- [x] Added `command_bindings.rs` example showing 5 command-bound widgets with different parsers
+- [x] Implemented mock commands for Gauge, KeyValueGrid, StatusBadge, LogViewer, and StreamingText
+- [x] Added keyboard controls for manual refresh and pause/resume functionality
+- [x] Updated menu system to include the new command bindings example
 
 ## In Progress
-- [x] Dependency version updates in progress
+- [ ] None - this represents a complete feature implementation
 
 ## Blockers
-- None identified for this specific change
+- None - this is a self-contained example implementation
 
 ## Next Steps
-1. Verify all examples continue to work with updated dependencies
-2. Prepare for potential framework API changes that may require additional updates
+1. Document the command binding system in framework documentation
+2. Create additional example variations with different command patterns
