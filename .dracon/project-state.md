@@ -4,18 +4,18 @@
 Dependency version updates in the `dracon-terminal-engine` framework
 
 ## Context
-This change updates the dependency versions in the Cargo.lock file, likely to incorporate the latest bug fixes, security patches, or performance improvements from the framework's dependencies.
+This change updates dependency versions in the terminal engine framework to ensure compatibility and security with other components of the project.
 
 ## Completed
-- [x] Updated dependency versions in Cargo.lock
+- [x] Updated dependency versions in `dracon-terminal-engine/Cargo.toml`
 
 ## In Progress
-- [x] Dependency version updates in progress
+- [x] Dependency version updates
 
 ## Blockers
-- None reported in this commit
+- None reported
 
 ## Next Steps
-1. Verify compatibility with existing codebase
-2. Test framework functionality with updated dependencies
+1. Verify updated dependencies work with other project components
+2. Test the terminal engine in integration scenarios
 ```
