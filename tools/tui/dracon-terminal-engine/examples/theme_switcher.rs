@@ -15,11 +15,13 @@
 //! - Theme colors (`success_fg`, `warning_fg`, `error_fg`) vary per theme
 
 use dracon_terminal_engine::compositor::{Cell, Color, Plane, Styles};
+use dracon_terminal_engine::framework::app::App;
 use dracon_terminal_engine::framework::theme::Theme;
 use dracon_terminal_engine::framework::widget::{Widget, WidgetId};
-use dracon_terminal_engine::framework::app::App;
+use dracon_terminal_engine::framework::widgets::{Breadcrumbs, Gauge, List, StatusBadge};
 use ratatui::layout::Rect;
 use std::io;
+use std::sync::atomic::{AtomicUsize, Ordering};
 
 const ALL_THEMES: &[(&str, fn() -> Theme)] = &[
     ("Dark", Theme::dark),
@@ -38,6 +40,8 @@ const ALL_THEMES: &[(&str, fn() -> Theme)] = &[
     ("Cyberpunk", Theme::cyberpunk),
     ("Autumn", || autumn()),
 ];
+
+static CURRENT_THEME_INDEX: AtomicUsize = AtomicUsize::new(0);
 
 fn vscode_dark() -> Theme {
     Theme {
@@ -111,30 +115,29 @@ fn autumn() -> Theme {
     }
 }
 
+fn get_current_theme() -> Theme {
+    let idx = CURRENT_THEME_INDEX.load(Ordering::SeqCst);
+    ALL_THEMES[idx % ALL_THEMES.len()].1()
+}
+
+fn cycle_theme() {
+    let idx = CURRENT_THEME_INDEX.load(Ordering::SeqCst);
+    CURRENT_THEME_INDEX.store((idx + 1) % ALL_THEMES.len(), Ordering::SeqCst);
+}
+
 struct ThemeHeader {
     id: WidgetId,
-    theme_index: usize,
     area: std::cell::Cell<Rect>,
     dirty: bool,
 }
 
 impl ThemeHeader {
-    fn new(id: WidgetId, theme_index: usize) -> Self {
+    fn new(id: WidgetId) -> Self {
         Self {
             id,
-            theme_index,
             area: std::cell::Cell::new(Rect::new(0, 0, 80, 3)),
             dirty: true,
         }
-    }
-
-    fn cycle_theme(&mut self) {
-        self.theme_index = (self.theme_index + 1) % ALL_THEMES.len();
-        self.dirty = true;
-    }
-
-    fn current_theme(&self) -> Theme {
-        ALL_THEMES[self.theme_index].1()
     }
 }
 
@@ -176,8 +179,9 @@ impl Widget for ThemeHeader {
         let mut plane = Plane::new(0, area.width, area.height);
         plane.z_index = 100;
 
-        let theme = self.current_theme();
-        let title = format!(" Theme: {} ", ALL_THEMES[self.theme_index].0);
+        let theme = get_current_theme();
+        let theme_idx = CURRENT_THEME_INDEX.load(Ordering::SeqCst);
+        let title = format!(" Theme: {} (press t to cycle) ", ALL_THEMES[theme_idx].0);
 
         for y in 0..area.height {
             for x in 0..area.width {
@@ -197,7 +201,7 @@ impl Widget for ThemeHeader {
 
         for (i, c) in title.chars().enumerate() {
             let x = (area.width as usize / 2 - title.len() / 2 + i) as u16;
-            let idx = (1 * area.width + x) as usize;
+            let idx = 1 * area.width as usize + x as usize;
             if idx < plane.cells.len() {
                 plane.cells[idx].char = c;
                 plane.cells[idx].style = Styles::BOLD;
@@ -213,11 +217,16 @@ impl Widget for ThemeHeader {
             return false;
         }
         if let KeyCode::Char('t') = key.code {
-            self.cycle_theme();
+            cycle_theme();
+            self.dirty = true;
             true
         } else {
             false
         }
+    }
+
+    fn on_theme_change(&mut self, _theme: &Theme) {
+        self.dirty = true;
     }
 }
 
@@ -281,11 +290,11 @@ impl Widget for TrackingWidget {
         let mut plane = Plane::new(0, area.width, area.height);
         plane.z_index = 50;
 
-        let theme = Theme::default();
+        let theme = get_current_theme();
         let lines = [
             format!("on_theme_change calls: {}", self.theme_change_count),
             format!("Last theme: {}", self.last_theme_name),
-            "TrackingWidget (verifies callback fires)".to_string(),
+            "TrackingWidget (verifies callback)".to_string(),
         ];
 
         for (y, line) in lines.iter().enumerate().take(area.height as usize) {
@@ -310,23 +319,25 @@ impl Widget for TrackingWidget {
 
 struct ThemePreviewPanel {
     id: WidgetId,
-    theme_index: usize,
+    preview_index: usize,
     area: std::cell::Cell<Rect>,
     dirty: bool,
 }
 
 impl ThemePreviewPanel {
-    fn new(id: WidgetId, theme_index: usize) -> Self {
+    fn new(id: WidgetId, preview_index: usize) -> Self {
         Self {
             id,
-            theme_index,
+            preview_index,
             area: std::cell::Cell::new(Rect::new(0, 0, 30, 8)),
             dirty: true,
         }
     }
 
     fn theme(&self) -> Theme {
-        ALL_THEMES[self.theme_index].1()
+        let current = CURRENT_THEME_INDEX.load(Ordering::SeqCst);
+        let idx = (current + self.preview_index) % ALL_THEMES.len();
+        ALL_THEMES[idx].1()
     }
 }
 
@@ -387,11 +398,13 @@ impl Widget for ThemePreviewPanel {
             }
         }
 
-        let theme_name = ALL_THEMES[self.theme_index].0;
+        let current = CURRENT_THEME_INDEX.load(Ordering::SeqCst);
+        let preview_idx = (current + self.preview_index) % ALL_THEMES.len();
+        let theme_name = ALL_THEMES[preview_idx].0;
         let label = format!("[{}]", theme_name);
         for (i, c) in label.chars().enumerate() {
             let x = 1 + i as u16;
-            let idx = (1 * area.width + x) as usize;
+            let idx = 1 * area.width as usize + x as usize;
             if idx < plane.cells.len() {
                 plane.cells[idx].char = c;
                 plane.cells[idx].fg = theme.accent;
@@ -407,7 +420,7 @@ impl Widget for ThemePreviewPanel {
             let x = 2 + (i as u16 * 7);
             let content = format!("[{}]", text);
             for (j, c) in content.chars().enumerate() {
-                let idx = (badge_row * area.width + x + j as u16) as usize;
+                let idx = badge_row as usize * area.width as usize + x as usize + j as usize;
                 if idx < plane.cells.len() {
                     plane.cells[idx].char = c;
                     plane.cells[idx].fg = *fg;
@@ -422,25 +435,31 @@ impl Widget for ThemePreviewPanel {
         let fill = (gauge_width * 65) / 100;
 
         if 1 < area.height {
-            plane.cells[gauge_row as usize * area.width as usize + 1] = Cell {
-                char: '[',
-                fg: theme.fg,
-                bg: theme.bg,
-                style: Styles::empty(),
-                transparent: false,
-                skip: false,
-            };
-            plane.cells[gauge_row as usize * area.width as usize + area.width as usize - 2] = Cell {
-                char: ']',
-                fg: theme.fg,
-                bg: theme.bg,
-                style: Styles::empty(),
-                transparent: false,
-                skip: false,
-            };
+            let left_bracket_idx = gauge_row as usize * area.width as usize + 1;
+            let right_bracket_idx = gauge_row as usize * area.width as usize + area.width as usize - 2;
+            if left_bracket_idx < plane.cells.len() {
+                plane.cells[left_bracket_idx] = Cell {
+                    char: '[',
+                    fg: theme.fg,
+                    bg: theme.bg,
+                    style: Styles::empty(),
+                    transparent: false,
+                    skip: false,
+                };
+            }
+            if right_bracket_idx < plane.cells.len() {
+                plane.cells[right_bracket_idx] = Cell {
+                    char: ']',
+                    fg: theme.fg,
+                    bg: theme.bg,
+                    style: Styles::empty(),
+                    transparent: false,
+                    skip: false,
+                };
+            }
 
             for i in 0..gauge_width {
-                let idx = (gauge_row * area.width + 2 + i as u16) as usize;
+                let idx = gauge_row as usize * area.width as usize + 2 + i;
                 if idx < plane.cells.len() {
                     plane.cells[idx] = Cell {
                         char: if i < fill { '█' } else { '░' },
@@ -456,27 +475,25 @@ impl Widget for ThemePreviewPanel {
 
         plane
     }
+
+    fn on_theme_change(&mut self, _theme: &Theme) {
+        self.dirty = true;
+    }
 }
 
 struct WidgetDemoPanel {
     id: WidgetId,
-    theme_index: usize,
     area: std::cell::Cell<Rect>,
     dirty: bool,
 }
 
 impl WidgetDemoPanel {
-    fn new(id: WidgetId, theme_index: usize) -> Self {
+    fn new(id: WidgetId) -> Self {
         Self {
             id,
-            theme_index,
-            area: std::cell::Cell::new(Rect::new(0, 0, 60, 12)),
+            area: std::cell::Cell::new(Rect::new(0, 0, 80, 12)),
             dirty: true,
         }
-    }
-
-    fn theme(&self) -> Theme {
-        ALL_THEMES[self.theme_index].1()
     }
 }
 
@@ -518,7 +535,7 @@ impl Widget for WidgetDemoPanel {
         let mut plane = Plane::new(0, area.width, area.height);
         plane.z_index = 20;
 
-        let theme = self.theme();
+        let theme = get_current_theme();
         let title = " Widget Preview ";
         for x in 0..area.width {
             let idx = x as usize;
@@ -537,12 +554,17 @@ impl Widget for WidgetDemoPanel {
         }
 
         let row1 = 2;
-        let badges = [("OK", theme.success_fg), ("WARNING", theme.warning_fg), ("ERROR", theme.error_fg), ("OK", theme.success_fg)];
+        let badges = [
+            ("OK", theme.success_fg),
+            ("WARNING", theme.warning_fg),
+            ("ERROR", theme.error_fg),
+            ("OK", theme.success_fg),
+        ];
         for (i, (text, fg)) in badges.iter().enumerate() {
             let x = 2 + (i as u16 * 14);
             let content = format!("[{}]", text);
             for (j, c) in content.chars().enumerate() {
-                let idx = (row1 * area.width + x + j as u16) as usize;
+                let idx = row1 as usize * area.width as usize + x as usize + j as usize;
                 if idx < plane.cells.len() {
                     plane.cells[idx].char = c;
                     plane.cells[idx].fg = *fg;
@@ -555,7 +577,7 @@ impl Widget for WidgetDemoPanel {
         let gauge_row = 4;
         let label = "CPU: ";
         for (i, c) in label.chars().enumerate() {
-            let idx = (gauge_row * area.width + 2 + i as u16) as usize;
+            let idx = gauge_row as usize * area.width as usize + 2 + i;
             if idx < plane.cells.len() {
                 plane.cells[idx].char = c;
                 plane.cells[idx].fg = theme.fg;
@@ -563,30 +585,36 @@ impl Widget for WidgetDemoPanel {
             }
         }
 
-        let gauge_start = 2 + label.len() as u16;
-        let gauge_end = area.width - 2;
-        let gauge_len = (gauge_end - gauge_start) as usize;
+        let gauge_start = 2 + label.len();
+        let gauge_end = area.width as usize - 2;
+        let gauge_len = gauge_end - gauge_start;
         let fill = (gauge_len * 65) / 100;
 
-        plane.cells[(gauge_row * area.width + gauge_start as u16) as usize] = Cell {
-            char: '[',
-            fg: theme.fg,
-            bg: theme.bg,
-            style: Styles::empty(),
-            transparent: false,
-            skip: false,
-        };
-        plane.cells[(gauge_row * area.width + gauge_end as u16) as usize] = Cell {
-            char: ']',
-            fg: theme.fg,
-            bg: theme.bg,
-            style: Styles::empty(),
-            transparent: false,
-            skip: false,
-        };
+        let left_bracket_idx = gauge_row as usize * area.width as usize + gauge_start;
+        let right_bracket_idx = gauge_row as usize * area.width as usize + gauge_end;
+        if left_bracket_idx < plane.cells.len() {
+            plane.cells[left_bracket_idx] = Cell {
+                char: '[',
+                fg: theme.fg,
+                bg: theme.bg,
+                style: Styles::empty(),
+                transparent: false,
+                skip: false,
+            };
+        }
+        if right_bracket_idx < plane.cells.len() {
+            plane.cells[right_bracket_idx] = Cell {
+                char: ']',
+                fg: theme.fg,
+                bg: theme.bg,
+                style: Styles::empty(),
+                transparent: false,
+                skip: false,
+            };
+        }
 
         for i in 0..gauge_len {
-            let idx = (gauge_row * area.width + gauge_start as u16 + 1 + i as u16) as usize;
+            let idx = gauge_row as usize * area.width as usize + gauge_start + 1 + i;
             if idx < plane.cells.len() {
                 plane.cells[idx] = Cell {
                     char: if i < fill { '█' } else { '░' },
@@ -604,12 +632,24 @@ impl Widget for WidgetDemoPanel {
         let selected_idx = 3;
         for (i, item) in items.iter().enumerate() {
             let is_selected = i == selected_idx;
-            let bg = if is_selected { theme.selection_bg } else { theme.bg };
-            let fg = if is_selected { theme.selection_fg } else { theme.fg };
-            let style = if is_selected { Styles::BOLD } else { Styles::empty() };
+            let bg = if is_selected {
+                theme.selection_bg
+            } else {
+                theme.bg
+            };
+            let fg = if is_selected {
+                theme.selection_fg
+            } else {
+                theme.fg
+            };
+            let style = if is_selected {
+                Styles::BOLD
+            } else {
+                Styles::empty()
+            };
 
             for (j, c) in item.chars().enumerate() {
-                let idx = ((list_row + i as u16) * area.width + 2 + j as u16) as usize;
+                let idx = (list_row as usize + i) * area.width as usize + 2 + j;
                 if idx < plane.cells.len() {
                     plane.cells[idx].char = c;
                     plane.cells[idx].fg = fg;
@@ -637,12 +677,24 @@ impl Widget for WidgetDemoPanel {
             }
 
             for c in crumb.chars() {
-                let idx = (breadcrumb_row * area.width + x as u16) as usize;
+                let idx = breadcrumb_row as usize * area.width as usize + x as usize;
                 if idx < plane.cells.len() {
                     plane.cells[idx].char = c;
-                    plane.cells[idx].fg = if is_last { theme.accent } else { theme.fg };
-                    plane.cells[idx].style = if is_last { Styles::BOLD } else { Styles::empty() };
-                    plane.cells[idx].bg = if is_last { theme.active_bg } else { theme.bg };
+                    plane.cells[idx].fg = if is_last {
+                        theme.accent
+                    } else {
+                        theme.fg
+                    };
+                    plane.cells[idx].style = if is_last {
+                        Styles::BOLD
+                    } else {
+                        Styles::empty()
+                    };
+                    plane.cells[idx].bg = if is_last {
+                        theme.active_bg
+                    } else {
+                        theme.bg
+                    };
                 }
                 x += 1;
             }
@@ -650,12 +702,16 @@ impl Widget for WidgetDemoPanel {
 
         plane
     }
+
+    fn on_theme_change(&mut self, _theme: &Theme) {
+        self.dirty = true;
+    }
 }
 
 fn main() -> io::Result<()> {
     let mut app = App::new()?.title("Theme Switcher Demo").fps(30);
 
-    let header = ThemeHeader::new(WidgetId::new(1), 0);
+    let header = ThemeHeader::new(WidgetId::new(1));
     let _header_id = app.add_widget(Box::new(header), Rect::new(0, 0, 80, 3));
 
     let tracking = TrackingWidget::new(WidgetId::new(2));
@@ -670,82 +726,26 @@ fn main() -> io::Result<()> {
     let preview3 = ThemePreviewPanel::new(WidgetId::new(5), 2);
     let _preview3_id = app.add_widget(Box::new(preview3), Rect::new(60, 8, 20, 8));
 
-    let demo = WidgetDemoPanel::new(WidgetId::new(6), 0);
+    let demo = WidgetDemoPanel::new(WidgetId::new(6));
     let _demo_id = app.add_widget(Box::new(demo), Rect::new(0, 17, 80, 12));
 
-    let mut current_theme_index: usize = 0;
+    let mut last_theme_idx = CURRENT_THEME_INDEX.load(Ordering::SeqCst);
 
     app.on_tick(move |ctx, _tick| {
-        let new_index = {
-            let header_widget = ctx
-                .compositor
-                .planes
-                .iter()
-                .find(|p| p.id == 0)
-                .map(|_| {
-                    if let Some(w) = ctx
-                        .focus_manager
-                        .focused()
-                        .and_then(|id| app.widget(id).ok())
-                    {
-                        let w = &*w;
-                        if let Some(h) = w.downcast_ref::<ThemeHeader>() {
-                            h.theme_index
-                        } else {
-                            current_theme_index
-                        }
-                    } else {
-                        current_theme_index
-                    }
-                })
-                .unwrap_or(current_theme_index);
-            header_widget
-        };
-
-        if new_index != current_theme_index {
-            current_theme_index = new_index;
-            let theme = ALL_THEMES[current_theme_index].1();
-            ctx.compositor.force_clear();
+        let current_idx = CURRENT_THEME_INDEX.load(Ordering::SeqCst);
+        if current_idx != last_theme_idx {
+            last_theme_idx = current_idx;
+            let theme = get_current_theme();
+            ctx.mark_all_dirty();
         }
     });
 
     app.run(|ctx| {
-        if let Some(mut header_widget) = app.widget_mut(WidgetId::new(1)) {
-            if let Some(h) = header_widget.as_mut().downcast_mut::<ThemeHeader>() {
-                let current_idx = h.theme_index;
-                if current_idx != current_theme_index {
-                    current_theme_index = current_idx;
-                    let theme = ALL_THEMES[current_theme_index].1();
-                    app.set_theme(theme);
-
-                    if let Some(preview) = app.widget_mut(WidgetId::new(3)) {
-                        if let Some(p) = preview.as_mut().downcast_mut::<ThemePreviewPanel>() {
-                            p.theme_index = current_theme_index;
-                            p.dirty = true;
-                        }
-                    }
-                    if let Some(preview) = app.widget_mut(WidgetId::new(4)) {
-                        if let Some(p) = preview.as_mut().downcast_mut::<ThemePreviewPanel>() {
-                            p.theme_index = (current_theme_index + 1) % ALL_THEMES.len();
-                            p.dirty = true;
-                        }
-                    }
-                    if let Some(preview) = app.widget_mut(WidgetId::new(5)) {
-                        if let Some(p) = preview.as_mut().downcast_mut::<ThemePreviewPanel>() {
-                            p.theme_index = (current_theme_index + 2) % ALL_THEMES.len();
-                            p.dirty = true;
-                        }
-                    }
-                    if let Some(demo) = app.widget_mut(WidgetId::new(6)) {
-                        if let Some(d) = demo.as_mut().downcast_mut::<WidgetDemoPanel>() {
-                            d.theme_index = current_theme_index;
-                            d.dirty = true;
-                        }
-                    }
-
-                    ctx.mark_all_dirty();
-                }
-            }
+        let current_idx = CURRENT_THEME_INDEX.load(Ordering::SeqCst);
+        if current_idx != last_theme_idx {
+            last_theme_idx = current_idx;
+            let theme = get_current_theme();
+            ctx.mark_all_dirty();
         }
     })?;
 

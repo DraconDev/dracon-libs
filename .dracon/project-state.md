@@ -1,21 +1,30 @@
 # Project State
 
 ## Current Focus
-Dependency version updates in the `dracon-terminal-engine` framework
+Refactored theme switching system with centralized theme management and improved widget callbacks
 
 ## Context
-The changes in Cargo.lock indicate version updates to dependencies in the terminal engine framework, likely to incorporate bug fixes, security patches, or new features from upstream packages.
+The theme switcher example was refactored to:
+1. Centralize theme management using an atomic counter
+2. Improve widget callback handling for theme changes
+3. Simplify theme preview logic
+4. Add better visual feedback for theme switching
 
 ## Completed
-- [x] Updated dependency versions in Cargo.lock
+- [x] Centralized theme management with atomic counter for thread-safe access
+- [x] Added `on_theme_change` callback to widgets
+- [x] Simplified theme preview panel implementation
+- [x] Improved visual feedback for theme switching
+- [x] Added keyboard hint for theme cycling
+- [x] Fixed index calculation for theme preview panels
 
 ## In Progress
-- [x] Dependency version updates in progress
+- [ ] No active work in progress
 
 ## Blockers
-- None reported in this commit
+- No blockers identified
 
 ## Next Steps
-1. Verify compatibility of updated dependencies with existing code
-2. Run tests to ensure no regressions were introduced by the version changes
-```
+1. Verify all theme switching callbacks work as expected
+2. Add more theme variants to demonstrate the system's flexibility
+3. Document the new theme management approach in the framework documentation
