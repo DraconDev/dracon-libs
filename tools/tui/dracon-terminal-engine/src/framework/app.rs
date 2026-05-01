@@ -1232,7 +1232,7 @@ let config = AppConfig::from_toml_str(toml).unwrap();
         let config: WidgetConfig = toml::from_str(toml).unwrap();
         assert_eq!(config.id, None);
         assert_eq!(config.widget_type, None);
-        assert!(config.widgets.is_empty() || config.widgets.len() == 0 || config.bind.is_none());
+        assert!(config.bind.is_none());
     }
 
     #[test]
