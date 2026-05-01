@@ -1,9 +1,8 @@
 # Project State
 
 ## Current Focus
-Updated dependency versions in the `dracon-terminal-engine` framework to address security vulnerabilities and maintain compatibility.
+Refactored area height assertions in terminal engine framework to improve test clarity and maintainability.
 
 ## Completed
-- [x] Updated dependency versions in `dracon-terminal-engine` Cargo.toml
-- [x] Updated Cargo.lock to reflect new dependency versions
+- [x] Updated area height assertions to use `a.area().height` instead of direct `a.height` for consistency with other area operations
 ```
