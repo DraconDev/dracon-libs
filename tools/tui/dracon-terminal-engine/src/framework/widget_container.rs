@@ -42,6 +42,7 @@ impl WidgetContainer {
 
 pub struct WidgetRegistry {
     containers: Vec<WidgetContainer>,
+    next_id: usize,
 }
 
 impl Default for WidgetRegistry {
