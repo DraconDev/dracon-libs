@@ -1,21 +1,20 @@
 # Project State
 
 ## Current Focus
-Refactored terminal UI framework module exports to simplify widget initialization and input handling.
+Update dependency versions in the `dracon-terminal-engine` framework
 
 ## Context
-The change improves the terminal UI framework by making key input event types more accessible through the framework's prelude module. This simplifies widget initialization by reducing the need for manual imports of input-related types.
+This change was triggered by recent refactoring work in the terminal UI framework, which required updates to dependency versions to ensure compatibility with the latest refactored components.
 
 ## Completed
-- [x] Added input event types to framework prelude for easier access
-- [x] Simplified widget initialization by consolidating input-related imports
+- [x] Updated dependency versions in Cargo.lock to reflect framework refactoring changes
 
 ## In Progress
-- [x] Refactoring terminal UI framework module exports
+- [x] Dependency version updates in progress
 
 ## Blockers
 - None identified
 
 ## Next Steps
-1. Verify the change doesn't break existing widget implementations
-2. Update documentation to reflect the new import paths
+1. Verify all framework components work with the updated dependencies
+2. Continue with ongoing refactoring of terminal UI components
