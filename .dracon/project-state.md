@@ -1,22 +1,20 @@
 # Project State
 
 ## Current Focus
-Refactored tabbed panel example with improved widget key handling
+Dependency version updates in the `dracon-terminal-engine` framework
 
 ## Context
-The tabbed panel example was updated to simplify the key handling logic for the theme selection and notifications widgets, making the code more straightforward and maintainable.
+This change updates dependency versions in the terminal engine framework to ensure compatibility with recent refactoring efforts in the TUI components.
 
 ## Completed
-- [x] Simplified key handling for theme selection widget
-- [x] Improved key handling for notifications toggle
-- [x] Added missing Rect import for layout calculations
+- [x] Updated dependency versions in `dracon-terminal-engine/Cargo.toml`
 
 ## In Progress
-- [x] Refactoring of widget interaction logic
+- [ ] Verification of updated dependencies across all TUI examples
 
 ## Blockers
-- None identified
+- Need to verify compatibility with recent refactored TUI components
 
 ## Next Steps
-1. Verify the refactored key handling works as expected
-2. Consider additional widget interaction improvements
+1. Run integration tests to confirm dependency updates don't break existing functionality
+2. Document any breaking changes in the framework's changelog
