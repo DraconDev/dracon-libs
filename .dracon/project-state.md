@@ -1,22 +1,21 @@
 # Project State
 
 ## Current Focus
-Refactored widget lifecycle testing with simplified mount/unmount tracking
+Dependency version updates in the `dracon-terminal-engine` framework
 
 ## Context
-The changes improve test reliability by removing redundant assertions and simplifying the widget lifecycle verification process in the terminal engine.
+This change updates dependency versions in the terminal engine framework, likely to incorporate bug fixes, security patches, or new features from upstream dependencies.
 
 ## Completed
-- [x] Removed redundant `UNMOUNTED` atomic flag from widget lifecycle test
-- [x] Simplified widget count assertion in multi-widget test
-- [x] Maintained core test functionality while reducing test complexity
+- [x] Updated dependency versions in `dracon-terminal-engine` framework
+- [x] Updated `Cargo.lock` to reflect new dependency versions
 
 ## In Progress
-- [x] Refactored widget lifecycle testing framework
+- [x] Dependency version updates
 
 ## Blockers
-- No known blockers at this time
+- None identified in this commit
 
 ## Next Steps
-1. Verify test suite stability with the simplified assertions
-2. Consider additional test cases for edge cases in widget lifecycle
+1. Verify compatibility with existing terminal engine functionality
+2. Test the updated dependencies in the terminal engine's test suite
