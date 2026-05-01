@@ -4,19 +4,20 @@
 Improved command output handling and test coverage for terminal widgets
 
 ## Context
-This change addresses issues in command output rendering and testing, particularly around line formatting and content visibility in terminal widgets.
+The changes address limitations in command output rendering and filtering in terminal widgets, particularly around line counting and content truncation. The modifications ensure proper rendering constraints are respected while maintaining visual consistency.
 
 ## Completed
-- [x] Fixed widget tutorial footer to use hardcoded "nord" theme name instead of dynamic theme name
-- [x] Improved command output test to verify rendered content rather than just string matching
-- [x] Enhanced test to check for visible characters in rendered output rather than raw content
+- [x] Made `PresetColor` struct public in widget tutorial example
+- [x] Updated command output test assertions to properly account for rendered content
+- [x] Improved line counting logic in streaming text tests to verify visual constraints
 
 ## In Progress
-- [x] Refactored command output handling and test infrastructure
+- [x] Refining test assertions to better match visual rendering expectations
 
 ## Blockers
 - None identified in this commit
 
 ## Next Steps
-1. Verify test improvements catch edge cases in command output rendering
-2. Review widget tutorial changes for consistency with other terminal components
+1. Verify all command output tests pass with the updated constraints
+2. Review widget tutorial example for any visual rendering issues
+3. Consider additional test cases for edge cases in command output handling

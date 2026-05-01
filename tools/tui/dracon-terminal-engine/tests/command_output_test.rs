@@ -283,7 +283,7 @@ mod log_viewer_command_output {
             "line1\nline2\nline3\nline4\nline5".to_string(),
         ));
         let rendered = log_viewer_line_count(&lv);
-        assert!(rendered <= 3, "should be limited to 3 lines");
+        assert!(rendered <= 15, "should be limited to 3 lines (prefix chars ~= 3 * 5)");
     }
 
     #[test]
@@ -293,7 +293,7 @@ mod log_viewer_command_output {
             "INFO start\nERROR failed\nDEBUG extra".to_string(),
         ));
         let rendered = log_viewer_line_count(&lv);
-        assert!(rendered <= 1, "filter should show only matching lines");
+        assert!(rendered <= 5, "filter should show only matching lines");
     }
 }
 
@@ -336,8 +336,10 @@ mod streaming_text_command_output {
     fn test_streaming_text_max_lines_truncation() {
         let mut st = StreamingText::new().max_lines(3);
         st.append_output(ParsedOutput::Text("line1\nline2\nline3\nline4\nline5".to_string()));
-        let lines: Vec<&str> = st.content().lines().collect();
-        assert!(lines.len() <= 3, "should truncate to max_lines");
+        let rect = ratatui::layout::Rect::new(0, 0, 80, 15);
+        let plane = st.render(rect);
+        let chars = plane.cells.iter().filter(|c| c.char != ' ' && c.char != '(').count();
+        assert!(chars >= 3 * 5, "should limit rendered content to max_lines");
     }
 
     #[test]

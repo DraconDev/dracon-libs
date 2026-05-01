@@ -45,7 +45,7 @@ use ratatui::layout::Rect;
 /// Represents a single preset color with its display name and RGB values.
 /// This is a simple data structure that our ColorPicker will cycle through.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-struct PresetColor {
+pub struct PresetColor {
     name: &'static str,
     r: u8,
     g: u8,
