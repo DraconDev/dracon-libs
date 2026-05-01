@@ -1,8 +1,7 @@
 # Project State
 
 ## Current Focus
-Relax brittle theme assertions in the TUI framework by switching the password-input test from a hardcoded cyberpunk theme to the default theme and verifying non-empty naming, reducing churn from theme refactors while preserving intent.
+Refactoring the TUI framework's dependency management and test infrastructure to eliminate unsafe practices, particularly in terminal mocking and test assertions. Changes include updating Cargo.toml to support safer configurations aligned with hardened test requirements.
 
 ## Completed
-- [x] Align password-input test with default theme to avoid coupling to specific theme variants.
-- [x] Update Cargo.lock and TUI Cargo.toml metadata to reflect dependency/resolution changes.
+- [x] Updated Cargo.toml to align with refactored test infrastructure, ensuring compatibility with safer stdout-backed terminal mocks and relaxed assertion tests.
