@@ -1,8 +1,7 @@
 # Project State
 
 ## Current Focus
-Refactored command execution system in the terminal engine framework to improve code clarity and maintainability.
+Removed unused `exit_code` field from `CommandRunner` struct to simplify the command execution system.
 
 ## Completed
-- [x] Simplified exit code handling in command execution by removing redundant `.map(|c| c)` in the `CommandRunner` implementation
-- [x] Updated dependency versions in the `dracon-terminal-engine` framework (Cargo.lock and Cargo.toml modifications)
+- [x] Removed `exit_code` field from `CommandRunner` to reduce complexity in the command execution system
