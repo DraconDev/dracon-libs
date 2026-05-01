@@ -228,17 +228,6 @@ impl ChatState {
     }
 }
 
-impl Clone for Message {
-    fn clone(&self) -> Self {
-        Message {
-            sender: self.sender,
-            text: self.text,
-            time: self.time,
-            is_read: self.is_read,
-        }
-    }
-}
-
 fn render_chat(chat: &ChatState, area: Rect) -> Plane {
     let mut plane = Plane::new(0, area.width, area.height);
     plane.z_index = 10;
@@ -310,7 +299,7 @@ fn render_chat(chat: &ChatState, area: Rect) -> Plane {
             Color::Reset
         };
 
-        let sender_color = match msg.sender.as_str() {
+        let sender_color = match msg.sender {
             "Alice" => Color::Ansi(5),
             "Bob" => Color::Ansi(6),
             "You" => Color::Ansi(2),
