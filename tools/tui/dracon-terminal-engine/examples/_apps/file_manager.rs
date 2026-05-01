@@ -264,9 +264,12 @@ impl Widget for FileManager {
             _ => {
                 if self.tree.handle_key(key) {
                     self.tree_path = self.tree.get_selected_path().to_vec();
-                    let path = self.tree_path.clone();
-                    let name = self.fs.find_by_path(&path).map(|n| n.name.into()).unwrap_or_default();
-                    let is_dir = self.fs.find_by_path(&path).map(|n| n.is_dir).unwrap_or(false);
+                    let mut name = String::new();
+                    let mut is_dir = false;
+                    if let Some(node) = self.fs.find_by_path(&self.tree_path) {
+                        name = node.name.into();
+                        is_dir = node.is_dir;
+                    }
                     self.selected = Some(FileEntry { name, is_dir });
                     self.dirty = true;
                     true
