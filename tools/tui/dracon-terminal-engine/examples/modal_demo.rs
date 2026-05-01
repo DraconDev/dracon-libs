@@ -227,7 +227,7 @@ fn main() -> io::Result<()> {
     let theme = Theme::dark();
     app.set_theme(theme);
 
-    let demo = ModalDemoApp::new();
+    let mut demo = ModalDemoApp::new();
 
     demo.label.set_area(Rect::new(2, 2, 55, 10));
     demo.confirm_dialog.set_area(Rect::new(0, 0, 80, 24));
