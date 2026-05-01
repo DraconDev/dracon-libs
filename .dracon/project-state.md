@@ -1,20 +1,30 @@
 # Project State
 
 ## Current Focus
-Refactored `LogViewer` to make fields public for better accessibility and testing.
+Added comprehensive async command execution test suite for the terminal engine
 
 ## Context
-This change was prompted by the need to improve testability and flexibility in the `LogViewer` widget. Making fields public allows for more straightforward state manipulation during testing and integration.
+To ensure robust async command handling in the terminal engine, we need to verify:
+- Non-blocking async execution patterns
+- Proper timeout handling
+- Separate stdout/stderr capture
+- Working directory support
+- Poll vs await semantics
+- Error handling scenarios
 
 ## Completed
-- [x] Made all fields in `LogViewer` struct public (`id`, `lines`, `max_lines`, `auto_scroll`, `filter`, `theme`)
+- [x] Added 452-line test suite covering async command execution patterns
+- [x] Tests verify timeout handling, output capture, and process management
+- [x] Includes scenarios for working directory changes and error cases
+- [x] Covers poll vs await semantics for async command execution
 
 ## In Progress
-- [ ] None (this is a completed refactoring)
+- [ ] No active work in progress
 
 ## Blockers
-- None (this change is complete)
+- None identified
 
 ## Next Steps
-1. Update any tests that rely on `LogViewer` to use the new public fields
-2. Consider adding documentation for the public fields to clarify their intended usage
+1. Integrate these tests into CI pipeline
+2. Add similar test coverage for sync command execution patterns
+```
