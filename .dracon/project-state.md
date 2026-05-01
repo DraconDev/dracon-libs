@@ -1,8 +1,10 @@
 # Project State
 
 ## Current Focus
-Add command output handling to the Gauge and StatusBadge widgets so they can update their displayed value or status directly from parsed command results.
+Implementing automatic command re-execution for widgets with periodic refresh requirements, enabling real-time data updates in the TUI framework.
 
 ## Completed
-- [x] Implemented `apply_command_output` for Gauge: parses scalar output as a floating‑point number and updates the gauge value.
-- [x] Implemented `apply_command_output` for StatusBadge: sets the badge status directly from scalar command output.
+- [x] Add command tracking infrastructure to App struct with HashMap storing widget IDs, execution times, and BoundCommands
+- [x] Implement periodic command execution loop that checks refresh intervals and re-runs commands when due
+- [x] Add `apply_command_output()` method to KeyValueGrid, LogViewer, and StreamingText widgets to process command results
+- [x] Wire up widget registration to automatically track commands with `refresh_seconds` set
