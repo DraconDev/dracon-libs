@@ -632,9 +632,10 @@ fn test_app_widget_lifecycle_order() {
             self.area.get()
         }
 
-        fn set_area(&mut self, area: Rect) {
-            self.area.set(area);
-        }
+fn set_area(&mut self, area: Rect) {
+        self.area.set(area);
+        self.dirty = true;
+    }
 
         fn focusable(&self) -> bool {
             true
@@ -765,10 +766,12 @@ fn test_modal_mouse_click_on_button() {
 
     let x = (area.width.saturating_sub(40)) / 2;
     let y = (area.height.saturating_sub(5)) / 2;
-    let btn_y = y + 5 - 2;
+
+    let ok_btn_x = x + 11 + 4;
+    let ok_btn_y = y + 3;
 
     let click = MouseEventKind::Down(MouseButton::Left);
-    let handled = modal.handle_mouse(click, x + 4, btn_y);
+    let handled = modal.handle_mouse(click, ok_btn_x, ok_btn_y);
     assert!(handled, "modal should handle mouse click on OK button area");
 }
 
