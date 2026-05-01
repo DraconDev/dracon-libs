@@ -4,18 +4,17 @@
 Update dependency versions in the `dracon-terminal-engine` framework
 
 ## Context
-This change was prompted by the need to ensure all dependencies are up-to-date and compatible with the latest refactoring work in the terminal engine.
+This change updates the dependency versions in the `dracon-terminal-engine` framework to ensure compatibility with the latest versions of its dependencies. This is part of ongoing maintenance to keep the project up-to-date with its ecosystem.
 
 ## Completed
-- [x] Updated dependency versions in `dracon-terminal-engine/Cargo.toml`
-- [x] Regenerated `Cargo.lock` to reflect updated dependencies
+- [x] Updated dependency versions in the `dracon-terminal-engine` framework
 
 ## In Progress
-- [ ] No active work in progress beyond the dependency update
+- [x] No active work in progress beyond the dependency update
 
 ## Blockers
-- None identified
+- None identified for this specific change
 
 ## Next Steps
 1. Verify that the updated dependencies do not introduce breaking changes
-2. Run comprehensive tests to ensure stability with the new dependency versions
+2. Continue with other ongoing refactoring and testing work in the terminal engine
