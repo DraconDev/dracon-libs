@@ -634,15 +634,11 @@ impl<'a> Ctx<'a> {
         runner.run_sync()
     }
 
-    /// Returns all available commands across all registered widgets.
+    /// Returns all available commands registered with the app.
     ///
     /// This is the primary AI surface — an AI can query this to know
     /// every action the TUI can perform.
-    pub fn available_commands(&self) -> Vec<crate::framework::command::BoundCommand> {
-        let mut cmds = Vec::new();
-        for widget in self.widgets.borrow().iter() {
-            cmds.extend(widget.commands());
-        }
-        cmds
+    pub fn available_commands(&self) -> Vec<BoundCommand> {
+        self.commands.borrow().clone()
     }
 }
