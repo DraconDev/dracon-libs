@@ -1,7 +1,9 @@
 # Project State
-This commit updates the framework's widget management logic to streamline command handling. The author focused on reorganizing how widget commands are processed, enabling cleaner integration with the focus manager and boosting efficiency in command execution tracking.
+
+## Current Focus
+Refactoring command tracking in the TUI framework to fix borrow checker issues and improve widget lifecycle management.
 
 ## Completed
-- Updated the widget command parsing structure to simplify pushing and focusing widgets
-- Modified the tracking system to insert command metadata effectively
-- Improved the overall modularity of the widget lifecycle by enhancing command insertion patterns
+- [x] Fix borrow checker conflict by cloning command tracking HashMap before iteration in the command execution loop
+- [x] Clean up command execution by removing unnecessary `if let Ok` wrapper around `run_sync()`
+- [x] Ensure command tracking entries are removed when widgets are deregistered via `remove_widget()`
