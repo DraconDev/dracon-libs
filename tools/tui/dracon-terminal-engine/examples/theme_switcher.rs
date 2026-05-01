@@ -18,10 +18,8 @@ use dracon_terminal_engine::compositor::{Cell, Color, Plane, Styles};
 use dracon_terminal_engine::framework::app::App;
 use dracon_terminal_engine::framework::theme::Theme;
 use dracon_terminal_engine::framework::widget::{Widget, WidgetId};
-use dracon_terminal_engine::framework::widgets::{Breadcrumbs, Gauge, List, StatusBadge};
 use ratatui::layout::Rect;
-use std::io;
-use std::sync::atomic::{AtomicUsize, Ordering};
+use std::io::Result;
 
 const ALL_THEMES: &[(&str, fn() -> Theme)] = &[
     ("Dark", Theme::dark),
