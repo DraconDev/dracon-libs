@@ -1,29 +1,22 @@
 # Project State
 
 ## Current Focus
-Refactored file manager UI with improved display formatting and breadcrumb navigation
+Refactored file manager's file selection handling for better clarity and consistency
 
 ## Context
-The file manager example was refactored to:
-1. Simplify the UI layout documentation
-2. Reduce visual clutter in the file system representation
-3. Improve breadcrumb navigation clarity
-4. Streamline the status bar information
+The file manager's key handling logic was being overly verbose and inconsistent in how it updated the selected file state. This refactoring improves readability and ensures the selected file state is always properly maintained.
 
 ## Completed
-- [x] Simplified the layout documentation in the module header
-- [x] Reduced visual complexity in the file system representation
-- [x] Improved breadcrumb navigation clarity
-- [x] Streamlined status bar information display
-- [x] Refactored the MockFs structure for better readability
-- [x] Updated the file selection state management
+- [x] Refactored file selection logic to use consistent pattern for updating selected file state
+- [x] Improved clarity by breaking down the complex ternary operation into clearer steps
+- [x] Ensured selected file state always reflects the current tree selection
 
 ## In Progress
-- [ ] No active work in progress for this commit
+- [ ] No active work in progress
 
 ## Blockers
-- None identified for this commit
+- None identified
 
 ## Next Steps
-1. Verify the refactored UI maintains all original functionality
-2. Update related documentation to reflect the new structure
+1. Verify the refactored code maintains all existing functionality
+2. Consider adding unit tests for the file selection logic

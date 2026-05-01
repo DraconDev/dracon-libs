@@ -261,7 +261,17 @@ impl Widget for FileManager {
             KeyCode::Backspace => { self.go_up(); true }
             KeyCode::Enter => { self.open_selection(); true }
             KeyCode::Char('c') => { self.show_context_menu(30, 10); true }
-            _ => { if self.tree.handle_key(key) { self.tree_path = self.tree.get_selected_path().to_vec(); self.selected = self.tree.get_selected_path().is_empty().then(|| FileEntry { name: self.fs.find_by_path(&self.tree_path).map(|n| n.name.into()).unwrap_or_default(), is_dir: false }); self.dirty = true; true } else { false } }
+            _ => {
+                if self.tree.handle_key(key) {
+                    self.tree_path = self.tree.get_selected_path().to_vec();
+                    let path = self.tree_path.clone();
+                    let name = self.fs.find_by_path(&path).map(|n| n.name.into()).unwrap_or_default();
+                    let is_dir = self.fs.find_by_path(&path).map(|n| n.is_dir).unwrap_or(false);
+                    self.selected = Some(FileEntry { name, is_dir });
+                    self.dirty = true;
+                    true
+                } else { false }
+            }
         }
     }
 
