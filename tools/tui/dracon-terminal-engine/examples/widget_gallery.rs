@@ -23,14 +23,14 @@
 //! cargo run --example widget_gallery
 //! ```
 
-use dracon_terminal_engine::compositor::{Cell, Color, Plane, Styles};
+use dracon_terminal_engine::compositor::{Cell, Plane, Styles};
 use dracon_terminal_engine::framework::prelude::*;
 use dracon_terminal_engine::framework::widget::{Widget, WidgetId};
 use dracon_terminal_engine::framework::widgets::{
     Button, Checkbox, List, Orientation, ProgressBar, Radio, Select, SearchInput, Slider,
     Spinner, SplitPane, Toggle,
 };
-use dracon_terminal_engine::input::event::{KeyCode, KeyEventKind};
+use dracon_terminal_engine::input::event::{KeyCode, KeyEventKind, MouseEventKind};
 use ratatui::layout::Rect;
 
 const WIDGET_NAMES: &[&str] = &[
@@ -84,8 +84,7 @@ impl WidgetGallery {
 
     fn nav_list(&self) -> List<String> {
         let items: Vec<String> = WIDGET_NAMES.iter().map(|s| s.to_string()).collect();
-        let mut list = List::new_with_id(WidgetId::new(100), items);
-        list.set_visible_count(WIDGET_NAMES.len());
+        let list = List::new_with_id(WidgetId::new(100), items);
         list.with_theme(self.current_theme())
     }
 

@@ -39,7 +39,7 @@
 use dracon_terminal_engine::compositor::{Cell, Color, Plane, Styles};
 use dracon_terminal_engine::framework::prelude::*;
 use dracon_terminal_engine::framework::widget::Widget;
-use dracon_terminal_engine::framework::widgets::{List, SearchInput};
+use dracon_terminal_engine::framework::widgets::SearchInput;
 use ratatui::layout::Rect;
 
 const MOCK_DATA: &[(&str, u32, &str, &str)] = &[
@@ -127,8 +127,7 @@ struct DataTable {
 
 impl DataTable {
     fn new(people: Vec<Person>) -> Self {
-        let mut search = SearchInput::new(WidgetId::new(100));
-        search.base.text = String::new();
+        let search = SearchInput::new(WidgetId::new(100));
         Self {
             id: WidgetId::default_id(),
             people: people.clone(),
@@ -232,7 +231,6 @@ impl Widget for DataTable {
 
         let header_height = 2u16;
         let status_height = 1u16;
-        let table_height = area.height.saturating_sub(header_height + status_height);
 
         for y in 0..area.height {
             for x in 0..area.width {
@@ -427,10 +425,6 @@ impl Widget for DataTable {
     ) -> bool {
         let header_height = 2u16;
         let status_height = 1u16;
-        let table_height = self
-            .area
-            .height
-            .saturating_sub(header_height + status_height);
 
         match kind {
             crate::input::event::MouseEventKind::Down(crate::input::event::MouseButton::Left) => {

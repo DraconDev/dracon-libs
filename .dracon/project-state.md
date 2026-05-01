@@ -1,21 +1,27 @@
 # Project State
 
 ## Current Focus
-Dependency version updates in the `dracon-terminal-engine` framework
+Added a tree navigator example with hierarchical file browsing, breadcrumbs, and split pane layout
 
 ## Context
-The `Cargo.lock` file was modified, indicating dependency version updates were applied. This is part of ongoing maintenance to ensure compatibility and security with the latest versions of dependencies.
+This implements a file browser interface that demonstrates hierarchical navigation patterns in terminal UIs, building on the framework's widget capabilities.
 
 ## Completed
-- [x] Updated dependency versions in `dracon-terminal-engine` framework
+- [x] Added TreeNavigator example with mock filesystem data
+- [x] Implemented hierarchical navigation with expand/collapse
+- [x] Added breadcrumbs that update with current path
+- [x] Created split pane layout with tree on left and detail on right
+- [x] Added status bar showing item count
+- [x] Implemented keyboard and mouse navigation
+- [x] Refactored DataTable example by removing redundant height calculations
 
 ## In Progress
-- [ ] No active work in progress related to this change
+- [ ] No active work in progress
 
 ## Blockers
 - None identified
 
 ## Next Steps
-1. Verify all dependencies are properly resolved
-2. Test the updated dependencies in the affected components
-```
+1. Add real filesystem integration
+2. Implement file operations (open, delete, etc.)
+3. Add search functionality within the tree
