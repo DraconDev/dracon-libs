@@ -136,7 +136,8 @@ impl ChatApp {
         if self.input_text.trim().is_empty() {
             return;
         }
-        let text = std::mem::take(&mut self.input_text);
+        let text = self.input_text.clone();
+        self.input_text.clear();
         let msg = Message {
             sender: "You",
             text: text,
@@ -144,7 +145,6 @@ impl ChatApp {
             is_read: true,
         };
         self.messages.push(msg);
-        self.input_text = String::new();
         self.cursor_pos = 0;
         self.scroll_to_bottom();
         self.show_toast = true;
@@ -169,13 +169,13 @@ impl Widget for ChatApp {
         WidgetId::new(1)
     }
 
-    fn set_id(&mut self, id: WidgetId) {}
+    fn set_id(&mut self, _id: WidgetId) {}
 
     fn area(&self) -> Rect {
         Rect::new(0, 0, 80, 24)
     }
 
-    fn set_area(&mut self, area: Rect) {}
+    fn set_area(&mut self, _area: Rect) {}
 
     fn z_index(&self) -> u16 {
         10
@@ -202,7 +202,6 @@ impl Widget for ChatApp {
         let header_h = 1u16;
         let list_h = area.height.saturating_sub(input_h + status_h + header_h);
 
-        let header_plane_y = 0u16;
         for col in 0..area.width {
             let idx = col as usize;
             if idx < plane.cells.len() {
@@ -304,7 +303,7 @@ impl Widget for ChatApp {
                 let idx = base_idx + text_start + j;
                 if idx < plane.cells.len() {
                     plane.cells[idx].char = c;
-                    plane.cells[idx].fg = if !msg.is_read { Color::White } else { Color::Reset };
+                    plane.cells[idx].fg = if !msg.is_read { Color::Ansi(15) } else { Color::Reset };
                 }
             }
 
@@ -486,7 +485,7 @@ impl Widget for ChatApp {
     }
 
     fn handle_mouse(&mut self, kind: MouseEventKind, col: u16, row: u16) -> bool {
-        let (_w, h) = (80u16, 24u16);
+        let h = 24u16;
         let input_h = 3u16;
         let status_h = 1u16;
         let header_h = 1u16;
@@ -557,38 +556,15 @@ fn main() -> io::Result<()> {
     let mut chat = ChatApp::new();
     let chat_id = app.add_widget(Box::new(chat), Rect::new(0, 0, 80, 24));
 
-    let mut show_toast = false;
-    let toast_message = String::new();
-
-    app.on_tick(move |ctx, _tick| {
-        let chat_widget = ctx.widget_mut(chat_id);
-        if let Some(mut w) = chat_widget {
-            if w.show_toast {
-                w.show_toast = false;
-                drop(chat_widget);
-                show_toast = true;
-            }
-        }
-    });
-
     let _ = app.run(move |ctx| {
         if ctx.needs_full_refresh() {
             ctx.mark_all_dirty();
         }
 
-        if let Some(mut chat_widget) = ctx.widget_mut(chat_id) {
+        if let Some(mut chat_widget) = ctx.widget(chat_id) {
             chat_widget.mark_dirty();
             let plane = chat_widget.render(chat_widget.area());
             ctx.add_plane(plane);
-        }
-
-        if show_toast {
-            let toast = Toast::new(WidgetId::new(200), "Message sent!")
-                .with_kind(ToastKind::Success)
-                .with_duration(Duration::from_secs(2))
-                .with_theme(Theme::dark());
-            ctx.add_plane(toast.render(Rect::new(30, 20, 20, 1)));
-            show_toast = false;
         }
     });
 
