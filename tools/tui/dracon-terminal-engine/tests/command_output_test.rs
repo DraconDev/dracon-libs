@@ -125,7 +125,7 @@ mod status_badge_command_output {
     #[test]
     fn test_status_badge_with_bound_command() {
         let cmd = BoundCommand::new("echo 'healthy'").parser(OutputParser::Plain);
-        let mut badge = StatusBadge::new(WidgetId::new(1)).bind_command(cmd);
+        let mut badge = StatusBadge::new(WidgetId::new(1)).bind_command(cmd.clone());
         let runner = CommandRunner::new("echo 'healthy'");
         let (stdout, stderr, exit_code) = runner.run_sync();
         let output = cmd.parse_output(&stdout, &stderr, exit_code);
@@ -190,7 +190,7 @@ mod key_value_grid_command_output {
     #[test]
     fn test_key_value_grid_with_bound_command() {
         let cmd = BoundCommand::new("echo 'CPU: i9-13900K'").parser(OutputParser::Plain);
-        let mut grid = KeyValueGrid::new().bind_command(cmd);
+        let mut grid = KeyValueGrid::new().bind_command(cmd.clone());
         let runner = CommandRunner::new("echo 'CPU: i9-13900K'");
         let (stdout, stderr, exit_code) = runner.run_sync();
         let output = cmd.parse_output(&stdout, &stderr, exit_code);
