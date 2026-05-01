@@ -168,10 +168,10 @@ impl Widget for StreamingText {
 
         if self.lines.is_empty() {
             let msg = "(waiting for input...)";
-            let start = (area.width.saturating_sub(msg.len() as u16)) / 2;
-            let row = area.height / 2;
+            let mid = plane.cells.len() / 2;
+            let start = mid.saturating_sub(msg.len() / 2);
             for (i, c) in msg.chars().enumerate() {
-                let idx = (row as usize * area.width as usize) + start as usize + i;
+                let idx = start + i;
                 if idx < plane.cells.len() {
                     plane.cells[idx] = Cell { char: c, fg: self.theme.inactive_fg, bg: self.theme.bg, style: Styles::empty(), transparent: false, skip: false };
                 }

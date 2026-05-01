@@ -188,7 +188,7 @@ impl Widget for KeyValueGrid {
             row += 1;
         }
 
-if self.pairs.is_empty() {
+        if self.pairs.is_empty() {
             let empty_msg = "(no data)";
             let mid = plane.cells.len() / 2;
             let start = mid.saturating_sub(empty_msg.len() / 2);
