@@ -173,7 +173,7 @@ mod async_tests {
         assert!(status.success());
 
         let poll_after = child.try_wait();
-        assert!(poll_after.unwrap().is_some() || poll_after.is_err());
+        assert!(poll_after.map(|o| o.is_some()).unwrap_or(false) || poll_after.is_err());
     }
 
     #[tokio::test]
