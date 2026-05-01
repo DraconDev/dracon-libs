@@ -1,9 +1,9 @@
 # Project State
 
 ## Current Focus
-Updated dependency versions in the `dracon-terminal-engine` framework to ensure security and compatibility.
+Refactored command execution system in the terminal engine framework to improve initialization and error handling.
 
 ## Completed
-- [x] Updated dependency versions in `dracon-terminal-engine/Cargo.toml`
-- [x] Updated `Cargo.lock` to reflect new dependency versions
+- [x] Changed `exit_code` from `Option<i32>` to default value `-1` for better initialization
+- [x] Simplified command runner initialization by removing `None` cases
 ```
