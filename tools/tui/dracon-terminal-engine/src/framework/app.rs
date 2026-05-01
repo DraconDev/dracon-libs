@@ -226,11 +226,12 @@ impl App {
         widget.set_area(area);
         widget.on_mount();
         let focusable = widget.focusable();
+        let cmds = widget.commands();
         self.widgets.borrow_mut().push(widget);
         self.focus_manager.register(id, focusable);
         self.next_widget_id += 1;
 
-        for cmd in widget.commands() {
+        for cmd in cmds {
             if cmd.refresh_seconds.is_some() {
                 self.command_tracking.borrow_mut().insert(id, (Instant::now(), cmd));
             }
