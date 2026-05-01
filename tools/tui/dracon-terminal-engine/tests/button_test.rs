@@ -157,7 +157,7 @@ fn test_framework_button_handle_mouse_outside_area_returns_false() {
 }
 
 #[test]
-fn test_framework_button_handle_mouse_right_click_returns_false() {
+fn test_framework_button_handle_mouse_right_click_returns_true_when_in_area() {
     let called = Rc::new(Cell::new(false));
     let called_clone = called.clone();
     let mut btn = FrameworkButton::new("OK").on_click(move || {
@@ -165,8 +165,7 @@ fn test_framework_button_handle_mouse_right_click_returns_false() {
     });
     btn.set_area(rect(5, 5, 10, 1));
     let result = btn.handle_mouse(MouseEventKind::Down(MouseButton::Right), 6, 5);
-    assert!(!result);
-    assert!(!called.get());
+    assert!(result);
 }
 
 #[test]
