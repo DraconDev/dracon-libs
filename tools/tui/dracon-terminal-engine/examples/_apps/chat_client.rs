@@ -305,7 +305,7 @@ fn render_chat(chat: &ChatState, area: Rect) -> Plane {
             Color::Reset
         };
 
-        let sender_color = match msg.sender {
+        let sender_color = match msg.sender.as_str() {
             "Alice" => Color::Ansi(5),
             "Bob" => Color::Ansi(6),
             "You" => Color::Ansi(2),
