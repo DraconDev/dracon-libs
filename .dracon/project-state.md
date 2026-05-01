@@ -1,21 +1,23 @@
 # Project State
 
 ## Current Focus
-Implement direct process exit for 'q' key press in showcase example
+Refactored showcase example to use `ShowcaseWidget` wrapper for shared ownership of `Showcase` state
 
 ## Context
-The previous implementation used a `should_quit` flag that needed to be checked elsewhere. This change simplifies the exit handling by directly terminating the process when 'q' is pressed.
+This change follows the recent addition of `ShowcaseWidget` to enable shared ownership of the showcase state. The refactoring simplifies the example by removing redundant state management and improves code organization.
 
 ## Completed
-- [x] Replace `should_quit` flag with direct process exit on 'q' key press
-- [x] Remove redundant flag initialization and state tracking
+- [x] Replaced direct `Showcase` usage with `ShowcaseWidget` wrapper
+- [x] Simplified state management by removing redundant clones
+- [x] Cleaned up the tick handler logic
+- [x] Removed unnecessary area checks and dirty flag management
 
 ## In Progress
-- [ ] None
+- [ ] No active work in progress
 
 ## Blockers
-- None
+- None identified
 
 ## Next Steps
-1. Verify this change doesn't affect other showcase functionality
-2. Consider adding similar direct exit handling for other keybindings if appropriate
+1. Verify the showcase example still functions correctly with the new structure
+2. Consider additional refactoring opportunities in the showcase example

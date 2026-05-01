@@ -680,32 +680,22 @@ fn main() -> io::Result<()> {
     println!("Starting showcase...");
     std::thread::sleep(std::time::Duration::from_millis(500));
 
-    let app = Rc::new(RefCell::new(Showcase::new()));
-    app.borrow_mut().theme_idx = 0;
+    let showcase = Rc::new(RefCell::new(Showcase::new()));
+    showcase.borrow_mut().theme_idx = 0;
 
-    let app_tick = app.clone();
-    let app_run = app.clone();
+    let showcase_tick = showcase.clone();
 
     App::new()?
         .title("Example Showcase")
         .fps(30)
         .theme(Theme::nord())
+        .add_widget(Box::new(ShowcaseWidget::new(showcase)), Rect::new(0, 0, 80, 24))?
         .on_tick(move |ctx, _tick| {
-            let mut a = app_tick.borrow_mut();
-            ctx.mark_all_dirty();
+            let mut s = showcase_tick.borrow_mut();
             let (w, h) = ctx.compositor().size();
-            if a.area.width != w || a.area.height != h {
-                a.set_area(Rect::new(0, 0, w, h));
+            if s.area.width != w || s.area.height != h {
+                s.set_area(Rect::new(0, 0, w, h));
             }
         })
-        .run(move |ctx| {
-            let mut a = app_run.borrow_mut();
-            if a.needs_render() {
-                let area = a.area();
-                let plane = a.render(area);
-                a.clear_dirty();
-                drop(a);
-                ctx.add_plane(plane);
-            }
-        })
+        .run(|_ctx| {})
 }
