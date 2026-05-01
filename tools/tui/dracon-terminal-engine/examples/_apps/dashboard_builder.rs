@@ -11,6 +11,7 @@
 use dracon_terminal_engine::compositor::{Cell, Color, Plane, Styles};
 use dracon_terminal_engine::framework::command::{BoundCommand, OutputParser};
 use dracon_terminal_engine::framework::prelude::*;
+use dracon_terminal_engine::framework::widget::{Widget, WidgetId};
 use dracon_terminal_engine::framework::widgets::{
     Gauge, KeyValueGrid, LogViewer, StatusBadge, StreamingText,
 };
