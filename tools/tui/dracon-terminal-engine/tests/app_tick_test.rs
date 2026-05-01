@@ -160,8 +160,12 @@ impl OutputTrackingWidget {
             area: std::cell::Cell::new(Rect::new(0, 0, 80, 24)),
             dirty: true,
             command_output_received,
-            last_output: last_output,
+            last_output: RefCell::new(None),
         }
+    }
+
+    fn get_last_output(&self) -> Option<String> {
+        self.last_output.borrow().clone()
     }
 }
 

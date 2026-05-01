@@ -1,21 +1,22 @@
 # Project State
 
 ## Current Focus
-Improved command output handling in terminal widget tests by simplifying initialization.
+Improved command output handling in terminal widget tests by adding proper reference counting for output tracking.
 
 ## Context
-This change refines test setup for terminal widgets by removing unnecessary `RefCell` wrapping around `last_output`, aligning with recent improvements in command output handling.
+The change addresses thread-safety issues in test output handling by replacing a direct `Option<String>` with a `RefCell<Option<String>>` to allow interior mutability. This was prompted by recent test coverage improvements and command output handling refactors.
 
 ## Completed
-- [x] Simplified `OutputTrackingWidget` initialization by removing redundant `RefCell` wrapper
-- [x] Maintained same functionality while reducing test complexity
+- [x] Replaced direct `Option<String>` with `RefCell<Option<String>>` for thread-safe output tracking
+- [x] Added `get_last_output()` method to safely access the output value
+- [x] Maintained existing test functionality while improving thread-safety
 
 ## In Progress
-- [ ] No active work in progress
+- [ ] No active work in progress beyond these changes
 
 ## Blockers
-- None identified
+- No blockers identified
 
 ## Next Steps
-1. Verify test coverage remains adequate after this change
-2. Check for any related test failures in the CI pipeline
+1. Verify test coverage remains adequate after these changes
+2. Review if additional thread-safety measures are needed in other test components
