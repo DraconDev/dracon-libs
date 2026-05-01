@@ -1,7 +1,9 @@
 # Project State
 
 ## Current Focus
-refactor(tests): Simplify test assertion for WidgetConfig validation by removing redundant empty checks and keeping only the essential `bind.is_none()` verification
+Refactor input-mouse handling and test assertions to use precise `Down(Left)` events instead of ambiguous `Press`, while removing obsolete ratatui backend tests.
 
 ## Completed
-- [x] Simplified WidgetConfig test assertion to check only `config.bind.is_none()` instead of redundant widget emptiness checks
+- [x] Tighten mouse event semantics: replace `MouseEventKind::Press` with `MouseEventKind::Down(MouseButton::Left)` across mapping, text input, and password input tests to match real click behavior.
+- [x] Fix test harness mutability: update `App::new()` binding to `mut` in widget-not-found test to reflect actual usage.
+- [x] Remove stale ratatui integration tests: delete 175 lines of backend unit tests from `ratatui.rs` (creation, draw, cursor, clear, size, flush) to reduce maintenance overhead.
