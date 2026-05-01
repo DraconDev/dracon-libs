@@ -1,7 +1,8 @@
 # Project State
 
 ## Current Focus
-Removed unused `exit_code` field from `CommandRunner` struct to simplify the command execution system.
+Updated dependency versions in the `dracon-terminal-engine` framework to ensure security and compatibility.
 
 ## Completed
-- [x] Removed `exit_code` field from `CommandRunner` to reduce complexity in the command execution system
+- [x] Updated dependency versions in `dracon-terminal-engine` to resolve potential security vulnerabilities and maintain compatibility
+- [x] Updated `Cargo.lock` to reflect the new dependency versions
