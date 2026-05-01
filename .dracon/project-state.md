@@ -1,8 +1,7 @@
 # Project State
 
 ## Current Focus
-Removed redundant assertion in vertical split test to simplify the test case
+Removed redundant closing brace in the game loop example to simplify control flow.
 
 ## Completed
-- [x] Removed assertion checking split areas in `app.rs` test case
-- [x] Updated Cargo.lock with dependency version changes
+- [x] Removed unnecessary closing brace in `game_loop.rs` example, improving code readability by reducing visual noise.
