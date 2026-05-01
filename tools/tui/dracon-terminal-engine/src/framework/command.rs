@@ -550,12 +550,12 @@ mod tests {
 
     #[test]
     fn test_command_runner_parse() {
-        let runner = CommandRunner::new("echo '{\"status\": \"OK\"}'");
+        let runner = CommandRunner::new("python3 -c 'import json,sys; sys.stdout.write(json.dumps({\"status\":\"OK\"}))'");
         let parser = OutputParser::JsonKey { key: "status".to_string() };
         let out = runner.run_and_parse(&parser);
         match out {
             ParsedOutput::Scalar(s) => assert_eq!(s, "\"OK\""),
-            _ => panic!("expected scalar"),
+            _ => panic!("expected scalar, got {:?}", out),
         }
     }
 
@@ -577,7 +577,7 @@ bind = "echo OK"
         let config = AppConfig::from_toml_str(toml).unwrap();
         assert_eq!(config.title, "My App");
         assert_eq!(config.fps, Some(30));
-        assert_eq!(config.layout.header_height, Some(2));
+        assert_eq!(config.layout.as_ref().unwrap().header_height, Some(2));
         assert_eq!(config.widgets.len(), 1);
         assert_eq!(config.widgets[0].id, 1);
     }
