@@ -5,7 +5,9 @@
 //!
 //! Run with: cargo run --example showcase
 
+use std::cell::RefCell;
 use std::io;
+use std::rc::Rc;
 
 use dracon_terminal_engine::compositor::{Cell, Color, Plane, Styles};
 use dracon_terminal_engine::framework::prelude::*;
