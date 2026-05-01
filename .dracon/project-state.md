@@ -1,7 +1,8 @@
 # Project State
 
 ## Current Focus
-Removed redundant closing brace in the game loop example to simplify control flow.
+Updated dependency versions in the `dracon-terminal-engine` framework to ensure security and compatibility.
 
 ## Completed
-- [x] Removed unnecessary closing brace in `game_loop.rs` example, improving code readability by reducing visual noise.
+- [x] Updated dependency versions in `Cargo.lock` to resolve version conflicts and security vulnerabilities
+```
