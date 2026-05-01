@@ -84,6 +84,7 @@ impl MockFs {
     }
 }
 
+#[derive(Clone)]
 struct FileEntry {
     name: String,
     is_dir: bool,
