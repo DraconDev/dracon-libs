@@ -1,8 +1,9 @@
 # Project State
 
 ## Current Focus
-Refactored test variable naming in the `Glitch` filter test to improve clarity and maintainability.
+Refactored the `Glitch` filter test to improve assertion clarity by replacing redundant variable tracking with direct assertions.
 
 ## Completed
-- [x] Updated variable naming in `filter_test.rs` to remove unused variable warning
-- [x] Modified binary file `Cargo.toml` (likely for dependency or metadata changes)
+- [x] Removed unused `_unused_changed` variable in `test_glitch_at_zero_time_most_cells_unchanged`
+- [x] Replaced variable tracking with direct `assert_eq!` for cell character validation
+```
