@@ -1,11 +1,8 @@
 # Project State
 
 ## Current Focus
-Expose command execution and registry via the app context while maintaining widget encapsulation
+refactor(StatusBadge): remove redundant render state updates and set explicit z-index 0 on rendered badge plane
 
 ## Completed
-- [x] Refactor `run_command` method to simplify API by removing redundant closure syntax and centralizing command execution logic (improves testability and integration with CLI tools)
-- [x] Enhance `available_commands` to return cloned command list, enabling external tools to safely query available operations without borrowing constraints
-- [x] Optimize StatusBadge render logic to consistently handle empty labels by falling back to status_upper content (fixes missing header display in edge cases)
-- [x] Remove unnecessary status_upper visibility check in widget render, streamlining code and reducing conditional complexity
-- [x] Align widget configuration refactor with new ID management system, ensuring consistent widget identification across layout changes
+- [x] Remove self.area.set(area) and self.dirty = true calls from StatusBadge's render method
+- [x] Set z_index to 0 on the Plane returned by StatusBadge's render_badge call before returning

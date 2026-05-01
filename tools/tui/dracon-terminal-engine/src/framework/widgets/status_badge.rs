@@ -133,9 +133,6 @@ impl Widget for StatusBadge {
     }
 
     fn render(&self, area: Rect) -> Plane {
-        self.area.set(area);
-        self.dirty = true;
-
         let status_upper = self.status.to_uppercase();
         let (fg, bg, label) = if status_upper.contains("OK") || status_upper.contains("GREEN") || status_upper == "1" {
             (self.theme.success_fg, self.theme.bg, "OK")
@@ -150,7 +147,9 @@ impl Widget for StatusBadge {
             (self.theme.fg, self.theme.bg, l)
         };
 
-        self.render_badge(label, fg, bg)
+        let mut plane = self.render_badge(label, fg, bg);
+        plane.z_index = 0;
+        plane
     }
 
     fn commands(&self) -> Vec<BoundCommand> {
