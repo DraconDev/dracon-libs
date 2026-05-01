@@ -9,7 +9,7 @@ use dracon_terminal_engine::framework::widgets::SplitPane;
 use ratatui::layout::Rect;
 use std::path::PathBuf;
 
-#[derive(Clone, ToString)]
+#[derive(Clone, Display)]
 struct FileEntry {
     name: String,
     is_dir: bool,
