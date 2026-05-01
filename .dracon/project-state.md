@@ -1,22 +1,21 @@
 # Project State
 
 ## Current Focus
-Refactored widget ID management in test utilities to use default IDs
+Refactored widget construction in test utilities to use proper builder pattern
 
 ## Context
-This change aligns with ongoing widget lifecycle testing refactoring efforts, particularly in the multi-widget test suite. The previous approach of manually assigning widget IDs was being replaced with a more consistent default ID generation.
+The previous implementation of `with_children` was mutating the struct directly, which could lead to unintended side effects. This change ensures proper immutability by creating a new instance with updated children.
 
 ## Completed
-- [x] Updated `SimpleTracker` widget implementation to use `WidgetId::default_id()` instead of manual ID assignment
-- [x] Added `set_id` method to `SimpleTracker` to support ID assignment when needed
-- [x] Maintained existing widget functionality while improving test consistency
+- [x] Refactored `with_children` to use builder pattern with `..self` syntax
+- [x] Maintained same functionality while improving safety
 
 ## In Progress
-- [x] This is a completed refactoring of the widget ID management in tests
+- [x] No active work in progress beyond this change
 
 ## Blockers
-- None identified for this specific change
+- None identified
 
 ## Next Steps
-1. Verify test suite stability after this change
-2. Continue with other widget lifecycle testing improvements
+1. Verify no test failures due to this change
+2. Consider similar refactorings for other widget construction methods

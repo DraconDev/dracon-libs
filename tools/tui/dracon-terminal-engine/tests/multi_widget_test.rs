@@ -146,9 +146,11 @@ impl TrackingRenderWidget {
         )
     }
 
-    fn with_children(mut self, children: Vec<Box<dyn Widget>>) -> Self {
-        self.children = children;
-        self
+    fn with_children(self, children: Vec<Box<dyn Widget>>) -> Self {
+        Self {
+            children,
+            ..self
+        }
     }
 }
 
