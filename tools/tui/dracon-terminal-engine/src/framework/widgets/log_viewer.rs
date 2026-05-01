@@ -41,12 +41,12 @@ pub enum LogLevel {
 }
 
 pub struct LogViewer {
-    id: WidgetId,
-    lines: VecDeque<LogLine>,
-    max_lines: usize,
-    auto_scroll: bool,
-    filter: Option<String>,
-    theme: Theme,
+    pub id: WidgetId,
+    pub lines: VecDeque<LogLine>,
+    pub max_lines: usize,
+    pub auto_scroll: bool,
+    pub filter: Option<String>,
+    pub theme: Theme,
     area: std::cell::Cell<Rect>,
     dirty: bool,
     bound_command: Option<BoundCommand>,

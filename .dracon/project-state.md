@@ -1,20 +1,20 @@
 # Project State
 
 ## Current Focus
-Refactored `KeyValueGrid` to make fields public for better accessibility in widget management.
+Refactored `LogViewer` to make fields public for better accessibility and testing.
 
 ## Context
-The `KeyValueGrid` widget was modified to expose its internal fields (`id`, `pairs`, `separator`, and `theme`) as public. This change was likely made to improve widget management and customization in the terminal UI framework.
+This change was prompted by the need to improve testability and flexibility in the `LogViewer` widget. Making fields public allows for more straightforward state manipulation during testing and integration.
 
 ## Completed
-- [x] Made `KeyValueGrid` fields public (`id`, `pairs`, `separator`, `theme`) for easier access in widget management
+- [x] Made all fields in `LogViewer` struct public (`id`, `lines`, `max_lines`, `auto_scroll`, `filter`, `theme`)
 
 ## In Progress
-- [ ] None (this appears to be a completed refactoring)
+- [ ] None (this is a completed refactoring)
 
 ## Blockers
-- None (this change appears to be complete)
+- None (this change is complete)
 
 ## Next Steps
-1. Verify that the public fields don't break existing widget implementations
-2. Update any documentation that references the `KeyValueGrid` widget structure
+1. Update any tests that rely on `LogViewer` to use the new public fields
+2. Consider adding documentation for the public fields to clarify their intended usage
