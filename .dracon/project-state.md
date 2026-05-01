@@ -1,20 +1,20 @@
 # Project State
 
 ## Current Focus
-Refactored widget ID generation in debug overlay example to use consistent integer types.
+Dependency version updates in the `dracon-terminal-engine` framework
 
 ## Context
-The debug overlay example was using `u64` for widget IDs, which could lead to potential overflow issues when creating many widgets. This change aligns with the terminal UI framework's refactoring efforts to improve type consistency.
+This change updates dependency versions in the terminal engine framework, likely to incorporate bug fixes, security patches, or new features in the dependencies.
 
 ## Completed
-- [x] Changed widget ID generation from `u64` to `usize` for better type consistency with the rest of the framework
+- [x] Updated dependency versions in Cargo.lock
 
 ## In Progress
-- [ ] None
+- [x] Dependency version updates in progress
 
 ## Blockers
-- None
+- None reported in this commit
 
 ## Next Steps
-1. Verify the change doesn't affect any functionality in the debug overlay
-2. Check if this pattern should be applied to other examples
+1. Verify compatibility with existing codebase
+2. Test the updated dependencies in the terminal UI framework
