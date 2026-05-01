@@ -30,7 +30,7 @@ use dracon_terminal_engine::compositor::Plane;
 use dracon_terminal_engine::framework::prelude::*;
 use dracon_terminal_engine::framework::widget::{Widget, WidgetId};
 use dracon_terminal_engine::framework::widgets::{
-    Button, ConfirmDialog, Label, Modal, ModalResult, Toast, ToastKind,
+    Button, ConfirmDialog, Label, Modal, Toast, ToastKind,
 };
 use dracon_terminal_engine::input::event::{KeyCode, KeyEventKind};
 use ratatui::layout::Rect;
