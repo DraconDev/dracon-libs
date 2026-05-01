@@ -703,14 +703,14 @@ fn test_modal_visible_blocks_events_below() {
     let area = Rect::new(0, 0, 80, 24);
     modal.set_area(area);
 
-    let event = KeyEvent {
+    let esc = KeyEvent {
         kind: KeyEventKind::Press,
-        code: KeyCode::Char('a'),
+        code: KeyCode::Esc,
         modifiers: KeyModifiers::empty(),
     };
 
-    let modal_handled = modal.handle_key(event);
-    assert!(modal_handled, "modal should handle key events when visible");
+    let modal_handled = modal.handle_key(esc);
+    assert!(modal_handled, "modal should handle key events (Esc) when visible");
 }
 
 #[test]

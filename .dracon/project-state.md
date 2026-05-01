@@ -1,20 +1,21 @@
 # Project State
 
 ## Current Focus
-Dependency version updates in the `dracon-terminal-engine` framework
+Improved modal dialog test cases in the terminal engine by focusing on Esc key handling
 
 ## Context
-The Cargo.lock file was modified, indicating dependency version updates were applied. This is part of ongoing maintenance work to ensure the project uses compatible and up-to-date dependencies.
+This change refactors the modal dialog test cases to better verify key event handling, particularly focusing on the Esc key which is a common interaction pattern for closing modals.
 
 ## Completed
-- [x] Updated dependency versions in the `dracon-terminal-engine` framework
+- [x] Updated modal dialog test to specifically check Esc key handling
+- [x] Improved test assertion message to be more specific about what's being tested
 
 ## In Progress
-- [x] Dependency version updates are being applied
+- [x] Refactoring modal dialog test cases
 
 ## Blockers
-- None reported in this commit
+- None identified
 
 ## Next Steps
-1. Verify that the updated dependencies don't introduce breaking changes
-2. Continue with other ongoing refactoring and testing work in the terminal engine
+1. Verify test coverage for other modal interaction patterns
+2. Consider adding tests for modal closing behavior beyond just key events
