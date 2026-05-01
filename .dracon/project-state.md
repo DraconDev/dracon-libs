@@ -1,7 +1,8 @@
 # Project State
 
 ## Current Focus
-Refactored the `List` widget to improve type safety and code organization by adding a dependency on `ScrollState`.
+Updated dependency versions in the `dracon-terminal-engine` framework to address security vulnerabilities and ensure compatibility.
 
 ## Completed
-- [x] Added `ScrollState` import to the `List` widget implementation to support scrollable list functionality
+- [x] security(dependency versions): Updated dependency versions in the `dracon-terminal-engine` framework to address security vulnerabilities and ensure compatibility
+```
