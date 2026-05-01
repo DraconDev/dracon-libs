@@ -22,7 +22,6 @@ use dracon_terminal_engine::compositor::{Color, Plane};
 use dracon_terminal_engine::framework::prelude::*;
 use dracon_terminal_engine::framework::widget::{Widget, WidgetId};
 use dracon_terminal_engine::framework::widgets::{Breadcrumbs, SplitPane, StatusBar, StatusSegment, Tree, TreeNode};
-use dracon_terminal_engine::input::event::{KeyCode, KeyEventKind};
 use ratatui::layout::Rect;
 
 struct MockFs {
@@ -207,7 +206,7 @@ impl Widget for TreeNav {
         plane
     }
 
-    fn handle_key(&mut self, key: crate::input::event::KeyEvent) -> bool {
+    fn handle_key(&mut self, key: KeyEvent) -> bool {
         if key.kind != KeyEventKind::Press {
             return false;
         }
@@ -235,7 +234,7 @@ impl Widget for TreeNav {
 
     fn handle_mouse(
         &mut self,
-        kind: crate::input::event::MouseEventKind,
+        kind: MouseEventKind,
         col: u16,
         row: u16,
     ) -> bool {
@@ -344,6 +343,9 @@ fn main() -> std::io::Result<()> {
         .run(|ctx| {
             let (w, h) = ctx.compositor().size();
             let area = Rect::new(0, 0, w, h);
-            ctx.add_widget(Box::new(TreeNav::new(WidgetId::new(0))), area);
+            let mut nav = TreeNav::new(WidgetId::new(0));
+            nav.set_area(area);
+            let plane = nav.render(area);
+            ctx.add_plane(plane);
         })
 }
