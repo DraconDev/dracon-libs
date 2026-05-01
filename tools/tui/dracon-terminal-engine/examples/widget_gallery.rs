@@ -127,7 +127,7 @@ impl WidgetGallery {
         }
 
         let content_top = 2;
-        let content_height = (area.height as usize).saturating_sub(content_top + 4);
+        let _content_height = (area.height as usize).saturating_sub(content_top + 4);
 
         match self.selected {
             0 => {
