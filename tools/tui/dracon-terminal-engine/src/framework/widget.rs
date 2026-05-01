@@ -10,13 +10,9 @@ use ratatui::layout::Rect;
 
 /// Unique identifier for a widget (for event routing and state management).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Default)]
 pub struct WidgetId(pub usize);
 
-impl Default for WidgetId {
-    fn default() -> Self {
-        Self(0)
-    }
-}
 
 impl WidgetId {
     /// Creates a new `WidgetId` with the given numeric value.

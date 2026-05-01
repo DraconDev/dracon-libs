@@ -44,6 +44,7 @@ use std::thread;
 // ═══════════════════════════════════════════════════════════════
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Default)]
 pub enum OutputParser {
     JsonKey { key: String },
     JsonPath { path: String },
@@ -52,17 +53,13 @@ pub enum OutputParser {
     LineCount,
     ExitCode,
     SeverityLine { patterns: HashMap<String, String> },
+    #[default]
     Plain,
 }
 
-impl Default for OutputParser {
-    fn default() -> Self {
-        OutputParser::Plain
-    }
-}
 
 impl OutputParser {
-    pub fn parse(&self, stdout: &str, stderr: &str, exit_code: i32) -> ParsedOutput {
+    pub fn parse(&self, stdout: &str, _stderr: &str, exit_code: i32) -> ParsedOutput {
         match self {
             OutputParser::JsonKey { key } => {
                 if let Ok(val) = serde_json::from_str::<serde_json::Value>(stdout) {
@@ -280,10 +277,8 @@ impl CommandRunner {
         if let Some(stdout) = child.stdout.take() {
             let tx = stdout_tx.clone();
             thread::spawn(move || {
-                for line in BufReader::new(stdout).lines() {
-                    if let Ok(l) = line {
-                        let _ = tx.send(l);
-                    }
+                for l in BufReader::new(stdout).lines().flatten() {
+                    let _ = tx.send(l);
                 }
             });
         }
@@ -291,17 +286,15 @@ impl CommandRunner {
         if let Some(stderr) = child.stderr.take() {
             let tx2 = stderr_tx.clone();
             thread::spawn(move || {
-                for line in BufReader::new(stderr).lines() {
-                    if let Ok(l) = line {
-                        let _ = tx2.send(l);
-                    }
+                for l in BufReader::new(stderr).lines().flatten() {
+                    let _ = tx2.send(l);
                 }
             });
         }
 
         thread::spawn(move || {
             if let Ok(code) = child.wait() {
-                let _ = exit_tx.send(format!("__EXIT_CODE__{}", code.code().map(|c| c as i32).unwrap_or(-1)));
+                let _ = exit_tx.send(format!("__EXIT_CODE__{}", code.code().map(|c| c).unwrap_or(-1)));
             }
         });
 
@@ -327,7 +320,7 @@ impl CommandRunner {
 
         let stdout = String::from_utf8_lossy(&output.stdout).to_string();
         let stderr = String::from_utf8_lossy(&output.stderr).to_string();
-        let exit_code = output.status.code().unwrap_or(-1) as i32;
+        let exit_code = output.status.code().unwrap_or(-1);
         (stdout, stderr, exit_code)
     }
 
@@ -373,6 +366,7 @@ impl Default for AppConfig {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Default)]
 pub struct WidgetConfig {
     #[serde(default)]
     pub id: Option<usize>,
@@ -397,6 +391,7 @@ pub struct WidgetConfig {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Default)]
 pub struct LayoutConfig {
     #[serde(default)]
     pub header_height: Option<u16>,
@@ -406,32 +401,7 @@ pub struct LayoutConfig {
     pub footer_height: Option<u16>,
 }
 
-impl Default for LayoutConfig {
-    fn default() -> Self {
-        Self {
-            header_height: None,
-            sidebar_width: None,
-            footer_height: None,
-        }
-    }
-}
 
-impl Default for WidgetConfig {
-    fn default() -> Self {
-        Self {
-            id: None,
-            widget_type: None,
-            area: None,
-            bind: None,
-            parser: None,
-            refresh_seconds: None,
-            confirm: None,
-            label: None,
-            description: None,
-            options: HashMap::new(),
-        }
-    }
-}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AreaConfig {

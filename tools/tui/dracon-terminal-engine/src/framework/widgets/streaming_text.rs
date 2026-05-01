@@ -17,8 +17,8 @@
 
 use std::collections::VecDeque;
 
-use crate::compositor::{Cell, Color, Plane, Styles};
-use crate::framework::command::{BoundCommand, OutputParser, ParsedOutput};
+use crate::compositor::{Cell, Plane, Styles};
+use crate::framework::command::{BoundCommand, ParsedOutput};
 use crate::framework::theme::Theme;
 use crate::framework::widget::{Widget, WidgetId};
 use ratatui::layout::Rect;
@@ -193,7 +193,7 @@ impl Widget for StreamingText {
                     let mut chars = line.chars().peekable();
                     let mut col = 0;
                     let mut result = String::new();
-                    while let Some(c) = chars.next() {
+                    for c in chars {
                         if col >= area.width as usize {
                             result.push('\n');
                             col = 0;

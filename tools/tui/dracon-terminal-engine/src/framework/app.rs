@@ -516,12 +516,12 @@ impl<'a> Ctx<'a> {
 
     /// Returns the animation manager for managing toasts, progress bars, etc.
     pub fn animations(&self) -> &AnimationManager {
-        &self.animations
+        self.animations
     }
 
     /// Returns a mutable reference to the animation manager.
     pub fn animations_mut(&mut self) -> &mut AnimationManager {
-        &mut self.animations
+        self.animations
     }
 
     /// Marks a screen region as dirty, so it will be re-rendered on the next frame.

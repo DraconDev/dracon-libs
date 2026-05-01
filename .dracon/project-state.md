@@ -1,10 +1,13 @@
 # Project State
 
 ## Current Focus
-refactor(tests): Make empty-state widget tests more flexible by checking for presence of marker character rather than specific position
+refactor(framework): remove unnecessary references, add Default derives, fix exit code handling and layout calculations
 
 ## Completed
-- [x] Refactored `test_key_value_grid_render_empty` to use `any()` check instead of hardcoded position calculation
-- [x] Refactored `test_log_viewer_render_empty` to use `any()` check instead of hardcoded position calculation
-- [x] Refactored `test_streaming_text_render_empty` to use `any()` check instead of middle-cell assertion
-- [x] Updated Cargo.lock dependencies
+- [x] Remove unnecessary `&` references from animation manager accesses in `app.rs`
+- [x] Add `Default` derives to `OutputParser`, `WidgetConfig`, and `LayoutConfig`
+- [x] Simplify command output parsing by using `flatten` and removing redundant checks
+- [x] Fix exit code extraction to preserve full `i32` value instead of casting
+- [x] Remove redundant `Default` implementations for `LayoutConfig` and `WidgetConfig`
+- [x] Correct layout ratio calculation by removing unnecessary `as u32` cast
+- [x] Add `Default` derive to `ScrollState` and adjust its definition
