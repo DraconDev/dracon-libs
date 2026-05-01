@@ -1,25 +1,21 @@
 # Project State
 
 ## Current Focus
-Added comprehensive test coverage for the Gauge widget and improved async command handling
+Refactored `ConfirmDialog` fields to public for better accessibility and simplified async command runner test
 
 ## Context
-The changes address two key areas:
-1. Enhanced test coverage for the Gauge widget to ensure reliability
-2. Improved async command handling in tests to simplify process status checking
+This change follows a pattern of making widget fields public to improve accessibility across the terminal framework. The async command runner test simplification aligns with recent refactoring efforts in the async command handling system.
 
 ## Completed
-- [x] Added 160 new test cases for the Gauge widget covering all major functionality
-- [x] Refactored async command runner test to simplify process status checking
-- [x] Made Gauge widget fields public for better accessibility
-- [x] Updated Cargo dependencies
+- [x] Made `ConfirmDialog` fields public to enable better widget customization
+- [x] Simplified async command runner test by changing from `printf` to `echo` for more straightforward output verification
 
 ## In Progress
-- [ ] No active work in progress
+- [x] Ongoing work to standardize widget field accessibility across the framework
 
 ## Blockers
-- None identified
+- No blockers identified for this change
 
 ## Next Steps
-1. Review test coverage for other widgets
-2. Consider adding integration tests for widget interactions
+1. Verify public field changes don't break existing widget implementations
+2. Continue applying public field pattern to other widgets following the same pattern
