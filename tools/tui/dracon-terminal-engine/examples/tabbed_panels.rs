@@ -36,7 +36,6 @@ use dracon_terminal_engine::framework::widgets::{
 };
 use ratatui::layout::Rect;
 use std::cell::RefCell;
-use std::collections::BTreeMap;
 use std::rc::Rc;
 
 const TAB_DASHBOARD: usize = 0;

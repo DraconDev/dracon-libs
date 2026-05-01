@@ -1,22 +1,21 @@
 # Project State
 
 ## Current Focus
-Refactored the tree navigator example with improved widget architecture and path selection handling
+Refactored tabbed panel example with improved widget architecture
 
 ## Context
-The tree navigator example was refactored to improve its widget architecture and path selection capabilities. This change follows previous refactoring efforts to enhance the tree widget's functionality and user interaction.
+This change continues the ongoing refactoring of widget examples to improve architecture and key handling. The tabbed panel example was updated to remove unused dependencies and simplify the implementation.
 
 ## Completed
-- [x] Removed the standalone tree_navigator.rs example file
-- [x] Added MouseEventKind and KeyEventKind imports to the cookbook version
+- [x] Removed unused `BTreeMap` import from tabbed panel example
 - [x] Updated Cargo.lock with dependency version changes
 
 ## In Progress
-- [x] Refactoring of the tree navigator example with improved widget architecture
+- [x] Refactoring of widget examples with improved architecture
 
 ## Blockers
-- None identified in this commit
+- None identified
 
 ## Next Steps
-1. Continue refining the tree widget's path selection capabilities
-2. Ensure consistent widget architecture across all examples
+1. Continue refactoring other widget examples
+2. Review and test the updated tabbed panel example
