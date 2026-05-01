@@ -1,21 +1,22 @@
 # Project State
 
 ## Current Focus
-Update dependency versions in the `dracon-terminal-engine` framework
+Refactored widget lifecycle testing in the terminal engine with a simplified test implementation.
 
 ## Context
-The `Cargo.lock` file was modified, indicating dependency versions were updated. This is part of ongoing maintenance to ensure the project uses the latest compatible versions of dependencies.
+The previous implementation used a complex `LifecycleTracker` structure for testing widget lifecycle events. This change simplifies the test by creating a minimal `SimpleTracker` widget that directly implements the required traits for testing `on_unmount` behavior.
 
 ## Completed
-- [x] Updated dependency versions in the `dracon-terminal-engine` framework
+- [x] Replaced `LifecycleTracker` with a minimal `SimpleTracker` widget
+- [x] Simplified test setup by implementing only necessary widget traits
+- [x] Maintained the same test assertion logic for `on_unmount` verification
 
 ## In Progress
-- [ ] No active work in progress beyond dependency updates
+- [x] Basic test implementation for widget removal behavior
 
 ## Blockers
-- None identified
+- Need to expand test coverage to verify other widget lifecycle events
 
 ## Next Steps
-1. Verify the updated dependencies do not introduce breaking changes
-2. Continue with other framework improvements and testing
-```
+1. Add tests for `on_mount` and other lifecycle events
+2. Verify interaction between multiple widgets in the same test

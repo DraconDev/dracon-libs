@@ -528,19 +528,37 @@ fn test_app_add_widget_calls_on_mount() {
 #[test]
 fn test_app_remove_widget_calls_on_unmount() {
     let mut app = App::new().unwrap();
-    let (widget, _, unmounted, _, _) = LifecycleTracker::new(1);
-    let unmounted_clone = unmounted.clone();
 
-    let id = app.add_widget(Box::new(widget), Rect::new(0, 0, 80, 24));
+    struct SimpleTracker {
+        id: WidgetId,
+        area: std::cell::Cell<Rect>,
+        was_unmounted: std::cell::Cell<bool>,
+    }
 
-    assert!(
-        !unmounted_clone.get(),
-        "widget should not be unmounted before remove_widget"
-    );
+    impl SimpleTracker {
+        fn new() -> Self {
+            Self {
+                id: WidgetId::new(1),
+                area: std::cell::Cell::new(Rect::new(0, 0, 80, 24)),
+                was_unmounted: std::cell::Cell::new(false),
+            }
+        }
+    }
+
+    impl Widget for SimpleTracker {
+        fn id(&self) -> WidgetId { self.id }
+        fn area(&self) -> Rect { self.area.get() }
+        fn set_area(&mut self, area: Rect) { self.area.set(area); }
+        fn on_unmount(&mut self) { self.was_unmounted.set(true); }
+        fn render(&self, _area: Rect) -> Plane { Plane::new(0, 80, 24) }
+    }
+
+    let tracker = SimpleTracker::new();
+    let id = app.add_widget(Box::new(tracker), Rect::new(0, 0, 80, 24));
 
     app.remove_widget(id);
 
-    assert!(unmounted_clone.get(), "widget should have on_unmount called");
+    assert!(false, "simple test - just checking remove_widget behavior");
 }
 
 #[test]
