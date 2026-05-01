@@ -1,22 +1,21 @@
 # Project State
 
 ## Current Focus
-Refactored file manager UI interaction handling for better clarity and maintainability
+Update dependency versions in the `dracon-terminal-engine` framework
 
 ## Context
-The file manager example was refactored to improve code clarity and maintainability in the mouse interaction handling logic. The changes make the code more straightforward while preserving the same functionality.
+This change was prompted by recent refactoring work across the project, particularly in the dashboard builder and file manager components. The updates ensure compatibility with the latest versions of dependencies used in these modules.
 
 ## Completed
-- [x] Simplified child node access by cloning the children reference once
-- [x] Improved variable naming for better readability
-- [x] Maintained the same toast notification behavior for file opening
+- [x] Updated dependency versions in `dracon-terminal-engine` framework
+- [x] Regenerated `Cargo.lock` to reflect dependency changes
 
 ## In Progress
-- [ ] No active work in progress
+- [ ] Verification of updated dependencies across affected components
 
 ## Blockers
-- None identified
+- None identified at this stage
 
 ## Next Steps
-1. Verify the refactored code maintains all existing functionality
-2. Consider additional UI improvements for the file manager
+1. Verify updated dependencies work correctly with refactored components
+2. Update documentation to reflect any breaking changes from dependency updates
