@@ -356,6 +356,7 @@ impl Widget for DirtyTrackingWidget {
 
     fn set_area(&mut self, area: Rect) {
         self.area.set(area);
+        self.dirty = true;
     }
 
     fn needs_render(&self) -> bool {
@@ -632,10 +633,9 @@ fn test_app_widget_lifecycle_order() {
             self.area.get()
         }
 
-fn set_area(&mut self, area: Rect) {
-        self.area.set(area);
-        self.dirty = true;
-    }
+        fn set_area(&mut self, area: Rect) {
+            self.area.set(area);
+        }
 
         fn focusable(&self) -> bool {
             true

@@ -1,24 +1,21 @@
 # Project State
 
 ## Current Focus
-Improved modal dialog test cases in the terminal engine by adding dirty flag tracking and precise mouse click coordinates.
+Refactored widget area management in test utilities to improve test reliability
 
 ## Context
-The changes address two key issues in modal dialog testing:
-1. Widget area updates weren't properly marking the widget as dirty
-2. Mouse click coordinates weren't being calculated precisely for the OK button
-These improvements make the tests more reliable and accurate in simulating real user interactions.
+The changes address inconsistent widget state handling during area updates in test scenarios, which could lead to flaky tests. The refactoring ensures proper dirty state tracking when widget areas are modified.
 
 ## Completed
-- [x] Added dirty flag tracking in widget area updates
-- [x] Refined mouse click coordinates for modal dialog OK button
+- [x] Removed redundant `dirty` state setting in test utility functions
+- [x] Standardized widget area update behavior across test implementations
 
 ## In Progress
-- [x] Comprehensive modal dialog interaction testing
+- [x] Verifying test stability after changes
 
 ## Blockers
-- No blockers identified
+- None identified
 
 ## Next Steps
-1. Verify all modal dialog test cases pass with new changes
-2. Consider adding more edge case tests for modal dialog interactions
+1. Run full test suite to confirm no regressions
+2. Update related documentation if needed
