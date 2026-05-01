@@ -1,9 +1,8 @@
 # Project State
-
-## Current Focus
-ONE LINE: Refactor terminal-engine widget tests to verify rendering behavior and state via public API instead of inspecting internals.
+This commit introduces refactoring and new test updates for dracon-terminal-engine. Key changes include updating visual width logic, simplifying rendering tests, and expanding test coverage for widgets. The code maintains backward compatibility while improving clarity and test robustness.
 
 ## Completed
-- [x] Update button tests to assert rendered plane dimensions, id exposure, and idempotent render; replace direct field checks with render/area/style assertions.
-- [x] Update label tests to assert rendered plane dimensions and style application; remove direct field access in favor of render-based verification.
-- [x] Regenerate Cargo.lock to synchronize lockfile without dependency version changes.
+- [x] Enhanced `truncate_to_width` usage to ensure correct ASCII width calculations
+- [x] Added comprehensive tests for color and icon rendering using Ratatui and Color types
+- [x] Refactored sorting logic for widget list management to remove redundant code
+- [x] Expanded test suite coverage for terminal engine interactions and user state management

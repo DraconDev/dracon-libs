@@ -9,6 +9,7 @@ use dracon_terminal_engine::utils::{
     truncate_to_width, squarify, guess_icon_mode, FileCategory, IconMode, SelectionState,
 };
 use std::time::{Duration, SystemTime};
+use ratatui::style::Color as RatatuiColor;
 
 #[test]
 fn test_get_visual_width_ascii() {
@@ -371,7 +372,7 @@ fn test_file_category_cyber_color() {
     ];
     for (cat, r, g, b) in categories {
         let color = cat.cyber_color();
-        assert_eq!(color, dracon_terminal_engine::compositor::Color::Rgb(r, g, b));
+        assert_eq!(color, RatatuiColor::Rgb(r, g, b));
     }
 }
 
