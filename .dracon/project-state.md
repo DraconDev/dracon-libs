@@ -1,6 +1,9 @@
 # Project State
-##Current Focus
-Add example configuration demonstrating new TUI widgets (Gauge, LogViewer, StatusBadge, etc.)
+
+## Current Focus
+Add example demonstrating TOML configuration loading for the terminal UI framework
 
 ## Completed
-- [x] Added example TOML file (`from_toml.toml`) showcasing new widget implementations including Gauge for system metrics, LogViewer for journal data, and interactive ConfirmDialog
+- [x] Add example showing how to load app configuration from TOML using AppConfig::from_toml_str
+- [x] Update dependencies in Cargo.lock to support TOML parsing functionality
+- [x] Create from_toml.rs example that demonstrates configuration parsing without requiring a real TTY
