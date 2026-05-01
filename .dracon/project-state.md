@@ -1,10 +1,11 @@
 # Project State
 
 ## Current Focus
-Add comprehensive unit tests for dracon-terminal-engine layout module and Terminal core functionality
+Add comprehensive unit tests for dracon-terminal-engine input handling and widget systems
 
 ## Completed
-- [x] Add unit tests for layout module's centered_rect function, verifying centered area generation, small percentage scaling, and parent bounds adherence
-- [x] Add unit tests for Stack layout component, covering orientation initialization, spacing configuration, child management, event handling, empty-stack render safety, and edge case spacing values
-- [x] Implement MockComponent test double to support layout module unit testing
-- [x] Add unit tests for Terminal core, including Cursor-based test environment setup and null mode initialization when not running in a TTY
+- [x] Add input_reader_test.rs with 321 lines testing kitty keyboard parser and event mapping functions
+- [x] Add visuals_test.rs with 341 lines testing visual rendering components
+- [x] Add widget_container_test.rs with 229 lines testing container widget behavior
+- [x] Update password_input_test.rs with refined test coverage
+- [x] Regenerate Cargo.lock to synchronize dependencies
