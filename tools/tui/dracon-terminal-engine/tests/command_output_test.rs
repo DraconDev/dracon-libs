@@ -12,7 +12,7 @@ use dracon_terminal_engine::framework::widget::WidgetId;
 use dracon_terminal_engine::framework::widget::Widget;
 use dracon_terminal_engine::framework::widgets::{
     Gauge, KeyValueGrid, LogViewer, StatusBadge, StreamingText,
-}
+};
 
 #[cfg(test)]
 mod gauge_command_output {

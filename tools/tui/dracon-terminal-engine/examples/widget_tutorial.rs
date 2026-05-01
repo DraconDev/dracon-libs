@@ -509,12 +509,10 @@ impl Widget for ColorPicker {
     /// Returns true if the event was consumed.
     fn handle_mouse(
         &mut self,
-        kind: crate::input::event::MouseEventKind,
+        kind: MouseEventKind,
         local_col: u16,
         local_row: u16,
     ) -> bool {
-        use crate::input::event::MouseEventKind;
-
         // Handle left-click on the swatch area (col 0-5) to cycle color.
         if let MouseEventKind::Down(_) = kind {
             // Check if click is in the swatch area (left 6 columns).
@@ -535,13 +533,13 @@ impl Widget for ColorPicker {
     /// Used by AI to enumerate available actions.
     ///
     /// ColorPicker doesn't bind to external commands, so we return empty.
-    fn commands(&self) -> Vec<crate::framework::command::BoundCommand> {
+    fn commands(&self) -> Vec<dracon_terminal_engine::framework::command::BoundCommand> {
         Vec::new()
     }
 
     /// Applies parsed output from a bound command.
     /// ColorPicker doesn't use commands, so this is a no-op.
-    fn apply_command_output(&mut self, _output: &crate::framework::command::ParsedOutput) {
+    fn apply_command_output(&mut self, _output: &dracon_terminal_engine::framework::command::ParsedOutput) {
         // No-op: ColorPicker doesn't bind to commands.
     }
 }
@@ -612,12 +610,12 @@ fn main() -> std::io::Result<()> {
     let _id4 = app.add_widget(Box::new(yellow_picker), Rect::new(26, 7, picker_width, picker_height));
 
     // ---- Add a header label using the framework's built-in Label widget ----
-    let header = crate::framework::widgets::Label::new("←/→ to change color | Click swatch to cycle | Tab to navigate");
+    let header = dracon_terminal_engine::framework::widgets::Label::new("←/→ to change color | Click swatch to cycle | Tab to navigate");
     let _header_id = app.add_widget(Box::new(header), Rect::new(0, 14, 80, 1));
 
     // ---- Add a footer showing theme name ----
     let footer_text = format!("Theme: {} | Press Ctrl+C to exit", app.theme.name);
-    let footer = crate::framework::widgets::Label::new(&footer_text);
+    let footer = dracon_terminal_engine::framework::widgets::Label::new(&footer_text);
     let _footer_id = app.add_widget(Box::new(footer), Rect::new(0, 15, 80, 1));
 
     // ---- Run the app ----
