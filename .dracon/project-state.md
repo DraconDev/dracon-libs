@@ -1,9 +1,9 @@
 # Project State
 
 ## Current Focus
-Refactor input-mouse handling and test assertions to use precise `Down(Left)` events instead of ambiguous `Press`, while removing obsolete ratatui backend tests.
+Replace unsafe zeroed-terminal mocks with a safe dummy terminal in the TUI framework test suite to eliminate undefined-behavior risks and improve test reliability.
 
 ## Completed
-- [x] Tighten mouse event semantics: replace `MouseEventKind::Press` with `MouseEventKind::Down(MouseButton::Left)` across mapping, text input, and password input tests to match real click behavior.
-- [x] Fix test harness mutability: update `App::new()` binding to `mut` in widget-not-found test to reflect actual usage.
-- [x] Remove stale ratatui integration tests: delete 175 lines of backend unit tests from `ratatui.rs` (creation, draw, cursor, clear, size, flush) to reduce maintenance overhead.
+- [x] Introduce `dummy_terminal()` helper that creates a valid `Terminal<Vec<u8>>` for testing.
+- [x] Replace all `unsafe { std::mem::zeroed() }` terminal instances in widget unit tests with the safe dummy terminal.
+- [x] Update lock and manifest files as a byproduct of dependency resolution.
