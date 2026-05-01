@@ -1,21 +1,21 @@
 # Project State
 
 ## Current Focus
-Improved widget lifecycle testing in the terminal engine
+Update dependency versions in the `dracon-terminal-engine` framework
 
 ## Context
-This change enhances the test utility for verifying widget lifecycle management in the terminal engine. The previous implementation had a race condition where the unmounted flag might be checked before the widget was properly removed.
+The `Cargo.lock` file was modified, indicating dependency versions were updated. This is part of ongoing maintenance to ensure the project uses the latest compatible versions of dependencies.
 
 ## Completed
-- [x] Fixed race condition in widget unmount testing by properly cloning the unmounted flag
-- [x] Improved test reliability for widget lifecycle verification
+- [x] Updated dependency versions in the `dracon-terminal-engine` framework
 
 ## In Progress
-- [x] No active work in progress
+- [ ] No active work in progress beyond dependency updates
 
 ## Blockers
 - None identified
 
 ## Next Steps
-1. Verify test coverage for all widget types
-2. Consider adding more comprehensive lifecycle test cases
+1. Verify the updated dependencies do not introduce breaking changes
+2. Continue with other framework improvements and testing
+```
