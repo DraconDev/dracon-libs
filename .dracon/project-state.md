@@ -1,20 +1,25 @@
 # Project State
 
 ## Current Focus
-Update dependency versions in the `dracon-terminal-engine` framework.
+Removal of test suite for the `BaseInput` widget in the terminal framework
 
 ## Context
-This change was prompted by the need to maintain compatibility with other components of the project and to ensure all dependencies are up-to-date with the latest stable versions.
+This follows a pattern of removing test suites for other widgets in the terminal framework. The removal suggests either:
+1) The tests were redundant with other coverage
+2) The widget is being deprecated
+3) Testing approach is being centralized
 
 ## Completed
-- [x] Updated dependency versions in `dracon-terminal-engine/Cargo.toml`
+- [x] Removed all unit tests for `BaseInput` widget
+- [x] Deleted test module and all associated test cases
 
 ## In Progress
-- [x] Verification of dependency compatibility with other project components
+- [ ] None - this appears to be a complete removal
 
 ## Blockers
-- None identified at this stage
+- None identified in the diff
 
 ## Next Steps
-1. Verify that the updated dependencies do not introduce breaking changes
-2. Update documentation to reflect the new dependency versions
+1. Verify if this widget is still in use elsewhere
+2. Check if any integration tests need updating
+```
