@@ -647,27 +647,32 @@ impl<'a> Ctx<'a> {
 mod tests {
     use super::*;
     use crate::framework::command::{AppConfig, AreaConfig, LayoutConfig, ParserConfig, WidgetConfig};
+    use std::fs::File;
+    use std::io::{self, Write};
+    use std::os::fd::{AsFd, FromRawFd, OpenOptions};
 
-    fn make_ctx(
-        compositor: &mut Compositor,
-        focus_manager: &mut FocusManager,
-        dirty_tracker: &mut DirtyRegionTracker,
-        animations: &mut AnimationManager,
-        theme: &Theme,
-        commands: &RefCell<Vec<BoundCommand>>,
-    ) -> Ctx {
-        static mut DUMMY_STDOUT: io::Stdout = unsafe { std::mem::transmute_copy(&std::io::stdout()) };
-        Ctx {
-            compositor,
-            theme,
-            frame_count: 0,
-            last_frame: &Instant::now(),
-            terminal: unsafe { &mut DUMMY_STDOUT },
-            focus_manager,
-            animations,
-            dirty_tracker,
-            commands,
+    fn dummy_terminal() -> crate::Terminal<File> {
+        let file = OpenOptions::new()
+            .write(true)
+            .create(true)
+            .open("/tmp/dummy_terminal_term.txt")
+            .unwrap();
+        let fd = file.into_raw_fd();
+        unsafe { crate::Terminal::from_raw_fd(fd) }.unwrap()
+    }
+
+    fn dummy_terminal_ref() -> &'static mut crate::Terminal<File> {
+        static mut TERMINAL: Option<crate::Terminal<File>> = None;
+        if unsafe { TERMINAL.is_none() } {
+            let file = OpenOptions::new()
+                .write(true)
+                .create(true)
+                .open("/tmp/dummy_terminal_ref_term.txt")
+                .unwrap();
+            let fd = file.into_raw_fd();
+            unsafe { TERMINAL = Some(crate::Terminal::from_raw_fd(fd).unwrap()) };
         }
+        unsafe { TERMINAL.as_mut().unwrap() }
     }
 
     #[test]
@@ -799,14 +804,7 @@ mod tests {
             theme: &theme,
             frame_count: 0,
             last_frame: &last_frame,
-            terminal: make_ctx(
-                &mut compositor,
-                &mut focus_manager,
-                &mut dirty_tracker,
-                &mut animations,
-                &theme,
-                &commands,
-            ).terminal,
+            terminal: &mut dummy_terminal(),
             focus_manager: &mut focus_manager,
             animations: &mut animations,
             dirty_tracker: &mut dirty_tracker,
@@ -833,14 +831,7 @@ mod tests {
             theme: &theme,
             frame_count: 0,
             last_frame: &last_frame,
-            terminal: make_ctx(
-                &mut compositor,
-                &mut focus_manager,
-                &mut dirty_tracker,
-                &mut animations,
-                &theme,
-                &commands,
-            ).terminal,
+            terminal: &mut dummy_terminal(),
             focus_manager: &mut focus_manager,
             animations: &mut animations,
             dirty_tracker: &mut dirty_tracker,
@@ -868,14 +859,7 @@ mod tests {
             theme: &theme,
             frame_count: 0,
             last_frame: &last_frame,
-            terminal: make_ctx(
-                &mut compositor,
-                &mut focus_manager,
-                &mut dirty_tracker,
-                &mut animations,
-                &theme,
-                &commands,
-            ).terminal,
+            terminal: &mut dummy_terminal(),
             focus_manager: &mut focus_manager,
             animations: &mut animations,
             dirty_tracker: &mut dirty_tracker,
@@ -902,14 +886,7 @@ mod tests {
             theme: &theme,
             frame_count: 0,
             last_frame: &last_frame,
-            terminal: make_ctx(
-                &mut compositor,
-                &mut focus_manager,
-                &mut dirty_tracker,
-                &mut animations,
-                &theme,
-                &commands,
-            ).terminal,
+            terminal: &mut dummy_terminal(),
             focus_manager: &mut focus_manager,
             animations: &mut animations,
             dirty_tracker: &mut dirty_tracker,
@@ -936,14 +913,7 @@ mod tests {
             theme: &theme,
             frame_count: 0,
             last_frame: &last_frame,
-            terminal: make_ctx(
-                &mut compositor,
-                &mut focus_manager,
-                &mut dirty_tracker,
-                &mut animations,
-                &theme,
-                &commands,
-            ).terminal,
+            terminal: &mut dummy_terminal(),
             focus_manager: &mut focus_manager,
             animations: &mut animations,
             dirty_tracker: &mut dirty_tracker,
@@ -969,14 +939,7 @@ mod tests {
             theme: &theme,
             frame_count: 0,
             last_frame: &last_frame,
-            terminal: make_ctx(
-                &mut compositor,
-                &mut focus_manager,
-                &mut dirty_tracker,
-                &mut animations,
-                &theme,
-                &commands,
-            ).terminal,
+            terminal: &mut dummy_terminal(),
             focus_manager: &mut focus_manager,
             animations: &mut animations,
             dirty_tracker: &mut dirty_tracker,
@@ -1003,14 +966,7 @@ mod tests {
             theme: &theme,
             frame_count: 0,
             last_frame: &last_frame,
-            terminal: make_ctx(
-                &mut compositor,
-                &mut focus_manager,
-                &mut dirty_tracker,
-                &mut animations,
-                &theme,
-                &commands,
-            ).terminal,
+            terminal: &mut dummy_terminal(),
             focus_manager: &mut focus_manager,
             animations: &mut animations,
             dirty_tracker: &mut dirty_tracker,
@@ -1035,14 +991,7 @@ mod tests {
             theme: &theme,
             frame_count: 100,
             last_frame: &last_frame,
-            terminal: make_ctx(
-                &mut compositor,
-                &mut focus_manager,
-                &mut dirty_tracker,
-                &mut animations,
-                &theme,
-                &commands,
-            ).terminal,
+            terminal: &mut dummy_terminal(),
             focus_manager: &mut focus_manager,
             animations: &mut animations,
             dirty_tracker: &mut dirty_tracker,
@@ -1068,14 +1017,7 @@ mod tests {
             theme: &theme,
             frame_count: 0,
             last_frame: &last_frame,
-            terminal: make_ctx(
-                &mut compositor,
-                &mut focus_manager,
-                &mut dirty_tracker,
-                &mut animations,
-                &theme,
-                &commands,
-            ).terminal,
+            terminal: &mut dummy_terminal(),
             focus_manager: &mut focus_manager,
             animations: &mut animations,
             dirty_tracker: &mut dirty_tracker,
@@ -1105,14 +1047,7 @@ mod tests {
             theme: &theme,
             frame_count: 0,
             last_frame: &last_frame,
-            terminal: make_ctx(
-                &mut compositor,
-                &mut focus_manager,
-                &mut dirty_tracker,
-                &mut animations,
-                &theme,
-                &commands,
-            ).terminal,
+            terminal: &mut dummy_terminal(),
             focus_manager: &mut focus_manager,
             animations: &mut animations,
             dirty_tracker: &mut dirty_tracker,
@@ -1142,14 +1077,7 @@ mod tests {
             theme: &theme,
             frame_count: 0,
             last_frame: &last_frame,
-            terminal: make_ctx(
-                &mut compositor,
-                &mut focus_manager,
-                &mut dirty_tracker,
-                &mut animations,
-                &theme,
-                &commands,
-            ).terminal,
+            terminal: &mut dummy_terminal(),
             focus_manager: &mut focus_manager,
             animations: &mut animations,
             dirty_tracker: &mut dirty_tracker,
@@ -1176,14 +1104,7 @@ mod tests {
             theme: &theme,
             frame_count: 0,
             last_frame: &last_frame,
-            terminal: make_ctx(
-                &mut compositor,
-                &mut focus_manager,
-                &mut dirty_tracker,
-                &mut animations,
-                &theme,
-                &commands,
-            ).terminal,
+            terminal: &mut dummy_terminal(),
             focus_manager: &mut focus_manager,
             animations: &mut animations,
             dirty_tracker: &mut dirty_tracker,
@@ -1213,14 +1134,7 @@ mod tests {
             theme: &theme,
             frame_count: 0,
             last_frame: &last_frame,
-            terminal: make_ctx(
-                &mut compositor,
-                &mut focus_manager,
-                &mut dirty_tracker,
-                &mut animations,
-                &theme,
-                &commands,
-            ).terminal,
+            terminal: &mut dummy_terminal(),
             focus_manager: &mut focus_manager,
             animations: &mut animations,
             dirty_tracker: &mut dirty_tracker,
@@ -1248,14 +1162,7 @@ mod tests {
             theme: &theme,
             frame_count: 0,
             last_frame: &last_frame,
-            terminal: make_ctx(
-                &mut compositor,
-                &mut focus_manager,
-                &mut dirty_tracker,
-                &mut animations,
-                &theme,
-                &commands,
-            ).terminal,
+            terminal: &mut dummy_terminal(),
             focus_manager: &mut focus_manager,
             animations: &mut animations,
             dirty_tracker: &mut dirty_tracker,
@@ -1282,14 +1189,7 @@ mod tests {
             theme: &theme,
             frame_count: 0,
             last_frame: &last_frame,
-            terminal: make_ctx(
-                &mut compositor,
-                &mut focus_manager,
-                &mut dirty_tracker,
-                &mut animations,
-                &theme,
-                &commands,
-            ).terminal,
+            terminal: &mut dummy_terminal(),
             focus_manager: &mut focus_manager,
             animations: &mut animations,
             dirty_tracker: &mut dirty_tracker,
