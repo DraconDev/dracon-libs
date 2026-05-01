@@ -1,21 +1,26 @@
 # Project State
 
 ## Current Focus
-Added dirty flag tracking to widget resize testing
+Enhanced modal dialog system with improved keyboard handling and help overlay composition
 
 ## Context
-This change improves test coverage for the terminal engine's resize handling by ensuring widgets properly track when they need redrawing after area changes.
+The modal dialog system was improved to better handle keyboard interactions, modal composition, and visual feedback. The changes focus on making modals more intuitive and consistent in behavior.
 
 ## Completed
-- [x] Added `dirty` flag to `TrackingWidget` to track when widget area changes require redraw
-- [x] Updated test infrastructure to verify proper dirty state management during resizing
+- [x] Enhanced `ConfirmDialog` with proper keyboard handling (ESC→Cancel, Enter→Confirm)
+- [x] Improved help overlay with button-triggered toggle instead of keyboard shortcut
+- [x] Added toast notifications for success/error feedback
+- [x] Refined modal composition with proper z-index layering
+- [x] Updated widget event flow documentation
+- [x] Added button click support alongside keyboard interactions
 
 ## In Progress
-- [x] Comprehensive resize handling tests
+- [ ] No active work in progress
 
 ## Blockers
 - None identified
 
 ## Next Steps
-1. Expand test coverage for other widget lifecycle events
-2. Verify dirty flag propagation through widget composition hierarchy
+1. Verify modal behavior across different terminal sizes
+2. Add more visual feedback for modal state changes
+3. Consider adding animation effects for modal transitions

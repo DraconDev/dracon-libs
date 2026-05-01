@@ -17,8 +17,7 @@
 use dracon_terminal_engine::compositor::{Cell, Color, Plane, Styles};
 use dracon_terminal_engine::framework::theme::Theme;
 use dracon_terminal_engine::framework::widget::{Widget, WidgetId};
-use dracon_terminal_engine::framework::widgets::{Breadcrumbs, Gauge, List, StatusBadge};
-use dracon_terminal_engine::framework::App;
+use dracon_terminal_engine::framework::app::App;
 use ratatui::layout::Rect;
 use std::io;
 
@@ -291,7 +290,7 @@ impl Widget for TrackingWidget {
 
         for (y, line) in lines.iter().enumerate().take(area.height as usize) {
             for (x, c) in line.chars().take(area.width as usize - 1).enumerate() {
-                let idx = (y * area.width + x) as usize;
+                let idx = y * area.width as usize + x;
                 if idx < plane.cells.len() {
                     plane.cells[idx] = Cell {
                         char: c,
@@ -373,7 +372,7 @@ impl Widget for ThemePreviewPanel {
 
         for y in 0..area.height {
             for x in 0..area.width {
-                let idx = (y * area.width + x) as usize;
+                let idx = y as usize * area.width as usize + x as usize;
                 if idx < plane.cells.len() {
                     let is_border = x == 0 || x == area.width - 1 || y == 0 || y == area.height - 1;
                     plane.cells[idx] = Cell {
