@@ -1,23 +1,20 @@
 # Project State
 
 ## Current Focus
-Refactored widget lifecycle testing with improved mount/unmount tracking
+Dependency version updates in the `dracon-terminal-engine` framework
 
 ## Context
-This change improves the test suite for widget lifecycle management in the terminal engine by simplifying the mount/unmount tracking mechanism and removing a failing test assertion.
+This change updates dependency versions in the terminal engine framework, likely to incorporate bug fixes, security patches, or new features in the underlying libraries.
 
 ## Completed
-- [x] Refactored widget lifecycle test to use atomic booleans instead of mutex state tracking
-- [x] Simplified test structure by removing redundant state management
-- [x] Removed failing assertion that was causing test failures
-- [x] Updated Cargo.lock with dependency updates
+- [x] Updated dependency versions in `Cargo.lock` to reflect current framework requirements
 
 ## In Progress
-- [x] Refactored widget lifecycle testing with improved mount/unmount tracking
+- [x] Dependency version updates in progress
 
 ## Blockers
 - None identified in this commit
 
 ## Next Steps
-1. Verify all widget lifecycle tests pass with the new implementation
-2. Review and potentially refactor other test utilities that may benefit from similar improvements
+1. Verify compatibility with existing framework features
+2. Test the updated dependencies in the terminal engine's test suite
