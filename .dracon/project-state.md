@@ -1,25 +1,25 @@
 # Project State
 
 ## Current Focus
-Refactored modal dialog system with improved widget management and rendering
+Refactored modal dialog system with improved widget management and lifecycle tracking
 
 ## Context
-The modal dialog system was refactored to better handle widget lifecycle and rendering, particularly for modal overlays and toast notifications. This change improves the separation of concerns between widget construction and rendering.
+This change improves the modal dialog system by:
+1. Adding proper lifetime management to modal components
+2. Fixing a potential buffer overflow in breadcrumb rendering
+3. Aligning with recent widget lifecycle refactoring efforts
 
 ## Completed
-- [x] Refactored widget construction to separate widget creation from rendering
-- [x] Added explicit widget management with `mark_dirty()` and `render()` calls
-- [x] Improved modal rendering with proper z-index handling
-- [x] Updated toast notification system with consistent theme handling
-- [x] Simplified widget ID management in the demo application
+- [x] Added lifetime parameters to `HelpOverlay` struct for proper modal management
+- [x] Fixed breadcrumb rendering calculation to prevent potential buffer overflow
+- [x] Updated widget imports to include `WidgetId` for better widget management
 
 ## In Progress
-- [ ] No active work in progress
+- [ ] No active work in progress for this commit
 
 ## Blockers
-- None identified
+- None identified in this commit
 
 ## Next Steps
-1. Verify modal dialog behavior with keyboard navigation
-2. Test toast notification positioning and timing
-3. Document the new widget lifecycle patterns
+1. Verify modal dialog behavior in the demo examples
+2. Ensure theme switching works correctly with the new modal implementation

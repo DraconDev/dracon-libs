@@ -28,15 +28,15 @@ use std::time::Duration;
 
 use dracon_terminal_engine::compositor::Plane;
 use dracon_terminal_engine::framework::prelude::*;
-use dracon_terminal_engine::framework::widget::Widget;
+use dracon_terminal_engine::framework::widget::{Widget, WidgetId};
 use dracon_terminal_engine::framework::widgets::{
     Button, ConfirmDialog, Label, Modal, ModalResult, Toast, ToastKind,
 };
 use dracon_terminal_engine::input::event::{KeyCode, KeyEventKind};
 use ratatui::layout::Rect;
 
-struct HelpOverlay {
-    modal: Modal,
+struct HelpOverlay<'a> {
+    modal: Modal<'a>,
     visible: bool,
 }
 

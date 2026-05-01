@@ -628,7 +628,7 @@ impl Widget for WidgetDemoPanel {
         for (i, crumb) in crumbs.iter().enumerate() {
             let is_last = i == crumbs.len() - 1;
             if i > 0 {
-                let idx = (breadcrumb_row * area.width + x as u16) as usize;
+                let idx = breadcrumb_row as usize * area.width as usize + x as usize;
                 if idx < plane.cells.len() {
                     plane.cells[idx].char = '/';
                     plane.cells[idx].fg = theme.inactive_fg;
