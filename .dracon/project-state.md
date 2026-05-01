@@ -1,21 +1,20 @@
 # Project State
 
 ## Current Focus
-Removed redundant `tokio::process::Child` import in async command runner test
+Dependency version updates in the `dracon-terminal-engine` framework
 
 ## Context
-The change was part of ongoing test suite improvements for the terminal engine's async command handling system. The import was no longer needed after refactoring the test structure.
+This change was prompted by the need to update dependencies to ensure compatibility and security. The `Cargo.lock` file was modified to reflect these updates.
 
 ## Completed
-- [x] Removed unused `tokio::process::Child` import from async command runner test
-- [x] Cleaned up test file organization
+- [x] Updated dependency versions in the `dracon-terminal-engine` framework
 
 ## In Progress
-- [ ] No active work in progress
+- [x] No active work in progress related to this change
 
 ## Blockers
-- None identified
+- None
 
 ## Next Steps
-1. Verify test suite stability after changes
-2. Continue test coverage improvements for terminal engine components
+1. Verify that all dependencies are properly resolved
+2. Test the updated dependencies in the relevant components
