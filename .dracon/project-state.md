@@ -1,21 +1,26 @@
 # Project State
 
 ## Current Focus
-Dependency version updates in the `dracon-terminal-engine` framework
+Expanded test coverage for widget composition, rendering, and lifecycle management in the terminal engine.
 
 ## Context
-This change updates dependency versions in the terminal engine framework. The recent refactoring work on widget lifecycle testing and related components required updated dependencies to ensure compatibility and proper functionality.
+The terminal engine needs comprehensive tests to verify widget interactions, rendering behavior, and lifecycle management. This change adds detailed test cases for complex widget scenarios.
 
 ## Completed
-- [x] Updated dependency versions in the `dracon-terminal-engine` framework
+- [x] Added test cases for SplitPane with List and Panel widgets
+- [x] Added tests for widget tree rendering and area propagation
+- [x] Added tests for z-index layering and HUD rendering
+- [x] Added tests for dirty tracking and area management
+- [x] Added tests for widget lifecycle (mount/unmount)
+- [x] Added tests for modal dialog behavior and event interception
 
 ## In Progress
-- [x] No active work in progress beyond dependency updates
+- [x] Comprehensive test suite for widget composition scenarios
 
 ## Blockers
-- None identified for this change
+- None identified
 
 ## Next Steps
-1. Verify that the updated dependencies do not introduce breaking changes
-2. Continue with ongoing refactoring and testing work in the terminal engine
-```
+1. Run the new tests to verify all scenarios
+2. Address any test failures or edge cases
+3. Consider adding more complex widget interaction tests

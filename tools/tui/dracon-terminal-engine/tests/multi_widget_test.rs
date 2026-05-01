@@ -7,6 +7,34 @@
 //! - Dirty tracking across widget composition
 //! - App lifecycle (on_mount/on_unmount) for multiple widgets
 //! - Modal overlay event interception
+//!
+//! # Test Areas
+//!
+//! ## 1. SplitPane + List + Panel (`test_splitpane_*`)
+//! Verifies that a SplitPane can contain different widgets in each panel,
+//! that both panels render independently, and that z-index values are set correctly.
+//!
+//! ## 2. Widget Tree Rendering (`test_widget_tree_*`)
+//! Verifies that render calls propagate through a widget hierarchy and that
+//! area is correctly set on all children in the tree.
+//!
+//! ## 3. Z-index Layering (`test_z_index_*`, `test_hud_z_index_*`)
+//! Verifies that widgets with higher z-index values render on top of lower ones,
+//! and that overlapping areas respect z-ordering.
+//!
+//! ## 4. Dirty Tracking (`test_dirty_*`, `test_widget_set_area_*`)
+//! Verifies that dirty flags control render behavior, that marking dirty triggers
+//! re-renders, and that set_area marks the widget dirty.
+//!
+//! ## 5. App Lifecycle (`test_app_*`)
+//! Verifies that on_mount is called when widgets are added, on_unmount is called
+//! when widgets are removed, and multiple widgets can coexist with proper lifecycle.
+//!
+//! ## 6. Modal Overlay (`test_modal_*`)
+//! Verifies that modal dialogs intercept events, handle keyboard input (Esc/Enter/Tab),
+//! handle mouse clicks on buttons, and properly block events from reaching widgets below.
+
+#![allow(dead_code)]
 
 use std::cell::Cell;
 use std::rc::Rc;
