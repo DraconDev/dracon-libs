@@ -1,21 +1,30 @@
 # Project State
 
 ## Current Focus
-Dependency version updates in the `dracon-terminal-engine` framework
+Added a modal dialog demonstration example to showcase modal interactions, keyboard shortcuts, and focus management in the terminal UI framework.
 
 ## Context
-This change updates dependency versions to ensure compatibility and security patches while maintaining framework stability.
+This example demonstrates core modal interaction patterns needed for terminal applications, including:
+- Blocking input with modal dialogs
+- Global keyboard shortcuts
+- Focus trapping
+- Z-index layering for modal composition
 
 ## Completed
-- [x] Updated dependency versions in Cargo.lock
+- [x] Added `modal_demo.rs` example showing:
+  - Confirmation dialog with blocking behavior
+  - Help overlay with keyboard shortcuts
+  - Global shortcut handling (quit, save, help)
+  - Modal composition with proper z-index layering
+- [x] Implemented focus management patterns
+- [x] Added visual demonstration of modal interactions
 
 ## In Progress
-- [x] Dependency version updates in progress
+- [ ] None (complete implementation)
 
 ## Blockers
-- None reported
+- None (standalone example)
 
 ## Next Steps
-1. Verify framework stability with updated dependencies
-2. Continue with ongoing widget lifecycle testing improvements
-```
+1. Review modal interaction patterns for consistency
+2. Document modal usage patterns in framework documentation
