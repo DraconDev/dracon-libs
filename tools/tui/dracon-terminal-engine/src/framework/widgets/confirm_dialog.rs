@@ -171,20 +171,11 @@ impl Widget for ConfirmDialog {
         true
     }
 
-    fn focused(&self) -> bool {
-        self.focused
-    }
-
-    fn set_focus(&mut self, focused: bool) {
-        self.focused = focused;
-        self.dirty = true;
-    }
-
     fn render(&self, area: Rect) -> Plane {
         let mut plane = Plane::new(0, area.width, area.height);
 
         let border_fg = if self.danger { self.theme.error_fg } else { self.theme.fg };
-        let btn_fg = if self.focused { self.theme.highlight_fg } else { self.theme.fg };
+        let btn_fg = if self.focused { self.theme.accent } else { self.theme.fg };
 
         for x in 0..area.width {
             plane.cells[x as usize] = Cell { char: '─', fg: border_fg, bg: self.theme.bg, style: Styles::empty(), transparent: false, skip: false };
@@ -201,7 +192,12 @@ impl Widget for ConfirmDialog {
                 plane.cells[right_idx] = Cell { char: '│', fg: border_fg, bg: self.theme.bg, style: Styles::empty(), transparent: false, skip: false };
             }
         }
-        let corners = [(0, '┌'), (area.width - 1, '┐'), ((area.height - 1) * area.width as usize, '└'), ((area.height - 1) * area.width as usize + area.width as usize - 1, '┘')];
+        let corners = [
+            (0usize, '┌'),
+            ((area.width - 1) as usize, '┐'),
+            (((area.height - 1) as usize) * (area.width as usize), '└'),
+            ((((area.height - 1) as usize) * (area.width as usize)) + (area.width as usize) - 1, '┘')
+        ];
         for (idx, ch) in corners {
             if idx < plane.cells.len() {
                 plane.cells[idx] = Cell { char: ch, fg: border_fg, bg: self.theme.bg, style: Styles::empty(), transparent: false, skip: false };
@@ -241,10 +237,6 @@ impl Widget for ConfirmDialog {
         }
 
         plane
-    }
-
-    fn on_key(&mut self, _key: crate::input::event::Key) -> bool {
-        false
     }
 
     fn commands(&self) -> Vec<BoundCommand> {

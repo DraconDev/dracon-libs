@@ -108,7 +108,7 @@ impl StreamingText {
                     if self.lines.len() >= self.max_lines {
                         self.lines.pop_front();
                     }
-                    self.lines.push_back(line.raw);
+                    self.lines.push_back(line.text);
                 }
             }
             _ => {}

@@ -119,15 +119,16 @@ impl LogViewer {
         match output {
             ParsedOutput::Lines(log_lines) => {
                 for line in log_lines {
-                    if self.filter.is_none() || self.matches_filter_by_raw(&line.raw) {
+                    let raw = line.text.clone();
+                    if self.filter.is_none() || raw.contains(self.filter.as_ref().unwrap()) {
                         if self.lines.len() >= self.max_lines {
                             self.lines.pop_front();
                         }
                         self.lines.push_back(LogLine {
-                            timestamp: line.timestamp,
-                            level: line.level,
-                            message: line.message,
-                            raw: line.raw,
+                            timestamp: String::new(),
+                            level: self.detect_level(&line.severity),
+                            message: line.text.clone(),
+                            raw,
                         });
                     }
                 }
@@ -298,7 +299,6 @@ impl Widget for LogViewer {
                     col += 1;
                 }
 
-                let msg_start = col;
                 for c in line.message.chars().take((area.width as usize).saturating_sub(col)) {
                     if col < area.width as usize {
                         plane.cells[screen_row * area.width as usize + col] = Cell { char: c, fg: self.theme.fg, bg: self.theme.bg, style: Styles::empty(), transparent: false, skip: false };
