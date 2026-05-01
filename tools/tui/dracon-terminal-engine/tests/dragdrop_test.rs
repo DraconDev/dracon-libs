@@ -4,8 +4,9 @@ mod common;
 use common::make_area;
 
 use dracon_terminal_engine::framework::dragdrop::{
-    DragGhost, DragManager, DragPhase, DragState, DropTarget,
+    DragGhost, DragManager, DragPhase, DropTarget,
 };
+use dracon_terminal_engine::framework::hitzone::DragState;
 
 #[test]
 fn test_drag_phase_variants() {
