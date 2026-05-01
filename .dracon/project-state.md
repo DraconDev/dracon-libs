@@ -1,21 +1,31 @@
 # Project State
 
 ## Current Focus
-Dependency version updates in the `dracon-terminal-engine` framework
+Added a comprehensive menu system example with keyboard shortcuts, context menus, and status feedback
 
 ## Context
-This change updates the framework dependencies to ensure compatibility with the latest widget architecture improvements in the tabbed panel and tree navigator examples.
+This implements a common UI pattern needed for terminal applications, providing:
+- Standard menu bar with dropdowns
+- Context-sensitive right-click menus
+- Global keyboard shortcuts
+- Visual feedback through toasts
+- Status bar with system state
 
 ## Completed
-- [x] Updated framework dependencies to align with refactored widget architecture
+- [x] MenuBar widget with File/Edit/View/Help dropdowns
+- [x] ContextMenu that appears on right-click
+- [x] Keyboard shortcuts (Ctrl+N, Ctrl+O, Ctrl+S, Ctrl+Q)
+- [x] Toast notifications for all actions
+- [x] Status bar with system state
+- [x] List widget with selection support
 
 ## In Progress
-- [x] Dependency version updates
+- [ ] None (complete implementation)
 
 ## Blockers
-- None reported
+- None (ready for integration)
 
 ## Next Steps
-1. Verify compatibility with all widget examples
-2. Prepare documentation updates for the new dependency versions
+1. Add unit tests for menu system behavior
+2. Document the menu system API for framework users
 ```
