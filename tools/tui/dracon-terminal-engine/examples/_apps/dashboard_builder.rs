@@ -149,17 +149,17 @@ fn main() -> std::io::Result<()> {
         if tick % 3 == 0 && !paused_clone.load(Ordering::SeqCst) { theme_idx_clone.fetch_add(1, Ordering::SeqCst); }
     };
 
-    let app_result = App::new()?
+    let mut app = App::new()?
         .title("Dashboard Builder")
         .fps(30)
         .theme(Theme::nord())
         .tick_interval(1000)
-        .on_tick(tick_cb)
-        .add_widget(Box::new(Dashboard::new()), Rect::new(0, 0, 80, 24))
-        .run(move |ctx| {
-            ctx.hide_cursor().ok();
-            ctx.mark_dirty(0, 0, 80, 24);
-        });
+        .on_tick(tick_cb);
 
-    app_result
+    let widget_id = app.add_widget(Box::new(Dashboard::new()), Rect::new(0, 0, 80, 24));
+
+    app.run(move |ctx| {
+        ctx.hide_cursor().ok();
+        ctx.mark_dirty(0, 0, 80, 24);
+    })
 }

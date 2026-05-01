@@ -48,77 +48,51 @@ use dracon_terminal_engine::framework::widgets::{
 use dracon_terminal_engine::input::event::{KeyCode, KeyEventKind, MouseEventKind};
 use ratatui::layout::Rect;
 
-static MOCK_FS: FileNode = FileNode {
-    name: "root",
-    is_dir: true,
-    children: Some(&[
-        FileNode { name: "src", is_dir: true, size: "", modified: "", children: Some(&[
-            FileNode { name: "main.rs", is_dir: false, size: "1.2 KB", modified: "2025-01-10", children: None },
-            FileNode { name: "lib.rs", is_dir: false, size: "3.4 KB", modified: "2025-01-12", children: None },
-        ])},
-        FileNode { name: "docs", is_dir: true, size: "", modified: "", children: Some(&[
-            FileNode { name: "README.md", is_dir: false, size: "4.1 KB", modified: "2025-01-08", children: None },
-            FileNode { name: "CHANGELOG.md", is_dir: false, size: "8.7 KB", modified: "2025-01-15", children: None },
-        ])},
-        FileNode { name: "tests", is_dir: true, size: "", modified: "", children: Some(&[
-            FileNode { name: "test_main.rs", is_dir: false, size: "0.8 KB", modified: "2025-01-05", children: None },
-        ])},
-        FileNode { name: "Cargo.toml", is_dir: false, size: "2.3 KB", modified: "2025-01-15", children: None },
-        FileNode { name: "README.md", is_dir: false, size: "4.1 KB", modified: "2025-01-08", children: None },
-        FileNode { name: ".gitignore", is_dir: false, size: "0.1 KB", modified: "2025-01-01", children: None },
-    ]),
-};
-
-struct FileNode {
+struct MockFs {
     name: &'static str,
+    children: Option<Vec<MockFs>>,
     is_dir: bool,
-    children: Option<&'static [FileNode]>,
-    size: &'static str,
-    modified: &'static str,
 }
 
-impl FileNode {
+impl MockFs {
     fn icon(&self) -> &'static str {
         if self.is_dir { "📁" } else { "📄" }
     }
 
-    fn to_tree_node(&self, depth: usize) -> TreeNode {
+    fn to_tree_node(&self) -> TreeNode {
         let label = format!("{}{}", self.icon(), self.name);
         let mut node = TreeNode::new(&label);
-        node.expanded = depth == 0;
-        if let Some(children) = self.children {
+        if let Some(ref children) = self.children {
             for child in children {
-                node.add_child(child.to_tree_node(depth + 1));
+                node.add_child(child.to_tree_node());
             }
         }
         node
     }
 
-    fn find_by_path(&self, path: &[usize]) -> Option<&FileNode> {
+    fn find_by_path(&self, path: &[usize]) -> Option<&MockFs> {
         if path.is_empty() { return Some(self); }
-        let children = self.children?;
+        let children = self.children.as_ref()?;
         let idx = path[0];
         if idx >= children.len() { return None; }
         children[idx].find_by_path(&path[1..])
     }
 
     fn child_count(&self) -> usize {
-        self.children.map(|c| c.len()).unwrap_or(0)
+        self.children.as_ref().map(|c| c.len()).unwrap_or(0)
     }
 }
 
 struct FileEntry {
     name: String,
     is_dir: bool,
-    size: String,
-    modified: String,
 }
 
 enum FocusPanel { Tree, Table, ContextMenu }
 
 struct FileManager {
     id: WidgetId,
-    fs: &'static FileNode,
+    fs: MockFs,
     tree: Tree,
     breadcrumbs: Breadcrumbs,
     tree_path: Vec<usize>,
@@ -132,13 +106,34 @@ struct FileManager {
 
 impl FileManager {
     fn new(id: WidgetId) -> Self {
-        let root_node = MOCK_FS.to_tree_node(0);
+        let fs = MockFs {
+            name: "root",
+            is_dir: true,
+            children: Some(vec![
+                MockFs { name: "src", is_dir: true, children: Some(vec![
+                    MockFs { name: "main.rs", is_dir: false, children: None },
+                    MockFs { name: "lib.rs", is_dir: false, children: None },
+                ])},
+                MockFs { name: "docs", is_dir: true, children: Some(vec![
+                    MockFs { name: "README.md", is_dir: false, children: None },
+                    MockFs { name: "CHANGELOG.md", is_dir: false, children: None },
+                ])},
+                MockFs { name: "tests", is_dir: true, children: Some(vec![
+                    MockFs { name: "test_main.rs", is_dir: false, children: None },
+                ])},
+                MockFs { name: "Cargo.toml", is_dir: false, children: None },
+                MockFs { name: "README.md", is_dir: false, children: None },
+                MockFs { name: ".gitignore", is_dir: false, children: None },
+            ]),
+        };
+
+        let root_node = fs.to_tree_node();
         let tree = Tree::new(WidgetId::new(1)).with_root(vec![root_node]);
         let breadcrumbs = Breadcrumbs::new_with_id(WidgetId::new(3), vec!["~".to_string(), "projects".to_string(), "dracon-terminal-engine".to_string()]);
 
         Self {
             id,
-            fs: &MOCK_FS,
+            fs,
             tree,
             breadcrumbs,
             tree_path: Vec::new(),
@@ -151,8 +146,8 @@ impl FileManager {
         }
     }
 
-    fn current_node(&self) -> &FileNode {
-        self.fs.find_by_path(&self.tree_path).unwrap_or(self.fs)
+    fn current_node(&self) -> &MockFs {
+        self.fs.find_by_path(&self.tree_path).unwrap_or(&self.fs)
     }
 
     fn update_breadcrumbs(&mut self) {
@@ -177,7 +172,7 @@ impl FileManager {
 
     fn open_tree_selection(&mut self) {
         if let Some(path) = self.tree.get_selected_path().last().copied() {
-            if let Some(node) = self.current_node().children.and_then(|c| c.get(path)) {
+            if let Some(node) = self.current_node().children.as_ref().and_then(|c| c.get(path)) {
                 if node.is_dir {
                     self.tree_path.push(path);
                     self.tree.set_selected_path(self.tree_path.clone());
@@ -235,9 +230,20 @@ impl FileManager {
         self.fs.find_by_path(path).map(|node| FileEntry {
             name: node.name.to_string(),
             is_dir: node.is_dir,
-            size: node.size.to_string(),
-            modified: node.modified.to_string(),
         })
+    }
+
+    fn size_and_modified_for(&self, name: &str) -> (String, String) {
+        match name {
+            "main.rs" => ("1.2 KB".to_string(), "2025-01-10".to_string()),
+            "lib.rs" => ("3.4 KB".to_string(), "2025-01-12".to_string()),
+            "README.md" => ("4.1 KB".to_string(), "2025-01-08".to_string()),
+            "CHANGELOG.md" => ("8.7 KB".to_string(), "2025-01-15".to_string()),
+            "test_main.rs" => ("0.8 KB".to_string(), "2025-01-05".to_string()),
+            "Cargo.toml" => ("2.3 KB".to_string(), "2025-01-15".to_string()),
+            ".gitignore" => ("0.1 KB".to_string(), "2025-01-01".to_string()),
+            _ => ("—".to_string(), "—".to_string()),
+        }
     }
 
     fn render_details(&self, area: Rect) -> Plane {
@@ -267,11 +273,12 @@ impl FileManager {
         y += 2;
 
         if let Some(ref entry) = self.selected_entry {
+            let (size, modified) = self.size_and_modified_for(&entry.name);
             print_line(&mut plane, y, &format!("Name: {}", entry.name), Color::Rgb(255, 255, 255), false);
             y += 1;
-            print_line(&mut plane, y, &format!("Size: {}", entry.size), Color::Rgb(200, 150, 100), false);
+            print_line(&mut plane, y, &format!("Size: {}", size), Color::Rgb(200, 150, 100), false);
             y += 1;
-            print_line(&mut plane, y, &format!("Modified: {}", entry.modified), Color::Rgb(180, 180, 180), false);
+            print_line(&mut plane, y, &format!("Modified: {}", modified), Color::Rgb(180, 180, 180), false);
             y += 1;
             print_line(&mut plane, y, "Permissions: rw-r--r--", Color::Rgb(180, 180, 180), false);
             y += 2;
@@ -303,7 +310,7 @@ impl FileManager {
 
         let current = self.current_node();
         let children = match current.children {
-            Some(c) => c,
+            Some(ref c) => c,
             None => return plane,
         };
 
@@ -311,7 +318,6 @@ impl FileManager {
             cell.bg = Color::Ansi(17);
         }
 
-        let header_height = 1u16;
         for (i, c) in "Name                  Size      Modified".chars().take(area.width as usize).enumerate() {
             let idx = i;
             if idx < plane.cells.len() {
@@ -321,11 +327,11 @@ impl FileManager {
             }
         }
 
-        let mut y = header_height;
+        let mut y = 1u16;
         for child in children.iter() {
             if y >= area.height { break; }
-            let icon = child.icon();
-            let line = format!("{}{:<20} {:<10} {:<12}", icon, child.name, child.size, child.modified);
+            let (size, modified) = self.size_and_modified_for(child.name);
+            let line = format!("{}{:<20} {:<10} {:<12}", child.icon(), child.name, size, modified);
             let fg = if child.is_dir { Color::Rgb(100, 200, 255) } else { Color::Rgb(200, 200, 200) };
 
             for (j, c) in line.chars().take(area.width as usize).enumerate() {
@@ -515,14 +521,12 @@ impl Widget for FileManager {
             if col > tree_rect.width && row > header_height && row < header_height + detail_rect.height {
                 let rel_row = (row - header_height).saturating_sub(1) as usize;
                 let current = self.current_node();
-                if let Some(children) = current.children {
+                if let Some(ref children) = current.children {
                     if rel_row < children.len() {
-                        let child = children[rel_row];
+                        let child = &children[rel_row];
                         self.selected_entry = Some(FileEntry {
                             name: child.name.to_string(),
                             is_dir: child.is_dir,
-                            size: child.size.to_string(),
-                            modified: child.modified.to_string(),
                         });
                         if !child.is_dir { self.show_toast(&format!("Opening {}...", child.name), ToastKind::Info); }
                         self.dirty = true;
