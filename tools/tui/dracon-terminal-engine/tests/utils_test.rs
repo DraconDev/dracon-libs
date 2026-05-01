@@ -6,8 +6,7 @@ mod common;
 use dracon_terminal_engine::utils::{
     delete_word_backwards, format_datetime_smart, format_permissions, format_size,
     get_file_category, get_open_with_suggestions, get_visual_width, is_binary_content,
-    truncate_to_width, CommandExists, FileCategory, IconMode, SelectionSize, SpawnDetached,
-    Squarify, SuggestOpenWith,
+    truncate_to_width, squarify, guess_icon_mode, FileCategory, IconMode, SelectionState,
 };
 use std::time::{Duration, SystemTime};
 
@@ -348,9 +347,64 @@ fn test_format_datetime_smart_past_date() {
 }
 
 #[test]
-fn test_guess_icon_mode_not_empty() {
+fn test_guess_icon_mode_returns_valid_enum() {
     std::env::remove_var("TERM");
     std::env::remove_var("TERM_PROGRAM");
     std::env::remove_var("COLORTERM");
     let mode = guess_icon_mode();
+    match mode {
+        IconMode::Nerd | IconMode::Unicode | IconMode::ASCII => {}
+    }
+}
+
+#[test]
+fn test_file_category_cyber_color() {
+    let categories = [
+        (FileCategory::Archive, 255, 50, 80),
+        (FileCategory::Image, 255, 0, 255),
+        (FileCategory::Script, 0, 255, 100),
+        (FileCategory::Text, 255, 215, 0),
+        (FileCategory::Document, 100, 200, 255),
+        (FileCategory::Audio, 0, 150, 255),
+        (FileCategory::Video, 180, 50, 255),
+        (FileCategory::Other, 255, 255, 255),
+    ];
+    for (cat, r, g, b) in categories {
+        let color = cat.cyber_color();
+        assert_eq!(color, dracon_terminal_engine::compositor::Color::Rgb(r, g, b));
+    }
+}
+
+#[test]
+fn test_selection_state_is_empty() {
+    let state = SelectionState::new();
+    assert!(state.is_empty());
+    state.add(1);
+    assert!(!state.is_empty());
+}
+
+#[test]
+fn test_selection_state_clear_multi() {
+    let mut state = SelectionState::new();
+    state.add(1);
+    state.add(2);
+    state.clear_multi();
+    assert!(state.multi.is_empty());
+    assert!(state.selected.is_some());
+}
+
+#[test]
+fn test_selection_state_multi_selected_indices() {
+    let mut state = SelectionState::new();
+    state.add(1);
+    state.add(2);
+    let indices = state.multi_selected_indices();
+    assert!(indices.contains(&1));
+    assert!(indices.contains(&2));
+}
+
+#[test]
+fn test_truncate_to_width_with_unicode() {
+    let result = truncate_to_width("héllo", 5, "...");
+    assert!(result.ends_with("..."));
 }

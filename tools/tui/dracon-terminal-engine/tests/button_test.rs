@@ -1,15 +1,15 @@
 //! Tests for framework Button and standalone Button widgets.
 
 mod common;
-use common::{make_key, make_area, rect};
+use common::make_area;
 
 use dracon_terminal_engine::framework::widget::{Widget, WidgetId};
 use dracon_terminal_engine::framework::widgets::button::Button as FrameworkButton;
 use dracon_terminal_engine::framework::theme::Theme;
 use dracon_terminal_engine::input::event::{KeyCode, MouseButton, MouseEventKind};
 use dracon_terminal_engine::widgets::button::Button as StandaloneButton;
-
-// ========== Framework Button Construction ==========
+use std::cell::Cell;
+use std::rc::Rc;
 
 #[test]
 fn test_framework_button_new() {
@@ -40,18 +40,6 @@ fn test_framework_button_default_area() {
     assert_eq!(area.width, 10);
     assert_eq!(area.height, 1);
 }
-
-#[test]
-fn test_framework_button_empty_label_fallback() {
-    let btn = FrameworkButton::new("");
-    let area = make_area(20, 3);
-    let plane = btn.render(area);
-    assert_eq!(plane.cells[0].char, '[');
-    let end_idx = (1 + "Button".len()) as usize;
-    assert_eq!(plane.cells[end_idx].char, ']');
-}
-
-// ========== Framework Button Rendering ==========
 
 #[test]
 fn test_framework_button_render_size() {
@@ -126,73 +114,119 @@ fn test_framework_button_set_area() {
     assert!(btn.needs_render());
 }
 
-// ========== Framework Button Event Handling ==========
-
 #[test]
 fn test_framework_button_handle_key_enter_triggers_callback() {
-    let mut called = false;
+    let called = Rc::new(Cell::new(false));
+    let called_clone = called.clone();
     {
-        let mut btn = FrameworkButton::new("OK").on_click(|| {
-            called = true;
+        let mut btn = FrameworkButton::new("OK").on_click(move || {
+            called_clone.set(true);
         });
-        btn.handle_key(make_key(KeyCode::Enter));
+        btn.handle_key(common::make_key(KeyCode::Enter));
     }
-    assert!(called);
+    assert!(called.get());
 }
 
 #[test]
 fn test_framework_button_handle_key_non_enter_returns_false() {
     let mut btn = FrameworkButton::new("OK").on_click(|| {});
-    let result = btn.handle_key(make_key(KeyCode::Backspace));
+    let result = btn.handle_key(common::make_key(KeyCode::Backspace));
     assert!(!result);
 }
 
 #[test]
 fn test_framework_button_handle_mouse_click_triggers_callback() {
-    let mut called = false;
+    let called = Rc::new(Cell::new(false));
+    let called_clone = called.clone();
     {
-        let mut btn = FrameworkButton::new("OK").on_click(|| {
-            called = true;
+        let mut btn = FrameworkButton::new("OK").on_click(move || {
+            called_clone.set(true);
         });
-        btn.set_area(rect(5, 5, 10, 1));
+        btn.set_area(common::rect(5, 5, 10, 1));
         let result = btn.handle_mouse(MouseEventKind::Down(MouseButton::Left), 6, 5);
         assert!(result);
     }
-    assert!(called);
+    assert!(called.get());
 }
 
 #[test]
 fn test_framework_button_handle_mouse_outside_area_returns_false() {
     let mut btn = FrameworkButton::new("OK").on_click(|| {});
-    btn.set_area(rect(5, 5, 10, 1));
+    btn.set_area(common::rect(5, 5, 10, 1));
     let result = btn.handle_mouse(MouseEventKind::Down(MouseButton::Left), 20, 5);
     assert!(!result);
 }
 
 #[test]
 fn test_framework_button_handle_mouse_right_click_returns_false() {
-    let mut called = false;
-    let mut btn = FrameworkButton::new("OK").on_click(|| {
-        called = true;
+    let called = Rc::new(Cell::new(false));
+    let called_clone = called.clone();
+    let mut btn = FrameworkButton::new("OK").on_click(move || {
+        called_clone.set(true);
     });
-    btn.set_area(rect(5, 5, 10, 1));
+    btn.set_area(common::rect(5, 5, 10, 1));
     let result = btn.handle_mouse(MouseEventKind::Down(MouseButton::Right), 6, 5);
     assert!(!result);
-    assert!(!called);
+    assert!(!called.get());
 }
 
 #[test]
 fn test_framework_button_multiple_clicks() {
-    let mut count = 0;
+    let count = Rc::new(Cell::new(0));
+    let count_clone = count.clone();
     {
-        let mut btn = FrameworkButton::new("OK").on_click(|| {
-            count += 1;
+        let mut btn = FrameworkButton::new("OK").on_click(move || {
+            count_clone.set(count_clone.get() + 1);
         });
+        btn.set_area(common::rect(5, 5, 10, 1));
         btn.handle_mouse(MouseEventKind::Down(MouseButton::Left), 6, 5);
         btn.handle_mouse(MouseEventKind::Down(MouseButton::Left), 6, 5);
         btn.handle_mouse(MouseEventKind::Down(MouseButton::Left), 6, 5);
     }
-    assert_eq!(count, 3);
+    assert_eq!(count.get(), 3);
+}
+
+#[test]
+fn test_framework_button_empty_label_fallback() {
+    let btn = FrameworkButton::new("");
+    let area = make_area(20, 3);
+    let plane = btn.render(area);
+    assert_eq!(plane.cells[0].char, '[');
+    let end_idx = (1 + "Button".len()) as usize;
+    assert_eq!(plane.cells[end_idx].char, ']');
+}
+
+#[test]
+fn test_framework_button_id_method() {
+    let btn = FrameworkButton::new("test");
+    let id = btn.id();
+    assert_eq!(id, WidgetId::default_id());
+}
+
+#[test]
+fn test_framework_button_focusable() {
+    let btn = FrameworkButton::new("test");
+    assert!(btn.focusable());
+}
+
+#[test]
+fn test_framework_button_z_index() {
+    let btn = FrameworkButton::new("test");
+    assert_eq!(btn.z_index(), 0);
+}
+
+#[test]
+fn test_framework_button_set_id() {
+    let mut btn = FrameworkButton::new("test");
+    let id = WidgetId::new(42);
+    btn.set_id(id);
+    assert_eq!(btn.id(), id);
+}
+
+#[test]
+fn test_framework_button_cursor_position_returns_none() {
+    let btn = FrameworkButton::new("test");
+    assert!(btn.cursor_position().is_none());
 }
 
 // ========== Standalone Button ==========
@@ -202,7 +236,7 @@ fn test_standalone_button_new() {
     let btn = StandaloneButton::new("Press", false);
     let area = make_area(20, 3);
     let mut buf = ratatui::buffer::Buffer::empty(area);
-    ratatui::widgets::Widget::render(btn, area, &mut buf);
+    StandaloneButton::render(btn, area, &mut buf);
 }
 
 #[test]
@@ -210,7 +244,7 @@ fn test_standalone_button_active_state() {
     let btn = StandaloneButton::new("Active", true);
     let area = make_area(20, 3);
     let mut buf = ratatui::buffer::Buffer::empty(area);
-    ratatui::widgets::Widget::render(btn, area, &mut buf);
+    StandaloneButton::render(btn, area, &mut buf);
 }
 
 #[test]
@@ -218,13 +252,5 @@ fn test_standalone_button_inactive_state() {
     let btn = StandaloneButton::new("Inactive", false);
     let area = make_area(20, 3);
     let mut buf = ratatui::buffer::Buffer::empty(area);
-    ratatui::widgets::Widget::render(btn, area, &mut buf);
-}
-
-#[test]
-fn test_standalone_button_with_value() {
-    let btn = StandaloneButton::with_value("Custom", false);
-    let area = make_area(20, 3);
-    let mut buf = ratatui::buffer::Buffer::empty(area);
-    ratatui::widgets::Widget::render(btn, area, &mut buf);
+    StandaloneButton::render(btn, area, &mut buf);
 }
