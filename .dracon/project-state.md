@@ -1,15 +1,15 @@
 # Project State
 
 ## Current Focus
-Refactored file manager's file selection handling for better clarity and robustness
+Refactored file selection handling in the file manager for better clarity and maintainability.
 
 ## Context
-The file selection logic in the file manager was refactored to improve clarity and handle edge cases more gracefully. The previous implementation had redundant calls to `find_by_path` and didn't properly handle cases where the path might not exist.
+The file manager's file selection logic was refactored to improve readability and reduce nested conditions. This change was prompted by ongoing refactoring efforts to make the UI interaction handling more maintainable.
 
 ## Completed
-- [x] Refactored file selection logic to use a single `find_by_path` call
-- [x] Improved error handling by using pattern matching instead of multiple unwraps
-- [x] Made the code more readable by reducing nested operations
+- [x] Refactored file selection logic to use intermediate variables for clarity
+- [x] Improved error handling by checking for valid child nodes before processing
+- [x] Maintained all existing functionality while making the code more readable
 
 ## In Progress
 - [ ] No active work in progress
@@ -18,5 +18,5 @@ The file selection logic in the file manager was refactored to improve clarity a
 - None identified
 
 ## Next Steps
-1. Verify the refactored code maintains all existing functionality
-2. Consider adding unit tests for the file selection logic
+1. Review the refactored code for any potential edge cases
+2. Continue with other ongoing refactoring efforts in the file manager

@@ -291,13 +291,20 @@ impl Widget for FileManager {
         if let MouseEventKind::Down(_) = kind {
             if col > tree_rect.width && row > hh && row < hh + detail_rect.height {
                 let rel_row = (row - hh).saturating_sub(1) as usize;
+                let mut child_name: Option<String> = None;
+                let mut child_is_dir = false;
+                let mut needs_toast = false;
                 if let Some(ref children) = self.current_node().children {
                     if rel_row < children.len() {
-                        let child = &children[rel_row];
-                        self.selected = Some(FileEntry { name: child.name.into(), is_dir: child.is_dir });
-                        if !child.is_dir { self.show_toast(&format!("Opening {}...", child.name), ToastKind::Info); }
-                        self.dirty = true; return true;
+                        child_name = Some(children[rel_row].name.into());
+                        child_is_dir = children[rel_row].is_dir;
+                        needs_toast = !children[rel_row].is_dir;
                     }
+                }
+                if let Some(name) = child_name {
+                    self.selected = Some(FileEntry { name, is_dir: child_is_dir });
+                    if needs_toast { self.show_toast(&format!("Opening {}...", self.selected.as_ref().unwrap().name), ToastKind::Info); }
+                    self.dirty = true; return true;
                 }
             }
             self.show_context_menu(col, row); return true;
