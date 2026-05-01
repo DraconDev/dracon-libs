@@ -1,7 +1,7 @@
 # Project State
 
 ## Current Focus
-ONE LINE: Add unique ID counter to WidgetRegistry for widget identification
+Add unique widget ID counter to ensure consistent widget identification
 
 ## Completed
-- [x] Add next_id field to WidgetRegistry for tracking widget IDs
+- [x] Added `next_id: u32 = 1` to WidgetRegistry struct to generate unique IDs for widgets during registration

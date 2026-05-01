@@ -56,6 +56,7 @@ impl WidgetRegistry {
     pub fn new() -> Self {
         Self {
             containers: Vec::new(),
+            next_id: 1,
         }
     }
 
