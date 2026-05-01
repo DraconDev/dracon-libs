@@ -1,21 +1,21 @@
 # Project State
 
 ## Current Focus
-Refactored process information fields in the system monitor example to mark unused fields as private.
+Refactored process information fields in the system monitor example to use underscore-prefixed fields.
 
 ## Context
-The system monitor example was refactoring unused fields in the `ProcessInfo` struct to improve code clarity and maintainability.
+This change was part of a broader refactoring effort to standardize field naming conventions across the terminal engine examples. The underscore prefix indicates these fields are not intended for public use, aligning with Rust's visibility conventions.
 
 ## Completed
-- [x] Renamed unused fields with `_` prefix to indicate they're intentionally unused
-- [x] Applied consistent naming convention across all process entries
+- [x] Renamed process information fields from `mem`, `pid`, `status` to `_mem`, `_pid`, `_status` to indicate they're internal implementation details
+- [x] Maintained all existing functionality while improving code clarity
 
 ## In Progress
-- [ ] No active work in progress
+- [x] No active work in progress for this specific change
 
 ## Blockers
-- None identified
+- None identified for this specific change
 
 ## Next Steps
-1. Verify the refactoring doesn't affect runtime behavior
-2. Consider whether these fields should be removed entirely or documented as future features
+1. Verify the refactored fields don't affect any dependent code
+2. Consider if additional internal fields should follow the same naming convention
