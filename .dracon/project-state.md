@@ -1,20 +1,21 @@
 # Project State
 
 ## Current Focus
-Update dependency versions in the `dracon-terminal-engine` framework
+Improved command output handling in terminal widget tests by simplifying initialization.
 
 ## Context
-This change updates dependency versions in the terminal engine to ensure compatibility and security with the latest versions of required crates.
+This change refines test setup for terminal widgets by removing unnecessary `RefCell` wrapping around `last_output`, aligning with recent improvements in command output handling.
 
 ## Completed
-- [x] Updated dependency versions in `dracon-terminal-engine/Cargo.toml`
+- [x] Simplified `OutputTrackingWidget` initialization by removing redundant `RefCell` wrapper
+- [x] Maintained same functionality while reducing test complexity
 
 ## In Progress
-- [x] Dependency version updates
+- [ ] No active work in progress
 
 ## Blockers
-- None reported
+- None identified
 
 ## Next Steps
-1. Verify updated dependencies do not introduce breaking changes
-2. Test the terminal engine with updated dependencies
+1. Verify test coverage remains adequate after this change
+2. Check for any related test failures in the CI pipeline

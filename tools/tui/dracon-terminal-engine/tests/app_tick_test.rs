@@ -160,7 +160,7 @@ impl OutputTrackingWidget {
             area: std::cell::Cell::new(Rect::new(0, 0, 80, 24)),
             dirty: true,
             command_output_received,
-            last_output: RefCell::new(None),
+            last_output: last_output,
         }
     }
 }
