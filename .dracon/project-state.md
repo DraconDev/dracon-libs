@@ -1,8 +1,11 @@
 # Project State
 
 ## Current Focus
-The `dracon-terminal-engine` Cargo.toml file was modified, likely to update dependency versions or documentation. This appears to be part of ongoing maintenance work for the terminal framework.
+Added new example applications to demonstrate the terminal engine's capabilities
 
 ## Completed
-- [x] Updated dependency versions in the `dracon-terminal-engine` framework (binary file change)
+- [x] Added `cyberpunk_dashboard` example showing Ratatui chart dashboard with simulation
+- [x] Added `demo` example for general engine demonstration with charts
+- [x] Added `desktop` example for desktop-style window management
+- [x] Added `game_loop` example showing 60fps game loop with mouse tracking
 ```
