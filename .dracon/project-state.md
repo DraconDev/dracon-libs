@@ -1,29 +1,21 @@
 # Project State
 
 ## Current Focus
-Refactored system monitor and split resizer examples with improved widget architecture and simplified code structure
+Dependency version updates in the `dracon-terminal-engine` framework
 
 ## Context
-These changes improve the widget implementation in the system monitor and split resizer examples by:
-1. Removing unused imports and dependencies
-2. Simplifying widget trait implementations
-3. Improving code organization and readability
-4. Making the examples more maintainable
+This change updates dependency versions in the terminal engine framework to ensure compatibility and security with the latest ecosystem standards.
 
 ## Completed
-- [x] Refactored system monitor example with simplified widget trait implementations
-- [x] Removed unused Color import from system monitor
-- [x] Improved split resizer example with better code organization
-- [x] Simplified mouse event handling in split resizer
-- [x] Updated Cargo.lock with dependency version updates
+- [x] Updated dependency versions in `dracon-terminal-engine/Cargo.toml`
+- [x] Regenerated `Cargo.lock` to reflect updated dependencies
 
 ## In Progress
-- [ ] No active work in progress
+- [ ] Verification of updated dependencies in integration tests
 
 ## Blockers
-- None identified
+- None identified at this stage
 
 ## Next Steps
-1. Review and test the refactored examples
-2. Update documentation to reflect changes
-3. Consider additional widget improvements based on feedback
+1. Run integration tests to verify compatibility
+2. Document any breaking changes in the framework's changelog
