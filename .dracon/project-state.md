@@ -1,20 +1,23 @@
 # Project State
 
 ## Current Focus
-Binary metadata update in `dracon-terminal-engine` Cargo.toml
+Added a showcase example for the Dracon Terminal Engine framework
 
 ## Context
-This change is part of ongoing maintenance and documentation updates for the terminal engine framework, following recent refactoring work in thread safety, widget initialization, and command bindings.
+The showcase example provides a centralized way to explore all framework examples through an interactive launcher interface. This addresses the need for better example discovery and demonstration of the framework's capabilities.
 
 ## Completed
-- [x] Updated binary metadata in Cargo.toml for `dracon-terminal-engine`
+- [x] Added showcase.rs example with 19 framework examples categorized as cookbook, apps, and existing
+- [x] Each example includes metadata about widgets used and run commands
+- [x] Interactive navigation with arrow keys and Enter key support
+- [x] Binary metadata updated in Cargo.toml
 
 ## In Progress
-- [x] Documentation and dependency version updates for the terminal engine framework
+- [x] Showcase example implementation complete
 
 ## Blockers
-- None identified in this specific change
+- None identified
 
 ## Next Steps
-1. Verify the updated binary metadata is correctly reflected in package builds
-2. Continue with other ongoing refactoring and documentation tasks for the terminal engine
+1. Verify showcase example works across different terminal sizes
+2. Consider adding example filtering by widget type or category

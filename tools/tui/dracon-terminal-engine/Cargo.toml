@@ -85,6 +85,10 @@ path = "examples/_cookbook/menu_system.rs"
 name = "debug_overlay"
 path = "examples/_cookbook/debug_overlay.rs"
 
+[[example]]
+name = "showcase"
+path = "examples/showcase.rs"
+
 [features]
 default = []
 async = ["tokio"]
