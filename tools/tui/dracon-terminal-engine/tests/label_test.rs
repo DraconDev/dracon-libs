@@ -94,7 +94,7 @@ fn test_label_set_text_empty() {
     let mut label = Label::new("old");
     label.set_text("");
     let plane = label.render(make_area(40, 1));
-    assert_eq!(plane.cells[0].char, '\0');
+    assert_eq!(plane.cells[0].char, ' ');
 }
 
 #[test]

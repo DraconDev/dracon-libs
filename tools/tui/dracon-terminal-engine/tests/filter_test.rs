@@ -175,7 +175,7 @@ fn test_pulse_different_times_produce_different_results() {
     let mut cell1 = make_cell('X', Color::Rgb(100, 100, 100), Color::Rgb(50, 50, 50));
     let mut cell2 = make_cell('X', Color::Rgb(100, 100, 100), Color::Rgb(50, 50, 50));
     filter.apply(&mut cell1, 0, 0, 0.0);
-    filter.apply(&mut cell2, 0, 0, 3.14159);
+    filter.apply(&mut cell2, 0, 0, 1.0);
     assert_ne!(cell1.fg, cell2.fg);
 }
 
