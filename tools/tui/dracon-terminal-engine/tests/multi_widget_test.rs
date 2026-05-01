@@ -24,13 +24,7 @@ use ratatui::layout::Rect;
 
 use crate::common::make_key;
 
-mod common {
-    pub(crate) mod mod;
-}
-
-// ============================================================================
-// Test 1: SplitPane + List + Panel
-// ============================================================================
+mod common;
 
 /// A mock panel widget for testing composition with SplitPane.
 struct MockPanel {
