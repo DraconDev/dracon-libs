@@ -491,8 +491,8 @@ impl Widget for Showcase {
                 if bot_idx < p.cells.len() { p.cells[bot_idx].char = '─'; p.cells[bot_idx].fg = Color::Rgb(0, 200, 150); }
             }
             for y in 0..mh {
-                let l_idx = (my + y) * area.width + mx as u32;
-                let r_idx = l_idx + mw as u32 - 1;
+                let l_idx = (my + y) * area.width + mx;
+                let r_idx = l_idx + mw - 1;
                 if (l_idx as usize) < p.cells.len() { p.cells[l_idx as usize].char = '│'; p.cells[l_idx as usize].fg = Color::Rgb(0, 200, 150); }
                 if (r_idx as usize) < p.cells.len() { p.cells[r_idx as usize].char = '│'; p.cells[r_idx as usize].fg = Color::Rgb(0, 200, 150); }
             }
