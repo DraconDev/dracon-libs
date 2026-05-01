@@ -735,7 +735,6 @@ fn main() -> io::Result<()> {
         let current_idx = CURRENT_THEME_INDEX.load(Ordering::SeqCst);
         if current_idx != last_theme_idx {
             last_theme_idx = current_idx;
-            let theme = get_current_theme();
             ctx.mark_all_dirty();
         }
     });
@@ -744,7 +743,6 @@ fn main() -> io::Result<()> {
         let current_idx = CURRENT_THEME_INDEX.load(Ordering::SeqCst);
         if current_idx != last_theme_idx {
             last_theme_idx = current_idx;
-            let theme = get_current_theme();
             ctx.mark_all_dirty();
         }
     })?;

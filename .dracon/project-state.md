@@ -1,22 +1,21 @@
 # Project State
 
 ## Current Focus
-Binary modification to `dracon-terminal-engine/Cargo.toml` (likely dependency version update or build configuration change)
+Removed redundant theme retrieval in theme switcher example
 
 ## Context
-This appears to be a binary file modification in the terminal engine's build configuration, possibly related to dependency version updates or build system adjustments. The change is part of ongoing work in the modal dialog and theme switching systems.
+The theme switching system was recently refactored to use centralized theme management. The example code was updated to reflect this change, but the redundant `get_current_theme()` calls remained.
 
 ## Completed
-- [x] Binary modification to terminal engine build configuration
+- [x] Removed duplicate `get_current_theme()` calls in theme switcher example
+- [x] Maintained the same functionality by keeping `mark_all_dirty()` calls
 
 ## In Progress
-- [x] Refactoring of modal dialog system with improved widget management and lifecycle handling
-- [x] Theme switching system with centralized theme management
+- [x] No active work in progress
 
 ## Blockers
-- No blockers identified from this change alone
+- None
 
 ## Next Steps
-1. Verify the binary modification doesn't introduce breaking changes
-2. Continue with modal dialog system refactoring and testing
-3. Finalize theme switching implementation and documentation
+1. Verify theme switching behavior remains consistent
+2. Consider further refactoring of the theme switcher example if needed
