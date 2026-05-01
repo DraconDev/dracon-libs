@@ -69,6 +69,7 @@ impl Widget for TrackingWidget {
         self.last_set_area.set(Some(area));
         self.set_area_count.set(self.set_area_count.get() + 1);
         self.area.set(area);
+        self.dirty = true;
     }
 
     fn set_id(&mut self, id: WidgetId) {

@@ -1,26 +1,21 @@
 # Project State
 
 ## Current Focus
-Added a theme switcher demo to showcase dynamic theme switching capabilities in the terminal engine
+Added dirty flag tracking to widget resize testing
 
 ## Context
-This change adds a visual demonstration of theme switching functionality, allowing users to cycle through multiple themes and observe how widgets adapt to different color schemes. It builds on recent work in widget lifecycle management and modal dialog systems.
+This change improves test coverage for the terminal engine's resize handling by ensuring widgets properly track when they need redrawing after area changes.
 
 ## Completed
-- [x] Added theme_switcher.rs example demonstrating live theme switching
-- [x] Implemented 15 built-in themes (dark, light, Dracula, Monokai, etc.)
-- [x] Created theme preview panels showing widgets under each theme
-- [x] Added theme-aware widgets (StatusBadge, Gauge, Breadcrumbs, List)
-- [x] Included tracking mechanism to verify theme change callbacks
-- [x] Added visual feedback for theme switching operations
+- [x] Added `dirty` flag to `TrackingWidget` to track when widget area changes require redraw
+- [x] Updated test infrastructure to verify proper dirty state management during resizing
 
 ## In Progress
-- [x] Theme switching demonstration implementation
+- [x] Comprehensive resize handling tests
 
 ## Blockers
-- None identified for this specific change
+- None identified
 
 ## Next Steps
-1. Add more theme customization options
-2. Implement theme persistence across sessions
-3. Add theme editor functionality
+1. Expand test coverage for other widget lifecycle events
+2. Verify dirty flag propagation through widget composition hierarchy
