@@ -4,17 +4,17 @@
 Refactored file entry structure in the file manager example
 
 ## Context
-This change aligns with recent refactoring of process information fields in the system monitor example, suggesting a pattern of improving code organization and consistency across terminal engine examples.
+This change follows a recent refactoring of the file entry structure in the file manager example. The modification updates the field naming to be more consistent with the refactored structure.
 
 ## Completed
-- [x] Renamed `is_dir` field to `_is_dir` in `FileEntry` struct to mark it as potentially unused (though the field is still used in the example)
+- [x] Updated field name from `is_dir` to `_is_dir` in the FileEntry struct initialization
 
 ## In Progress
-- [x] No active work in progress beyond this refactoring
+- [x] No active work in progress related to this change
 
 ## Blockers
-- None identified in this specific change
+- None
 
 ## Next Steps
-1. Review other examples for similar field naming inconsistencies
-2. Consider adding proper dead_code attributes if fields are truly unused
+1. Verify the file manager example continues to function correctly with the updated field name
+2. Ensure the refactored file entry structure is properly utilized throughout the file manager implementation

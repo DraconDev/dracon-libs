@@ -302,7 +302,7 @@ impl Widget for FileManager {
                     }
                 }
                 if let Some(name) = child_name {
-                    self.selected = Some(FileEntry { name, is_dir: child_is_dir });
+                    self.selected = Some(FileEntry { name, _is_dir: child_is_dir });
                     if needs_toast { self.show_toast(&format!("Opening {}...", self.selected.as_ref().unwrap().name), ToastKind::Info); }
                     self.dirty = true; return true;
                 }
