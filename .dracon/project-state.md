@@ -1,10 +1,9 @@
 # Project State
 
 ## Current Focus
-feat(widgets): Add StatusBadge widget for rendering colored status labels with CLI command binding
+Expose command execution and registry via the app context while removing Label widget and tightening status badge dependencies.
 
 ## Completed
-- [x] Added StatusBadge widget module with TOML configuration support for `dracon-sync status --json` integration
-- [x] Implemented status label rendering with theme colors: `[OK]` (green), `[WARN]` (yellow), `[ERROR]` (red)
-- [x] Added CLI command binding capability with JSON parser support for dynamic status updates
-- [x] Exposed StatusBadge and Label through widget module public exports
+- [x] Add synchronous command runner and available-commands getter on Ctx so callers can invoke and inspect registered commands.
+- [x] Remove Label widget from public exports to streamline the widget module surface.
+- [x] Import Widget trait in status_badge.rs to prepare for trait-based rendering or configuration without affecting runtime behavior.

@@ -63,5 +63,4 @@ pub use toast::{Toast, ToastKind};
 pub use toggle::Toggle;
 pub use tooltip::Tooltip;
 pub use tree::{Tree, TreeNode};
-pub use label::Label;
 pub use widget_inspector::{WidgetInspector, WidgetNode};
