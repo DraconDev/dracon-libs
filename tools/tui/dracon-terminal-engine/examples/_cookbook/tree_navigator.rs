@@ -18,9 +18,6 @@
 //!
 //! Mouse: Click to select, click folder to expand
 
-use std::cell::RefCell;
-use std::rc::Rc;
-
 use dracon_terminal_engine::compositor::{Color, Plane};
 use dracon_terminal_engine::framework::prelude::*;
 use dracon_terminal_engine::framework::widget::{Widget, WidgetId};
@@ -75,7 +72,7 @@ struct TreeNav {
 }
 
 impl TreeNav {
-    fn new() -> Self {
+    fn new(id: WidgetId) -> Self {
         let fs = MockFs {
             name: "root",
             is_dir: true,
@@ -99,7 +96,7 @@ impl TreeNav {
         let breadcrumbs = Breadcrumbs::new(segments);
 
         Self {
-            id: WidgetId::new(0),
+            id,
             tree,
             breadcrumbs,
             fs,
@@ -211,7 +208,6 @@ impl Widget for TreeNav {
     }
 
     fn handle_key(&mut self, key: crate::input::event::KeyEvent) -> bool {
-        use crate::input::event::{KeyCode, KeyEventKind};
         if key.kind != KeyEventKind::Press {
             return false;
         }
@@ -345,19 +341,9 @@ fn main() -> std::io::Result<()> {
         .title("Tree Navigator")
         .fps(30)
         .theme(theme)
-        .run(move |ctx| {
+        .run(|ctx| {
             let (w, h) = ctx.compositor().size();
             let area = Rect::new(0, 0, w, h);
-
-            let nav = Rc::new(RefCell::new(TreeNav::new()));
-            let nav_clone = nav.clone();
-
-            let plane = nav.borrow().render(area);
-            ctx.add_plane(plane);
-
-            ctx.on_key(move |key| {
-                let mut nav = nav_clone.borrow_mut();
-                nav.handle_key(key);
-            });
+            ctx.add_widget(Box::new(TreeNav::new(WidgetId::new(0))), area);
         })
 }
