@@ -1,11 +1,9 @@
 # Project State
 
 ## Current Focus
-Enhanced the command dashboard example by adding automatic command execution for widgets, allowing them to refresh their data periodically. This enables real-time system monitoring directly in the TUI.
+Enhanced the command dashboard example by replacing the `SplitPane` widget with `StatusBadge` for better command output visualization.
 
 ## Completed
-- [x] Added automatic command execution for widgets with configurable refresh intervals
-- [x] Implemented command binding for Gauge and KeyValueGrid widgets
-- [x] Added regex-based output parsing for command results
-- [x] Updated the example to demonstrate real-time system monitoring
-- [x] Improved documentation with usage patterns and examples
+- [x] Updated `command_dashboard.rs` to use `StatusBadge` instead of `SplitPane` for command output handling
+- [x] Modified `dracon-terminal-engine` dependencies in Cargo.toml
+- [x] Synchronized Cargo.lock with updated dependencies
