@@ -1,21 +1,20 @@
 # Project State
 
 ## Current Focus
-Refactored widget construction in test utilities to use proper builder pattern
+Dependency version updates in the `dracon-terminal-engine` framework
 
 ## Context
-The previous implementation of `with_children` was mutating the struct directly, which could lead to unintended side effects. This change ensures proper immutability by creating a new instance with updated children.
+This change updates dependency versions across the project, likely to incorporate bug fixes, security patches, or new features in the framework's dependencies.
 
 ## Completed
-- [x] Refactored `with_children` to use builder pattern with `..self` syntax
-- [x] Maintained same functionality while improving safety
+- [x] Updated dependency versions in the `dracon-terminal-engine` framework
 
 ## In Progress
-- [x] No active work in progress beyond this change
+- [ ] None (this appears to be a documentation-focused update)
 
 ## Blockers
-- None identified
+- None (this is a documentation update with no dependencies)
 
 ## Next Steps
-1. Verify no test failures due to this change
-2. Consider similar refactorings for other widget construction methods
+1. Verify the updated dependencies do not introduce breaking changes
+2. Update related documentation if needed
