@@ -48,9 +48,9 @@ const THEMES: &[&str] = &["nord", "dracula", "cyberpunk", "gruvbox-dark", "tokyo
 struct ProcessInfo {
     name: &'static str,
     cpu: f32,
-    mem: &'static str,
-    pid: u32,
-    status: &'static str,
+    _mem: &'static str,
+    _pid: u32,
+    _status: &'static str,
 }
 
 struct SystemStats {
@@ -193,16 +193,16 @@ impl SystemMonitor {
             ProcessInfo {
                 name: "firefox",
                 cpu: (12.5 + rand_float(-2.0, 2.0)).max(0.1),
-                mem: "1.2GB",
-                pid: 1234 + (tick % 10),
-                status: "Running",
+                _mem: "1.2GB",
+                _pid: 1234 + (tick % 10),
+                _status: "Running",
             },
             ProcessInfo {
                 name: "chrome",
                 cpu: (8.3 + rand_float(-1.5, 1.5)).max(0.1),
-                mem: "890MB",
-                pid: 5678 + (tick % 5),
-                status: "Running",
+                _mem: "890MB",
+                _pid: 5678 + (tick % 5),
+                _status: "Running",
             },
             ProcessInfo {
                 name: "rustc",

@@ -1,22 +1,21 @@
 # Project State
 
 ## Current Focus
-Update Cargo.lock with dependency version changes
+Refactored process information fields in the system monitor example to mark unused fields as private.
 
 ## Context
-This change was triggered by recent refactoring work across the project, particularly in the file manager example and showcase application. The updates ensure all dependencies are properly versioned and aligned with the current codebase state.
+The system monitor example was refactoring unused fields in the `ProcessInfo` struct to improve code clarity and maintainability.
 
 ## Completed
-- [x] Updated Cargo.lock to reflect current dependency versions
-- [x] Synchronized dependency versions across project components
+- [x] Renamed unused fields with `_` prefix to indicate they're intentionally unused
+- [x] Applied consistent naming convention across all process entries
 
 ## In Progress
-- [x] Verifying all dependencies are properly resolved
+- [ ] No active work in progress
 
 ## Blockers
 - None identified
 
 ## Next Steps
-1. Verify all examples and applications build successfully with updated dependencies
-2. Prepare for next round of refactoring work in the showcase example
-```
+1. Verify the refactoring doesn't affect runtime behavior
+2. Consider whether these fields should be removed entirely or documented as future features
