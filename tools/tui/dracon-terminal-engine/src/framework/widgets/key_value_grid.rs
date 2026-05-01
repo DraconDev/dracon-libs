@@ -285,7 +285,10 @@ mod tests {
     fn test_key_value_grid_render_empty() {
         let grid = KeyValueGrid::new();
         let plane = grid.render(Rect::new(0, 0, 30, 5));
-        assert_eq!(plane.cells[plane.cells.len() / 2].char, '(');
+        let col_start = (30usize - 9) / 2;
+        let row = 2usize;
+        let char_index = row * 30 + col_start;
+        assert_eq!(plane.cells[char_index].char, '(');
     }
 
     #[test]

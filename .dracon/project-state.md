@@ -1,9 +1,8 @@
 # Project State
 
 ## Current Focus
-Align empty‑state message centering for KeyValueGrid, LogViewer, and StreamingText widgets.
+Align empty‑state message centering for KeyValueGrid and LogViewer by computing column start index for the '(' character
 
 ## Completed
-- [x] fix(key_value_grid): correctly compute column start and row for "(no data)" message using widget area dimensions, removing stray braces.
-- [x] fix(log_viewer): correctly compute column start and row for "(no log output)" message using widget area dimensions.
-- [x] fix(streaming_text): correctly compute column start and row for "(waiting for input…)" message using widget area dimensions.
+- [x] Refine KeyValueGrid empty‑state test to calculate column start and locate '(' character instead of using middle cell
+- [x] Refine LogViewer empty‑state test similarly, using calculated column start for correct positioning
