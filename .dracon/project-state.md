@@ -1,13 +1,12 @@
 # Project State
 
-## CurrentFocus
-Implement widget ID management and comprehensive UI/UX testing for enhanced reliability
+## Current Focus
+ONE LINE: Implement widget ID management and expand comprehensive UI/UX test coverage for the terminal engine.
 
 ## Completed
-- [x] Add unique widget ID counter in WidgetRegistry to prevent duplicate identification
-- [x] Add comprehensive unit tests for input handling, layout, password input, and context menu
-- [x] Refactor drag-and-drop tests to use proper DragState implementation
-- [x] Fix non-ASCII character truncation handling in text widgets
-- [x] Update button test semantics to verify right-click context menu interactions
-- [x] Regenerate and synchronize Cargo.lock across dependencies
-- [x] Remove obsolete test modules and streamline test structure
+- [x] Fixed missing `WidgetRegistry.next_id` by initializing it to 1 in `WidgetRegistry::new()`.
+- [x] Simplified release workflow to GitHub Releases only (removed crates.io publishing step).
+- [x] Adjusted CI: removed the `minimal-versions` job and the `-D warnings` flag from the clippy step.
+- [x] Added 10 new integration test modules (≈ 300 tests) covering buttons, labels, panels, context menus, filters, hit zones, drag‑and‑drop, utilities, password input, key parsing, text input, terminal behavior, visuals, and layout helpers.
+- [x] Introduced shared test helpers in `tests/common/mod.rs` for key generation, area creation, and mock widgets.
+- [x] Updated test count from 272 to 609, reflecting the expanded test suite.
