@@ -1,0 +1,575 @@
+//! Command-driven widget architecture.
+//!
+//! Provides a command execution layer that binds CLI commands to widgets,
+//! making every action in the TUI AI-inspectable and scriptable.
+//!
+//! ## Design
+//!
+//! - **Widgets have zero business logic** — they only render command output
+//! - **AI can enumerate every action** via `Ctx::available_commands()`
+//! - **AI can trigger any action** by running the same CLI command
+//! - **Adding a feature** = binding a command string, no Rust code needed
+//!
+//! ## TOML-first
+//!
+//! All command bindings are serializable to TOML, so the entire UI layout
+//! can be defined in a config file. Widgets bind commands at construction time.
+//!
+//! ## Example TOML
+//!
+//! ```toml
+//! [[widget]]
+//! type = "StatusBadge"
+//! id = 1
+//! bind = "dracon-sync repos --json"
+//! parser = { type = "json_key", key = "status" }
+//! refresh = 5
+//!
+//! [[widget]]
+//! type = "LogViewer"
+//! id = 2
+//! bind = "tail -f /var/log/app.log"
+//! severity = { "ERROR" = "red", "WARN" = "yellow", "INFO" = "default" }
+//! ```
+
+use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+use std::io::{BufRead, BufReader};
+use std::process::{Command, Stdio};
+use std::sync::mpsc::{channel, Receiver};
+use std::thread;
+
+// ═══════════════════════════════════════════════════════════════
+// OUTPUT PARSER
+// ═══════════════════════════════════════════════════════════════
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum OutputParser {
+    JsonKey { key: String },
+    JsonPath { path: String },
+    JsonArray { item_key: Option<String> },
+    Regex { pattern: String, group: Option<usize> },
+    LineCount,
+    ExitCode,
+    SeverityLine { patterns: HashMap<String, String> },
+    Plain,
+}
+
+impl Default for OutputParser {
+    fn default() -> Self {
+        OutputParser::Plain
+    }
+}
+
+impl OutputParser {
+    pub fn parse(&self, stdout: &str, stderr: &str, exit_code: i32) -> ParsedOutput {
+        match self {
+            OutputParser::JsonKey { key } => {
+                if let Ok(val) = serde_json::from_str::<serde_json::Value>(stdout) {
+                    if let Some(v) = val.get(key) {
+                        return ParsedOutput::Scalar(v.to_string());
+                    }
+                }
+                ParsedOutput::None
+            }
+            OutputParser::JsonPath { path } => {
+                if let Ok(val) = serde_json::from_str::<serde_json::Value>(stdout) {
+                    let parts: Vec<&str> = path.split('.').collect();
+                    let mut cur = &val;
+                    for part in parts {
+                        cur = cur.get(part).unwrap_or(cur);
+                    }
+                    return ParsedOutput::Scalar(cur.to_string());
+                }
+                ParsedOutput::None
+            }
+            OutputParser::JsonArray { item_key } => {
+                if let Ok(val) = serde_json::from_str::<serde_json::Value>(stdout) {
+                    if let Some(arr) = val.as_array() {
+                        let items: Vec<String> = arr
+                            .iter()
+                            .map(|v| {
+                                if let Some(k) = item_key {
+                                    v.get(k).map(|x| x.to_string()).unwrap_or_else(|| v.to_string())
+                                } else {
+                                    v.to_string()
+                                }
+                            })
+                            .collect();
+                        return ParsedOutput::List(items);
+                    }
+                }
+                ParsedOutput::None
+            }
+            OutputParser::Regex { pattern, group } => {
+                if let Ok(re) = regex::Regex::new(pattern) {
+                    if let Some(caps) = re.captures(stdout) {
+                        let g = group.unwrap_or(0);
+                        if let Some(m) = caps.get(g) {
+                            return ParsedOutput::Scalar(m.as_str().to_string());
+                        }
+                    }
+                }
+                ParsedOutput::None
+            }
+            OutputParser::LineCount => {
+                let count = stdout.lines().count();
+                ParsedOutput::Scalar(count.to_string())
+            }
+            OutputParser::ExitCode => {
+                ParsedOutput::Scalar(exit_code.to_string())
+            }
+            OutputParser::SeverityLine { patterns } => {
+                let lines: Vec<LoggedLine> = stdout
+                    .lines()
+                    .map(|line| {
+                        let severity = patterns
+                            .iter()
+                            .find(|(pat, _)| line.contains(pat))
+                            .map(|(_, sev)| sev.clone())
+                            .unwrap_or_else(|| "default".to_string());
+                        LoggedLine {
+                            text: line.to_string(),
+                            severity,
+                        }
+                    })
+                    .collect();
+                ParsedOutput::Lines(lines)
+            }
+            OutputParser::Plain => ParsedOutput::Text(stdout.to_string()),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum ParsedOutput {
+    Scalar(String),
+    List(Vec<String>),
+    Lines(Vec<LoggedLine>),
+    Text(String),
+    None,
+}
+
+impl ParsedOutput {
+    pub fn is_empty(&self) -> bool {
+        match self {
+            ParsedOutput::Scalar(s) => s.is_empty(),
+            ParsedOutput::List(v) => v.is_empty(),
+            ParsedOutput::Lines(v) => v.is_empty(),
+            ParsedOutput::Text(s) => s.is_empty(),
+            ParsedOutput::None => true,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct LoggedLine {
+    pub text: String,
+    pub severity: String,
+}
+
+impl LoggedLine {
+    pub fn new(text: &str, severity: &str) -> Self {
+        Self {
+            text: text.to_string(),
+            severity: severity.to_string(),
+        }
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// BOUND COMMAND
+// ═══════════════════════════════════════════════════════════════
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct BoundCommand {
+    pub command: String,
+    pub parser: OutputParser,
+    pub confirm_message: Option<String>,
+    pub refresh_seconds: Option<u64>,
+    pub label: String,
+    pub description: String,
+}
+
+impl BoundCommand {
+    pub fn new(command: &str) -> Self {
+        Self {
+            command: command.to_string(),
+            parser: OutputParser::default(),
+            confirm_message: None,
+            refresh_seconds: None,
+            label: command.to_string(),
+            description: String::new(),
+        }
+    }
+
+    pub fn parser(mut self, parser: OutputParser) -> Self {
+        self.parser = parser;
+        self
+    }
+
+    pub fn confirm(mut self, msg: &str) -> Self {
+        self.confirm_message = Some(msg.to_string());
+        self
+    }
+
+    pub fn refresh(mut self, seconds: u64) -> Self {
+        self.refresh_seconds = Some(seconds);
+        self
+    }
+
+    pub fn label(mut self, label: &str) -> Self {
+        self.label = label.to_string();
+        self
+    }
+
+    pub fn description(mut self, desc: &str) -> Self {
+        self.description = desc.to_string();
+        self
+    }
+
+    pub fn parse_output(&self, stdout: &str, stderr: &str, exit_code: i32) -> ParsedOutput {
+        self.parser.parse(stdout, stderr, exit_code)
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// COMMAND RUNNER
+// ═══════════════════════════════════════════════════════════════
+
+pub struct CommandRunner {
+    cmd: String,
+    child_id: Option<u32>,
+    stdout_rx: Option<Receiver<String>>,
+    stderr_rx: Option<Receiver<String>>,
+    exit_code: Option<i32>,
+}
+
+impl CommandRunner {
+    pub fn new(cmd: &str) -> Self {
+        Self {
+            cmd: cmd.to_string(),
+            child_id: None,
+            stdout_rx: None,
+            stderr_rx: None,
+            exit_code: None,
+        }
+    }
+
+    pub fn spawn(&mut self) -> std::io::Result<()> {
+        let parts: Vec<&str> = self.cmd.split_whitespace().collect();
+        if parts.is_empty() {
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::InvalidInput,
+                "empty command",
+            ));
+        }
+
+        let mut child = Command::new(parts[0])
+            .args(&parts[1..])
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .spawn()?;
+
+        self.child_id = Some(child.id());
+
+        let (stdout_tx, stdout_rx) = channel();
+        let (stderr_tx, stderr_rx) = channel();
+        let stderr_tx2 = stderr_tx.clone();
+
+        if let Some(stdout) = child.stdout.take() {
+            let tx = stdout_tx;
+            thread::spawn(move || {
+                for line in BufReader::new(stdout).lines() {
+                    if let Ok(l) = line {
+                        let _ = tx.send(l);
+                    }
+                }
+            });
+        }
+
+        if let Some(stderr) = child.stderr.take() {
+            thread::spawn(move || {
+                for line in BufReader::new(stderr).lines() {
+                    if let Ok(l) = line {
+                        let _ = stderr_tx2.send(l);
+                    }
+                }
+            });
+        }
+
+        self.stdout_rx = Some(stdout_rx);
+        self.stderr_rx = Some(stderr_rx);
+
+        thread::spawn(move || {
+            if let Ok(code) = child.wait() {
+                let _ = stdout_tx.send(format!("__EXIT_CODE__{}", code.code().map(|c| c as i32).unwrap_or(-1)));
+            }
+        });
+
+        Ok(())
+    }
+
+    pub fn run_sync(&self) -> (String, String, i32) {
+        let parts: Vec<&str> = self.cmd.split_whitespace().collect();
+        if parts.is_empty() {
+            return (String::new(), String::new(), -1);
+        }
+
+        let output = Command::new(parts[0])
+            .args(&parts[1..])
+            .output()
+            .unwrap_or_default();
+
+        let stdout = String::from_utf8_lossy(&output.stdout).to_string();
+        let stderr = String::from_utf8_lossy(&output.stderr).to_string();
+        let exit_code = output.status.code().unwrap_or(-1) as i32;
+        (stdout, stderr, exit_code)
+    }
+
+    pub fn run_and_parse(&self, parser: &OutputParser) -> ParsedOutput {
+        let (stdout, stderr, exit_code) = self.run_sync();
+        parser.parse(&stdout, &stderr, exit_code)
+    }
+
+    pub fn recv_line(&self) -> Option<String> {
+        self.stdout_rx.as_ref().and_then(|rx| rx.try_recv().ok())
+    }
+
+    pub fn child_id(&self) -> Option<u32> {
+        self.child_id
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TOML APP CONFIG
+// ═══════════════════════════════════════════════════════════════
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct AppConfig {
+    pub title: String,
+    pub theme: Option<String>,
+    pub fps: Option<u32>,
+    pub layout: LayoutConfig,
+    pub widgets: Vec<WidgetConfig>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct LayoutConfig {
+    pub header_height: Option<u16>,
+    pub sidebar_width: Option<u16>,
+    pub footer_height: Option<u16>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct WidgetConfig {
+    pub id: usize,
+    pub widget_type: String,
+    pub area: Option<AreaConfig>,
+    pub bind: Option<String>,
+    pub parser: Option<ParserConfig>,
+    pub refresh_seconds: Option<u64>,
+    pub confirm: Option<String>,
+    pub label: Option<String>,
+    pub description: Option<String>,
+    pub options: HashMap<String, serde_json::Value>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct AreaConfig {
+    pub x: u16,
+    pub y: u16,
+    pub width: u16,
+    pub height: u16,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ParserConfig {
+    #[serde(rename = "type")]
+    pub parser_type: String,
+    pub key: Option<String>,
+    pub path: Option<String>,
+    pub item_key: Option<String>,
+    pub pattern: Option<String>,
+    pub group: Option<usize>,
+    pub patterns: Option<HashMap<String, String>>,
+}
+
+impl AppConfig {
+    pub fn from_toml(path: &std::path::Path) -> std::io::Result<Self> {
+        let content = std::fs::read_to_string(path)?;
+        toml_edit::de::from_str(&content)
+            .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))
+    }
+
+    pub fn from_toml_str(content: &str) -> std::io::Result<Self> {
+        toml_edit::de::from_str(content)
+            .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))
+    }
+
+    pub fn load_user_config(name: &str) -> std::io::Result<Self> {
+        let config_path = std::path::Path::new(&std::env::var("HOME").unwrap_or_default())
+            .join(".config")
+            .join("dracon")
+            .join(format!("{}.toml", name));
+        if config_path.exists() {
+            Self::from_toml(&config_path)
+        } else {
+            Err(std::io::Error::new(
+                std::io::ErrorKind::NotFound,
+                format!("config not found at {:?}", config_path),
+            ))
+        }
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TESTS
+// ═══════════════════════════════════════════════════════════════
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_bound_command_builder() {
+        let cmd = BoundCommand::new("dracon-sync status --json")
+            .label("sync status")
+            .description("Show sync status")
+            .confirm("Run sync?")
+            .refresh(5);
+
+        assert_eq!(cmd.command, "dracon-sync status --json");
+        assert_eq!(cmd.label, "sync status");
+        assert_eq!(cmd.confirm_message, Some("Run sync?".to_string()));
+        assert_eq!(cmd.refresh_seconds, Some(5));
+    }
+
+    #[test]
+    fn test_output_parser_json_key() {
+        let parser = OutputParser::JsonKey { key: "status".to_string() };
+        let out = parser.parse(r#"{"status": "OK", "count": 5}"#, "", 0);
+        match out {
+            ParsedOutput::Scalar(s) => assert_eq!(s, "\"OK\""),
+            _ => panic!("expected scalar"),
+        }
+    }
+
+    #[test]
+    fn test_output_parser_json_path() {
+        let parser = OutputParser::JsonPath { path: "data.result".to_string() };
+        let out = parser.parse(r#"{"data": {"result": "value"}}"#, "", 0);
+        match out {
+            ParsedOutput::Scalar(s) => assert_eq!(s, "\"value\""),
+            _ => panic!("expected scalar"),
+        }
+    }
+
+    #[test]
+    fn test_output_parser_json_array() {
+        let parser = OutputParser::JsonArray { item_key: Some("name".to_string()) };
+        let out = parser.parse(r#"[{"name": "a"}, {"name": "b"}]"#, "", 0);
+        match out {
+            ParsedOutput::List(items) => {
+                assert_eq!(items.len(), 2);
+                assert_eq!(items[0], "\"a\"");
+                assert_eq!(items[1], "\"b\"");
+            }
+            _ => panic!("expected list"),
+        }
+    }
+
+    #[test]
+    fn test_output_parser_regex() {
+        let parser = OutputParser::Regex {
+            pattern: r"CPU: ([\d]+)%".to_string(),
+            group: Some(1),
+        };
+        let out = parser.parse("CPU: 45% MEM: 30%", "", 0);
+        match out {
+            ParsedOutput::Scalar(s) => assert_eq!(s, "45"),
+            _ => panic!("expected scalar"),
+        }
+    }
+
+    #[test]
+    fn test_output_parser_line_count() {
+        let parser = OutputParser::LineCount;
+        let out = parser.parse("line1\nline2\nline3\n", "", 0);
+        match out {
+            ParsedOutput::Scalar(s) => assert_eq!(s, "3"),
+            _ => panic!("expected scalar"),
+        }
+    }
+
+    #[test]
+    fn test_output_parser_severity_line() {
+        let parser = OutputParser::SeverityLine {
+            patterns: [("ERROR".to_string(), "red".to_string()), ("WARN".to_string(), "yellow".to_string())]
+                .into_iter()
+                .collect(),
+        };
+        let out = parser.parse("INFO: starting\nERROR: failed\nWARN: slow", "", 0);
+        match out {
+            ParsedOutput::Lines(lines) => {
+                assert_eq!(lines.len(), 3);
+                assert_eq!(lines[0].severity, "default");
+                assert_eq!(lines[1].severity, "red");
+                assert_eq!(lines[2].severity, "yellow");
+            }
+            _ => panic!("expected lines"),
+        }
+    }
+
+    #[test]
+    fn test_command_runner_sync() {
+        let runner = CommandRunner::new("echo hello world");
+        let (stdout, stderr, exit_code) = runner.run_sync();
+        assert_eq!(stdout.trim(), "hello world");
+        assert_eq!(stderr.trim(), "");
+        assert_eq!(exit_code, 0);
+    }
+
+    #[test]
+    fn test_command_runner_parse() {
+        let runner = CommandRunner::new("echo '{\"status\": \"OK\"}'");
+        let parser = OutputParser::JsonKey { key: "status".to_string() };
+        let out = runner.run_and_parse(&parser);
+        match out {
+            ParsedOutput::Scalar(s) => assert_eq!(s, "\"OK\""),
+            _ => panic!("expected scalar"),
+        }
+    }
+
+    #[test]
+    fn test_app_config_toml_str() {
+        let toml = r#"
+title = "My App"
+fps = 30
+
+[layout]
+header_height = 2
+sidebar_width = 20
+
+[[widget]]
+id = 1
+widget_type = "StatusBadge"
+bind = "echo OK"
+"#;
+        let config = AppConfig::from_toml_str(toml).unwrap();
+        assert_eq!(config.title, "My App");
+        assert_eq!(config.fps, Some(30));
+        assert_eq!(config.layout.header_height, Some(2));
+        assert_eq!(config.widgets.len(), 1);
+        assert_eq!(config.widgets[0].id, 1);
+    }
+
+    #[test]
+    fn test_parsed_output_is_empty() {
+        assert!(ParsedOutput::None.is_empty());
+        assert!(ParsedOutput::Scalar("".to_string()).is_empty());
+        assert!(!ParsedOutput::Scalar("x".to_string()).is_empty());
+        assert!(ParsedOutput::List(vec![]).is_empty());
+        assert!(!ParsedOutput::List(vec!["x".to_string()]).is_empty());
+    }
+}

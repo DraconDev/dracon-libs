@@ -1,12 +1,13 @@
 # Project State
 
 ## Current Focus
-ONE LINE: Implement widget ID management and expand comprehensive UI/UX test coverage for the terminal engine.
+feat(framework): add command-driven widget architecture with TOML-serializable command bindings and output parsing for dracon-terminal-engine
 
 ## Completed
-- [x] Fixed missing `WidgetRegistry.next_id` by initializing it to 1 in `WidgetRegistry::new()`.
-- [x] Simplified release workflow to GitHub Releases only (removed crates.io publishing step).
-- [x] Adjusted CI: removed the `minimal-versions` job and the `-D warnings` flag from the clippy step.
-- [x] Added 10 new integration test modules (≈ 300 tests) covering buttons, labels, panels, context menus, filters, hit zones, drag‑and‑drop, utilities, password input, key parsing, text input, terminal behavior, visuals, and layout helpers.
-- [x] Introduced shared test helpers in `tests/common/mod.rs` for key generation, area creation, and mock widgets.
-- [x] Updated test count from 272 to 609, reflecting the expanded test suite.
+- [x] Implement `OutputParser` enum with 8 CLI command output parsing strategies: JSON key, JSON path, JSON array, regex, line count, exit code, severity-tagged lines, and plain text
+- [x] Define `ParsedOutput` enum for structured command results (scalars, string lists, severity-tagged log lines, raw text) with `is_empty` helper method
+- [x] Add `LoggedLine` struct to represent individual log lines with associated severity tags
+- [x] Implement serializable `BoundCommand` struct to bind CLI commands to widgets, including output parsers and optional confirmation messages
+- [x] Add `command` module to dracon-terminal-engine framework with TOML-first, AI-inspectable command-driven widget architecture
+- [x] Update framework `mod.rs` to publicly expose the new `command` module
+- [x] Update dracon-terminal-engine Cargo.toml and lockfile with required dependencies (serde, regex, etc.)
