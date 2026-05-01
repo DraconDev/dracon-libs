@@ -14,8 +14,7 @@
 //! └────────────────────────────────────────────────────┘
 //! ```
 //!
-//! **Behavior:** Type to filter (case-insensitive) • Click Sort to cycle
-//! none→asc→desc • Up/Down navigate • Selected row highlighted.
+//! **Behavior:** Type to filter • Click Sort to cycle none→asc→desc • Up/Down navigate.
 
 use dracon_terminal_engine::compositor::{Color, Plane, Styles};
 use dracon_terminal_engine::framework::prelude::*;
@@ -42,8 +41,10 @@ struct Person(String, u32, String, String);
 impl Person {
     fn matches(&self, q: &str) -> bool {
         let q = q.to_lowercase();
-        self.0.to_lowercase().contains(&q) || self.2.to_lowercase().contains(&q)
-            || self.3.to_lowercase().contains(&q) || self.1.to_string().contains(&q)
+        self.0.to_lowercase().contains(&q)
+            || self.2.to_lowercase().contains(&q)
+            || self.3.to_lowercase().contains(&q)
+            || self.1.to_string().contains(&q)
     }
 }
 
@@ -103,7 +104,7 @@ impl Table {
 
     fn sort_rows(&mut self) {
         match self.sort {
-            Sort::None => {},
+            Sort::None => {}
             Sort::Asc => self.rows.sort_by(|a, b| a.0.cmp(&b.0)),
             Sort::Desc => self.rows.sort_by(|a, b| b.0.cmp(&a.0)),
         }
@@ -158,7 +159,8 @@ impl Widget for Table {
             for (j, c) in h.chars().take(w as usize).enumerate() {
                 let idx = (hh * area.width + x + j as u16) as usize;
                 if idx < p.cells.len() {
-                    p.cells[idx].char = c; p.cells[idx].fg = self.theme.active_fg;
+                    p.cells[idx].char = c;
+                    p.cells[idx].fg = self.theme.active_fg;
                     p.cells[idx].style = Styles::BOLD;
                 }
             }
