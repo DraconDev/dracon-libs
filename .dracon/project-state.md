@@ -1,25 +1,25 @@
 # Project State
 
 ## Current Focus
-Refactored interactive split pane resizing example with simplified code structure and improved visual feedback
+Refactored system monitor example with improved widget architecture and theme handling
 
 ## Context
-The split_resizer.rs example was refactored to reduce code complexity while maintaining all functionality. The change was prompted by ongoing work to standardize widget architecture across examples.
+The system monitor example was refactored to simplify widget theme updates and improve code organization. The changes address manual dirty flag management and provide a cleaner API for widget updates.
 
 ## Completed
-- [x] Simplified struct fields by using shorter names (ra/rb instead of ratio_a/ratio_b)
-- [x] Consolidated rendering logic into more compact methods
-- [x] Improved visual feedback for selected dividers (yellow highlight)
-- [x] Reduced documentation comments while preserving functionality
-- [x] Updated Cargo.lock for dependency resolution
+- [x] Replaced manual theme updates with `with_theme()` method chaining
+- [x] Removed redundant dirty flag updates after widget modifications
+- [x] Improved widget state management in the refresh cycle
+- [x] Fixed variable naming in plane cell copying logic
+- [x] Added proper closure capture for tick handler
 
 ## In Progress
-- [ ] No active work in progress beyond these changes
+- [ ] No active work in progress
 
 ## Blockers
 - None identified
 
 ## Next Steps
-1. Verify all functionality remains identical to previous version
-2. Update related documentation if needed
-3. Continue refactoring other examples following similar patterns
+1. Verify theme updates are properly propagated to all widgets
+2. Test performance impact of widget cloning approach
+3. Consider adding visual feedback for theme changes

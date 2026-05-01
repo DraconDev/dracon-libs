@@ -34,7 +34,7 @@
 
 use dracon_terminal_engine::compositor::{Cell, Plane, Styles};
 use dracon_terminal_engine::framework::prelude::*;
-use dracon_terminal_engine::framework::widget::Widget;
+use dracon_terminal_engine::framework::widget::{Widget, WidgetId};
 use dracon_terminal_engine::framework::widgets::{
     Gauge, KeyValueGrid, StatusBadge, StreamingText,
 };
@@ -127,20 +127,13 @@ impl SystemMonitor {
             "tokyo-night" => Theme::tokyo_night(),
             _ => Theme::nord(),
         };
-        self.cpu_gauge.theme = new_theme;
-        self.cpu_gauge.dirty = true;
-        self.mem_gauge.theme = new_theme;
-        self.mem_gauge.dirty = true;
-        self.disk_gauge.theme = new_theme;
-        self.disk_gauge.dirty = true;
-        self.net_gauge.theme = new_theme;
-        self.net_gauge.dirty = true;
-        self.process_grid.theme = new_theme;
-        self.process_grid.dirty = true;
-        self.status_badge.theme = new_theme;
-        self.status_badge.dirty = true;
-        self.uptime_text.theme = new_theme;
-        self.uptime_text.dirty = true;
+        self.cpu_gauge = self.cpu_gauge.clone().with_theme(new_theme);
+        self.mem_gauge = self.mem_gauge.clone().with_theme(new_theme);
+        self.disk_gauge = self.disk_gauge.clone().with_theme(new_theme);
+        self.net_gauge = self.net_gauge.clone().with_theme(new_theme);
+        self.process_grid = self.process_grid.clone().with_theme(new_theme);
+        self.status_badge = self.status_badge.clone().with_theme(new_theme);
+        self.uptime_text = self.uptime_text.clone().with_theme(new_theme);
     }
 
     fn refresh_stats(&mut self) {
@@ -165,14 +158,10 @@ impl SystemMonitor {
         self.status_badge.set_status(final_status);
 
         self.cpu_gauge.set_value(self.stats.cpu_percent as f64);
-        self.cpu_gauge.dirty = true;
         self.mem_gauge
             .set_value((self.stats.memory_used / self.stats.memory_total * 100.0) as f64);
-        self.mem_gauge.dirty = true;
         self.disk_gauge.set_value(self.stats.disk_percent as f64);
-        self.disk_gauge.dirty = true;
         self.net_gauge.set_value(self.stats.network_down.min(100.0) as f64);
-        self.net_gauge.dirty = true;
 
         self.uptime_text.clear();
         self.uptime_text.append(&format_uptime(self.stats.uptime_seconds));
@@ -484,9 +473,9 @@ fn copy_plane_cells(dest: &mut Plane, src: &Plane, offset_x: usize, offset_y: us
         }
         let src_width = src.width as usize;
         let row = i / src_width;
-        let _col = i % src_width;
+        let col = i % src_width;
         let dest_row = offset_y + row;
-        let dest_col = offset_x + (_col);
+        let dest_col = offset_x + col;
         if dest_row >= dest.height as usize || dest_col >= dest.width as usize {
             continue;
         }
@@ -502,12 +491,14 @@ fn main() -> std::io::Result<()> {
     monitor.borrow_mut().generate_processes();
     monitor.borrow_mut().refresh_stats();
 
+    let monitor_clone = monitor.clone();
+
     App::new()?
         .title("System Monitor")
         .fps(30)
         .tick_interval(2000)
-        .on_tick(|_ctx, tick| {
-            let mut m = monitor.borrow_mut();
+        .on_tick(move |_ctx, tick| {
+            let mut m = monitor_clone.borrow_mut();
             m.refresh_stats();
             if tick % 3 == 0 {
                 m.generate_processes();
