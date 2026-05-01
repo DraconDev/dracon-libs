@@ -199,7 +199,7 @@ fn test_glitch_at_zero_time_most_cells_unchanged() {
             let mut cell = make_cell('X', Color::Rgb(100, 100, 100), Color::Rgb(50, 50, 50));
             filter.apply(&mut cell, x, y, 0.0);
             if cell.char != 'X' {
-                let _unused_changed_val = _unused_changed;
+                let _ = _unused_changed + 1;
             }
         }
     }
