@@ -11,8 +11,7 @@
 use std::cell::Cell;
 use std::rc::Rc;
 
-use dracon_terminal_engine::compositor::{Plane, Color};
-use dracon_terminal_engine::framework::theme::Theme;
+use dracon_terminal_engine::compositor::Plane;
 use dracon_terminal_engine::framework::widget::{Widget, WidgetId};
 use dracon_terminal_engine::framework::widgets::{
     Hud, List, Modal, ModalResult, SplitPane,
@@ -194,8 +193,8 @@ impl TrackingRenderWidget {
 
 #[test]
 fn test_widget_tree_area_propagation() {
-    let (child1, _child1_area_count, _) = TrackingRenderWidget::new(1);
-    let (child2, _child2_area_count, _) = TrackingRenderWidget::new(2);
+    let (_child1, _child1_area_count, _) = TrackingRenderWidget::new(1);
+    let (_child2, _child2_area_count, _) = TrackingRenderWidget::new(2);
 
     let (parent, parent_render_count, _) = TrackingRenderWidget::new(0);
 
@@ -381,7 +380,7 @@ impl Widget for DirtyTrackingWidget {
 
 #[test]
 fn test_dirty_widget_gets_rendered() {
-    let (mut widget, render_count) = DirtyTrackingWidget::new(1);
+    let (widget, render_count) = DirtyTrackingWidget::new(1);
 
     assert!(widget.needs_render(), "new widget should be dirty");
     widget.render(Rect::new(0, 0, 80, 24));
