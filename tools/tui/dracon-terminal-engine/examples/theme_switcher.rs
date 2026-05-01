@@ -19,6 +19,7 @@ use dracon_terminal_engine::framework::app::App;
 use dracon_terminal_engine::framework::theme::Theme;
 use dracon_terminal_engine::framework::widget::{Widget, WidgetId};
 use ratatui::layout::Rect;
+use std::io::Result;
 use std::sync::atomic::{AtomicUsize, Ordering};
 
 const ALL_THEMES: &[(&str, fn() -> Theme)] = &[
