@@ -1,8 +1,9 @@
 # Project State
 
 ## Current Focus
-Updated dependency versions in the `dracon-terminal-engine` framework to ensure security and compatibility.
+Added Clippy allow annotations to handle too many arguments in widget rendering functions
 
 ## Completed
-- [x] Updated dependency versions in `dracon-terminal-engine` framework
+- [x] Added `#[allow(clippy::too_many_arguments)]` to `draw_rect` in compositor engine to handle complex rendering parameters
+- [x] Added `#[allow(clippy::too_many_arguments)]` to `render_row` in KeyValueGrid to handle multiple rendering parameters
 ```
