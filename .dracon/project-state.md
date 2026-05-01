@@ -1,21 +1,20 @@
 # Project State
 
 ## Current Focus
-Removal of test suite for the `LogViewer` widget in the terminal framework
+Update dependency versions in the `dracon-terminal-engine` framework.
 
 ## Context
-The `LogViewer` widget's test suite was removed as part of ongoing framework refactoring. This follows a pattern of removing test suites for other widgets to simplify the codebase while maintaining functionality.
+This change was prompted by the need to maintain compatibility with other components of the project and to ensure all dependencies are up-to-date with the latest stable versions.
 
 ## Completed
-- [x] Removed all test cases for the `LogViewer` widget
-- [x] Cleaned up Cargo.toml binary file changes
+- [x] Updated dependency versions in `dracon-terminal-engine/Cargo.toml`
 
 ## In Progress
-- [ ] None - this is a complete removal of test code
+- [x] Verification of dependency compatibility with other project components
 
 ## Blockers
-- None - this was a straightforward removal of test code
+- None identified at this stage
 
 ## Next Steps
-1. Continue with other widget test suite removals
-2. Focus on any remaining test coverage gaps in the framework
+1. Verify that the updated dependencies do not introduce breaking changes
+2. Update documentation to reflect the new dependency versions
