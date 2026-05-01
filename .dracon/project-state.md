@@ -1,21 +1,21 @@
 # Project State
 
 ## Current Focus
-Removal of the test suite for the `Gauge` widget in the terminal framework
+Removal of the test suite for the `ConfirmDialog` widget in the terminal framework
 
 ## Context
-As part of ongoing test suite cleanup and refactoring efforts, the comprehensive test coverage for the `Gauge` widget has been removed. This follows a pattern of removing test suites for other widgets in the framework.
+This follows a pattern of removing test suites for other widgets in the framework, suggesting a strategic cleanup of test coverage to focus on more critical areas.
 
 ## Completed
-- [x] Removed all test cases for the `Gauge` widget implementation
-- [x] Deleted the entire test module for the `Gauge` widget
+- [x] Removed all test cases for the `ConfirmDialog` widget
+- [x] Eliminated test module for the widget
 
 ## In Progress
-- [x] Test suite removal for the `Gauge` widget
+- [x] Ongoing removal of test suites for other widgets
 
 ## Blockers
-- None identified for this specific change
+- None identified in this change
 
 ## Next Steps
-1. Continue with test suite removal for remaining widgets
-2. Evaluate if any test functionality should be moved to integration tests
+1. Continue removing test suites for remaining widgets
+2. Evaluate whether to add new test coverage for core functionality
