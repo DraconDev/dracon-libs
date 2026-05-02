@@ -1,21 +1,21 @@
 # Project State
 
 ## Current Focus
-Added running state tracking to the terminal engine context
+Added application shutdown capability to the terminal engine context
 
 ## Context
-This change enables better control over the application lifecycle by providing access to a shared running state flag within the terminal engine context.
+To improve application control, we needed a way to programmatically stop the event loop from within the application context.
 
 ## Completed
-- [x] Added `running` field to `Ctx` struct to track application state
-- [x] Made the field pub(crate) to allow internal access while maintaining encapsulation
+- [x] Added `stop()` method to `Ctx` to set running state to false
+- [x] Implemented atomic boolean with SeqCst ordering for thread safety
 
 ## In Progress
-- [x] Implementation of running state management
+- [ ] None
 
 ## Blockers
-- None identified
+- None
 
 ## Next Steps
-1. Implement proper shutdown handling using the running state
-2. Add integration tests for the running state management
+1. Update documentation for new API
+2. Add integration tests for shutdown behavior

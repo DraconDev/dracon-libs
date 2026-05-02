@@ -708,6 +708,11 @@ impl<'a> Ctx<'a> {
     pub fn available_commands(&self) -> Vec<BoundCommand> {
         self.commands.borrow().clone()
     }
+
+    /// Stops the application event loop on the next iteration.
+    pub fn stop(&mut self) {
+        self.running.store(false, Ordering::SeqCst);
+    }
 }
 
 #[cfg(test)]
