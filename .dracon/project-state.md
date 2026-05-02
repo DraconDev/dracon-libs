@@ -1,21 +1,23 @@
 # Project State
 
 ## Current Focus
-Update `dracon-terminal-engine` metadata and dependency versions in Cargo.lock
+Simplified child process handling in the showcase example by removing terminal suspension and error display
 
 ## Context
-This change reflects recent updates to dependency versions and metadata for the `dracon-terminal-engine` tool, ensuring consistency across the project.
+The previous implementation had complex error handling and terminal suspension logic that was removed to simplify the code. The focus is now on launching child processes in a new konsole window without managing terminal state.
 
 ## Completed
-- [x] Updated `dracon-terminal-engine` metadata in Cargo.toml
-- [x] Updated Cargo.lock to reflect recent dependency version changes
+- [x] Removed terminal suspension/resumption logic
+- [x] Simplified child process launching to just spawn a new konsole window
+- [x] Removed all error handling and status checking
+- [x] Simplified the on_tick callback by removing unused context parameter
 
 ## In Progress
-- [x] No active work in progress beyond the documented changes
+- [ ] None
 
 ## Blockers
-- None identified
+- None
 
 ## Next Steps
-1. Verify the updated dependencies work as expected in the showcase example
-2. Ensure all related documentation reflects the new metadata and versions
+1. Verify the simplified process launching works as expected
+2. Consider adding proper error handling if needed for production use
