@@ -1,20 +1,21 @@
 # Project State
 
 ## Current Focus
-Binary update to `dracon-terminal-engine/Cargo.toml` reflecting dependency changes
+Enhanced menu system with proper area tracking and quit signal integration
 
 ## Context
-This change reflects recent dependency version updates in the terminal engine framework, ensuring compatibility and security with the latest versions of dependencies.
+This change adds area tracking and quit signal support to the menu system to enable proper UI layout management and thread-safe state handling.
 
 ## Completed
-- [x] Updated `dracon-terminal-engine/Cargo.toml` to reflect current dependency versions
+- [x] Added `area` field to `MenuApp` for dynamic UI layout management
+- [x] Integrated `should_quit` atomic boolean for thread-safe quit signal handling
 
 ## In Progress
-- [x] Binary update to reflect dependency changes
+- [x] Menu system now properly tracks its display area and responds to quit signals
 
 ## Blockers
-- None identified
+- None identified in this change
 
 ## Next Steps
-1. Verify compatibility with other components
-2. Update `Cargo.lock` to reflect these changes
+1. Verify UI layout behavior with new area tracking
+2. Test quit signal propagation across threads
