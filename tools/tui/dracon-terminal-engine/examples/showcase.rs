@@ -76,6 +76,18 @@ impl Showcase {
     fn themes() -> Vec<Theme> {
         vec![Theme::nord(), Theme::dark(), Theme::cyberpunk(), Theme::dracula()]
     }
+
+    fn launch_selected(&self) {
+        let ex = &self.examples[self.selected];
+        let mut parts = ex.run_cmd.split_whitespace();
+        let program = parts.next().unwrap();
+        let args: Vec<&str> = parts.collect();
+
+        Command::new(program)
+            .args(&args)
+            .spawn()
+            .ok();
+    }
 }
 
 impl Widget for Showcase {
