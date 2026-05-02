@@ -2,7 +2,6 @@
 resolver = "2"
 members = [
   # Tools (public, reusable)
-  "tools/tui/dracon-terminal-engine",
   "tools/sync/dracon-git",
   "tools/system/dracon-system",
   "tools/files/dracon-files",
