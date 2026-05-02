@@ -65,7 +65,7 @@ struct ChatState {
 
 #[allow(dead_code)]
 impl ChatState {
-    fn new() -> Self {
+    fn new(should_quit: Arc<AtomicBool>) -> Self {
         Self {
             messages: MESSAGES.iter().cloned().map(|m| m.clone()).collect(),
             input_text: String::new(),
@@ -78,6 +78,8 @@ impl ChatState {
             theme_mode: "Dark",
             show_toast: false,
             scroll_offset: 0,
+            area: Rect::new(0, 0, 80, 24),
+            should_quit,
         }
     }
 
