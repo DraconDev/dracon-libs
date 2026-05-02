@@ -1,20 +1,20 @@
 # Project State
 
 ## Current Focus
-Update Cargo.lock to reflect recent dependency version changes
+Update binary metadata in `dracon-terminal-engine` Cargo.toml
 
 ## Context
-This change was prompted by updates to project dependencies, which required synchronization of the lockfile to ensure consistent builds across environments.
+This change was prompted by recent dependency version updates and refactoring of input handling in the terminal engine.
 
 ## Completed
-- [x] Updated Cargo.lock to reflect current dependency versions
+- [x] Updated binary metadata in `dracon-terminal-engine` Cargo.toml to reflect current project state
 
 ## In Progress
-- [x] Dependency version synchronization
+- [x] No active work in progress related to this change
 
 ## Blockers
 - None identified
 
 ## Next Steps
-1. Verify build consistency across development environments
-2. Continue with ongoing refactoring of input handling in the terminal engine
+1. Verify the updated metadata aligns with current build requirements
+2. Ensure all dependent components are compatible with the new metadata
