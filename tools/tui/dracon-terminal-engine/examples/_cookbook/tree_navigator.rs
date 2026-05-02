@@ -146,6 +146,10 @@ impl Widget for TreeNav {
 
     fn clear_dirty(&mut self) {}
 
+    fn on_theme_change(&mut self, theme: &Theme) {
+        self.theme = *theme;
+    }
+
     fn focusable(&self) -> bool {
         true
     }
