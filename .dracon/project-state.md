@@ -1,15 +1,18 @@
 # Project State
 
 ## Current Focus
-Refactored terminal window size detection and widget initialization in the file manager example.
+Refactored widget initialization patterns across examples to use explicit window size detection
 
 ## Context
-The file manager example was refactored to use explicit window size detection and proper widget initialization patterns, aligning with recent framework improvements.
+The changes standardize widget initialization by:
+1. Moving terminal size detection to a central location
+2. Simplifying widget area calculations
+3. Reducing code duplication in example implementations
 
 ## Completed
-- [x] Refactored file manager initialization to use explicit window size detection
-- [x] Simplified widget initialization pattern in the file manager example
-- [x] Added `std::os::fd::AsFd` import to the form demo example
+- [x] Refactored `debug_overlay.rs` to properly implement Widget trait methods
+- [x] Updated `form_demo.rs` to use centralized window size detection
+- [x] Simplified widget initialization patterns across examples
 
 ## In Progress
 - [ ] No active work in progress
@@ -19,4 +22,4 @@ The file manager example was refactored to use explicit window size detection an
 
 ## Next Steps
 1. Review other examples for similar refactoring opportunities
-2. Update documentation to reflect the new initialization patterns
+2. Document the new widget initialization pattern in the cookbook
