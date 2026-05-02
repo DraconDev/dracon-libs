@@ -1,20 +1,20 @@
 # Project State
 
 ## Current Focus
-Update Cargo.lock with dependency version changes
+Binary metadata update in `dracon-terminal-engine` Cargo.toml
 
 ## Context
-This change updates the dependency versions in Cargo.lock to reflect recent refactoring and bug fixes across the project, particularly in file management, process information handling, and mouse event processing.
+This change was prompted by recent dependency version updates and refactoring work across the project, particularly in the TUI components and examples.
 
 ## Completed
-- [x] Updated Cargo.lock to reflect dependency version changes from recent refactoring and bug fixes
+- [x] Updated binary metadata in `dracon-terminal-engine` Cargo.toml to reflect current project state
 
 ## In Progress
-- [x] No active work in progress beyond the Cargo.lock update
+- [x] No active work in progress related to this change
 
 ## Blockers
-- None identified
+- None identified for this specific change
 
 ## Next Steps
-1. Verify that all dependencies are correctly resolved
-2. Continue with ongoing refactoring and bug fixes
+1. Verify the updated metadata aligns with current build requirements
+2. Continue with ongoing refactoring and example improvements
