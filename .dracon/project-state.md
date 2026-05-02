@@ -1,21 +1,21 @@
 # Project State
 
 ## Current Focus
-Added terminal synchronization mode cleanup in terminal shutdown sequence
+Removed terminal synchronization mode cleanup during compositor shutdown
 
 ## Context
-The change addresses proper cleanup of terminal synchronization mode (VT2026) during terminal shutdown, ensuring consistent terminal state restoration.
+The compositor previously had a `Drop` implementation that would exit terminal synchronization mode when the compositor was dropped. This was part of a feature to ensure the terminal wasn't stuck buffering output during shutdown.
 
 ## Completed
-- [x] Added VT2026 mode disable sequence to terminal cleanup routine
-- [x] Maintained all existing terminal cleanup operations (cursor visibility, mouse mode, etc.)
+- [x] Removed the `Drop` implementation for the compositor
+- [x] Eliminated the terminal synchronization mode cleanup during shutdown
 
 ## In Progress
-- [x] Terminal synchronization mode cleanup implementation
+- [x] Ongoing work to improve terminal shutdown handling
 
 ## Blockers
 - None identified
 
 ## Next Steps
-1. Verify terminal state restoration works across different terminal emulators
-2. Consider adding synchronization mode enable/disable API for advanced use cases
+1. Verify terminal behavior without the synchronization mode cleanup
+2. Assess if additional shutdown handling is needed
