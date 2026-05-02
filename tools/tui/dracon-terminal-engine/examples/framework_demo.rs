@@ -66,7 +66,7 @@ impl Widget for FrameworkDemo {
 
         let bc_plane = self.breadcrumbs.render(right_rect);
 
-        let data = self.sys.get_data();
+        let data = self.sys.borrow_mut().get_data();
 
         let mut info_plane = Plane::new(0, right_rect.width, right_rect.height.saturating_sub(2));
         info_plane.z_index = 5;
