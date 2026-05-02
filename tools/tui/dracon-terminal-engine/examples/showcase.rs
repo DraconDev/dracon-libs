@@ -241,57 +241,6 @@ impl Widget for Showcase {
             }
         }
 
-        if self.show_modal {
-            for i in 0..p.cells.len() {
-                p.cells[i].bg = Color::Ansi(0);
-                p.cells[i].transparent = false;
-            }
-
-            let mw = 50u16;
-            let mh = 8u16;
-            let mx = (area.width.saturating_sub(mw)) / 2;
-            let my = (area.height.saturating_sub(mh)) / 2;
-
-            for y in 0..mh {
-                for x in 0..mw {
-                    let ci = ((my + y) * area.width + mx + x) as usize;
-                    if ci < p.cells.len() {
-                        p.cells[ci].bg = Color::Rgb(15, 20, 25);
-                        p.cells[ci].fg = Color::Rgb(200, 200, 200);
-                    }
-                }
-            }
-
-            for x in 0..mw {
-                let top = (my * area.width + mx + x) as usize;
-                let bot = ((my + mh - 1) * area.width + mx + x) as usize;
-                if top < p.cells.len() { p.cells[top].char = '─'; p.cells[top].fg = Color::Rgb(0, 200, 150); }
-                if bot < p.cells.len() { p.cells[bot].char = '─'; p.cells[bot].fg = Color::Rgb(0, 200, 150); }
-            }
-            for y in 0..mh {
-                let l = (my + y) * area.width + mx;
-                let r = l + mw - 1;
-                if (l as usize) < p.cells.len() { p.cells[l as usize].char = '│'; p.cells[l as usize].fg = Color::Rgb(0, 200, 150); }
-                if (r as usize) < p.cells.len() { p.cells[r as usize].char = '│'; p.cells[r as usize].fg = Color::Rgb(0, 200, 150); }
-            }
-
-            let ex = &self.examples[self.selected];
-            let lines = [
-                format!("  Run: {}  ", ex.run_cmd),
-                "  Press any key to close  ".to_string(),
-            ];
-            for (i, line) in lines.iter().enumerate() {
-                let ly = my + 2 + i as u16;
-                for (j, c) in line.chars().enumerate() {
-                    let ci = (ly * area.width + mx + 2 + j as u16) as usize;
-                    if ci < p.cells.len() {
-                        p.cells[ci].char = c;
-                        p.cells[ci].fg = Color::Rgb(0, 255, 200);
-                    }
-                }
-            }
-        }
-
         p
     }
 
