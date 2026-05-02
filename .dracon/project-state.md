@@ -1,21 +1,20 @@
 # Project State
 
 ## Current Focus
-Improved terminal suspension/resumption handling in the showcase example
+Update binary metadata in the `dracon-terminal-engine` Cargo.toml
 
 ## Context
-The change refactors terminal suspension/resumption to use the new context methods rather than direct terminal access, aligning with the recently added terminal suspension/resumption support.
+This change was prompted by recent dependency version changes and updates to the terminal suspension/resumption handling in the showcase example.
 
 ## Completed
-- [x] Refactored terminal suspension from `ctx.terminal.suspend()` to `ctx.suspend_terminal()`
-- [x] Refactored terminal resumption from `ctx.terminal.resume()` to `ctx.resume_terminal()`
+- [x] Updated binary metadata in `dracon-terminal-engine` Cargo.toml to reflect recent changes
 
 ## In Progress
-- [x] Terminal suspension/resumption implementation in the showcase example
+- [x] No active work in progress related to this change
 
 ## Blockers
-- None identified
+- None identified for this specific change
 
 ## Next Steps
-1. Verify terminal state handling remains consistent across all examples
-2. Update documentation to reflect the new context methods for terminal management
+1. Verify the updated metadata doesn't introduce any compatibility issues
+2. Continue with other ongoing work in the terminal suspension/resumption feature area
