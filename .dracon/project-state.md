@@ -1,14 +1,17 @@
 # Project State
 
 ## Current Focus
-Added `#[allow(missing_docs)]` to data table example and fixed file ending newline
+Added `#[allow(missing_docs)]` to additional example files in the TUI cookbook and dashboard builder
 
 ## Context
-The recent series of commits added `#[allow(missing_docs)]` to several examples to suppress missing documentation warnings. This change follows the pattern of previous commits that addressed similar documentation linting issues.
+Continuing the pattern of suppressing missing documentation warnings for example files that are intentionally undocumented
 
 ## Completed
-- [x] Added `#[allow(missing_docs)]` to data_table.rs example
-- [x] Fixed missing newline at end of file
+- [x] Added `#[allow(missing_docs)]` to dashboard_builder.rs
+- [x] Added `#[allow(missing_docs)]` to command_bindings.rs
+- [x] Added `#[allow(missing_docs)]` to menu_system.rs
+- [x] Added `#[allow(missing_docs)]` to split_resizer.rs
+- [x] Added `#[allow(missing_docs)]` to tabbed_panels.rs
 
 ## In Progress
 - [ ] No active work in progress
@@ -17,6 +20,5 @@ The recent series of commits added `#[allow(missing_docs)]` to several examples 
 - None
 
 ## Next Steps
-1. Review remaining examples for documentation linting issues
-2. Consider adding proper documentation where appropriate
-```
+1. Continue applying `#[allow(missing_docs)]` to remaining example files
+2. Review and potentially add more example applications to the cookbook
