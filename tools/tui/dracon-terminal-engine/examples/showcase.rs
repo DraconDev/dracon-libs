@@ -312,12 +312,11 @@ fn main() -> std::io::Result<()> {
             let child_result = std::process::Command::new("sh")
                 .arg("-c")
                 .arg(&cmd)
-                .pre_exec(|| unsafe {
+                .pre_exec(|| {
                     #[cfg(unix)]
                     {
-                        use libc::{setpgid, setsid};
+                        use libc::setpgid;
                         setpgid(0, 0);
-                        setsid();
                     }
                     Ok(())
                 })
