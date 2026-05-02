@@ -22,10 +22,12 @@ struct Dashboard {
     status_badge: StatusBadge,
     log_viewer: LogViewer,
     streaming: StreamingText,
+    area: Rect,
+    should_quit: Arc<AtomicBool>,
 }
 
 impl Dashboard {
-    fn new() -> Self {
+    fn new(should_quit: Arc<AtomicBool>) -> Self {
         Self {
             gauge: Gauge::with_id(WidgetId::new(1), "CPU %").max(100.0).warn_threshold(70.0).crit_threshold(90.0)
                 .bind_command(BoundCommand::new("echo 'cpu:67'").parser(OutputParser::Regex { pattern: r"cpu:(\d+)".into(), group: Some(1) }).refresh(2)),
@@ -37,6 +39,8 @@ impl Dashboard {
                 .bind_command(BoundCommand::new("echo '[INFO] Server connected\\n[WARN] High latency: 250ms'").refresh(3)),
             streaming: StreamingText::with_id(WidgetId::new(5)).max_lines(50)
                 .bind_command(BoundCommand::new("date +'%H:%M:%S'").refresh(1)),
+            area: Rect::new(0, 0, 80, 24),
+            should_quit,
         }
     }
 }
@@ -44,8 +48,8 @@ impl Dashboard {
 impl Widget for Dashboard {
     fn id(&self) -> WidgetId { WidgetId::new(0) }
     fn set_id(&mut self, _id: WidgetId) {}
-    fn area(&self) -> Rect { Rect::new(0, 0, 80, 24) }
-    fn set_area(&mut self, _area: Rect) {}
+    fn area(&self) -> Rect { self.area }
+    fn set_area(&mut self, area: Rect) { self.area = area; }
     fn needs_render(&self) -> bool { true }
     fn mark_dirty(&mut self) {}
     fn clear_dirty(&mut self) {}
@@ -84,6 +88,7 @@ impl Widget for Dashboard {
     fn handle_key(&mut self, key: KeyEvent) -> bool {
         if key.kind != KeyEventKind::Press { return false; }
         match key.code {
+            KeyCode::Char('q') => { self.should_quit.store(true, Ordering::SeqCst); true }
             KeyCode::Char('t') | KeyCode::Char('p') | KeyCode::Char('r') => true,
             _ => false,
         }
