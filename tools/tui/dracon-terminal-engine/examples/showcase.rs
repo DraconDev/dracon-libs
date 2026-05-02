@@ -333,15 +333,7 @@ impl Widget for Showcase {
 }
 
 fn main() -> std::io::Result<()> {
-    let (w, h) = {
-        use std::os::fd::AsFd;
-        std::io::stdout().as_fd()
-    };
-
-    let (w, h) = (80, 24);
-    if let Ok((cw, ch)) = dracon_terminal_engine::backend::tty::get_window_size(std::io::stdout().as_fd()) {
-        let (w, h) = (cw, ch);
-    }
+    let (w, h) = (80u16, 24u16);
 
     let mut app = App::new()?.title("Showcase").fps(30).theme(Theme::nord());
     app.add_widget(Box::new(Showcase::new(Rect::new(0, 0, w, h))), Rect::new(0, 0, w, h));
