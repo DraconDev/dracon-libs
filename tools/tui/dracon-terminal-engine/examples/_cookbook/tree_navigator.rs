@@ -354,6 +354,7 @@ fn main() -> std::io::Result<()> {
 
     let mut nav = TreeNav::new(WidgetId::new(0));
     nav.set_area(Rect::new(0, 0, w, h));
+    nav.theme = theme;
 
     let mut app = App::new()?.title("Tree Navigator").fps(30).theme(theme);
     app.add_widget(Box::new(nav), Rect::new(0, 0, w, h));
