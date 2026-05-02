@@ -1,25 +1,25 @@
 # Project State
 
 ## Current Focus
-Enhanced modal dialog system with proper event handling and quit signal integration
+Enhanced modal dialog system with proper event routing and dynamic area handling
 
 ## Context
-This change improves the modal demo example by adding proper keyboard and mouse event handling, quit signal integration, and area tracking for the UI components.
+The modal demo example needed improvements to properly handle keyboard/mouse events and support dynamic terminal resizing while maintaining modal dialog functionality.
 
 ## Completed
-- [x] Added proper keyboard event handling for modal dialogs and help overlay
-- [x] Implemented mouse event handling for modal dialogs and buttons
-- [x] Added quit signal integration using Arc<AtomicBool>
-- [x] Implemented area tracking for UI components
-- [x] Enhanced button interaction with proper click detection
+- [x] Added `ModalDemoRouter` widget to properly route input events to the demo app
+- [x] Implemented dynamic area handling for all UI elements based on terminal size
+- [x] Added thread-safe quit signal using `Arc<AtomicBool>`
+- [x] Refactored main loop to use shared state between input and render paths
+- [x] Updated all widget areas to respect terminal dimensions
 
 ## In Progress
-- [x] Modal dialog system with proper event delegation
+- [ ] No active work in progress
 
 ## Blockers
-- None identified in this commit
+- None identified
 
 ## Next Steps
-1. Test modal dialog behavior with various input methods
-2. Verify quit signal propagation throughout the application
-3. Ensure proper area tracking for dynamic UI layouts
+1. Verify modal dialog behavior with terminal resizing
+2. Test keyboard/mouse event handling in modal states
+3. Document the new input routing pattern for future use
