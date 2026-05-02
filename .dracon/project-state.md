@@ -1,21 +1,20 @@
 # Project State
 
 ## Current Focus
-Refactored area tracking in the menu system to use proper dynamic area management.
+Binary update to `dracon-terminal-engine/Cargo.toml` reflecting dependency changes
 
 ## Context
-The menu system previously had hardcoded terminal dimensions (80x24) and ignored dynamic area changes. This change aligns it with the new area tracking pattern established in other widgets.
+This change is part of ongoing work to improve the terminal UI system by adding proper area tracking and quit signal functionality to the menu system.
 
 ## Completed
-- [x] Replaced hardcoded area with dynamic `self.area` field
-- [x] Implemented proper `set_area` method to handle dynamic resizing
+- [x] Binary update to `dracon-terminal-engine/Cargo.toml` reflecting recent dependency version changes
 
 ## In Progress
-- [x] Area tracking implementation for menu system
+- [x] Refactoring area tracking in the menu system to use proper dynamic area management
 
 ## Blockers
-- None identified
+- None identified in this change
 
 ## Next Steps
-1. Verify menu system properly handles dynamic terminal resizing
-2. Test menu system with other widgets that use area tracking
+1. Complete the area tracking refactoring in the menu system
+2. Integrate the quit signal functionality with the updated area tracking
