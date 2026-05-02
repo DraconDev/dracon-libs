@@ -60,7 +60,9 @@ struct Showcase {
     should_quit: bool,
     last_click_time: std::time::Instant,
     last_click_row: u16,
-    pending_cmd: Arc<Mutex<Option<String>>>,
+    pending_binary: Arc<Mutex<Option<String>>>,
+    error: Option<String>,
+    error_time: std::time::Instant,
 }
 
 impl Showcase {

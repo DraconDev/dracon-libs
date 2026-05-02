@@ -1,21 +1,22 @@
 # Project State
 
 ## Current Focus
-Update Cargo.lock to reflect recent dependency version changes
+Refactored command handling in the showcase example to use binary names instead of strings
 
 ## Context
-This change was prompted by updates to project dependencies, which required synchronization of the lockfile to ensure consistent builds across environments.
+This change aligns with recent refactoring efforts to standardize binary metadata handling across the project. The previous implementation used a generic string field for commands, which needed to be replaced with a more specific binary name field to better reflect the actual functionality.
 
 ## Completed
-- [x] Updated Cargo.lock to reflect current dependency versions
+- [x] Renamed `pending_cmd` to `pending_binary` to better reflect its purpose
+- [x] Added error handling fields (`error` and `error_time`) to track and display command execution errors
 
 ## In Progress
-- [x] No active work in progress beyond the lockfile update
+- [ ] Integration of these error fields with the actual command execution logic
 
 ## Blockers
-- None identified for this specific change
+- Need to implement error propagation from the command execution system to these new fields
 
 ## Next Steps
-1. Verify build consistency across environments
-2. Continue with other pending documentation and feature updates
-```
+1. Implement error handling logic that populates the new error fields
+2. Update the UI to display these errors to users
+3. Ensure proper synchronization of the error fields with the command execution thread
