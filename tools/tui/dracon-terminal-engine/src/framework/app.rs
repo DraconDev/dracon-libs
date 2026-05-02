@@ -535,6 +535,7 @@ pub struct Ctx<'a> {
     pub(crate) animations: &'a mut AnimationManager,
     pub(crate) dirty_tracker: &'a mut DirtyRegionTracker,
     pub(crate) commands: &'a RefCell<Vec<BoundCommand>>,
+    pub(crate) running: &'a AtomicBool,
 }
 
 impl<'a> Ctx<'a> {

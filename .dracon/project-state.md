@@ -1,20 +1,21 @@
 # Project State
 
 ## Current Focus
-Binary metadata update in `dracon-terminal-engine` Cargo.toml
+Added running state tracking to the terminal engine context
 
 ## Context
-This change is part of ongoing documentation and dependency management tasks. The binary metadata update likely reflects changes in the terminal engine's build configuration or version information.
+This change enables better control over the application lifecycle by providing access to a shared running state flag within the terminal engine context.
 
 ## Completed
-- [x] Updated binary metadata in `dracon-terminal-engine` Cargo.toml
+- [x] Added `running` field to `Ctx` struct to track application state
+- [x] Made the field pub(crate) to allow internal access while maintaining encapsulation
 
 ## In Progress
-- [x] Dependency version synchronization across the project
+- [x] Implementation of running state management
 
 ## Blockers
-- None identified in this change
+- None identified
 
 ## Next Steps
-1. Verify the updated metadata doesn't affect downstream dependencies
-2. Continue with terminal synchronization cleanup work
+1. Implement proper shutdown handling using the running state
+2. Add integration tests for the running state management
