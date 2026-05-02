@@ -28,6 +28,7 @@ use dracon_terminal_engine::framework::widgets::{
 };
 use dracon_terminal_engine::input::event::{KeyCode, KeyEventKind, MouseEventKind};
 use ratatui::layout::Rect;
+use std::os::fd::AsFd;
 
 #[derive(Clone)] struct MockFs { name: &'static str, children: Option<Vec<MockFs>>, is_dir: bool }
 impl MockFs {
