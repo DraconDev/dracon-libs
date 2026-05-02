@@ -323,14 +323,15 @@ fn main() -> std::io::Result<()> {
     };
 
     let pending = Arc::new(Mutex::new(None));
-    let showcase = Showcase::new(Rect::new(0, 0, w, h), pending.clone());
+    let should_quit = Arc::new(AtomicBool::new(false));
+    let showcase = Showcase::new(Rect::new(0, 0, w, h), pending.clone(), should_quit.clone());
 
     let mut app = App::new()?.title("Showcase").fps(30).theme(Theme::nord());
     app.add_widget(Box::new(showcase), Rect::new(0, 0, w, h));
 
     app.on_tick(move |ctx, _| {
-        // Check if showcase requested quit
-        if showcase_ref.lock().unwrap().should_quit {
+        // Check if user requested quit via 'q'
+        if should_quit.load(Ordering::SeqCst) {
             ctx.stop();
             return;
         }
