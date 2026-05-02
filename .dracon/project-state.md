@@ -1,22 +1,20 @@
 # Project State
 
 ## Current Focus
-Refactored example metadata structure to use binary names instead of run commands
+Update `dracon-terminal-engine` metadata in Cargo.toml
 
 ## Context
-The showcase example was previously using hardcoded cargo run commands to launch examples, which made the code less maintainable and required changes in multiple places when the project structure evolved.
+This change updates the binary metadata in the `dracon-terminal-engine` Cargo.toml file to reflect recent improvements in child process handling and thread-safe synchronization features.
 
 ## Completed
-- [x] Renamed `run_cmd` field to `binary_name` in ExampleMeta struct
-- [x] Updated all example metadata entries to use binary names instead of full cargo commands
-- [x] Modified the launch_selected method to use the new binary_name field
+- [x] Updated binary metadata in `dracon-terminal-engine` Cargo.toml
 
 ## In Progress
-- [ ] No active work in progress
+- [x] No active work in progress beyond this metadata update
 
 ## Blockers
-- None identified
+- None; this is a documentation update
 
 ## Next Steps
-1. Verify all examples can be launched successfully with the new binary name approach
-2. Consider adding validation to ensure binary names match actual compiled binaries
+1. Verify the updated metadata is correctly reflected in the build system
+2. Ensure the changes propagate to dependent projects
