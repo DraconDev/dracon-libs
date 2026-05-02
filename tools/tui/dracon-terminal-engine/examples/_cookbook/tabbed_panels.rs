@@ -14,7 +14,7 @@ use dracon_terminal_engine::framework::widget::{Widget, WidgetId};
 use dracon_terminal_engine::framework::widgets::{
     Gauge, KeyValueGrid, List, Select, Slider, TabBar, Toggle,
 };
-use dracon_terminal_engine::input::event::{KeyEventKind, MouseEventKind};
+use dracon_terminal_engine::input::event::{KeyCode, KeyEventKind, MouseEventKind};
 use ratatui::layout::Rect;
 use std::cell::RefCell;
 use std::os::fd::AsFd;
@@ -304,6 +304,12 @@ impl Widget for TabbedApp {
     fn handle_key(&mut self, key: dracon_terminal_engine::input::event::KeyEvent) -> bool {
         if key.kind != KeyEventKind::Press {
             return false;
+        }
+
+        // Quit on 'q' or Ctrl+Q
+        if key.code == KeyCode::Char('q') || key.code == KeyCode::Ctrl('q') {
+            self.should_quit.store(true, Ordering::SeqCst);
+            return true;
         }
         if self.tabbar.handle_key(key.clone()) {
             return true;
