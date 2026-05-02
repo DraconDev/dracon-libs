@@ -12,7 +12,6 @@ use ratatui::layout::Rect;
 
 struct FrameworkDemo {
     id: WidgetId,
-    list: List<String>,
     breadcrumbs: Breadcrumbs,
     sys: SystemMonitor,
     area: Rect,

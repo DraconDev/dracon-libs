@@ -1,20 +1,21 @@
 # Project State
 
 ## Current Focus
-Update binary metadata in the `dracon-terminal-engine` Cargo.toml
+Removed the `List<String>` field from the `FrameworkDemo` struct.
 
 ## Context
-This change was prompted by recent dependency version updates and refactoring work across the terminal engine components. The binary metadata updates ensure proper version tracking and compatibility with the latest dependencies.
+This change is part of a broader refactoring effort to standardize widget initialization patterns across examples, using explicit widget IDs instead of direct field references.
 
 ## Completed
-- [x] Updated binary metadata in `dracon-terminal-engine` Cargo.toml to reflect current project state
+- [x] Removed the `list` field from `FrameworkDemo` struct
+- [x] Aligned with recent refactoring of widget initialization patterns
 
 ## In Progress
-- [x] No active work in progress related to this change
+- [x] Ongoing refactoring of widget initialization across examples
 
 ## Blockers
-- None identified
+- None identified for this specific change
 
 ## Next Steps
-1. Verify the updated metadata aligns with the current dependency versions
-2. Ensure the terminal engine examples and demos continue to function correctly with the new metadata
+1. Verify all examples now use explicit widget IDs consistently
+2. Update related documentation if needed
