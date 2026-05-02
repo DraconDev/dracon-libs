@@ -1,21 +1,20 @@
 # Project State
 
 ## Current Focus
-Update Cargo.lock to reflect recent dependency version changes
+Updated navigation controls in the showcase example to use arrow keys instead of j/k.
 
 ## Context
-This change was triggered by updates to `dracon-terminal-engine` dependency versions in Cargo.toml. The Cargo.lock file needs to be regenerated to ensure all dependencies are properly resolved and locked to specific versions.
+The showcase example was previously using j/k for navigation, which may not be intuitive for all users. This change aligns with standard terminal navigation conventions.
 
 ## Completed
-- [x] Updated Cargo.lock to reflect current dependency versions
+- [x] Changed navigation keys from j/k to arrow keys in the showcase example
 
 ## In Progress
-- [x] No active work in progress beyond the Cargo.lock update
+- [x] No active work in progress related to this change
 
 ## Blockers
-- None identified
+- No blockers identified
 
 ## Next Steps
-1. Verify that all dependencies are correctly resolved
-2. Continue with other development work that depends on these updated dependencies
-```
+1. Verify the new navigation works as expected in the showcase
+2. Consider if other examples should follow this pattern
