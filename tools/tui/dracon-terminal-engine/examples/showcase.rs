@@ -7,7 +7,6 @@
 //! Run with: cargo run --example showcase
 
 use std::os::fd::AsFd;
-use std::os::unix::process::CommandExt;
 use std::sync::{Arc, Mutex};
 use std::io::Read;
 use dracon_terminal_engine::compositor::{Color, Plane, Styles};
@@ -309,18 +308,7 @@ fn main() -> std::io::Result<()> {
         if let Some(cmd) = pending.lock().unwrap().take() {
             let _ = ctx.suspend_terminal();
             
-            let child_result = std::process::Command::new("sh")
-                .arg("-c")
-                .arg(&cmd)
-                .pre_exec(|| {
-                    #[cfg(unix)]
-                    {
-                        use libc::setpgid;
-                        setpgid(0, 0);
-                    }
-                    Ok(())
-                })
-                .status();
+            let child_result = run_in_new_process_group(&cmd);
             
             match child_result {
                 Ok(exit_status) if !exit_status.success() => {
@@ -339,4 +327,25 @@ fn main() -> std::io::Result<()> {
             ctx.mark_all_dirty();
         }
     }).run(|_ctx| {})
+}
+
+#[cfg(unix)]
+fn run_in_new_process_group(cmd: &str) -> std::process::Result<std::process::ExitStatus> {
+    use std::os::unix::process::CommandExt;
+    std::process::Command::new("sh")
+        .arg("-c")
+        .arg(cmd)
+        .pre_exec(|| {
+            use libc::setpgid;
+            setpgid(0, 0);
+            Ok(())
+        })
+        .status()
+}
+
+#[cfg(not(unix))]
+fn run_in_new_process_group(cmd: &str) -> std::process::Result<std::process::ExitStatus> {
+    std::process::Command::new("cmd")
+        .args(["/C", cmd])
+        .status()
 }
