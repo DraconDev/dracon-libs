@@ -6,7 +6,7 @@
 //!
 //! Run with: cargo run --example showcase
 
-use std::io::{self, Write};
+use std::io::Write;
 use std::os::fd::AsFd;
 
 use dracon_terminal_engine::compositor::{Color, Plane, Styles};
