@@ -29,6 +29,8 @@ use dracon_terminal_engine::framework::widgets::{
 use dracon_terminal_engine::input::event::{KeyCode, KeyEventKind, MouseEventKind};
 use ratatui::layout::Rect;
 use std::os::fd::AsFd;
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::Arc;
 
 #[derive(Clone)] struct MockFs { name: &'static str, children: Option<Vec<MockFs>>, is_dir: bool }
 impl MockFs {
@@ -52,6 +54,7 @@ struct FileManager {
     id: WidgetId, fs: MockFs, tree: Tree, breadcrumbs: Breadcrumbs,
     tree_path: Vec<usize>, selected: Option<FileEntry>,
     context_menu: Option<ContextMenu>, toast: Option<Toast>, area: std::cell::Cell<Rect>, dirty: bool,
+    should_quit: Arc<AtomicBool>,
 }
 
 impl FileManager {
