@@ -316,7 +316,7 @@ fn main() -> std::io::Result<()> {
             }
 
             let _ = std::process::Command::new("konsole")
-                .arg("--new-window")
+                .arg("--new-tab")
                 .arg("-e")
                 .arg(&binary_path)
                 .spawn();
