@@ -1,20 +1,20 @@
 # Project State
 
 ## Current Focus
-Update Cargo.lock to reflect recent dependency version changes
+Update `dracon-terminal-engine` dependency versions in Cargo.toml
 
 ## Context
-This change ensures the project's dependency versions are synchronized with the latest updates in Cargo.toml, maintaining consistency between declared and actual dependencies.
+This change reflects recent updates to the `dracon-terminal-engine` dependency versions, ensuring the project uses the latest stable versions of its components.
 
 ## Completed
-- [x] Updated Cargo.lock to reflect recent dependency version changes
+- [x] Updated dependency versions in `dracon-terminal-engine/Cargo.toml`
 
 ## In Progress
-- [x] No active work in progress
+- [x] None (this is a documentation update)
 
 ## Blockers
 - None
 
 ## Next Steps
-1. Verify that all dependencies are properly resolved
-2. Test the project to ensure no compatibility issues arise from the updated dependencies
+1. Verify that the updated dependencies do not introduce breaking changes
+2. Test the showcase example to ensure compatibility with the new dependency versions
