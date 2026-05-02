@@ -1,22 +1,22 @@
 # Project State
 
 ## Current Focus
-Fix terminal corruption when launching child processes from the showcase example.
+Added terminal suspension/resumption support for child process handling
 
 ## Context
-The showcase example launches child TUI applications using `Command::spawn()`, which inherits the parent's raw terminal state (alternate screen, raw mode, mouse capture, hidden cursor), causing immediate corruption when the child starts.
+This change addresses terminal corruption when launching child processes from the terminal application. The new methods allow temporarily restoring normal terminal mode for child processes while maintaining raw mode for the parent application.
 
 ## Completed
-- [x] Added `suspend()` and `resume()` methods to the `Terminal` struct to properly manage terminal state
-- [x] Modified the showcase example to use these methods when launching child processes
-- [x] Created a plan document outlining the problem, solution, and verification steps
+- [x] Added `suspend()` method to restore terminal to normal mode
+- [x] Added `resume()` method to re-enter raw mode and alternate screen
+- [x] Implemented proper terminal state transitions for child process handling
 
 ## In Progress
-- [x] Implementation of the terminal state management methods
+- [x] Terminal suspension/resumption functionality
 
 ## Blockers
-- None identified
+- None identified for this specific change
 
 ## Next Steps
-1. Verify the fix works by running the showcase example and launching a child process
-2. Consider adding similar state management for other terminal operations
+1. Verify child process terminal behavior with the new methods
+2. Test edge cases for terminal state transitions
