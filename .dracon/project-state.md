@@ -1,21 +1,20 @@
 # Project State
 
 ## Current Focus
-Added quit functionality to the showcase example
+Update `dracon-terminal-engine` dependency versions in Cargo.toml
 
 ## Context
-The showcase example needed a way to properly exit the application when requested by the user
+This change updates the dependency versions for the terminal engine, likely to incorporate bug fixes, performance improvements, or new features in the underlying library.
 
 ## Completed
-- [x] Added quit check in the main application loop
-- [x] Implemented proper application shutdown when quit is requested
+- [x] Updated dependency versions in `dracon-terminal-engine/Cargo.toml`
 
 ## In Progress
-- [x] Quit functionality implementation
+- [x] No active work in progress beyond the dependency update
 
 ## Blockers
-- None
+- None reported
 
 ## Next Steps
-1. Verify quit behavior works as expected
-2. Consider adding additional cleanup if needed
+1. Verify compatibility with existing terminal functionality
+2. Test showcase example behavior with updated engine version
