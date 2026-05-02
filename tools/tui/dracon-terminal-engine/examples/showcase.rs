@@ -55,9 +55,10 @@ struct Showcase {
     examples: Vec<ExampleMeta>,
     selected: usize,
     area: Rect,
-    show_modal: bool,
     theme_idx: usize,
     should_quit: bool,
+    last_click_time: std::time::Instant,
+    last_click_row: u16,
 }
 
 impl Showcase {

@@ -1,27 +1,22 @@
 # Project State
 
 ## Current Focus
-Enhanced showcase example execution with keyboard and mouse interaction improvements
+Added click tracking for double-click detection in the showcase terminal UI
 
 ## Context
-The showcase example was updated to improve user interaction by:
-1. Adding direct example execution via Enter key
-2. Enabling double-click mouse interaction for launching examples
-3. Maintaining consistent selection behavior for both input methods
+This change enables better mouse interaction handling by tracking click timestamps and positions, which is necessary for implementing features like double-click detection in the showcase example.
 
 ## Completed
-- [x] Added `launch_selected()` method to execute showcase examples directly
-- [x] Implemented Enter key to trigger example execution
-- [x] Added double-click mouse support for example execution
-- [x] Refactored mouse event handling to be more explicit
-- [x] Maintained consistent selection behavior across input methods
+- [x] Added `last_click_time` field to track when the last mouse click occurred
+- [x] Added `last_click_row` field to store the row position of the last click
+- [x] Removed the unused `show_modal` field that was previously in the struct
 
 ## In Progress
-- [x] No active work in progress beyond these changes
+- [ ] Implement double-click detection logic using these new fields
 
 ## Blockers
-- None identified
+- Need to implement the actual double-click detection logic that will use these fields
 
 ## Next Steps
-1. Verify cross-platform behavior of example execution
-2. Consider adding visual feedback for execution state
+1. Implement double-click detection logic in the event handling code
+2. Add visual feedback when double-click is detected
