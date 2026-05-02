@@ -1,25 +1,23 @@
 # Project State
 
 ## Current Focus
-Added proper area tracking to TreeNav widget for dynamic UI layout management
+Added keyboard input handling for the `on_tick` + `add_plane` pattern in the terminal engine
 
 ## Context
-The TreeNav widget previously had hardcoded dimensions (80x24) which prevented proper resizing and layout management. This change implements dynamic area tracking to support responsive UI behavior.
+The terminal engine previously required manual `InputRouter` boilerplate when using `on_tick` with `ctx.add_plane()`. This change simplifies input handling by automatically creating a hidden full-screen widget that routes keyboard events to a closure.
 
 ## Completed
-- [x] Added area field to TreeNav struct to store current dimensions
-- [x] Implemented set_area method to update dimensions
-- [x] Updated area() method to return stored dimensions
-- [x] Modified content height calculation to use dynamic area height
-- [x] Updated tree rendering to use dynamic width
-- [x] Adjusted plane initialization to use proper z-index
+- [x] Added `on_input` method to `App` that registers a keyboard handler
+- [x] Created `InputHandler` widget that delegates `KeyEvent` to a closure
+- [x] Implemented proper focus handling for the input widget
+- [x] Added documentation for the new input pattern
 
 ## In Progress
-- [ ] Testing dynamic resizing behavior with different terminal sizes
+- [ ] No active work in progress
 
 ## Blockers
-- Need to verify behavior with nested widget layouts
+- None identified
 
 ## Next Steps
-1. Test with various terminal sizes to ensure proper rendering
-2. Add visual indicators for layout boundaries during development
+1. Verify input handling works with existing `on_tick` + `add_plane` patterns
+2. Test with various terminal sizes and input scenarios
