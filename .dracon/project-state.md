@@ -1,20 +1,20 @@
 # Project State
 
 ## Current Focus
-Enforce non-transparent background cells in the showcase example
+Update Cargo.lock with dependency version changes
 
 ## Context
-The showcase example was displaying cells with transparent backgrounds, which may not be the intended visual behavior. This change ensures consistent rendering by making all background cells opaque.
+This change updates the dependency versions in Cargo.lock to reflect recent refactoring and bug fixes across the project, particularly in file management, process information handling, and mouse event processing.
 
 ## Completed
-- [x] Set all cell backgrounds to non-transparent in the showcase example
+- [x] Updated Cargo.lock to reflect dependency version changes from recent refactoring and bug fixes
 
 ## In Progress
-- [x] No active work in progress
+- [x] No active work in progress beyond the Cargo.lock update
 
 ## Blockers
-- None
+- None identified
 
 ## Next Steps
-1. Verify visual consistency across all showcase elements
-2. Consider adding configuration options for transparency in the terminal engine
+1. Verify that all dependencies are correctly resolved
+2. Continue with ongoing refactoring and bug fixes
