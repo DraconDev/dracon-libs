@@ -1,21 +1,21 @@
 # Project State
 
 ## Current Focus
-Refactored showcase example to use thread-safe synchronization primitives
+Added thread-safe command buffer to showcase example for pending terminal commands
 
 ## Context
-The showcase example was modified to replace direct process handling with thread-safe synchronization mechanisms, likely to support terminal suspension/resumption features being developed in other commits.
+This change supports the recent terminal suspension/resumption feature by adding a mechanism to store pending commands that need to be executed after terminal resumption.
 
 ## Completed
-- [x] Replaced `std::process::Command` with `std::sync::{Arc, Mutex}` for thread-safe process handling
-- [x] Updated imports to include synchronization primitives
+- [x] Added `pending_cmd` field to `Showcase` struct for thread-safe command storage
+- [x] Used `Arc<Mutex<Option<String>>>` to enable safe cross-thread command handling
 
 ## In Progress
-- [ ] None (change is complete)
+- [x] Implementation of command execution logic after terminal resumption
 
 ## Blockers
-- None (change is complete)
+- Need to implement the actual command execution handler that will process the pending commands
 
 ## Next Steps
-1. Verify terminal suspension/resumption works with the updated showcase example
-2. Ensure thread safety in other terminal-related components
+1. Implement command execution handler that processes `pending_cmd` after terminal resumption
+2. Add error handling for command execution failures
