@@ -62,6 +62,7 @@ struct WidgetGallery {
     button: Button,
     area: Rect,
     dirty: bool,
+    quit_requested: Arc<AtomicBool>,
 }
 
 impl WidgetGallery {
