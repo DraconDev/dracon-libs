@@ -323,7 +323,11 @@ fn main() -> std::io::Result<()> {
                 .spawn();
             
             if let Err(e) = result {
-                let _ = std::fs::write("/tmp/showcase_error.log", format!("Konsole spawn error: {}\n", e));
+                let _ = std::fs::write("/tmp/showcase_error.log", 
+                    format!("Binary: {}\nExists: {}\nKonsole error: {}\n", 
+                        binary_path.display(), 
+                        binary_path.exists(),
+                        e));
             }
         }
     }).run(|_ctx| {})
