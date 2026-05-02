@@ -219,7 +219,10 @@ impl Widget for ThemeHeader {
         if key.kind != KeyEventKind::Press {
             return false;
         }
-        if let KeyCode::Char('t') = key.code {
+        if let KeyCode::Char('q') = key.code {
+            self.should_quit.store(true, Ordering::SeqCst);
+            true
+        } else if let KeyCode::Char('t') = key.code {
             cycle_theme();
             self.dirty = true;
             true
