@@ -1,22 +1,21 @@
 # Project State
 
 ## Current Focus
-Clean up widget imports in example code
+Clean up unused variable assignments in the framework demo example
 
 ## Context
-The changes remove unused imports from example files to improve code organization and reduce noise in the examples.
+The framework demo example had unused variable assignments that were being ignored with `_`. This change removes the unused assignments to improve code clarity and maintainability.
 
 ## Completed
-- [x] Removed unused `List` import from `debug_overlay.rs`
-- [x] Removed unused `Toast` and `ToastKind` imports from `form_demo.rs`
-- [x] Removed unused `KeyCode` and `KeyEventKind` imports from `framework_demo.rs`
+- [x] Removed unused variable assignment for breadcrumbs rendering
+- [x] Removed unused variable assignment for gauge rendering
 
 ## In Progress
-- [ ] None
+- [x] Cleaning up other unused variables in the example code
 
 ## Blockers
 - None
 
 ## Next Steps
-1. Verify all examples still compile and run correctly
-2. Consider similar cleanup in other example files if needed
+1. Continue reviewing the example code for other unused variables
+2. Verify the functionality remains unchanged after these changes

@@ -63,7 +63,7 @@ impl Widget for FrameworkDemo {
         list.set_visible_count((left_rect.height as usize).saturating_sub(2).max(1));
         let list_plane = list.render(left_rect);
 
-        let bc_plane = self.breadcrumbs.render(right_rect);
+        let _ = self.breadcrumbs.render(right_rect);
 
         let data = self.sys.borrow_mut().get_data();
 
@@ -99,7 +99,7 @@ impl Widget for FrameworkDemo {
         }
 
         let hud = Hud::new(100).with_size(30, 5);
-        let gauge_plane = hud.render_gauge(0, 0, "CPU", data.cpu_usage, 100.0, 20);
+        let _ = hud.render_gauge(0, 0, "CPU", data.cpu_usage, 100.0, 20);
 
         let mut p = Plane::new(0, area.width, area.height);
         p.z_index = 10;
