@@ -1,21 +1,21 @@
 # Project State
 
 ## Current Focus
-Added `#[allow(missing_docs)]` to showcase example and fixed file ending newline
+Added `#[allow(missing_docs)]` to file manager example and fixed file ending
 
 ## Context
-The showcase example was being flagged for missing documentation, and the file was missing a newline at the end
+The file manager example was being used to showcase the terminal engine's capabilities, but was missing documentation and had an inconsistent file ending.
 
 ## Completed
-- [x] Added `#[allow(missing_docs)]` to suppress missing documentation warnings
-- [x] Fixed missing newline at end of file
+- [x] Added `#[allow(missing_docs)]` to suppress missing documentation warnings for the example
+- [x] Fixed file ending to include a newline at the end of the file
 
 ## In Progress
-- [ ] None
+- [x] No active work in progress for this file
 
 ## Blockers
 - None
 
 ## Next Steps
-1. Verify showcase example still works as expected
-2. Consider adding proper documentation for the showcase example
+1. Verify the example continues to function correctly with the changes
+2. Consider adding proper documentation for the file manager example
