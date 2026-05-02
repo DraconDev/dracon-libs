@@ -855,7 +855,7 @@ pub fn spawn_terminal_at(path: &std::path::Path, new_tab: bool, command: Option<
                         ));
                     }
                 }
-                Err(e) => log(&format!("Failed to execute {}: {}", dbus_cmd, e)),
+                Err(e) => log(&format!("Failed to execute dbus-send: {}", e)),
             }
         }
 
