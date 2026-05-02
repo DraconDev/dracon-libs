@@ -1,23 +1,20 @@
 # Project State
 
 ## Current Focus
-Added area tracking and quit signal to menu system for proper UI layout and graceful shutdown.
+Binary update to `dracon-terminal-engine/Cargo.toml` reflecting dependency changes
 
 ## Context
-The menu system now needs to track its display area for proper rendering and includes a thread-safe quit signal for coordinated shutdown between UI and background threads.
+This change reflects recent dependency version updates in the terminal engine framework, ensuring compatibility and security with the latest versions of dependencies.
 
 ## Completed
-- [x] Added `area: Rect` field to track menu system dimensions
-- [x] Added `should_quit: Arc<AtomicBool>` for thread-safe shutdown coordination
+- [x] Updated `dracon-terminal-engine/Cargo.toml` to reflect current dependency versions
 
 ## In Progress
-- [x] Implementing area-based rendering logic
-- [x] Integrating quit signal with event loop
+- [x] Binary update to reflect dependency changes
 
 ## Blockers
-- Need to implement area-based rendering logic
-- Requires integration with existing event handling system
+- None identified
 
 ## Next Steps
-1. Implement area-based rendering for menu system
-2. Integrate quit signal with event loop and background threads
+1. Verify compatibility with other components
+2. Update `Cargo.lock` to reflect these changes
