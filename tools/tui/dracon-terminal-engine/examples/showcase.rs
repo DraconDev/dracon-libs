@@ -15,7 +15,6 @@ struct ExampleMeta {
     name: &'static str,
     category: &'static str,
     description: &'static str,
-    __widgets: &'static str,
     run_cmd: &'static str,
 }
 
