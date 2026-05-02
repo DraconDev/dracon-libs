@@ -1,20 +1,24 @@
 # Project State
 
 ## Current Focus
-Update Cargo.lock to reflect recent dependency version changes
+Refactored system monitor to use `Rc<RefCell<>>` for thread-safe state management instead of `Arc<Mutex<>>`
 
 ## Context
-This change updates the dependency versions in the project to ensure compatibility and resolve any potential version conflicts. The changes were prompted by recent updates to the project's dependencies, particularly in the `dracon-terminal-engine` crate.
+The system monitor was previously using `Arc<Mutex<>>` for shared state, which can lead to potential deadlocks. This change switches to `Rc<RefCell<>>` for single-threaded scenarios, simplifying ownership and avoiding mutex overhead.
 
 ## Completed
-- [x] Updated Cargo.lock to reflect the latest dependency versions
+- [x] Replaced `Arc<Mutex<>>` with `Rc<RefCell<>>` for state management
+- [x] Implemented `SystemMonitorRouter` to handle input events
+- [x] Updated initialization to use `RefCell` instead of `Mutex`
+- [x] Maintained all existing functionality while improving thread-safety
 
 ## In Progress
-- [x] No active work in progress related to this change
+- [ ] No active work in progress
 
 ## Blockers
-- None
+- None identified
 
 ## Next Steps
-1. Verify that all dependencies are properly resolved and the project builds successfully
-2. Continue with other ongoing development tasks
+1. Verify no performance regressions in the system monitor
+2. Ensure all event handling remains functional with the new router
+3. Consider adding more detailed error handling for the `RefCell` operations
