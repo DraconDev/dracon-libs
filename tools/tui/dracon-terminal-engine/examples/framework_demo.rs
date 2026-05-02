@@ -19,16 +19,6 @@ struct FrameworkDemo {
 
 impl FrameworkDemo {
     fn new(id: WidgetId) -> Self {
-        let list = List::new(vec![
-            "System Monitor",
-            "File Browser",
-            "Network Stats",
-            "Process List",
-            "Disk Usage",
-            "Memory Info",
-            "CPU Graph",
-            "Settings",
-        ]);
         let breadcrumbs = Breadcrumbs::new(vec![
             "home".to_string(),
             "user".to_string(),
@@ -37,7 +27,6 @@ impl FrameworkDemo {
         ]);
         Self {
             id,
-            list,
             breadcrumbs,
             sys: SystemMonitor::new(),
             area: Rect::new(0, 0, 80, 24),
@@ -61,7 +50,16 @@ impl Widget for FrameworkDemo {
         let split = SplitPane::new(Orientation::Horizontal).ratio(0.3);
         let (left_rect, right_rect) = split.split(area);
 
-        let mut list = self.list.clone();
+        let mut list = List::new(vec![
+            "System Monitor",
+            "File Browser",
+            "Network Stats",
+            "Process List",
+            "Disk Usage",
+            "Memory Info",
+            "CPU Graph",
+            "Settings",
+        ]);
         list.set_visible_count((left_rect.height as usize).saturating_sub(2).max(1));
         let list_plane = list.render(left_rect);
 
