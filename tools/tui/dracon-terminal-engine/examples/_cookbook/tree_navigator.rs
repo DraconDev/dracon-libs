@@ -131,10 +131,12 @@ impl Widget for TreeNav {
     }
 
     fn area(&self) -> Rect {
-        Rect::new(0, 0, 80, 24)
+        self.area
     }
 
-    fn set_area(&mut self, _area: Rect) {}
+    fn set_area(&mut self, area: Rect) {
+        self.area = area;
+    }
 
     fn z_index(&self) -> u16 {
         0
@@ -253,14 +255,14 @@ impl Widget for TreeNav {
     ) -> bool {
         let header_height = 1u16;
         let footer_height = 1u16;
-        let content_height = 24u16.saturating_sub(header_height + footer_height);
+        let content_height = self.area.height.saturating_sub(header_height + footer_height);
 
         if row == 0 {
             return self.breadcrumbs.handle_mouse(kind, col, row);
         }
 
         let split = SplitPane::new(Orientation::Horizontal).ratio(0.35);
-        let (tree_rect, _) = split.split(Rect::new(0, header_height, 80, content_height));
+        let (tree_rect, _) = split.split(Rect::new(0, header_height, self.area.width, content_height));
 
         if col < tree_rect.width && row > header_height && row < header_height + tree_rect.height {
             if self.tree.handle_mouse(kind, col, row - header_height) {
@@ -286,7 +288,7 @@ impl TreeNav {
     }
 
     fn render_detail(&self, area: Rect) -> Plane {
-        let mut plane = Plane::new(1, area.width, area.height);
+        let mut plane = Plane::new(0, area.width, area.height);
         plane.z_index = 5;
 
         for cell in plane.cells.iter_mut() {
