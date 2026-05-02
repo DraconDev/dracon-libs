@@ -106,6 +106,7 @@ impl TreeNav {
             fs,
             current_path: Vec::new(),
             theme: Theme::default(),
+            area: Rect::new(0, 0, 80, 24),
         }
     }
 
