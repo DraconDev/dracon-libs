@@ -59,6 +59,8 @@ struct ChatState {
     theme_mode: &'static str,
     show_toast: bool,
     scroll_offset: usize,
+    area: Rect,
+    should_quit: Arc<AtomicBool>,
 }
 
 #[allow(dead_code)]
