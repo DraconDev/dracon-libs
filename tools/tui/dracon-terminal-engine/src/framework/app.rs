@@ -241,7 +241,7 @@ impl App {
     ///     .on_tick(move |ctx, tick| { /* render via ctx.add_plane() */ })
     ///     .run(|_| {});
     /// ```
-    pub fn on_input<F>(mut self, mut handler: F) -> Self
+    pub fn on_input<F>(mut self, handler: F) -> Self
     where
         F: FnMut(KeyEvent) -> bool + 'static,
     {

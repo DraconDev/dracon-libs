@@ -1,23 +1,21 @@
 # Project State
 
 ## Current Focus
-Added keyboard input handling for the `on_tick` + `add_plane` pattern in the terminal engine
+Optimized keyboard input handling in the terminal engine framework.
 
 ## Context
-The terminal engine previously required manual `InputRouter` boilerplate when using `on_tick` with `ctx.add_plane()`. This change simplifies input handling by automatically creating a hidden full-screen widget that routes keyboard events to a closure.
+The change removes unnecessary mutation of the input handler parameter in the `on_input` method, aligning with Rust's ownership model while maintaining the same functionality.
 
 ## Completed
-- [x] Added `on_input` method to `App` that registers a keyboard handler
-- [x] Created `InputHandler` widget that delegates `KeyEvent` to a closure
-- [x] Implemented proper focus handling for the input widget
-- [x] Added documentation for the new input pattern
+- [x] Removed redundant `mut` keyword from `handler` parameter in `App::on_input`
+- [x] Maintained identical behavior for keyboard input processing
 
 ## In Progress
-- [ ] No active work in progress
+- [x] No active work in progress related to this change
 
 ## Blockers
 - None identified
 
 ## Next Steps
-1. Verify input handling works with existing `on_tick` + `add_plane` patterns
-2. Test with various terminal sizes and input scenarios
+1. Verify no runtime behavior changes occurred
+2. Ensure compatibility with existing keyboard input patterns
