@@ -307,11 +307,9 @@ impl App {
             match tty::poll_input(stdin_fd, 20) {
                 Ok(true) => {
                     let mut chunk_buf = [0u8; 1024];
-                    while let Ok(n) = stdin.read(&mut chunk_buf) {
-                        if n == 0 {
-                            break;
-                        }
-                        for byte in chunk_buf.iter().take(n) {
+                    if let Ok(n) = stdin.read(&mut chunk_buf) {
+                        if n > 0 {
+                            for byte in chunk_buf.iter().take(n) {
                             if let Some(event) = self.parser.advance(*byte) {
                                 match &event {
                                     Event::Resize(w, h) => {
