@@ -4,18 +4,23 @@
 Added thread-safe quit signal integration to the file manager example
 
 ## Context
-This change follows a pattern seen in other examples where we're implementing consistent quit handling across applications. The file manager was missing this feature, which is important for proper application lifecycle management.
+This change implements a consistent quit mechanism across all terminal examples by:
+1. Adding a shared `should_quit` flag
+2. Making the 'q' key trigger the quit signal
+3. Properly integrating with the application's event loop
 
 ## Completed
-- [x] Added `Arc<AtomicBool>` for thread-safe quit signal
-- [x] Integrated quit signal into file manager state
+- [x] Added `Arc<AtomicBool>` for thread-safe quit signaling
+- [x] Implemented 'q' key binding to trigger quit
+- [x] Integrated quit check in the application's tick handler
+- [x] Updated file manager initialization to accept quit signal
 
 ## In Progress
-- [ ] Implementation of actual quit handling logic
+- [ ] None (feature is complete)
 
 ## Blockers
-- Need to implement the quit signal handler in the main loop
+- None (feature is complete)
 
 ## Next Steps
-1. Implement quit signal handler in file manager's event processing
-2. Add 'q' key binding for quit functionality
+1. Verify consistent behavior across all examples
+2. Document the quit signal pattern in the examples' README
