@@ -4,20 +4,18 @@
 Added `#[allow(missing_docs)]` to additional TUI example files to suppress documentation warnings.
 
 ## Context
-The project has been systematically adding `#[allow(missing_docs)]` to example files to reduce noise from documentation warnings while maintaining the existing functionality.
+The project is systematically addressing documentation warnings across the codebase, particularly in TUI examples. This change follows a pattern of suppressing warnings for files that are either examples or don't require extensive documentation.
 
 ## Completed
-- [x] Added `#[allow(missing_docs)]` to `command_dashboard.rs`
-- [x] Added `#[allow(missing_docs)]` to `demo.rs`
-- [x] Added `#[allow(missing_docs)]` to `framework_demo.rs`
-- [x] Added `#[allow(missing_docs)]` to `input_debug.rs`
+- [x] Added `#[allow(missing_docs)]` to `basic_raw.rs` TUI example
+- [x] Added `#[allow(missing_docs)]` to `god_mode.rs` TUI example
 
 ## In Progress
-- [ ] Continue adding `#[allow(missing_docs)]` to remaining example files
+- [x] Continuing to address documentation warnings across TUI examples
 
 ## Blockers
-- No blockers identified
+- No blockers identified for this specific change
 
 ## Next Steps
-1. Review remaining example files for documentation warnings
-2. Apply `#[allow(missing_docs)]` to any additional files with documentation warnings
+1. Review remaining TUI examples for documentation warnings
+2. Address any remaining documentation requirements or suppress warnings as appropriate
