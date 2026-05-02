@@ -312,7 +312,7 @@ impl Widget for Showcase {
             }
             KeyCode::Home => { self.selected = 0; true }
             KeyCode::End => { self.selected = self.examples.len().saturating_sub(1); true }
-            KeyCode::Enter => { self.show_modal = true; true }
+            KeyCode::Enter => { self.launch_selected(); true }
             KeyCode::Char('t') => { self.theme_idx = (self.theme_idx + 1) % Self::themes().len(); true }
             KeyCode::Char('q') => { self.should_quit = true; true }
             _ => false,
@@ -328,16 +328,23 @@ impl Widget for Showcase {
         let list_start = 3u16;
         let visible_count = (self.area.height as usize).saturating_sub(5) as u16;
 
-        if kind == MouseEventKind::Down(MouseButton::Left) {
-            if row >= list_start && row < list_start + visible_count {
-                let clicked = (row - list_start) as usize;
-                let start = self.selected.saturating_sub((visible_count / 2) as usize);
-                let idx = start + clicked;
-                if idx < self.examples.len() {
-                    self.selected = idx;
-                    return true;
+        match kind {
+            MouseEventKind::Down(MouseButton::Left) => {
+                if row >= list_start && row < list_start + visible_count {
+                    let clicked = (row - list_start) as usize;
+                    let start = self.selected.saturating_sub((visible_count / 2) as usize);
+                    let idx = start + clicked;
+                    if idx < self.examples.len() {
+                        self.selected = idx;
+                        return true;
+                    }
                 }
             }
+            MouseEventKind::DoubleClick(MouseButton::Left) => {
+                self.launch_selected();
+                return true;
+            }
+            _ => {}
         }
         false
     }
