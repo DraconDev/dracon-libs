@@ -1,21 +1,23 @@
 # Project State
 
 ## Current Focus
-Update Cargo.lock to reflect recent dependency version changes
+Improve Konsole terminal integration by replacing `qdbus` with `dbus-send` to avoid crashes.
 
 ## Context
-This change was prompted by updates to dependency versions in the project, which required refreshing the lockfile to ensure consistent builds across environments.
+The previous implementation using `qdbus` was causing crashes on some Qt/KDE versions. `dbus-send` is a more reliable low-level tool that doesn't link against Qt.
 
 ## Completed
-- [x] Updated Cargo.lock to reflect current dependency versions
-- [x] Ensured all dependencies are properly resolved and locked
+- [x] Replaced `qdbus` with `dbus-send` for Konsole terminal operations
+- [x] Added proper parsing of `dbus-send` output to extract session IDs
+- [x] Updated error messages to reflect the new command
+- [x] Maintained all existing functionality while improving reliability
 
 ## In Progress
-- [x] No active work in progress beyond the lockfile update
+- [ ] No active work in progress
 
 ## Blockers
-- None identified for this specific change
+- None identified
 
 ## Next Steps
-1. Verify that the updated lockfile works correctly in all target environments
-2. Continue with other ongoing feature implementations (thread-safe quit signal handling)
+1. Verify stability across different KDE/Qt versions
+2. Consider adding more robust error handling for DBus operations
