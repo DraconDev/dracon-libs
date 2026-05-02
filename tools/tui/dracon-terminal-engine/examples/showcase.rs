@@ -308,11 +308,14 @@ fn main() -> std::io::Result<()> {
         if let Some(cmd) = pending.lock().unwrap().take() {
             let _ = ctx.suspend_terminal();
             
-            let child_result = run_in_new_process_group(&cmd);
+            let exit_status = std::process::Command::new("sh")
+                .arg("-c")
+                .arg(&cmd)
+                .status();
             
-            match child_result {
-                Ok(exit_status) if !exit_status.success() => {
-                    eprintln!("\n\rExample exited with code: {:?}", exit_status.code());
+            match exit_status {
+                Ok(es) if !es.success() => {
+                    eprintln!("\n\rExample exited with code: {:?}", es.code());
                 }
                 Err(e) => {
                     eprintln!("\n\rFailed to run example: {}", e);
@@ -320,40 +323,10 @@ fn main() -> std::io::Result<()> {
                 _ => {}
             }
             
-            // Drain any residual stdin (keys pressed in child may linger)
             drop(std::io::stdin().read(&mut [0u8; 256]));
             
             let _ = ctx.resume_terminal();
             ctx.mark_all_dirty();
         }
     }).run(|_ctx| {})
-}
-
-#[cfg(unix)]
-fn run_in_new_process_group(cmd: &str) -> std::process::ExitStatus {
-    use std::os::unix::process::CommandExt;
-    std::process::Command::new("sh")
-        .arg("-c")
-        .arg(cmd)
-        .pre_exec(|| {
-            use libc::setpgid;
-            setpgid(0, 0);
-            Ok(())
-        })
-        .status()
-        .unwrap_or_else(|e| {
-            eprintln!("Failed to spawn process: {}", e);
-            std::process::ExitStatus::default()
-        })
-}
-
-#[cfg(not(unix))]
-fn run_in_new_process_group(cmd: &str) -> std::process::ExitStatus {
-    std::process::Command::new("cmd")
-        .args(["/C", cmd])
-        .status()
-        .unwrap_or_else(|e| {
-            eprintln!("Failed to spawn process: {}", e);
-            std::process::ExitStatus::default()
-        })
 }
