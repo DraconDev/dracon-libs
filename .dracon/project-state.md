@@ -1,24 +1,22 @@
 # Project State
 
 ## Current Focus
-Improved input handling and terminal size management in the split resizer example
+Update Cargo.lock to reflect recent dependency version changes in the terminal engine
 
 ## Context
-The changes enhance the split resizer example by adding proper input routing and terminal size handling, making it more robust for different terminal dimensions.
+This change synchronizes the lockfile with updated dependency versions across the project, ensuring consistent builds and avoiding version conflicts.
 
 ## Completed
-- [x] Added `InputRouter` struct to properly route keyboard/mouse events to the split resizer app
-- [x] Implemented terminal size detection and handling in the main function
-- [x] Refactored the tabbed panels example to use `AsFd` for file descriptor handling
-- [x] Updated Cargo.lock to reflect dependency changes
+- [x] Updated Cargo.lock to reflect current dependency versions
+- [x] Ensured build reproducibility with consistent dependency resolution
 
 ## In Progress
-- [ ] No active work in progress
+- [x] Dependency version updates across related components
 
 ## Blockers
-- None identified
+- No blockers identified for this specific change
 
 ## Next Steps
-1. Verify the split resizer example works correctly with different terminal sizes
-2. Test input handling in the split resizer example
-3. Review the tabbed panels example changes for consistency
+1. Verify build consistency across all target platforms
+2. Prepare for potential downstream dependency updates
+```
