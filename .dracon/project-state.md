@@ -1,32 +1,23 @@
 # Project State
 
 ## Current Focus
-Improved input handling and event processing in the terminal engine framework
+Improved terminal window size detection in the showcase example and optimized I/O handling
 
 ## Context
-The changes enhance the terminal engine's input handling by:
-1. Adding proper terminal input polling
-2. Improving event processing efficiency
-3. Enhancing focus management for widgets
-4. Adding mouse event handling capabilities
+The showcase example was previously using a hardcoded terminal size (80x24), which could cause display issues on terminals of different sizes. This change improves the user experience by automatically detecting the terminal size when available.
 
 ## Completed
-- [x] Implemented terminal input polling with 20ms timeout
-- [x] Added comprehensive event processing for resize, key, and mouse events
-- [x] Enhanced focus management with proper blur/focus events
-- [x] Improved widget interaction handling with local coordinate conversion
-- [x] Added proper control flow for terminal exit (Ctrl+C)
-- [x] Implemented tab navigation between widgets
-- [x] Added mouse click detection and focus transfer
-- [x] Optimized input buffer handling with chunked reading
+- [x] Added terminal size detection using `get_window_size` from the backend
+- [x] Fallback to default 80x24 size when detection fails
+- [x] Removed unused `buf` variable in the app loop
+- [x] Simplified the showcase example's I/O handling
 
 ## In Progress
-- [ ] No active work in progress - all changes are complete
+- [ ] No active work in progress
 
 ## Blockers
 - None identified
 
 ## Next Steps
-1. Verify cross-platform terminal compatibility
-2. Add unit tests for new input handling logic
-3. Document new event handling API for widget developers
+1. Verify the terminal size detection works across different terminal emulators
+2. Consider adding more robust error handling for terminal size detection failures

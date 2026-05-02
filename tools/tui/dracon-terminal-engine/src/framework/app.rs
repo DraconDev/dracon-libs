@@ -287,7 +287,6 @@ impl App {
         write!(self.terminal, "\x1b]0;{title}\x07").ok();
 
         let mut stdin = io::stdin();
-        let mut buf = [0u8; 1024];
         let frame_duration = Duration::from_secs_f64(1.0 / self.fps as f64);
 
         while running.load(Ordering::SeqCst) {
