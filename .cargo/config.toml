@@ -1,0 +1,31 @@
+[alias]
+# Launch the example showcase (auto-builds missing binaries)
+showcase = "run --example showcase -p dracon-terminal-engine"
+
+# Quick-run individual examples  
+wg = "run --example widget_gallery -p dracon-terminal-engine"
+tree = "run --example tree_navigator -p dracon-terminal-engine"
+log = "run --example log_monitor -p dracon-terminal-engine"
+tabs = "run --example tabbed_panels -p dracon-terminal-engine"
+table = "run --example data_table -p dracon-terminal-engine"
+split = "run --example split_resizer -p dracon-terminal-engine"
+cmd = "run --example command_bindings -p dracon-terminal-engine"
+menu = "run --example menu_system -p dracon-terminal-engine"
+debug = "run --example debug_overlay -p dracon-terminal-engine"
+sysmon = "run --example system_monitor -p dracon-terminal-engine"
+fm = "run --example file_manager -p dracon-terminal-engine"
+chat = "run --example chat_client -p dracon-terminal-engine"
+dash = "run --example dashboard_builder -p dracon-terminal-engine"
+form = "run --example form_demo -p dracon-terminal-engine"
+theme = "run --example theme_switcher -p dracon-terminal-engine"
+modal = "run --example modal_demo -p dracon-terminal-engine"
+tutorial = "run --example widget_tutorial -p dracon-terminal-engine"
+cdash = "run --example command_dashboard -p dracon-terminal-engine"
+fdemo = "run --example framework_demo -p dracon-terminal-engine"
+fchat = "run --example framework_chat -p dracon-terminal-engine"
+ffm = "run --example framework_file_manager -p dracon-terminal-engine"
+fwidgets = "run --example framework_widgets -p dracon-terminal-engine"
+cyber = "run --example cyberpunk_dashboard -p dracon-terminal-engine"
+
+# Build all examples at once
+build-examples = "build --examples -p dracon-terminal-engine"
