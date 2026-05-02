@@ -219,7 +219,7 @@ impl Widget for Showcase {
             }
         }
 
-        let hints = ["navigate: /", "see cmd: Enter", "theme: t", "quit: q"];
+        let hints = ["navigate: j/k", "open: Enter/dbl-click", "theme: t", "quit: q"];
         let hint_xs = [1u16, 18, 35, 50];
         for (hint, hx) in hints.iter().zip(hint_xs.iter()) {
             for (j, c) in hint.chars().enumerate() {

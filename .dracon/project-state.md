@@ -1,21 +1,21 @@
 # Project State
 
 ## Current Focus
-Removed modal dialog rendering code from the showcase example.
+Updated navigation and interaction hints in the showcase example to reflect improved input handling.
 
 ## Context
-The modal dialog functionality was previously implemented directly in the showcase example's `Widget` implementation. This was moved to a separate component to improve code organization and maintainability.
+The showcase example was updated to better reflect the new input handling capabilities, particularly the addition of double-click detection and improved keyboard navigation.
 
 ## Completed
-- [x] Removed modal dialog rendering code from `showcase.rs`
-- [x] Cleaned up the `Widget` implementation by removing the modal-specific logic
+- [x] Updated navigation hint from "/" to "j/k" to reflect keyboard navigation improvements
+- [x] Changed "see cmd: Enter" to "open: Enter/dbl-click" to reflect double-click support
 
 ## In Progress
-- [x] None - this is a complete removal of the modal rendering code
+- [x] No active work in progress for this change
 
 ## Blockers
 - None
 
 ## Next Steps
-1. Implement the modal dialog as a separate component
-2. Update the showcase example to use the new component-based modal
+1. Verify the updated hints are clear and accurate
+2. Ensure the showcase example continues to demonstrate all core features effectively
