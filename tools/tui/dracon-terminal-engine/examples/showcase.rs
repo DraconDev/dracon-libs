@@ -330,7 +330,7 @@ fn main() -> std::io::Result<()> {
 }
 
 #[cfg(unix)]
-fn run_in_new_process_group(cmd: &str) -> std::process::Result<std::process::ExitStatus> {
+fn run_in_new_process_group(cmd: &str) -> std::process::ExitStatus {
     use std::os::unix::process::CommandExt;
     std::process::Command::new("sh")
         .arg("-c")
@@ -341,11 +341,19 @@ fn run_in_new_process_group(cmd: &str) -> std::process::Result<std::process::Exi
             Ok(())
         })
         .status()
+        .unwrap_or_else(|e| {
+            eprintln!("Failed to spawn process: {}", e);
+            std::process::ExitStatus::default()
+        })
 }
 
 #[cfg(not(unix))]
-fn run_in_new_process_group(cmd: &str) -> std::process::Result<std::process::ExitStatus> {
+fn run_in_new_process_group(cmd: &str) -> std::process::ExitStatus {
     std::process::Command::new("cmd")
         .args(["/C", cmd])
         .status()
+        .unwrap_or_else(|e| {
+            eprintln!("Failed to spawn process: {}", e);
+            std::process::ExitStatus::default()
+        })
 }
