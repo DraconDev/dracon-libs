@@ -21,7 +21,8 @@ use dracon_terminal_engine::framework::theme::Theme;
 use dracon_terminal_engine::framework::widget::{Widget, WidgetId};
 use ratatui::layout::Rect;
 use std::io::Result;
-use std::sync::atomic::{AtomicUsize, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
+use std::sync::Arc;
 
 const ALL_THEMES: &[(&str, fn() -> Theme)] = &[
     ("Dark", Theme::dark),
@@ -129,14 +130,16 @@ struct ThemeHeader {
     id: WidgetId,
     area: std::cell::Cell<Rect>,
     dirty: bool,
+    should_quit: Arc<AtomicBool>,
 }
 
 impl ThemeHeader {
-    fn new(id: WidgetId) -> Self {
+    fn new(id: WidgetId, should_quit: Arc<AtomicBool>) -> Self {
         Self {
             id,
             area: std::cell::Cell::new(Rect::new(0, 0, 80, 3)),
             dirty: true,
+            should_quit,
         }
     }
 }
