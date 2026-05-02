@@ -63,7 +63,7 @@ struct Showcase {
 }
 
 impl Showcase {
-    fn new(area: Rect) -> Self {
+    fn new(area: Rect, pending: Arc<Mutex<Option<String>>>) -> Self {
         Self {
             id: WidgetId::new(0),
             examples: ExampleMeta::all(),
@@ -73,6 +73,7 @@ impl Showcase {
             should_quit: false,
             last_click_time: std::time::Instant::now(),
             last_click_row: u16::MAX,
+            pending_cmd: pending,
         }
     }
 
@@ -82,14 +83,7 @@ impl Showcase {
 
     fn launch_selected(&self) {
         let ex = &self.examples[self.selected];
-        let mut parts = ex.run_cmd.split_whitespace();
-        let program = parts.next().unwrap();
-        let args: Vec<&str> = parts.collect();
-
-        Command::new(program)
-            .args(&args)
-            .spawn()
-            .ok();
+        *self.pending_cmd.lock().unwrap() = Some(ex.run_cmd.to_string());
     }
 }
 
