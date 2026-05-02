@@ -7,7 +7,7 @@
 //! Run with: cargo run --example showcase
 
 use std::os::fd::AsFd;
-use std::process::Command;
+use std::sync::{Arc, Mutex};
 use dracon_terminal_engine::compositor::{Color, Plane, Styles};
 use dracon_terminal_engine::framework::prelude::*;
 use dracon_terminal_engine::framework::widget::Widget;
