@@ -72,6 +72,7 @@ struct TreeNav {
     fs: MockFs,
     current_path: Vec<usize>,
     theme: Theme,
+    area: Rect,
 }
 
 impl TreeNav {
