@@ -253,7 +253,7 @@ impl Widget for MenuApp {
                 KeyCode::Char('n') => { self.toast("New file created", ToastKind::Success); true }
                 KeyCode::Char('o') => { self.toast("Opened file dialog", ToastKind::Info); true }
                 KeyCode::Char('s') => { self.toast("Saved!", ToastKind::Success); true }
-                KeyCode::Char('q') => { self.toast("Goodbye!", ToastKind::Info); true }
+                KeyCode::Char('q') => { self.toast("Goodbye!", ToastKind::Info); self.should_quit.store(true, Ordering::SeqCst); true }
                 KeyCode::Char('c') => { self.toast("Copied to clipboard", ToastKind::Info); true }
                 KeyCode::Char('v') => { self.toast("Pasted from clipboard", ToastKind::Info); true }
                 KeyCode::Char('a') => { self.toast("All items selected", ToastKind::Info); true }
