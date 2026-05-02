@@ -1,22 +1,21 @@
 # Project State
 
 ## Current Focus
-Improved child process handling in the showcase example with proper terminal session management.
+Improved child process handling in the showcase example with proper terminal control.
 
 ## Context
-The change addresses process group management in the showcase example to ensure Ctrl+C only affects child processes, preventing unintended termination of the parent application.
+The change adds proper terminal control to child processes in the showcase example by making the `pre_exec` closure `unsafe` to allow necessary system calls.
 
 ## Completed
-- [x] Refactored process group creation code in showcase.rs
-- [x] Simplified unsafe block by removing unnecessary nesting
-- [x] Updated Cargo.lock to reflect dependency changes
+- [x] Made `pre_exec` closure `unsafe` to enable terminal control operations
+- [x] Added proper child process handling in the showcase example
 
 ## In Progress
-- [ ] None (changes are complete)
+- [x] Child process management improvements
 
 ## Blockers
-- None
+- None identified
 
 ## Next Steps
-1. Verify the process group behavior in the showcase example
-2. Consider adding similar handling to other examples if needed
+1. Verify terminal control works correctly in the showcase example
+2. Document the terminal control improvements in the showcase example
