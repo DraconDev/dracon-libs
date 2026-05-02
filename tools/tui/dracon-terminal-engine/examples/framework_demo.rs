@@ -29,7 +29,7 @@ impl FrameworkDemo {
         Self {
             id,
             breadcrumbs,
-            sys: SystemMonitor::new(),
+            sys: RefCell::new(SystemMonitor::new()),
             area: Rect::new(0, 0, 80, 24),
         }
     }
