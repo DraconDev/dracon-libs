@@ -1,20 +1,24 @@
 # Project State
 
 ## Current Focus
-Added `AsFd` trait import for potential file descriptor handling in the split resizer example.
+Improved input handling and terminal size management in the split resizer example
 
 ## Context
-The split resizer example was being prepared for more advanced terminal operations that might require file descriptor handling, likely for inter-process communication or terminal control.
+The changes enhance the split resizer example by adding proper input routing and terminal size handling, making it more robust for different terminal dimensions.
 
 ## Completed
-- [x] Added `std::os::fd::AsFd` import for potential file descriptor operations
+- [x] Added `InputRouter` struct to properly route keyboard/mouse events to the split resizer app
+- [x] Implemented terminal size detection and handling in the main function
+- [x] Refactored the tabbed panels example to use `AsFd` for file descriptor handling
+- [x] Updated Cargo.lock to reflect dependency changes
 
 ## In Progress
-- [x] Preparing the split resizer example for more complex terminal interactions
+- [ ] No active work in progress
 
 ## Blockers
-- No immediate blockers identified
+- None identified
 
 ## Next Steps
-1. Implement file descriptor handling in the split resizer example
-2. Add actual usage of the imported trait in the example code
+1. Verify the split resizer example works correctly with different terminal sizes
+2. Test input handling in the split resizer example
+3. Review the tabbed panels example changes for consistency
