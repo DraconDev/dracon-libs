@@ -1,25 +1,20 @@
 # Project State
 
 ## Current Focus
-Enhanced modal dialog system with proper event routing and dynamic area handling
+Binary update to `dracon-terminal-engine/Cargo.toml` reflecting dependency changes
 
 ## Context
-The modal demo example needed improvements to properly handle keyboard/mouse events and support dynamic terminal resizing while maintaining modal dialog functionality.
+This change was prompted by recent refactoring work in the terminal engine framework, particularly around area tracking, keyboard input handling, and modal dialog systems. The binary update ensures the project's dependency versions are properly synchronized with the current codebase.
 
 ## Completed
-- [x] Added `ModalDemoRouter` widget to properly route input events to the demo app
-- [x] Implemented dynamic area handling for all UI elements based on terminal size
-- [x] Added thread-safe quit signal using `Arc<AtomicBool>`
-- [x] Refactored main loop to use shared state between input and render paths
-- [x] Updated all widget areas to respect terminal dimensions
+- [x] Updated `dracon-terminal-engine/Cargo.toml` to reflect recent dependency version changes
 
 ## In Progress
-- [ ] No active work in progress
+- [x] No active work in progress related to this change
 
 ## Blockers
-- None identified
+- None identified for this specific change
 
 ## Next Steps
-1. Verify modal dialog behavior with terminal resizing
-2. Test keyboard/mouse event handling in modal states
-3. Document the new input routing pattern for future use
+1. Verify the updated dependencies work correctly with the current codebase
+2. Continue with ongoing refactoring and feature development in the terminal engine framework
