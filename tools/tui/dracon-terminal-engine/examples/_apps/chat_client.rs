@@ -108,6 +108,10 @@ impl ChatState {
                 self.show_settings_modal = false;
                 true
             }
+            KeyCode::Char('q') => {
+                self.should_quit.store(true, Ordering::SeqCst);
+                true
+            }
             KeyCode::Enter if !self.show_emoji_modal && !self.show_settings_modal => { self.send_message(); true }
             KeyCode::Backspace if !self.input_text.is_empty() => { self.input_text.pop(); self.cursor_pos = self.input_text.len(); true }
             KeyCode::Char(ch) if !self.show_emoji_modal && !self.show_settings_modal => { self.input_text.push(ch); self.cursor_pos = self.input_text.len(); true }
@@ -116,7 +120,8 @@ impl ChatState {
     }
 
     fn handle_mouse(&mut self, kind: MouseEventKind, col: u16, row: u16) -> bool {
-        let (h, input_h, status_h, header_h) = (24u16, 3u16, 1u16, 1u16);
+        let (input_h, status_h, header_h) = (3u16, 1u16, 1u16);
+        let h = self.area.height;
         let list_h = h - input_h - status_h - header_h;
         let input_row = header_h + list_h;
 
