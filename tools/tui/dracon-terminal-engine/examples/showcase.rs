@@ -68,9 +68,10 @@ impl Showcase {
             examples: ExampleMeta::all(),
             selected: 0,
             area,
-            show_modal: false,
             theme_idx: 0,
             should_quit: false,
+            last_click_time: std::time::Instant::now(),
+            last_click_row: u16::MAX,
         }
     }
 
