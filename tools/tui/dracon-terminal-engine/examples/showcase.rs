@@ -61,8 +61,6 @@ struct Showcase {
     last_click_time: std::time::Instant,
     last_click_row: u16,
     pending_binary: Arc<Mutex<Option<String>>>,
-    error: Option<String>,
-    error_time: std::time::Instant,
 }
 
 impl Showcase {
@@ -77,8 +75,6 @@ impl Showcase {
             last_click_time: std::time::Instant::now(),
             last_click_row: u16::MAX,
             pending_binary: pending,
-            error: None,
-            error_time: std::time::Instant::now(),
         }
     }
 
@@ -241,18 +237,6 @@ impl Widget for Showcase {
             }
         }
 
-        if let Some(ref err) = self.error {
-            let err_str = format!("Error: {}", err);
-            let err_len = err_str.len().min(area.width as usize - 2);
-            for (j, c) in err_str.chars().take(err_len).enumerate() {
-                let ci = ((status_y - 1) * area.width + 1 + j as u16) as usize;
-                if ci < p.cells.len() {
-                    p.cells[ci].char = c;
-                    p.cells[ci].fg = Color::Rgb(255, 100, 100);
-                }
-            }
-        }
-
         p
     }
 
@@ -355,7 +339,7 @@ fn main() -> std::io::Result<()> {
                 Ok(es) if !es.success() => {
                     let _ = ctx.resume_terminal();
                 }
-                Err(e) => {
+                Err(_) => {
                     let _ = ctx.resume_terminal();
                 }
                 _ => {
