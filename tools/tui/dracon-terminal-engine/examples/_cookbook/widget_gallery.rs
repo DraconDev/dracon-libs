@@ -354,7 +354,7 @@ impl Widget for WidgetGallery {
     }
 
     fn handle_key(&mut self, key: KeyEvent) -> bool {
-        use KeyCode::{Down, Enter, Up};
+        use KeyCode::{Char, Down, Enter, Esc, Up};
         if key.kind != KeyEventKind::Press {
             return false;
         }
@@ -371,6 +371,10 @@ impl Widget for WidgetGallery {
                     self.selected -= 1;
                     self.dirty = true;
                 }
+                true
+            }
+            Char('q') | Esc => {
+                self.quit_requested.store(true, std::sync::atomic::Ordering::SeqCst);
                 true
             }
             Enter => {
@@ -442,7 +446,7 @@ fn main() -> std::io::Result<()> {
     let running = Arc::new(AtomicBool::new(true));
     let running_clone = running.clone();
 
-    let mut gallery = WidgetGallery::new();
+    let mut gallery = WidgetGallery::new(running_clone.clone());
     gallery.set_area(Rect::new(0, 0, w, h));
 
     let mut app = App::new()?.title("Widget Gallery").fps(30).theme(theme);
