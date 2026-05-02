@@ -1,23 +1,20 @@
 # Project State
 
 ## Current Focus
-Removed debug overlay performance metrics and FPS tracking from the debug overlay panel.
+Update Cargo.lock to reflect recent dependency version changes
 
 ## Context
-The debug overlay was previously tracking performance metrics like FPS, frame time, and memory usage, but these were either unused or simulated. This cleanup removes unused code to simplify the debug overlay implementation.
+This change updates the dependency versions in Cargo.lock to ensure the project uses the latest compatible versions of dependencies, maintaining compatibility and security.
 
 ## Completed
-- [x] Removed unused `std::time` imports
-- [x] Removed FPS tracking fields (`start_time`, `frame_count`, `last_fps_update`, `fps`)
-- [x] Removed the `update_profiler` method and its associated metric calculations
-- [x] Simplified the debug overlay initialization by removing unused fields
+- [x] Updated Cargo.lock to reflect recent dependency version changes
 
 ## In Progress
-- [ ] No active work in progress
+- [x] No active work in progress related to this change
 
 ## Blockers
 - None
 
 ## Next Steps
-1. Verify the debug overlay still functions correctly without the removed metrics
-2. Consider whether additional debug information should be added to the overlay
+1. Verify that the updated dependencies do not introduce breaking changes
+2. Test the application with the new dependency versions to ensure stability
