@@ -306,11 +306,39 @@ fn main() -> std::io::Result<()> {
     app.on_tick(move |ctx, _| {
         if let Some(cmd) = pending.lock().unwrap().take() {
             let _ = ctx.suspend_terminal();
-            let _ = std::process::Command::new("sh")
+            
+            let child_result = std::process::Command::new("sh")
                 .arg("-c")
                 .arg(&cmd)
+                .pre_exec(|| {
+                    #[cfg(unix)]
+                    {
+                        // Create new process group - ensures Ctrl+C only kills child
+                        use libc::{setpgid, setsid};
+                        unsafe {
+                            setpgid(0, 0);
+                            setsid();
+                        }
+                    }
+                    Ok(())
+                })
                 .status();
+            
+            match child_result {
+                Ok(exit_status) if !exit_status.success() => {
+                    eprintln!("\n\rExample exited with code: {:?}", exit_status.code());
+                }
+                Err(e) => {
+                    eprintln!("\n\rFailed to run example: {}", e);
+                }
+                _ => {}
+            }
+            
+            // Drain any residual stdin (keys pressed in child may linger)
+            drop(std::io::stdin().read(&mut [0u8; 256]));
+            
             let _ = ctx.resume_terminal();
+            ctx.mark_all_dirty();
         }
     }).run(|_ctx| {})
 }
