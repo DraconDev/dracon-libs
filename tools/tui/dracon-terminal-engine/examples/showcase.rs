@@ -297,7 +297,20 @@ fn main() -> std::io::Result<()> {
         (80u16, 24u16)
     };
 
+    let pending = Arc::new(Mutex::new(None));
+    let showcase = Showcase::new(Rect::new(0, 0, w, h), pending.clone());
+
     let mut app = App::new()?.title("Showcase").fps(30).theme(Theme::nord());
-    app.add_widget(Box::new(Showcase::new(Rect::new(0, 0, w, h))), Rect::new(0, 0, w, h));
-    app.on_tick(|_ctx, _| {}).run(|_ctx| {})
+    app.add_widget(Box::new(showcase), Rect::new(0, 0, w, h));
+    
+    app.on_tick(move |ctx, _| {
+        if let Some(cmd) = pending.lock().unwrap().take() {
+            let _ = ctx.terminal.suspend();
+            let _ = std::process::Command::new("sh")
+                .arg("-c")
+                .arg(&cmd)
+                .status();
+            let _ = ctx.terminal.resume();
+        }
+    }).run(|_ctx| {})
 }
