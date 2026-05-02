@@ -1,25 +1,21 @@
 # Project State
 
 ## Current Focus
-Improved keyboard input handling and terminal size management in the command bindings example
+Update Cargo.lock to reflect recent dependency version changes
 
 ## Context
-The changes address two key issues in the command bindings example:
-1. Better keyboard input routing through a dedicated InputRouter widget
-2. Proper terminal size handling during initialization and resizing
+This change was triggered by updates to dependency versions in Cargo.toml files across the project. The Cargo.lock file needs to be regenerated to ensure all dependencies are properly resolved and locked to specific versions.
 
 ## Completed
-- [x] Added InputRouter widget to properly handle keyboard events
-- [x] Implemented terminal size detection during initialization
-- [x] Improved widget lifecycle management with proper RefCell usage
-- [x] Enhanced rendering pipeline with explicit plane handling
+- [x] Updated Cargo.lock to reflect current dependency versions
 
 ## In Progress
-- [ ] No active work in progress
+- [x] No active work in progress related to this change
 
 ## Blockers
-- None identified
+- None
 
 ## Next Steps
-1. Verify input handling works across different terminal sizes
-2. Test keyboard event propagation in nested widget scenarios
+1. Verify that all dependencies are properly resolved
+2. Continue with other development work that may depend on these dependency updates
+```
