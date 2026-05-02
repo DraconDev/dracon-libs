@@ -22,6 +22,7 @@ use dracon_terminal_engine::framework::prelude::*;
 use dracon_terminal_engine::framework::widget::Widget;
 use dracon_terminal_engine::framework::widgets::SearchInput;
 use ratatui::layout::Rect;
+use std::os::fd::AsFd;
 
 const DATA: &[(&str, u32, &str, &str)] = &[
     ("Alice", 28, "New York", "Software Engineer"), ("Bob", 34, "London", "Data Scientist"),
