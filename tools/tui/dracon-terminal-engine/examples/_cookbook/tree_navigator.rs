@@ -71,6 +71,7 @@ struct TreeNav {
     breadcrumbs: Breadcrumbs,
     fs: MockFs,
     current_path: Vec<usize>,
+    theme: Theme,
 }
 
 impl TreeNav {
