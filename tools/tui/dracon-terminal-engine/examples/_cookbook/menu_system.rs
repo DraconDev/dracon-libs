@@ -40,6 +40,8 @@ struct MenuApp {
     menu_bar: Vec<MenuLabel>,
     active_menu: Option<usize>,
     selected_idx: Option<usize>,
+    area: Rect,
+    should_quit: Arc<AtomicBool>,
 }
 
 impl MenuApp {

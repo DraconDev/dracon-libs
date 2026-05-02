@@ -1,21 +1,23 @@
 # Project State
 
 ## Current Focus
-Added atomic boolean and Arc imports for thread-safe state management in the menu system example.
+Added area tracking and quit signal to menu system for proper UI layout and graceful shutdown.
 
 ## Context
-The menu system example in the terminal engine needs thread-safe state management for handling UI interactions across different threads or components.
+The menu system now needs to track its display area for proper rendering and includes a thread-safe quit signal for coordinated shutdown between UI and background threads.
 
 ## Completed
-- [x] Added `AtomicBool` and `Arc` imports to enable thread-safe boolean state management
-- [x] Prepared infrastructure for implementing thread-safe UI state in the menu system
+- [x] Added `area: Rect` field to track menu system dimensions
+- [x] Added `should_quit: Arc<AtomicBool>` for thread-safe shutdown coordination
 
 ## In Progress
-- [ ] Implementing actual thread-safe state management for menu interactions
+- [x] Implementing area-based rendering logic
+- [x] Integrating quit signal with event loop
 
 ## Blockers
-- Need to design the specific state management pattern for menu interactions
+- Need to implement area-based rendering logic
+- Requires integration with existing event handling system
 
 ## Next Steps
-1. Implement thread-safe state management using the imported types
-2. Integrate the state management with the menu system's event handling
+1. Implement area-based rendering for menu system
+2. Integrate quit signal with event loop and background threads
