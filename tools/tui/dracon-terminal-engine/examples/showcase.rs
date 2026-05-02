@@ -260,15 +260,24 @@ impl Widget for Showcase {
 
     fn handle_key(&mut self, key: KeyEvent) -> bool {
         if key.kind != KeyEventKind::Press { return false; }
-        
-        // Clear status message on any key press
-        self.status_message = None;
 
         match key.code {
-            KeyCode::Down | KeyCode::Char('j') => {
+            KeyCode::Down => {
                 if self.selected + 1 < self.examples.len() { self.selected += 1; }
                 true
             }
+            KeyCode::Up => {
+                if self.selected > 0 { self.selected -= 1; }
+                true
+            }
+            KeyCode::Home => { self.selected = 0; true }
+            KeyCode::End => { self.selected = self.examples.len().saturating_sub(1); true }
+            KeyCode::Enter => { self.launch_selected(); true }
+            KeyCode::Char('t') => { self.theme_idx = (self.theme_idx + 1) % Self::themes().len(); true }
+            KeyCode::Char('q') => { self.should_quit.store(true, Ordering::SeqCst); true }
+            _ => false,
+        }
+    }
             KeyCode::Up | KeyCode::Char('k') => {
                 if self.selected > 0 { self.selected -= 1; }
                 true
