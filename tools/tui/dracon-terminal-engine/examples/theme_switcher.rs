@@ -738,7 +738,7 @@ fn main() -> Result<()> {
     let demo = WidgetDemoPanel::new(WidgetId::new(6));
     let _demo_id = app.add_widget(Box::new(demo), Rect::new(0, 17, 80, 12));
 
-    app.on_tick(move |ctx, _| {
+    let _ = app.on_tick(move |ctx, _| {
         if quit_check.load(Ordering::SeqCst) {
             ctx.stop();
         }
