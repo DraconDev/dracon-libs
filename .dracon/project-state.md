@@ -1,22 +1,20 @@
 # Project State
 
 ## Current Focus
-Update Cargo.lock with dependency version changes
+Added application shutdown capability to the showcase example
 
 ## Context
-This change propagates recent dependency version updates throughout the project's dependency tree, ensuring all versions are properly synchronized.
+This change implements the application shutdown feature in the showcase example, aligning it with the recently added terminal engine context running state tracking.
 
 ## Completed
-- [x] Updated Cargo.lock to reflect current dependency versions
-- [x] Propagated version changes to all dependent crates
+- [x] Added `should_quit` field to Showcase struct to track shutdown state
 
 ## In Progress
-- [x] Dependency version synchronization
+- [x] Implementation of actual shutdown logic (not yet present in this diff)
 
 ## Blockers
-- None reported
+- Implementation of shutdown handling logic in the event loop
 
 ## Next Steps
-1. Verify all dependencies are properly resolved
-2. Test the updated dependency tree in development environment
-```
+1. Implement shutdown handling in the event loop
+2. Add proper cleanup procedures for terminal state

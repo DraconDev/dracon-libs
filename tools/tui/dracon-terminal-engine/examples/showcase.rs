@@ -202,6 +202,7 @@ struct Showcase {
     dirty: bool,
     show_modal: bool,
     theme_idx: usize,
+    should_quit: bool,
 }
 
 impl Showcase {
