@@ -715,9 +715,12 @@ impl Widget for WidgetDemoPanel {
 }
 
 fn main() -> Result<()> {
+    let should_quit = Arc::new(AtomicBool::new(false));
+    let quit_check = Arc::clone(&should_quit);
+
     let mut app = App::new()?.title("Theme Switcher Demo").fps(30);
 
-    let header = ThemeHeader::new(WidgetId::new(1));
+    let header = ThemeHeader::new(WidgetId::new(1), should_quit);
     let _header_id = app.add_widget(Box::new(header), Rect::new(0, 0, 80, 3));
 
     let tracking = TrackingWidget::new(WidgetId::new(2));
@@ -735,7 +738,11 @@ fn main() -> Result<()> {
     let demo = WidgetDemoPanel::new(WidgetId::new(6));
     let _demo_id = app.add_widget(Box::new(demo), Rect::new(0, 17, 80, 12));
 
-    let _ = app.run(|_ctx| {});
+    app.on_tick(move |ctx, _| {
+        if quit_check.load(Ordering::SeqCst) {
+            ctx.stop();
+        }
+    }).run(|_ctx| {});
 
     println!("\nTheme Switcher Demo Ended");
     println!("All 15 themes demonstrated:");
