@@ -1,23 +1,21 @@
 # Project State
 
 ## Current Focus
-Improved terminal window size detection in the showcase example and optimized I/O handling
+Added standard library imports for file descriptor handling in the showcase example.
 
 ## Context
-The showcase example was previously using a hardcoded terminal size (80x24), which could cause display issues on terminals of different sizes. This change improves the user experience by automatically detecting the terminal size when available.
+This change prepares the showcase example for more advanced I/O operations by adding necessary standard library imports for file descriptor handling.
 
 ## Completed
-- [x] Added terminal size detection using `get_window_size` from the backend
-- [x] Fallback to default 80x24 size when detection fails
-- [x] Removed unused `buf` variable in the app loop
-- [x] Simplified the showcase example's I/O handling
+- [x] Added `std::io` import for I/O operations
+- [x] Added `std::os::fd::AsFd` import for file descriptor handling
 
 ## In Progress
-- [ ] No active work in progress
+- [ ] None
 
 ## Blockers
-- None identified
+- None
 
 ## Next Steps
-1. Verify the terminal size detection works across different terminal emulators
-2. Consider adding more robust error handling for terminal size detection failures
+1. Implement file descriptor handling in the showcase example
+2. Verify compatibility with terminal I/O operations
