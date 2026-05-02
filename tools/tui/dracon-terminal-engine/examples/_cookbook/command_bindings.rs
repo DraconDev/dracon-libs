@@ -21,7 +21,10 @@
 //! - `p` — pause/resume auto-refresh
 //! - `Ctrl+C` — quit
 
+use std::cell::RefCell;
 use std::collections::BTreeMap;
+use std::os::fd::AsFd;
+use std::rc::Rc;
 use std::time::Duration;
 
 use dracon_terminal_engine::compositor::{Color, Plane, Styles};

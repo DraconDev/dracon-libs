@@ -1,21 +1,23 @@
 # Project State
 
 ## Current Focus
-Binary update to `dracon-terminal-engine/Cargo.toml` reflecting dependency version changes
+Improved input handling and terminal size management in the log monitor example
 
 ## Context
-This binary update was triggered by recent dependency version changes in the terminal engine component. The update ensures the project uses the latest compatible versions of dependencies while maintaining stability.
+The log monitor example was refactored to better handle terminal resizing and input events, particularly for keyboard and mouse interactions.
 
 ## Completed
-- [x] Updated `dracon-terminal-engine/Cargo.toml` to reflect current dependency versions
+- [x] Added `InputRouter` widget to properly route keyboard/mouse events to the log monitor
+- [x] Improved terminal size detection using `AsFd` trait
+- [x] Refactored log monitor to use `Rc<RefCell>` for shared mutable state
+- [x] Enhanced input handling with proper event propagation
 
 ## In Progress
-- [ ] Verification of compatibility with other components after dependency updates
+- [ ] None (changes appear complete)
 
 ## Blockers
-- Need to verify that the updated dependencies don't introduce breaking changes in the terminal engine functionality
+- None (changes appear complete)
 
 ## Next Steps
-1. Run integration tests to verify terminal engine behavior with updated dependencies
-2. Update documentation if any API changes were introduced by the dependency updates
-```
+1. Verify input handling works across different terminal sizes
+2. Test edge cases for rapid resizing and input events
