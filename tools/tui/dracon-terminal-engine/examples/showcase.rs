@@ -630,7 +630,9 @@ impl Widget for Showcase {
                 true
             }
             KeyCode::Char('q') => {
-                std::process::exit(0);
+                self.should_quit = true;
+                self.dirty = true;
+                true
             }
             _ => false,
         }
