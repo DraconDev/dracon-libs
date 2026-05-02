@@ -315,12 +315,9 @@ fn main() -> std::io::Result<()> {
                 .pre_exec(|| {
                     #[cfg(unix)]
                     {
-                        // Create new process group - ensures Ctrl+C only kills child
                         use libc::{setpgid, setsid};
-                        unsafe {
-                            setpgid(0, 0);
-                            setsid();
-                        }
+                        setpgid(0, 0);
+                        setsid();
                     }
                     Ok(())
                 })
