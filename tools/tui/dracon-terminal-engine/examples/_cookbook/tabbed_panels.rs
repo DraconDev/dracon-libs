@@ -226,10 +226,11 @@ impl Widget for TabbedApp {
     }
 
     fn area(&self) -> Rect {
-        Rect::new(0, 0, 80, 24)
+        self.area
     }
 
-    fn set_area(&mut self, _area: Rect) {
+    fn set_area(&mut self, area: Rect) {
+        self.area = area;
     }
 
     fn z_index(&self) -> u16 {
