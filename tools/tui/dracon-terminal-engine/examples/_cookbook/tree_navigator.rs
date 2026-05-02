@@ -104,6 +104,7 @@ impl TreeNav {
             breadcrumbs,
             fs,
             current_path: Vec::new(),
+            theme: Theme::default(),
         }
     }
 
