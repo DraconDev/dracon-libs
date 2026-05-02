@@ -1,26 +1,21 @@
 # Project State
 
 ## Current Focus
-Implement graceful application shutdown in the showcase example
+Added graceful shutdown capability to the showcase example
 
 ## Context
-The previous implementation used `std::process::exit(0)` which is abrupt. This change introduces a proper shutdown sequence by:
-1. Setting a quit flag
-2. Marking the UI as dirty to trigger a redraw
-3. Returning true to indicate the event was handled
+This change implements the application shutdown functionality that was previously added to the terminal engine context. It allows the showcase example to properly terminate when requested.
 
 ## Completed
-- [x] Replace abrupt exit with graceful shutdown sequence
-- [x] Set quit flag to trigger shutdown
-- [x] Mark UI as dirty for proper redraw
-- [x] Return event handled status
+- [x] Added shutdown check in the showcase example's tick handler
+- [x] Implemented proper context termination when `should_quit` is true
 
 ## In Progress
 - [ ] None (this is a complete implementation)
 
 ## Blockers
-- None (this is a complete implementation)
+- None (this change completes the graceful shutdown feature)
 
 ## Next Steps
-1. Verify shutdown behavior in all showcase scenarios
-2. Document the new shutdown pattern for other examples
+1. Verify the shutdown behavior in the showcase example
+2. Consider adding more graceful shutdown examples for other components
