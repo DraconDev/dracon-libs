@@ -1,20 +1,21 @@
 # Project State
 
 ## Current Focus
-Binary metadata update in `dracon-terminal-engine` Cargo.toml
+Added running state tracking to the terminal engine context for proper application shutdown handling
 
 ## Context
-This change is part of a series of documentation and dependency management updates. The binary metadata in the Cargo.toml file was updated, likely to ensure proper version tracking and dependency resolution.
+This change propagates the running state to the terminal engine context to enable graceful application shutdown functionality. It follows previous work on shutdown capabilities in the showcase example and terminal engine.
 
 ## Completed
-- [x] Updated binary metadata in `dracon-terminal-engine` Cargo.toml
+- [x] Added `FAKE_RUNNING` atomic boolean for test context
+- [x] Propagated running state to terminal engine context
 
 ## In Progress
-- [x] Documentation and dependency management updates
+- [x] Implementation of running state tracking in terminal engine
 
 ## Blockers
-- None identified in this specific change
+- None identified in this commit
 
 ## Next Steps
-1. Verify the updated metadata does not affect build processes
-2. Continue with ongoing documentation and dependency management tasks
+1. Implement proper running state management in application lifecycle
+2. Integrate with actual shutdown signals in the showcase example

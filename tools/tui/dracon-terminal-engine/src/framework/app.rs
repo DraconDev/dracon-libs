@@ -720,6 +720,7 @@ impl<'a> Ctx<'a> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    static FAKE_RUNNING: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(true);
     use crate::framework::command::{
         AppConfig, AreaConfig, LayoutConfig, ParserConfig, WidgetConfig,
     };
@@ -857,6 +858,7 @@ mod tests {
             theme: &theme,
             frame_count: 0,
             last_frame: &last_frame,
+            running: &FAKE_RUNNING,
             terminal: &mut make_test_terminal().unwrap(),
             focus_manager: &mut focus_manager,
             animations: &mut animations,
