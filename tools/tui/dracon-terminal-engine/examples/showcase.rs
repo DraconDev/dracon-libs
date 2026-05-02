@@ -58,12 +58,11 @@ struct Showcase {
     selected: usize,
     area: Rect,
     theme_idx: usize,
-    should_quit: bool,
+    should_quit: Arc<AtomicBool>,
     last_click_time: std::time::Instant,
     last_click_row: u16,
     pending_binary: Arc<Mutex<Option<String>>>,
     status_message: Option<String>,
-    status_time: std::time::Instant,
 }
 
 impl Showcase {
