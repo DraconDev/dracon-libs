@@ -298,11 +298,6 @@ impl Widget for Showcase {
     fn handle_key(&mut self, key: KeyEvent) -> bool {
         if key.kind != KeyEventKind::Press { return false; }
 
-        if self.show_modal {
-            self.show_modal = false;
-            return true;
-        }
-
         match key.code {
             KeyCode::Down | KeyCode::Char('j') => {
                 if self.selected + 1 < self.examples.len() { self.selected += 1; }
@@ -322,11 +317,6 @@ impl Widget for Showcase {
     }
 
     fn handle_mouse(&mut self, kind: MouseEventKind, _col: u16, row: u16) -> bool {
-        if self.show_modal {
-            self.show_modal = false;
-            return true;
-        }
-
         let list_start = 3u16;
         let visible_count = (self.area.height as usize).saturating_sub(5) as u16;
 
@@ -337,14 +327,18 @@ impl Widget for Showcase {
                     let start = self.selected.saturating_sub((visible_count / 2) as usize);
                     let idx = start + clicked;
                     if idx < self.examples.len() {
-                        self.selected = idx;
+                        let now = std::time::Instant::now();
+                        let elapsed = now.duration_since(self.last_click_time);
+                        if elapsed.as_millis() < 500 && self.last_click_row == row {
+                            self.launch_selected();
+                        } else {
+                            self.selected = idx;
+                        }
+                        self.last_click_time = now;
+                        self.last_click_row = row;
                         return true;
                     }
                 }
-            }
-            MouseEventKind::DoubleClick(MouseButton::Left) => {
-                self.launch_selected();
-                return true;
             }
             _ => {}
         }
