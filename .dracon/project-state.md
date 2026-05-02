@@ -1,22 +1,20 @@
 # Project State
 
 ## Current Focus
-Refactored keyboard input handling in the terminal engine framework
+Update Cargo.lock to reflect recent dependency version changes
 
 ## Context
-The previous implementation used an `InputRouter` wrapper to handle keyboard events, which added unnecessary complexity. The change simplifies the architecture by directly integrating keyboard input handling into the main application context.
+This change updates the dependency versions in the project to ensure compatibility and security with the latest package versions. The update was triggered by recent dependency version changes in the terminal engine framework.
 
 ## Completed
-- [x] Removed the `InputRouter` wrapper struct
-- [x] Directly integrated keyboard input handling using `on_input` callback
-- [x] Simplified the widget initialization flow
+- [x] Updated Cargo.lock to reflect recent dependency version changes
 
 ## In Progress
-- [x] Refactored keyboard input handling
+- [x] No active work in progress related to this change
 
 ## Blockers
-- None identified
+- None
 
 ## Next Steps
-1. Verify the new input handling works consistently across different terminal sizes
-2. Update related documentation to reflect the simplified architecture
+1. Verify that all dependencies are properly resolved
+2. Test the application to ensure no breaking changes from the dependency updates
