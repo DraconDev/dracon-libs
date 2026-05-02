@@ -66,7 +66,7 @@ struct WidgetGallery {
 }
 
 impl WidgetGallery {
-    fn new() -> Self {
+    fn new(quit: Arc<AtomicBool>) -> Self {
         let id = WidgetId::new(1);
         Self {
             id,
@@ -83,6 +83,7 @@ impl WidgetGallery {
             button: Button::with_id(WidgetId::new(18), "Click Me!"),
             area: Rect::new(0, 0, 80, 24),
             dirty: true,
+            quit_requested: quit,
         }
     }
 
