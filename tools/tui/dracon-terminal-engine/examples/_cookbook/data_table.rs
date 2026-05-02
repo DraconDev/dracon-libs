@@ -224,15 +224,14 @@ impl Widget for Table {
 }
 
 fn main() -> std::io::Result<()> {
-    App::new()?
-        .title("Data Table Demo")
-        .fps(30)
-        .theme(Theme::cyberpunk())
-        .run(|ctx| {
-            let (w, h) = ctx.compositor().size();
-            let mut t = Table::new();
-            t.set_area(Rect::new(0, 0, w, h));
-            t.vis = (h as usize).saturating_sub(3).max(1);
-            ctx.add_plane(t.render(t.area));
-        })
+    let (w, h) = dracon_terminal_engine::backend::tty::get_window_size(std::io::stdout().as_fd())
+        .unwrap_or((80, 24));
+
+    let mut t = Table::new();
+    t.set_area(Rect::new(0, 0, w, h));
+    t.vis = (h as usize).saturating_sub(3).max(1);
+
+    let mut app = App::new()?.title("Data Table Demo").fps(30).theme(Theme::cyberpunk());
+    app.add_widget(Box::new(t), Rect::new(0, 0, w, h));
+    app.run(|_ctx| {})
 }

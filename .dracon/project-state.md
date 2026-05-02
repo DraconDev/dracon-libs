@@ -1,22 +1,23 @@
 # Project State
 
 ## Current Focus
-Refactored terminal window size detection and widget initialization in the menu system example
+Refactored data table initialization to use explicit window size detection
 
 ## Context
-The menu system example was using a deprecated approach for getting terminal dimensions. This change updates it to use the modern `std::os::fd::AsFd` trait and the framework's built-in window size detection.
+The previous implementation had window size detection tightly coupled with the app initialization, making the code harder to maintain. This change separates the window size detection from the app setup for better modularity.
 
 ## Completed
-- [x] Updated window size detection to use `std::os::fd::AsFd` and the framework's `get_window_size`
-- [x] Simplified widget initialization by using `add_widget` instead of manual plane management
-- [x] Removed redundant toast expiration check from the main loop
+- [x] Moved window size detection to a separate call before app initialization
+- [x] Simplified app initialization by removing redundant parameters
+- [x] Changed widget addition to use the new `add_widget` method
+- [x] Maintained all existing functionality while improving code organization
 
 ## In Progress
-- [ ] Verify the new window size detection works across different terminal emulators
+- [x] Refactoring of data table initialization
 
 ## Blockers
-- Need to confirm if the new approach handles terminal resizing events properly
+- None identified
 
 ## Next Steps
-1. Test the updated menu system example across different terminal environments
-2. Document the new window size detection approach in the framework documentation
+1. Verify the refactored code maintains all existing functionality
+2. Consider applying similar refactoring to other examples that use window size detection
