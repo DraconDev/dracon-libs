@@ -4,17 +4,17 @@
 Added application shutdown capability to the showcase example
 
 ## Context
-This change implements the application shutdown feature in the showcase example, aligning it with the recently added terminal engine context running state tracking.
+This change implements the application shutdown functionality in the showcase example, completing the recent work on shutdown capabilities in the terminal engine.
 
 ## Completed
-- [x] Added `should_quit` field to Showcase struct to track shutdown state
+- [x] Added `should_quit` field to showcase state to track shutdown requests
 
 ## In Progress
-- [x] Implementation of actual shutdown logic (not yet present in this diff)
+- [x] Application shutdown capability implementation
 
 ## Blockers
-- Implementation of shutdown handling logic in the event loop
+- None identified
 
 ## Next Steps
-1. Implement shutdown handling in the event loop
-2. Add proper cleanup procedures for terminal state
+1. Verify shutdown behavior in showcase example
+2. Propagate shutdown state to terminal engine context

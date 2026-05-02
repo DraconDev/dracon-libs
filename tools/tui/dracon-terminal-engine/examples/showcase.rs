@@ -215,6 +215,7 @@ impl Showcase {
             dirty: true,
             show_modal: false,
             theme_idx: 0,
+            should_quit: false,
         }
     }
 
