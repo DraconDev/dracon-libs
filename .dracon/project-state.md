@@ -1,21 +1,22 @@
 # Project State
 
 ## Current Focus
-Update Cargo.lock to reflect recent dependency version changes
+Refactored example metadata structure to use binary names instead of run commands
 
 ## Context
-This change was prompted by updates to the `dracon-terminal-engine` Cargo.toml metadata and improvements to child process handling in the showcase example. The Cargo.lock file needs to be updated to ensure all dependencies are properly synchronized with the current project state.
+The showcase example was previously using hardcoded cargo run commands to launch examples, which made the code less maintainable and required changes in multiple places when the project structure evolved.
 
 ## Completed
-- [x] Updated Cargo.lock to reflect recent dependency version changes
-- [x] Synchronized dependency versions with the updated Cargo.toml metadata
+- [x] Renamed `run_cmd` field to `binary_name` in ExampleMeta struct
+- [x] Updated all example metadata entries to use binary names instead of full cargo commands
+- [x] Modified the launch_selected method to use the new binary_name field
 
 ## In Progress
-- [x] No active work in progress beyond the Cargo.lock update
+- [ ] No active work in progress
 
 ## Blockers
-- None identified for this specific change
+- None identified
 
 ## Next Steps
-1. Verify that all dependencies are correctly resolved in the updated Cargo.lock
-2. Test the showcase example to ensure proper child process handling continues to work as expected
+1. Verify all examples can be launched successfully with the new binary name approach
+2. Consider adding validation to ensure binary names match actual compiled binaries
