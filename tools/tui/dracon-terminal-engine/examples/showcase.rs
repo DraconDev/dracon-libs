@@ -76,7 +76,9 @@ impl Showcase {
             should_quit: false,
             last_click_time: std::time::Instant::now(),
             last_click_row: u16::MAX,
-            pending_cmd: pending,
+            pending_binary: pending,
+            error: None,
+            error_time: std::time::Instant::now(),
         }
     }
 
@@ -86,7 +88,7 @@ impl Showcase {
 
     fn launch_selected(&self) {
         let ex = &self.examples[self.selected];
-        *self.pending_cmd.lock().unwrap() = Some(ex.binary_name.to_string());
+        *self.pending_binary.lock().unwrap() = Some(ex.binary_name.to_string());
     }
 }
 
