@@ -1,21 +1,20 @@
 # Project State
 
 ## Current Focus
-Removed terminal synchronization mode cleanup during compositor shutdown
+Update binary metadata in `dracon-terminal-engine` Cargo.toml
 
 ## Context
-The compositor previously had a `Drop` implementation that would exit terminal synchronization mode when the compositor was dropped. This was part of a feature to ensure the terminal wasn't stuck buffering output during shutdown.
+This change updates the binary metadata for the Dracon Terminal Engine, likely to ensure proper versioning and build information for the terminal component.
 
 ## Completed
-- [x] Removed the `Drop` implementation for the compositor
-- [x] Eliminated the terminal synchronization mode cleanup during shutdown
+- [x] Updated binary metadata in `dracon-terminal-engine` Cargo.toml
 
 ## In Progress
-- [x] Ongoing work to improve terminal shutdown handling
+- [x] No active work in progress beyond the metadata update
 
 ## Blockers
 - None identified
 
 ## Next Steps
-1. Verify terminal behavior without the synchronization mode cleanup
-2. Assess if additional shutdown handling is needed
+1. Verify the updated metadata reflects correct versioning
+2. Ensure the change propagates to dependent components
