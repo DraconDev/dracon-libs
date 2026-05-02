@@ -1,20 +1,22 @@
 # Project State
 
 ## Current Focus
-Update Cargo.lock to reflect recent dependency version changes
+Clean up widget imports in example code
 
 ## Context
-This change ensures the project's dependency versions are synchronized with the latest updates, maintaining consistency across the development environment.
+The changes remove unused imports from example files to improve code organization and reduce noise in the examples.
 
 ## Completed
-- [x] Updated Cargo.lock to reflect recent dependency version changes
+- [x] Removed unused `List` import from `debug_overlay.rs`
+- [x] Removed unused `Toast` and `ToastKind` imports from `form_demo.rs`
+- [x] Removed unused `KeyCode` and `KeyEventKind` imports from `framework_demo.rs`
 
 ## In Progress
-- [x] No active work in progress related to this change
+- [ ] None
 
 ## Blockers
 - None
 
 ## Next Steps
-1. Verify that all dependencies are properly resolved
-2. Ensure the project builds successfully with the updated lockfile
+1. Verify all examples still compile and run correctly
+2. Consider similar cleanup in other example files if needed
