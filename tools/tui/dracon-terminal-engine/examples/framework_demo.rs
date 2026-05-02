@@ -123,16 +123,6 @@ impl Widget for FrameworkDemo {
         p
     }
 
-    fn handle_key(&mut self, key: KeyEvent) -> bool {
-        if key.kind != KeyEventKind::Press { return false; }
-        match key.code {
-            KeyCode::Down => { self.list.next(); true }
-            KeyCode::Up => { self.list.prev(); true }
-            _ => false,
-        }
-    }
-}
-
 fn main() -> std::io::Result<()> {
     let (w, h) = dracon_terminal_engine::backend::tty::get_window_size(std::io::stdout().as_fd())
         .unwrap_or((80, 24));
