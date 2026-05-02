@@ -423,7 +423,7 @@ fn main() -> io::Result<()> {
             ctx.add_plane(toast.render(toast_area));
             demo.show_save_toast = false;
         }
-    });
+    })?;
 
     println!("\nModal demo exited cleanly");
     Ok(())

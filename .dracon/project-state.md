@@ -1,23 +1,21 @@
 # Project State
 
 ## Current Focus
-Enhanced modal dialog confirmation handling in the terminal UI demo
+Added proper error propagation in the modal demo example's cleanup handler
 
 ## Context
-The modal dialog system needed improved handling of confirmation results to properly route events and manage UI state transitions.
+The change enhances error handling in the modal demo's cleanup process by properly propagating potential I/O errors from the terminal context cleanup.
 
 ## Completed
-- [x] Added explicit handling for `ConfirmResult::Confirmed` and `ConfirmResult::Cancelled` cases
-- [x] Improved state management by clearing confirmation results after handling
-- [x] Enhanced toast notifications for confirmed actions
-- [x] Refactored confirmation logic to be more explicit and maintainable
+- [x] Added `?` operator to propagate potential I/O errors from `ctx.cleanup()`
+- [x] Maintained clean exit message when demo exits normally
 
 ## In Progress
-- [x] Modal dialog system with proper event routing and dynamic area tracking
+- [x] Error handling refinement in terminal UI examples
 
 ## Blockers
-- None identified in this change
+- None identified
 
 ## Next Steps
-1. Verify all modal dialog interactions work as expected
-2. Test edge cases for confirmation dialog behavior
+1. Verify error handling behavior in modal dialog scenarios
+2. Document the error propagation pattern in the terminal engine examples
