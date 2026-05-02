@@ -312,13 +312,12 @@ fn main() -> io::Result<()> {
     let mut app = App::new()?.title("Chat Client").fps(30);
     app.set_theme(Theme::dark());
 
-    let (w, h) = app.compositor.size();
     let router = ChatInputRouter {
         target: chat_for_input,
         id: WidgetId::new(100),
-        area: Rect::new(0, 0, w, h),
+        area: Rect::new(0, 0, 80, 24),
     };
-    app.add_widget(Box::new(router), Rect::new(0, 0, w, h));
+    app.add_widget(Box::new(router), Rect::new(0, 0, 80, 24));
 
     app.on_tick(move |ctx, _| {
         if quit_check.load(Ordering::SeqCst) {
