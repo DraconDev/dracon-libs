@@ -1,20 +1,21 @@
 # Project State
 
 ## Current Focus
-Binary metadata update in `dracon-terminal-engine` Cargo.toml
+Propagate the running state to the terminal engine context for proper shutdown handling
 
 ## Context
-This change is part of ongoing documentation and metadata maintenance for the terminal engine component. It follows a series of recent commits that added new features and fixed documentation gaps in the TUI examples.
+This change enables the terminal engine to properly track and respond to application shutdown requests by passing the running state through the rendering pipeline.
 
 ## Completed
-- [x] Updated binary metadata in `dracon-terminal-engine` Cargo.toml
+- [x] Added `running` state parameter to compositor render calls
+- [x] Updated Cargo.lock with dependency version changes
 
 ## In Progress
-- [x] No active work in progress related to this change
+- [x] Implementation of running state propagation in the terminal engine context
 
 ## Blockers
-- None identified for this specific change
+- None identified
 
 ## Next Steps
-1. Verify the updated metadata doesn't affect build or runtime behavior
-2. Continue with other documentation and feature development in the TUI system
+1. Verify shutdown behavior with integration tests
+2. Document the running state propagation mechanism
