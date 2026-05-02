@@ -35,7 +35,7 @@ use dracon_terminal_engine::compositor::Plane;
 use dracon_terminal_engine::framework::prelude::*;
 use dracon_terminal_engine::framework::widget::{Widget, WidgetId};
 use dracon_terminal_engine::framework::widgets::{
-    Button, ConfirmDialog, Label, Modal, Toast, ToastKind,
+    Button, ConfirmDialog, ConfirmResult, Label, Modal, Toast, ToastKind,
 };
 use dracon_terminal_engine::input::event::{KeyCode, KeyEventKind, MouseEventKind};
 use ratatui::layout::Rect;
@@ -262,12 +262,13 @@ impl<'a> ModalDemoApp<'a> {
         if self.show_confirm {
             if self.confirm_dialog.handle_mouse(kind, col, row) {
                 if let MouseEventKind::Down(_) = kind {
-                    if let Some(result) = self.confirm_dialog.confirmed() {
+                    if self.confirm_dialog.confirmed() == Some(ConfirmResult::Confirmed) {
                         self.show_confirm = false;
-                        if result {
-                            self.show_save_toast = true;
-                            self.toast_message = "Action confirmed!".to_string();
-                        }
+                        self.show_save_toast = true;
+                        self.toast_message = "Action confirmed!".to_string();
+                        self.confirm_dialog.clear_result();
+                    } else if self.confirm_dialog.confirmed() == Some(ConfirmResult::Cancelled) {
+                        self.show_confirm = false;
                         self.confirm_dialog.clear_result();
                     }
                 }
