@@ -316,10 +316,13 @@ impl Widget for FileManager {
 }
 
 fn main() -> std::io::Result<()> {
-    App::new()?.title("File Manager").fps(30).theme(Theme::dark()).run(|ctx| {
-        let (w, h) = ctx.compositor().size();
-        let mut fm = FileManager::new(WidgetId::new(0));
-        fm.set_area(Rect::new(0, 0, w, h));
-        ctx.add_plane(fm.render(Rect::new(0, 0, w, h)));
-    })
+    let (w, h) = dracon_terminal_engine::backend::tty::get_window_size(std::io::stdout().as_fd())
+        .unwrap_or((80, 24));
+
+    let mut fm = FileManager::new(WidgetId::new(0));
+    fm.set_area(Rect::new(0, 0, w, h));
+
+    let mut app = App::new()?.title("File Manager").fps(30).theme(Theme::dark());
+    app.add_widget(Box::new(fm), Rect::new(0, 0, w, h));
+    app.run(|_ctx| {})
 }
