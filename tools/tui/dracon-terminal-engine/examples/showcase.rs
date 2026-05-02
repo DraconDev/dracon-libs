@@ -278,18 +278,6 @@ impl Widget for Showcase {
             _ => false,
         }
     }
-            KeyCode::Up | KeyCode::Char('k') => {
-                if self.selected > 0 { self.selected -= 1; }
-                true
-            }
-            KeyCode::Home => { self.selected = 0; true }
-            KeyCode::End => { self.selected = self.examples.len().saturating_sub(1); true }
-            KeyCode::Enter => { self.launch_selected(); true }
-            KeyCode::Char('t') => { self.theme_idx = (self.theme_idx + 1) % Self::themes().len(); true }
-            KeyCode::Char('q') => { self.should_quit.store(true, Ordering::SeqCst); true }
-            _ => false,
-        }
-    }
 
     fn handle_mouse(&mut self, kind: MouseEventKind, _col: u16, row: u16) -> bool {
         let list_start = 3u16;

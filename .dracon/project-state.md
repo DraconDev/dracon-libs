@@ -1,21 +1,22 @@
 # Project State
 
 ## Current Focus
-Update Cargo.lock to reflect recent dependency version changes
+Removed keyboard navigation controls from the showcase example.
 
 ## Context
-This change was prompted by updates to the `dracon-terminal-engine` dependency versions in Cargo.toml, which required synchronization of the lock file to maintain consistent dependency resolution.
+The showcase example was previously cluttered with keyboard navigation controls that were not being used. This cleanup makes the code more focused on its primary purpose of demonstrating the terminal engine's capabilities.
 
 ## Completed
-- [x] Updated Cargo.lock to reflect current dependency versions
-- [x] Synchronized dependency versions with Cargo.toml changes
+- [x] Removed unused keyboard navigation controls (Up/Down, Home, End, Enter)
+- [x] Removed theme switching control ('t' key)
+- [x] Removed quit functionality ('q' key) which was previously refactored to use atomic boolean
 
 ## In Progress
-- [x] Dependency version synchronization process
+- [ ] None
 
 ## Blockers
-- None reported
+- None
 
 ## Next Steps
-1. Verify that all dependencies resolve correctly
-2. Test the showcase example with the updated dependencies
+1. Review remaining showcase example controls to ensure all unused functionality is removed
+2. Verify that mouse navigation remains functional after these changes
