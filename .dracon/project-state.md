@@ -1,21 +1,20 @@
 # Project State
 
 ## Current Focus
-Simplified terminal window size initialization in the showcase example.
+Removed unused column parameter in mouse event handler to simplify showcase example.
 
 ## Context
-The showcase example was previously using complex window size detection logic that wasn't properly handling the terminal dimensions. This change simplifies the initialization to use fixed default values (80x24) for better reliability.
+The showcase example was previously using an unused column parameter in the mouse event handler. This change aligns with ongoing refactoring efforts to simplify the codebase while maintaining functionality.
 
 ## Completed
-- [x] Replaced complex window size detection with fixed default dimensions (80x24)
-- [x] Removed unused standard library imports related to terminal size detection
+- [x] Removed unused `col` parameter from `handle_mouse` method in showcase example
 
 ## In Progress
-- [ ] None
+- [x] Ongoing refactoring of terminal-related code in the showcase example
 
 ## Blockers
-- None
+- None identified for this specific change
 
 ## Next Steps
-1. Verify the showcase example works consistently across different terminal sizes
-2. Consider adding configuration options for custom terminal dimensions
+1. Review other showcase example components for similar unused parameters
+2. Continue terminal-related refactoring efforts
