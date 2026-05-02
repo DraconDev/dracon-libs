@@ -144,12 +144,19 @@ fn render_footer_text(plane: &mut Plane, width: u16, footer_y: u16, theme: &Them
 }
 
 fn main() -> std::io::Result<()> {
+    let should_quit = Arc::new(AtomicBool::new(false));
+    let quit_check = Arc::clone(&should_quit);
+
     let theme_idx = Arc::new(AtomicUsize::new(0));
     let paused = Arc::new(AtomicBool::new(false));
     let theme_idx_clone = theme_idx.clone();
     let paused_clone = paused.clone();
 
-    let tick_cb = move |_ctx: &mut Ctx, tick: u64| {
+    let tick_cb = move |ctx: &mut Ctx, tick: u64| {
+        if quit_check.load(Ordering::SeqCst) {
+            ctx.stop();
+            return;
+        }
         if tick % 3 == 0 && !paused_clone.load(Ordering::SeqCst) { theme_idx_clone.fetch_add(1, Ordering::SeqCst); }
     };
 
@@ -160,7 +167,7 @@ fn main() -> std::io::Result<()> {
         .tick_interval(1000)
         .on_tick(tick_cb);
 
-    app.add_widget(Box::new(Dashboard::new()), Rect::new(0, 0, 80, 24));
+    app.add_widget(Box::new(Dashboard::new(should_quit)), Rect::new(0, 0, 80, 24));
 
     app.run(move |ctx| {
         ctx.hide_cursor().ok();
