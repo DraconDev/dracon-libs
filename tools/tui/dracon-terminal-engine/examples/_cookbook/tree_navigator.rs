@@ -284,7 +284,9 @@ impl TreeNav {
         plane.z_index = 5;
 
         for cell in plane.cells.iter_mut() {
-            cell.bg = Color::Ansi(17);
+            cell.bg = self.theme.bg;
+            cell.fg = self.theme.fg;
+            cell.transparent = false;
         }
 
         let print_line = |plane: &mut Plane, y: u16, text: &str, fg: Color| {
