@@ -76,6 +76,8 @@ impl Showcase {
             last_click_time: std::time::Instant::now(),
             last_click_row: u16::MAX,
             pending_binary: pending,
+            status_message: None,
+            status_time: std::time::Instant::now(),
         }
     }
 
@@ -83,9 +85,11 @@ impl Showcase {
         vec![Theme::nord(), Theme::dark(), Theme::cyberpunk(), Theme::dracula()]
     }
 
-    fn launch_selected(&self) {
+    fn launch_selected(&mut self) {
         let ex = &self.examples[self.selected];
         *self.pending_binary.lock().unwrap() = Some(ex.binary_name.to_string());
+        self.status_message = Some(format!("Launching {}...", ex.name));
+        self.status_time = std::time::Instant::now();
     }
 }
 
