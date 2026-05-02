@@ -60,6 +60,8 @@ struct Showcase {
     last_click_time: std::time::Instant,
     last_click_row: u16,
     pending_binary: Arc<Mutex<Option<String>>>,
+    status_message: Option<String>,
+    status_time: std::time::Instant,
 }
 
 impl Showcase {

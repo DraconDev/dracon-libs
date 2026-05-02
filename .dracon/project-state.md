@@ -1,24 +1,23 @@
 # Project State
 
 ## Current Focus
-Improved child process handling in showcase example with proper terminal state management
+Add status message display to showcase example
 
 ## Context
-The showcase example previously spawned child processes in new terminal tabs, which could leave the showcase terminal in an inconsistent state. This change refactors the process handling to properly suspend/resume terminal state and handle child process completion.
+The showcase example needs visual feedback for operations like terminal process spawning. This change adds infrastructure to display temporary status messages.
 
 ## Completed
-- [x] Added proper terminal suspension/resumption using `suspend_terminal()` and `resume_terminal()`
-- [x] Improved error handling for child process execution
-- [x] Added stdin draining to prevent keypress interference
-- [x] Added forced full re-render after child process completion
-- [x] Enhanced error logging with more specific messages
+- [x] Added `status_message` field to track current message
+- [x] Added `status_time` field to track message duration
 
 ## In Progress
-- [ ] None (changes are complete)
+- [x] Implementation of message display logic (not yet in this commit)
 
 ## Blockers
-- None
+- Message rendering logic not yet implemented
+- Need to determine appropriate display position
 
 ## Next Steps
-1. Verify terminal state management works across different terminal emulators
-2. Test with various example programs to ensure proper cleanup
+1. Implement message rendering in the UI
+2. Add message clearing after timeout
+3. Test with terminal operations to verify visibility
