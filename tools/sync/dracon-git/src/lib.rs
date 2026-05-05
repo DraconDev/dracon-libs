@@ -400,6 +400,11 @@ impl GitService {
 
             let stderr = String::from_utf8_lossy(&output.stderr);
             if stderr.contains("CONFLICT") || stderr.contains("conflict") {
+                // Abort the merge to leave repo in a clean state
+                let _ = std::process::Command::new("git")
+                    .args(["merge", "--abort"])
+                    .current_dir(&path)
+                    .status();
                 return Err(GitError::MergeConflict);
             }
 

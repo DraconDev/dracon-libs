@@ -1,22 +1,21 @@
 # Project State
 
 ## Current Focus
-Added merge-based pull functionality to the Git service
+Added merge conflict handling to abort merges when conflicts are detected
 
 ## Context
-The existing Git service only supported rebase-based pulls, which can rewrite commit history. This change adds a merge-based pull operation that preserves both histories, which is more suitable for collaborative workflows where both sides have parallel commits.
+When a Git merge operation encounters conflicts, the repository should be left in a clean state to prevent subsequent operations from failing. This change ensures proper cleanup by aborting the merge when conflicts are detected.
 
 ## Completed
-- [x] Implemented `pull_merge` method that performs a git pull with --no-rebase
-- [x] Added proper error handling for merge conflicts
-- [x] Included comprehensive error reporting for pull failures
+- [x] Added merge abort command when conflicts are detected
+- [x] Maintained error reporting for merge conflicts
 
 ## In Progress
-- [ ] None - this is a complete feature implementation
+- [ ] None
 
 ## Blockers
-- None - this is a standalone feature addition
+- None
 
 ## Next Steps
-1. Add integration tests for the merge pull functionality
-2. Document the new method in the API documentation
+1. Verify the merge abort functionality works as expected
+2. Consider adding more comprehensive conflict resolution handling
