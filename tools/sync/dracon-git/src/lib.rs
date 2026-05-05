@@ -378,6 +378,40 @@ impl GitService {
         )))
     }
 
+    /// Pull with merge (Preserves Both Histories)
+    ///
+    /// Unlike rebase which rewrites commits, merge creates a merge commit
+    /// that ties both histories together. Less likely to conflict when
+    /// both sides have parallel commits.
+    pub async fn pull_merge(&self) -> Result<()> {
+        self.fetch().await?;
+        let path = self.root_path.clone();
+
+        tokio::task::spawn_blocking(move || -> std::result::Result<(), GitError> {
+            let output = std::process::Command::new("git")
+                .args(["pull", "--no-rebase"])
+                .current_dir(&path)
+                .output()
+                .map_err(|e| GitError::Other(format!("git pull --no-rebase failed: {}", e)))?;
+
+            if output.status.success() {
+                return Ok(());
+            }
+
+            let stderr = String::from_utf8_lossy(&output.stderr);
+            if stderr.contains("CONFLICT") || stderr.contains("conflict") {
+                return Err(GitError::MergeConflict);
+            }
+
+            Err(GitError::Other(format!(
+                "git pull --no-rebase failed: {}",
+                stderr
+            )))
+        })
+        .await
+        .map_err(|e| GitError::Other(e.to_string()))?
+    }
+
     /// Add specific paths to the index.
     ///
     /// For files matching `filter=dracon` patterns in `.gitattributes`, the
