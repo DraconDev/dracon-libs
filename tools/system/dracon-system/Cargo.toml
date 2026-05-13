@@ -1,5 +1,5 @@
 [package]
-name = "dracon-system"
+name = "dracon-system-lib"
 version.workspace = true
 license = "MIT OR Apache-2.0"
 authors = ["Dracon <dracon@void>"]
