@@ -1,5 +1,5 @@
 use anyhow::Result;
-use dracon_system::analyze_workspace_storage;
+use dracon_system_lib::analyze_workspace_storage;
 use std::collections::HashSet;
 use std::path::{Path, PathBuf};
 
