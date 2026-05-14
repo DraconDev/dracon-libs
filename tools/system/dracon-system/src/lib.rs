@@ -1,4 +1,4 @@
-#![warn(missing_docs)]
+#![deny(missing_docs)]
 
 //! Dracon System Runtime — system diagnostics, SSH remote execution, and notifications.
 //!
