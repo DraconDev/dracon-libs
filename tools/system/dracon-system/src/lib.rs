@@ -87,11 +87,13 @@ impl SystemAgent {
         }
     }
 
+    /// Sets a custom notification configuration, consuming and returning self.
     pub fn with_notification_config(mut self, config: NotificationConfig) -> Self {
         self.notification_config = config;
         self
     }
 
+    /// Sends a desktop notification based on the variant and notification preferences.
     pub async fn send_notification(
         &self,
         notification: AppNotification,
@@ -146,6 +148,7 @@ impl SystemAgent {
         Ok(())
     }
 
+    /// Returns basic OS information parsed from `/etc/os-release`.
     pub async fn get_system_info(
         &self,
     ) -> anyhow::Result<String> {
@@ -181,6 +184,7 @@ impl SystemAgent {
         Ok(String::from_utf8_lossy(&output.stdout).to_string())
     }
 
+    /// Lists running processes (top 10 by default), optionally filtered.
     pub async fn list_processes(
         &self,
         filter: Option<String>,
@@ -208,6 +212,7 @@ impl SystemAgent {
         .and_then(|r| r)
     }
 
+    /// Reads a named configuration file (currently only "home.nix" is supported).
     pub async fn read_config(
         &self,
         name: &str,
