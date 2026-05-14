@@ -26,10 +26,15 @@ use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 use tokio::process::Command;
 
+/// System contracts: data types and trait definitions for snapshots, processes, and remoting.
 pub mod contracts;
+/// System monitor: CPU, memory, disk, and process snapshot providers.
 pub mod monitor;
+/// Desktop notification configuration and dispatch.
 pub mod notification;
+/// SSH remote execution and filesystem providers.
 pub mod remote;
+/// Workspace storage analysis and hotspot detection.
 pub mod storage;
 pub use contracts::{
     DiskSnapshot, ProcessControlContract, ProcessSnapshot, RemoteBookmark, RemoteConnectContract,
@@ -40,22 +45,32 @@ pub use monitor::{ProcessController, SystemSnapshotProvider};
 pub use remote::{SshRemoteConnector, SshRemoteExecProvider, SshRemoteFsProvider};
 pub use storage::{DirUsage, HotspotUsage, WorkspaceStorageReport, analyze_workspace_storage};
 
+/// Application-level notification variants dispatched through the system agent.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum AppNotification {
+    /// A background task has completed successfully.
     TaskComplete(String),
+    /// A manifestation (workspace change) has been triggered.
     ManifestationTriggered(String),
+    /// A security-related alert requiring user attention.
     SecurityAlert(String),
+    /// A sync operation status update.
     Sync(String),
+    /// An error notification.
     Error(String),
 }
 
+/// Top-level agent for system diagnostics, configuration, and notifications.
 #[derive(Clone)]
 pub struct SystemAgent {
+    /// Path to the user's home-manager or nixpkgs home.nix, if found.
     home_nix_path: Option<PathBuf>,
+    /// Desktop notification preferences.
     notification_config: NotificationConfig,
 }
 
 impl SystemAgent {
+    /// Creates a new `SystemAgent`, auto-detecting the home.nix path.
     pub fn new() -> Self {
         let home = dirs::home_dir();
         let home_nix_path = home.as_ref().and_then(|h| {
