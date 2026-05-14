@@ -6,23 +6,34 @@ use std::path::{Path, PathBuf};
 use tokio::process::Command;
 use walkdir::WalkDir;
 
+/// Disk usage for a single directory.
 #[derive(Debug, Clone, Serialize)]
 pub struct DirUsage {
+    /// Directory path.
     pub path: PathBuf,
+    /// Total bytes consumed.
     pub bytes: u64,
 }
 
+/// Disk usage for a recognized hotspot directory (e.g. node_modules, target).
 #[derive(Debug, Clone, Serialize)]
 pub struct HotspotUsage {
+    /// Hotspot directory path.
     pub path: PathBuf,
+    /// Category of hotspot (e.g. "rust-build", "node-deps", "git-db").
     pub kind: String,
+    /// Total bytes consumed.
     pub bytes: u64,
 }
 
+/// Aggregated storage report for a workspace root.
 #[derive(Debug, Clone, Serialize)]
 pub struct WorkspaceStorageReport {
+    /// Workspace root directory.
     pub root: PathBuf,
+    /// Top project directories by size.
     pub top_projects: Vec<DirUsage>,
+    /// Top hotspot directories by size.
     pub top_hotspots: Vec<HotspotUsage>,
 }
 
@@ -65,6 +76,7 @@ async fn du_bytes(path: &Path) -> Result<u64> {
     Ok(bytes)
 }
 
+/// Analyzes workspace storage, returning the top projects and hotspots by disk usage.
 pub async fn analyze_workspace_storage(
     root: &Path,
     top_n_projects: usize,

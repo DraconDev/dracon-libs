@@ -21,14 +21,20 @@ fn current_uid() -> libc::uid_t {
     unsafe { libc::getuid() }
 }
 
+/// Provider that captures system snapshots using `sysinfo` and `lsblk`.
 pub struct SystemSnapshotProvider {
+    /// Underlying sysinfo system state.
     sys: System,
+    /// Disk list refreshed each snapshot.
     disks: Disks,
+    /// Network interfaces refreshed each snapshot.
     networks: Networks,
+    /// User list for resolving process owners.
     users: Users,
 }
 
 impl SystemSnapshotProvider {
+    /// Creates a new provider, refreshing all system data immediately.
     pub fn new() -> Self {
         let mut sys = System::new_all();
         sys.refresh_all();
@@ -217,6 +223,7 @@ impl SystemSnapshotContract for SystemSnapshotProvider {
     }
 }
 
+/// Process control implementation using the `kill` command.
 pub struct ProcessController;
 
 impl ProcessControlContract for ProcessController {

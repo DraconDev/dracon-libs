@@ -10,8 +10,11 @@ use std::net::{SocketAddr, TcpStream, ToSocketAddrs};
 use std::path::{Path, PathBuf};
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
+/// SSH implementation of [`RemoteConnectContract`].
 pub struct SshRemoteConnector;
+/// SSH/SFTP implementation of [`RemoteFsContract`].
 pub struct SshRemoteFsProvider;
+/// SSH implementation of [`RemoteExecContract`].
 pub struct SshRemoteExecProvider;
 
 impl RemoteConnectContract for SshRemoteConnector {

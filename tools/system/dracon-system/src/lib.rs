@@ -225,6 +225,7 @@ impl SystemAgent {
         }
     }
 
+    /// Writes content to a named configuration file (currently only "home.nix" is supported).
     pub async fn write_config(
         &self,
         name: &str,
@@ -239,6 +240,7 @@ impl SystemAgent {
         }
     }
 
+    /// Applies the current home-manager configuration by running `home-manager switch`.
     pub async fn apply_config(
         &self,
     ) -> anyhow::Result<String> {
