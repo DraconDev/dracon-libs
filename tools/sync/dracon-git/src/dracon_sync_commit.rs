@@ -632,4 +632,132 @@ mod tests {
         assert!(msg.contains("function run (rust)"));
         assert!(msg.contains("struct Config (rust)"));
     }
+
+    #[test]
+    fn test_ai_description_used_in_non_checkpoint_subject() {
+        let mut ctx = ctx_minimal(
+            "daemon",
+            vec![DiffFile {
+                path: PathBuf::from("dracon-sync/src/git.rs"),
+                status: FileStatus::Modified,
+            }],
+            false,
+        );
+        ctx.category = Some("fix".to_string());
+        ctx.scope = Some("sync".to_string());
+        ctx.description = Some("add SSH hardening to push stderr capture".to_string());
+
+        let msg = build_commit_message(&ctx);
+        let subject = msg.lines().next().unwrap();
+        assert!(
+            subject.contains("add SSH hardening to push stderr capture"),
+            "AI description should appear in subject, got: {}",
+            subject
+        );
+        assert!(subject.starts_with("fix(sync):"));
+    }
+
+    #[test]
+    fn test_ai_description_truncated_at_72_chars_in_subject() {
+        let mut ctx = ctx_minimal(
+            "daemon",
+            vec![DiffFile {
+                path: PathBuf::from("dracon-sync/src/main.rs"),
+                status: FileStatus::Modified,
+            }],
+            false,
+        );
+        ctx.category = Some("feat".to_string());
+        ctx.scope = Some("sync".to_string());
+        ctx.description = Some("this is a very long description that definitely exceeds the 72 character limit for a commit subject line".to_string());
+
+        let msg = build_commit_message(&ctx);
+        let subject = msg.lines().next().unwrap();
+        assert!(
+            subject.starts_with("feat(sync):"),
+            "subject should start with correct category/scope"
+        );
+        // description should be truncated
+        let after_prefix = &subject["feat(sync): ".len()..];
+        assert!(
+            after_prefix.ends_with("..."),
+            "long description should be truncated with ..., got: {}",
+            after_prefix
+        );
+        assert!(
+            subject.len() <= 72 + 20,
+            "subject should be reasonably short even after truncation, got: {} chars: {}",
+            subject.len(),
+            subject
+        );
+    }
+
+    #[test]
+    fn test_local_fallback_description_used_directly() {
+        let mut ctx = ctx_minimal(
+            "daemon",
+            vec![DiffFile {
+                path: PathBuf::from("dracon-sync/src/git.rs"),
+                status: FileStatus::Modified,
+            }],
+            false,
+        );
+        ctx.description = Some("update auth, jwt and 2 files".to_string());
+
+        let msg = build_commit_message(&ctx);
+        let subject = msg.lines().next().unwrap();
+        assert!(
+            subject.contains("update auth, jwt and 2 files"),
+            "local fallback description should appear in subject, got: {}",
+            subject
+        );
+    }
+
+    #[test]
+    fn test_checkpoint_uses_extract_focus_summary_still() {
+        let mut ctx = ctx_minimal(
+            "my-feature",
+            vec![DiffFile {
+                path: PathBuf::from("dracon-sync/src/main.rs"),
+                status: FileStatus::Modified,
+            }],
+            true,
+        );
+        ctx.description = Some("## Current Focus\nwip: implementing auth flow\nmore notes".to_string());
+
+        let msg = build_commit_message(&ctx);
+        let subject = msg.lines().next().unwrap();
+        assert!(
+            subject.contains("wip: implementing auth flow"),
+            "checkpoint should use extract_focus_summary, got: {}",
+            subject
+        );
+    }
+
+    #[test]
+    fn test_no_description_falls_back_to_summary_line() {
+        let ctx = ctx_minimal(
+            "daemon",
+            vec![
+                DiffFile {
+                    path: PathBuf::from("dracon-sync/src/git.rs"),
+                    status: FileStatus::Modified,
+                },
+                DiffFile {
+                    path: PathBuf::from("dracon-sync/src/main.rs"),
+                    status: FileStatus::Added,
+                },
+            ],
+            false,
+        );
+        // description is None
+
+        let msg = build_commit_message(&ctx);
+        let subject = msg.lines().next().unwrap();
+        assert!(
+            subject.contains("modified") && subject.contains("added"),
+            "no description should fall back to summary line with counts, got: {}",
+            subject
+        );
+    }
 }
