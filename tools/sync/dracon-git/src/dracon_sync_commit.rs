@@ -658,7 +658,7 @@ mod tests {
     }
 
     #[test]
-    fn test_ai_description_truncated_at_72_chars_in_subject() {
+    fn test_ai_description_not_truncated_arbitrarily() {
         let mut ctx = ctx_minimal(
             "daemon",
             vec![DiffFile {
@@ -669,7 +669,7 @@ mod tests {
         );
         ctx.category = Some("feat".to_string());
         ctx.scope = Some("sync".to_string());
-        ctx.description = Some("this is a very long description that definitely exceeds the 72 character limit for a commit subject line".to_string());
+        ctx.description = Some("add SSH hardening to push stderr capture for better debugging".to_string());
 
         let msg = build_commit_message(&ctx);
         let subject = msg.lines().next().unwrap();
@@ -677,17 +677,10 @@ mod tests {
             subject.starts_with("feat(sync):"),
             "subject should start with correct category/scope"
         );
-        // description should be truncated
-        let after_prefix = &subject["feat(sync): ".len()..];
+        // AI is prompted to keep subjects <=72 chars, so description is used as-is
         assert!(
-            after_prefix.ends_with("..."),
-            "long description should be truncated with ..., got: {}",
-            after_prefix
-        );
-        assert!(
-            subject.len() <= 72 + 20,
-            "subject should be reasonably short even after truncation, got: {} chars: {}",
-            subject.len(),
+            subject.contains("add SSH hardening to push stderr capture for better debugging"),
+            "full AI description should appear in subject, got: {}",
             subject
         );
     }
