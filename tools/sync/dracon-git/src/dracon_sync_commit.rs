@@ -290,13 +290,17 @@ pub fn build_commit_message(ctx: &CommitContext) -> String {
     }
 
     // Subject line: category(scope): summary
+    // For non-checkpoint commits: if a description exists (AI or local fallback),
+    // use it directly as the summary — parse_conventional_commit already extracted
+    // the semantic meaning from the subject, so ctx.description IS the summary.
+    // Only fall through to build_summary_line when description is genuinely absent.
     let summary = if ctx.is_checkpoint {
-        // If scribe provided a "Current Focus" in the description, use it as the subject
         extract_focus_summary(ctx.description.as_deref())
             .unwrap_or_else(|| "wip checkpoint".to_string())
+    } else if ctx.description.is_some() {
+        ctx.description.clone().unwrap()
     } else {
-        extract_focus_summary(ctx.description.as_deref())
-            .unwrap_or_else(|| build_summary_line(added, modified, deleted, &display_files))
+        build_summary_line(added, modified, deleted, &display_files)
     };
     let subject = format!("{}({}): {}", category, scope, summary);
 
