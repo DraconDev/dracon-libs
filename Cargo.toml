@@ -23,7 +23,7 @@ members = [
 [workspace.package]
 version = "94.3.0"
 edition = "2021"
-license = "MIT OR Apache-2.0"
+license = "AGPL-3.0-only"
 authors = ["Dracon <dracon@void>"]
 repository = "https://github.com/DraconDev/dracon-libs"
 description = "Dracon multi-language Rust libraries for AI, system, media, and developer tooling"

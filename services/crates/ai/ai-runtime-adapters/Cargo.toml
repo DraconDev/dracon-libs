@@ -2,7 +2,7 @@
 name = "ai-runtime-adapters"
 version.workspace = true
 edition.workspace = true
-license = "MIT OR Apache-2.0"
+license = "AGPL-3.0-only"
 authors = ["Dracon <dracon@void>"]
 repository = "https://github.com/DraconDev/dracon-libs"
 description = "AI runtime adapters: GenericOpenAIAdapter for OpenAI-compatible API endpoints"
