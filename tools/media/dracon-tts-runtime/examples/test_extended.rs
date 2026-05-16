@@ -28,7 +28,9 @@ async fn main() {
 
     println!("\nTesting Kokoro without DSP (10 long samples)...");
     // SAFETY: example-only env var mutation
-    unsafe { std::env::set_var("REMI_KOKORO_NO_DSP", "1"); }
+    unsafe {
+        std::env::set_var("REMI_KOKORO_NO_DSP", "1");
+    }
 
     for i in 1..=10 {
         println!("Generating NoDSP sample {}...", i);

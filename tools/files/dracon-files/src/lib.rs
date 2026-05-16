@@ -57,13 +57,9 @@ fn get_file_category_from_extension(path: &Path) -> FileCategory {
             FileCategory::Image
         }
         "sh" | "bash" | "zsh" | "fish" | "ps1" | "bat" | "cmd" | "py" | "rb" | "js" | "ts"
-        | "c" | "cpp" | "h" | "hpp" | "go" | "java" | "swift" | "kt" => {
-            FileCategory::Script
-        }
-        "txt" | "md" | "rst" | "log" | "json" | "xml" | "yaml" | "yml" | "toml" | "ini"
-        | "cfg" | "conf" | "env" | "gitignore" | "dockerfile" | "makefile" => {
-            FileCategory::Text
-        }
+        | "c" | "cpp" | "h" | "hpp" | "go" | "java" | "swift" | "kt" => FileCategory::Script,
+        "txt" | "md" | "rst" | "log" | "json" | "xml" | "yaml" | "yml" | "toml" | "ini" | "cfg"
+        | "conf" | "env" | "gitignore" | "dockerfile" | "makefile" => FileCategory::Text,
         "pdf" | "doc" | "docx" | "odt" | "rtf" | "tex" | "epub" => FileCategory::Document,
         "mp3" | "wav" | "flac" | "aac" | "ogg" | "m4a" | "wma" | "opus" => FileCategory::Audio,
         "mp4" | "avi" | "mkv" | "mov" | "wmv" | "flv" | "webm" | "m4v" => FileCategory::Video,
@@ -204,7 +200,9 @@ mod tests {
     #[should_panic]
     fn test_copy_recursive_source_not_found() {
         let catalog = FsCatalog;
-        catalog.copy_recursive(Path::new("/nonexistent/path"), Path::new("/tmp/dest")).unwrap();
+        catalog
+            .copy_recursive(Path::new("/nonexistent/path"), Path::new("/tmp/dest"))
+            .unwrap();
     }
 
     #[test]

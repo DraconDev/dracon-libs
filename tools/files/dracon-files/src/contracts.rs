@@ -40,7 +40,10 @@ pub trait FileSearchContract {
         &self,
         root: &Path,
         query: &str,
-    ) -> std::io::Result<(Vec<std::path::PathBuf>, HashMap<std::path::PathBuf, EntryMetadata>)>;
+    ) -> std::io::Result<(
+        Vec<std::path::PathBuf>,
+        HashMap<std::path::PathBuf, EntryMetadata>,
+    )>;
 }
 
 pub trait FileCopyContract {

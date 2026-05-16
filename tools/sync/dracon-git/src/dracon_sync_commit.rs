@@ -226,9 +226,15 @@ fn extract_focus_summary(description: Option<&str>) -> Option<String> {
         // Collect first non-empty line in focus section
         if in_focus && !trimmed.is_empty() {
             let mut summary = trimmed.to_string();
-            if let Some(stripped) = summary.strip_prefix("ONE LINE:").map(|s| s.trim_start().to_string()) {
+            if let Some(stripped) = summary
+                .strip_prefix("ONE LINE:")
+                .map(|s| s.trim_start().to_string())
+            {
                 summary = stripped;
-            } else if let Some(stripped) = summary.strip_prefix("one line:").map(|s| s.trim_start().to_string()) {
+            } else if let Some(stripped) = summary
+                .strip_prefix("one line:")
+                .map(|s| s.trim_start().to_string())
+            {
                 summary = stripped;
             }
             // Truncate to reasonable commit subject length
@@ -669,7 +675,8 @@ mod tests {
         );
         ctx.category = Some("feat".to_string());
         ctx.scope = Some("sync".to_string());
-        ctx.description = Some("add SSH hardening to push stderr capture for better debugging".to_string());
+        ctx.description =
+            Some("add SSH hardening to push stderr capture for better debugging".to_string());
 
         let msg = build_commit_message(&ctx);
         let subject = msg.lines().next().unwrap();
@@ -716,7 +723,8 @@ mod tests {
             }],
             true,
         );
-        ctx.description = Some("## Current Focus\nwip: implementing auth flow\nmore notes".to_string());
+        ctx.description =
+            Some("## Current Focus\nwip: implementing auth flow\nmore notes".to_string());
 
         let msg = build_commit_message(&ctx);
         let subject = msg.lines().next().unwrap();

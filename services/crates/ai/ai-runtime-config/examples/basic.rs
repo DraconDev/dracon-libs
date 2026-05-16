@@ -15,7 +15,10 @@ fn main() -> anyhow::Result<()> {
         lane_model_policy: None,
     };
 
-    println!("Config loaded: {} provider(s)", config.openai_providers.len());
+    println!(
+        "Config loaded: {} provider(s)",
+        config.openai_providers.len()
+    );
     println!("Active models: {:?}", config.active_model_ids);
 
     let json = serde_json::to_string_pretty(&config)?;

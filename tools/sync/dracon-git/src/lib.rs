@@ -34,9 +34,9 @@ pub use cli::CliGitSnapshotProvider;
 pub use contracts::{
     GitCommitRecord, GitPendingRecord, GitPreviewContract, GitRepoSnapshot, GitSnapshotContract,
 };
-pub use dracon_sync_commit::{CommitContext, SemanticSummary, SymbolInfo, build_commit_message};
-pub use intent::{IntentInfo, extract_intent};
-pub use task_scan::{TaskProgress, scan_blueprint_tasks};
+pub use dracon_sync_commit::{build_commit_message, CommitContext, SemanticSummary, SymbolInfo};
+pub use intent::{extract_intent, IntentInfo};
+pub use task_scan::{scan_blueprint_tasks, TaskProgress};
 pub use types::{DiffFile, FileStatus, RepoStatus};
 
 use crate::error::{GitError, Result};
@@ -122,11 +122,18 @@ impl GitService {
 
                 if let Ok(head_ref) = head {
                     if let Some(head_name) = head_ref.shorthand() {
-                        if let Ok(upstream) = repo.branch_upstream_name(&format!("refs/heads/{}", head_name)) {
-                            if let Ok(upstream_str) = upstream.as_str().ok_or(git2::Error::from_str("Invalid upstream name")) {
+                        if let Ok(upstream) =
+                            repo.branch_upstream_name(&format!("refs/heads/{}", head_name))
+                        {
+                            if let Ok(upstream_str) = upstream
+                                .as_str()
+                                .ok_or(git2::Error::from_str("Invalid upstream name"))
+                            {
                                 if let Ok(upstream_oid) = repo.refname_to_id(upstream_str) {
                                     if let Some(head_oid) = head_ref.target() {
-                                        if let Ok((ahead, behind)) = repo.graph_ahead_behind(head_oid, upstream_oid) {
+                                        if let Ok((ahead, behind)) =
+                                            repo.graph_ahead_behind(head_oid, upstream_oid)
+                                        {
                                             status.ahead = ahead;
                                             status.behind = behind;
                                         }
@@ -432,12 +439,18 @@ impl GitService {
 
             // SECURITY: Validate all paths are within the repo root to prevent
             // path traversal attacks (e.g. "../etc/passwd" or absolute paths).
-            let root_canon = std::fs::canonicalize(&root).map_err(|_| GitError::Other("Failed to canonicalize repo root".into()))?;
+            let root_canon = std::fs::canonicalize(&root)
+                .map_err(|_| GitError::Other("Failed to canonicalize repo root".into()))?;
             for rel_path in &concrete {
                 let abs = root.join(rel_path);
-                let abs_canon = std::fs::canonicalize(&abs).map_err(|_| GitError::Other(format!("Path escapes repo root: {}", rel_path)))?;
+                let abs_canon = std::fs::canonicalize(&abs).map_err(|_| {
+                    GitError::Other(format!("Path escapes repo root: {}", rel_path))
+                })?;
                 if !abs_canon.starts_with(&root_canon) {
-                    return Err(GitError::Other(format!("Path traversal attempt blocked: {}", rel_path)));
+                    return Err(GitError::Other(format!(
+                        "Path traversal attempt blocked: {}",
+                        rel_path
+                    )));
                 }
             }
 

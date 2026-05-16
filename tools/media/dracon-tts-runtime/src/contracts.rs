@@ -168,11 +168,9 @@ impl DynTtsEngine {
         } else {
             let text = text.to_string();
             let inner = self.inner.clone();
-            tokio::task::spawn_blocking(move || {
-                inner.speak(&text)
-            })
-            .await
-            .map_err(|e| anyhow::anyhow!("join error: {}", e))?
+            tokio::task::spawn_blocking(move || inner.speak(&text))
+                .await
+                .map_err(|e| anyhow::anyhow!("join error: {}", e))?
         }
     }
 

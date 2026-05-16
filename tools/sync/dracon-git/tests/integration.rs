@@ -1,5 +1,5 @@
-use std::process::Command;
 use std::path::Path;
+use std::process::Command;
 use tempfile::TempDir;
 
 fn setup_repo(path: &Path) {
@@ -99,16 +99,14 @@ async fn test_git_service_get_diff_entries() {
     let svc = dracon_git::GitService::new(tmp.path()).unwrap();
     let diff_entries = svc.get_diff_entries().await.unwrap();
     assert!(!diff_entries.is_empty());
-    assert!(diff_entries.iter().any(|e| e.path.to_str() == Some("b.txt")));
+    assert!(diff_entries
+        .iter()
+        .any(|e| e.path.to_str() == Some("b.txt")));
 }
 
 #[test]
 fn test_commit_message_generation() {
-    let ctx = dracon_git::CommitContext::new(
-        "add login feature".to_string(),
-        vec![],
-        false,
-    );
+    let ctx = dracon_git::CommitContext::new("add login feature".to_string(), vec![], false);
     let msg = dracon_git::build_commit_message(&ctx);
     assert!(!msg.is_empty());
 }

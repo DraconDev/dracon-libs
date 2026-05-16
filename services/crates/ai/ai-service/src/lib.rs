@@ -21,10 +21,10 @@
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
-pub use dracon_ai_runtime_contracts::traits::AiProvider;
-pub use dracon_ai_runtime_contracts::models::{ChatMessage, ChatRequest};
+pub use ai_routing_runtime::traits::{LeaderboardEntry, LeaderboardRequest, LeaderboardResponse};
 pub use dracon_ai_contracts::{RoutingTask, SelectionConstraints};
-pub use ai_routing_runtime::traits::{LeaderboardRequest, LeaderboardResponse, LeaderboardEntry};
+pub use dracon_ai_runtime_contracts::models::{ChatMessage, ChatRequest};
+pub use dracon_ai_runtime_contracts::traits::AiProvider;
 
 pub const DEFAULT_PROVIDER: &str = "default";
 
@@ -49,7 +49,9 @@ pub struct ProviderRegistry {
 
 impl ProviderRegistry {
     pub fn new() -> Self {
-        Self { providers: Vec::new() }
+        Self {
+            providers: Vec::new(),
+        }
     }
 
     pub fn register(&mut self, model_id: &str, provider: Arc<dyn AiProvider>) {
@@ -85,7 +87,9 @@ impl AiService {
     }
 
     pub async fn ask(&self, request: ChatRequest) -> anyhow::Result<String> {
-        let provider = self.registry.get(&self.default_provider)
+        let provider = self
+            .registry
+            .get(&self.default_provider)
             .ok_or_else(|| anyhow::anyhow!("No provider found for '{}'", self.default_provider))?;
         let (content, _) = provider.ask_and_collect(request).await?;
         Ok(content)

@@ -123,11 +123,14 @@ impl KokoroTts {
         Self::new_with_voice(model_path, voices_dir, DEFAULT_VOICE).await
     }
 
-    pub async fn new_with_voice(model_path: &str, voices_dir: &str, voice: &str) -> anyhow::Result<Self> {
-        let (stream, handle) = OutputStream::try_default()
-            .context("failed to initialize audio output")?;
-        let sink = Arc::new(Sink::try_new(&handle)
-            .context("failed to create audio sink")?);
+    pub async fn new_with_voice(
+        model_path: &str,
+        voices_dir: &str,
+        voice: &str,
+    ) -> anyhow::Result<Self> {
+        let (stream, handle) =
+            OutputStream::try_default().context("failed to initialize audio output")?;
+        let sink = Arc::new(Sink::try_new(&handle).context("failed to create audio sink")?);
         let sink_volume = std::env::var("REMI_TTS_SINK_VOLUME")
             .ok()
             .and_then(|v| v.parse::<f32>().ok())
@@ -261,7 +264,9 @@ impl KokoroTts {
     pub fn set_voice(&self, voice: &str) -> anyhow::Result<bool> {
         let resolved = resolve_voice(voice);
         if self.voices.contains_key(resolved) {
-            let mut current = self.current_voice.lock()
+            let mut current = self
+                .current_voice
+                .lock()
                 .map_err(|e| anyhow::anyhow!("mutex poisoned: {}", e))?;
             *current = resolved.to_string();
             Ok(true)
@@ -271,7 +276,8 @@ impl KokoroTts {
     }
 
     pub fn get_voice(&self) -> anyhow::Result<String> {
-        self.current_voice.lock()
+        self.current_voice
+            .lock()
             .map_err(|e| anyhow::anyhow!("mutex poisoned: {}", e))
             .map(|guard| guard.clone())
     }
@@ -493,11 +499,14 @@ impl KokoroTts {
                 use std::io::Write;
                 let _ = stdin.write_all(text.as_bytes());
             }
-            c.stdout.as_mut().map(|o| {
-                let mut buf = String::new();
-                o.read_to_string(&mut buf).unwrap_or(0);
-                buf
-            }).unwrap_or_else(|| text.to_string())
+            c.stdout
+                .as_mut()
+                .map(|o| {
+                    let mut buf = String::new();
+                    o.read_to_string(&mut buf).unwrap_or(0);
+                    buf
+                })
+                .unwrap_or_else(|| text.to_string())
         } else {
             text.to_string()
         };
@@ -819,7 +828,10 @@ impl TextToSpeech for KokoroTts {
     fn stop(&self) -> anyhow::Result<()> {
         self.speaking.store(false, Ordering::SeqCst);
         self.active_playbacks.store(0, Ordering::SeqCst);
-        *self.queue_end_at.lock().map_err(|e| anyhow::anyhow!("mutex poisoned: {}", e))? = None;
+        *self
+            .queue_end_at
+            .lock()
+            .map_err(|e| anyhow::anyhow!("mutex poisoned: {}", e))? = None;
         self.sink.stop();
         self.sink.clear();
         self.sink.play();
@@ -879,7 +891,9 @@ impl VoiceProvider for KokoroTts {
     fn set_voice(&self, voice: &str) -> anyhow::Result<bool> {
         let resolved = resolve_voice(voice);
         if self.voices.contains_key(resolved) {
-            let mut current = self.current_voice.lock()
+            let mut current = self
+                .current_voice
+                .lock()
                 .map_err(|e| anyhow::anyhow!("mutex poisoned: {}", e))?;
             *current = resolved.to_string();
             Ok(true)
@@ -889,7 +903,9 @@ impl VoiceProvider for KokoroTts {
     }
 
     fn current_voice(&self) -> anyhow::Result<VoiceInfo> {
-        let voice_id = self.current_voice.lock()
+        let voice_id = self
+            .current_voice
+            .lock()
             .map_err(|e| anyhow::anyhow!("mutex poisoned: {}", e))?
             .clone();
         for (id, name, gender) in VOICE_DESCRIPTIONS {

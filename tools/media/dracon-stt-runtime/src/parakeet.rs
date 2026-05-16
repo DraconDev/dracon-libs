@@ -17,17 +17,24 @@ impl ParakeetStt {
         let model = if model_path.exists() {
             let onnx_path = model_path.join("onnx");
             if onnx_path.exists() {
-                Parakeet::from_pretrained(&onnx_path, None)
-                    .map_err(|e| anyhow::anyhow!("Failed to load Parakeet model from {:?}: {}", onnx_path, e))?
+                Parakeet::from_pretrained(&onnx_path, None).map_err(|e| {
+                    anyhow::anyhow!("Failed to load Parakeet model from {:?}: {}", onnx_path, e)
+                })?
             } else {
-                Parakeet::from_pretrained(model_path, None)
-                    .map_err(|e| anyhow::anyhow!("Failed to load Parakeet model from {:?}: {}", model_path, e))?
+                Parakeet::from_pretrained(model_path, None).map_err(|e| {
+                    anyhow::anyhow!("Failed to load Parakeet model from {:?}: {}", model_path, e)
+                })?
             }
         } else {
             let fallback_path = Path::new("assets/models/parakeet-ctc/onnx");
             if fallback_path.exists() {
-                Parakeet::from_pretrained(fallback_path, None)
-                    .map_err(|e| anyhow::anyhow!("Failed to load Parakeet model from {:?}: {}", fallback_path, e))?
+                Parakeet::from_pretrained(fallback_path, None).map_err(|e| {
+                    anyhow::anyhow!(
+                        "Failed to load Parakeet model from {:?}: {}",
+                        fallback_path,
+                        e
+                    )
+                })?
             } else {
                 return Err(anyhow::anyhow!(
                     "Parakeet model not found. Download from: https://huggingface.co/onnx-community/parakeet-ctc-0.6b-ONNX"

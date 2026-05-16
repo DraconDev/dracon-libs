@@ -14,7 +14,11 @@ fn main() -> anyhow::Result<()> {
     println!("GenericOpenAIAdapter initialized");
     println!("  model: gpt-4o-mini");
     println!("  endpoint: https://api.openai.com/v1");
-    println!("  timeout: {:?}, connect: {:?}", Duration::from_secs(60), Duration::from_secs(10));
+    println!(
+        "  timeout: {:?}, connect: {:?}",
+        Duration::from_secs(60),
+        Duration::from_secs(10)
+    );
 
     Ok(())
 }

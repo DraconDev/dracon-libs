@@ -2,7 +2,7 @@ use crate::contracts::{
     RemoteConnectContract, RemoteConnectRequest, RemoteConnection, RemoteEntryMetadata,
     RemoteExecContract, RemoteFsContract,
 };
-use anyhow::{Context, anyhow};
+use anyhow::{anyhow, Context};
 use ssh2::RenameFlags;
 use std::collections::HashMap;
 use std::io::{self, Read, Write};
@@ -196,11 +196,20 @@ impl RemoteExecContract for SshRemoteExecProvider {
             .channel_session()
             .map_err(|e| io::Error::other(format!("open channel failed: {e}")))?;
         channel
-            .exec(&format!("{} {}", shell_escape(program), args.iter().map(|a| shell_escape(a)).collect::<Vec<_>>().join(" ")))
+            .exec(&format!(
+                "{} {}",
+                shell_escape(program),
+                args.iter()
+                    .map(|a| shell_escape(a))
+                    .collect::<Vec<_>>()
+                    .join(" ")
+            ))
             .map_err(|e| io::Error::other(format!("exec failed: {e}")))?;
 
         let mut stdout = String::new();
-        channel.read_to_string(&mut stdout).map_err(|e| io::Error::other(format!("read stdout failed: {e}")))?;
+        channel
+            .read_to_string(&mut stdout)
+            .map_err(|e| io::Error::other(format!("read stdout failed: {e}")))?;
 
         let mut stderr = String::new();
         if let Ok(err) = channel.stderr().read_to_string(&mut stderr) {
@@ -266,7 +275,10 @@ fn connect_session(
     }
 
     if let Some(key_path) = &bookmark.key_path {
-        if sess.userauth_pubkey_file(&bookmark.user, None, key_path, None).is_ok() {
+        if sess
+            .userauth_pubkey_file(&bookmark.user, None, key_path, None)
+            .is_ok()
+        {
             return Ok((sess, format!("key:{}", key_path.display())));
         }
     }

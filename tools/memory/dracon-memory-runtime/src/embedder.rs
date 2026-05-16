@@ -19,8 +19,9 @@ impl OnnxEmbedder {
 
         let model_bytes = std::fs::read(&model_path)
             .map_err(|e| anyhow::anyhow!("Failed to read model from {}: {}", model_path, e))?;
-        let tokenizer_bytes = std::fs::read(&tokenizer_path)
-            .map_err(|e| anyhow::anyhow!("Failed to read tokenizer from {}: {}", tokenizer_path, e))?;
+        let tokenizer_bytes = std::fs::read(&tokenizer_path).map_err(|e| {
+            anyhow::anyhow!("Failed to read tokenizer from {}: {}", tokenizer_path, e)
+        })?;
 
         let session = Session::builder()?.commit_from_memory(&model_bytes)?;
 
@@ -231,5 +232,4 @@ mod error_path_tests {
         std::env::remove_var("DRACON_TOKENIZER_PATH");
         assert!(result.is_err());
     }
-
 }

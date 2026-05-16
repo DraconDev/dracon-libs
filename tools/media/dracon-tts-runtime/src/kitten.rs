@@ -155,10 +155,9 @@ impl KittenTTS {
     }
 
     pub async fn new_with_voice(model_path: &str, voices_path: &str, voice: &str) -> Result<Self> {
-        let (stream, handle) = OutputStream::try_default()
-            .context("failed to initialize audio output")?;
-        let sink = Arc::new(Sink::try_new(&handle)
-            .context("failed to create audio sink")?);
+        let (stream, handle) =
+            OutputStream::try_default().context("failed to initialize audio output")?;
+        let sink = Arc::new(Sink::try_new(&handle).context("failed to create audio sink")?);
         sink.set_volume(1.0);
         sink.play();
         std::mem::forget(stream);
@@ -185,7 +184,10 @@ impl KittenTTS {
         let voices = if std::path::Path::new(voices_path).exists() {
             Self::load_voices_npz(voices_path).context("failed to load Kitten voices")?
         } else {
-            return Err(anyhow::anyhow!("Kitten voices not found at: {}", voices_path));
+            return Err(anyhow::anyhow!(
+                "Kitten voices not found at: {}",
+                voices_path
+            ));
         };
 
         let voice_names: Vec<String> = voices.keys().cloned().collect();
@@ -208,7 +210,9 @@ impl KittenTTS {
 
     pub fn set_voice(&self, voice: &str) -> Result<bool> {
         if self.voices.contains_key(voice) {
-            let mut current = self.current_voice.lock()
+            let mut current = self
+                .current_voice
+                .lock()
                 .map_err(|e| anyhow::anyhow!("mutex poisoned: {}", e))?;
             *current = voice.to_string();
             Ok(true)
@@ -218,7 +222,8 @@ impl KittenTTS {
     }
 
     pub fn get_voice(&self) -> Result<String> {
-        self.current_voice.lock()
+        self.current_voice
+            .lock()
             .map_err(|e| anyhow::anyhow!("mutex poisoned: {}", e))
             .map(|guard| guard.clone())
     }
@@ -463,11 +468,14 @@ impl KittenTTS {
                 use std::io::Write;
                 let _ = stdin.write_all(text.as_bytes());
             }
-            c.stdout.as_mut().map(|o| {
-                let mut buf = String::new();
-                o.read_to_string(&mut buf).unwrap_or(0);
-                buf
-            }).unwrap_or_else(|| text.to_string())
+            c.stdout
+                .as_mut()
+                .map(|o| {
+                    let mut buf = String::new();
+                    o.read_to_string(&mut buf).unwrap_or(0);
+                    buf
+                })
+                .unwrap_or_else(|| text.to_string())
         } else {
             text.to_string()
         };
@@ -1118,7 +1126,9 @@ impl VoiceProvider for KittenTTS {
     fn set_voice(&self, voice: &str) -> anyhow::Result<bool> {
         let resolved = resolve_voice(voice);
         if self.voices.contains_key(resolved) {
-            let mut current = self.current_voice.lock()
+            let mut current = self
+                .current_voice
+                .lock()
                 .map_err(|e| anyhow::anyhow!("mutex poisoned: {}", e))?;
             *current = resolved.to_string();
             Ok(true)
@@ -1128,7 +1138,9 @@ impl VoiceProvider for KittenTTS {
     }
 
     fn current_voice(&self) -> anyhow::Result<VoiceInfo> {
-        let voice_id = self.current_voice.lock()
+        let voice_id = self
+            .current_voice
+            .lock()
             .map_err(|e| anyhow::anyhow!("mutex poisoned: {}", e))?
             .clone();
         for (id, name, gender) in VOICE_DESCRIPTIONS {

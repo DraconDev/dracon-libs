@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use dracon_files::{FsCatalog, FileCategory};
+use dracon_files::{FileCategory, FsCatalog};
 
 fn main() -> anyhow::Result<()> {
     let catalog = FsCatalog;

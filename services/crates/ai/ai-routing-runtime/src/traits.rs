@@ -32,10 +32,8 @@ pub trait AiModelStore: Send + Sync {
         constraints: SelectionConstraints,
     ) -> anyhow::Result<(String, bool)>;
 
-    async fn get_leaderboard(
-        &self,
-        req: LeaderboardRequest,
-    ) -> anyhow::Result<LeaderboardResponse>;
+    async fn get_leaderboard(&self, req: LeaderboardRequest)
+        -> anyhow::Result<LeaderboardResponse>;
 
     async fn mark_failure(&self, model_id: &str) -> anyhow::Result<()>;
 

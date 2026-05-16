@@ -43,7 +43,7 @@ pub use contracts::{
 };
 pub use monitor::{ProcessController, SystemSnapshotProvider};
 pub use remote::{SshRemoteConnector, SshRemoteExecProvider, SshRemoteFsProvider};
-pub use storage::{DirUsage, HotspotUsage, WorkspaceStorageReport, analyze_workspace_storage};
+pub use storage::{analyze_workspace_storage, DirUsage, HotspotUsage, WorkspaceStorageReport};
 
 /// Application-level notification variants dispatched through the system agent.
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -94,10 +94,7 @@ impl SystemAgent {
     }
 
     /// Sends a desktop notification based on the variant and notification preferences.
-    pub async fn send_notification(
-        &self,
-        notification: AppNotification,
-    ) -> anyhow::Result<()> {
+    pub async fn send_notification(&self, notification: AppNotification) -> anyhow::Result<()> {
         if !self.notification_config.enabled {
             return Ok(());
         }
@@ -149,9 +146,7 @@ impl SystemAgent {
     }
 
     /// Returns basic OS information parsed from `/etc/os-release`.
-    pub async fn get_system_info(
-        &self,
-    ) -> anyhow::Result<String> {
+    pub async fn get_system_info(&self) -> anyhow::Result<String> {
         let mut info = String::new();
         if let Ok(os) = tokio::fs::read_to_string("/etc/os-release").await {
             if let Some(name) = os.lines().find(|l| l.starts_with("PRETTY_NAME=")) {
@@ -175,48 +170,37 @@ impl SystemAgent {
     ///
     /// If you must use this, ensure the `command` and all `args` are validated
     /// against a strict allowlist before calling.
-    pub async fn run_command(
-        &self,
-        command: &str,
-        args: &[String],
-    ) -> anyhow::Result<String> {
+    pub async fn run_command(&self, command: &str, args: &[String]) -> anyhow::Result<String> {
         let output = Command::new(command).args(args).output().await?;
         Ok(String::from_utf8_lossy(&output.stdout).to_string())
     }
 
     /// Lists running processes (top 10 by default), optionally filtered.
-    pub async fn list_processes(
-        &self,
-        filter: Option<String>,
-    ) -> anyhow::Result<String> {
+    pub async fn list_processes(&self, filter: Option<String>) -> anyhow::Result<String> {
         let _ = filter;
         tokio::task::spawn_blocking(move || -> anyhow::Result<String> {
-                use sysinfo::{ProcessRefreshKind, ProcessesToUpdate, RefreshKind, System};
-                let mut sys = System::new_with_specifics(
-                    RefreshKind::new().with_processes(ProcessRefreshKind::everything()),
-                );
-                sys.refresh_processes(ProcessesToUpdate::All, true);
-                let mut output = String::new();
-                for proc in sys.processes().values().take(10) {
-                    output.push_str(&format!(
-                        "{} | {}\n",
-                        proc.pid(),
-                        proc.name().to_string_lossy()
-                    ));
-                }
-                Ok(output)
-            },
-        )
+            use sysinfo::{ProcessRefreshKind, ProcessesToUpdate, RefreshKind, System};
+            let mut sys = System::new_with_specifics(
+                RefreshKind::new().with_processes(ProcessRefreshKind::everything()),
+            );
+            sys.refresh_processes(ProcessesToUpdate::All, true);
+            let mut output = String::new();
+            for proc in sys.processes().values().take(10) {
+                output.push_str(&format!(
+                    "{} | {}\n",
+                    proc.pid(),
+                    proc.name().to_string_lossy()
+                ));
+            }
+            Ok(output)
+        })
         .await
         .map_err(|e| anyhow::anyhow!("spawn blocking failed: {}", e))
         .and_then(|r| r)
     }
 
     /// Reads a named configuration file (currently only "home.nix" is supported).
-    pub async fn read_config(
-        &self,
-        name: &str,
-    ) -> anyhow::Result<String> {
+    pub async fn read_config(&self, name: &str) -> anyhow::Result<String> {
         if name == "home.nix" {
             let path = self.home_nix_path.as_ref().context("home.nix not found")?;
             Ok(tokio::fs::read_to_string(path).await?)
@@ -226,11 +210,7 @@ impl SystemAgent {
     }
 
     /// Writes content to a named configuration file (currently only "home.nix" is supported).
-    pub async fn write_config(
-        &self,
-        name: &str,
-        content: &str,
-    ) -> anyhow::Result<()> {
+    pub async fn write_config(&self, name: &str, content: &str) -> anyhow::Result<()> {
         if name == "home.nix" {
             let path = self.home_nix_path.as_ref().context("home.nix not found")?;
             tokio::fs::write(path, content).await?;
@@ -241,9 +221,7 @@ impl SystemAgent {
     }
 
     /// Applies the current home-manager configuration by running `home-manager switch`.
-    pub async fn apply_config(
-        &self,
-    ) -> anyhow::Result<String> {
+    pub async fn apply_config(&self) -> anyhow::Result<String> {
         let output = Command::new("home-manager").arg("switch").output().await?;
         Ok(String::from_utf8_lossy(&output.stdout).to_string())
     }
@@ -252,15 +230,16 @@ impl SystemAgent {
     ///
     /// The package name is sanitized: only alphanumeric characters and hyphens
     /// are allowed, with a maximum length of 100 characters.
-    pub async fn install_package(
-        &self,
-        name: &str,
-    ) -> anyhow::Result<String> {
+    pub async fn install_package(&self, name: &str) -> anyhow::Result<String> {
         if name.is_empty() || name.len() > 100 {
-            return Err(anyhow::anyhow!("Invalid package name: length must be 1-100"));
+            return Err(anyhow::anyhow!(
+                "Invalid package name: length must be 1-100"
+            ));
         }
         if !name.chars().all(|c| c.is_alphanumeric() || c == '-') {
-            return Err(anyhow::anyhow!("Invalid package name: only alphanumeric and hyphen allowed"));
+            return Err(anyhow::anyhow!(
+                "Invalid package name: only alphanumeric and hyphen allowed"
+            ));
         }
         let output = Command::new("nix")
             .args(["profile", "install", &format!("nixpkgs#{}", name)])

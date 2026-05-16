@@ -22,10 +22,10 @@
 pub mod routing;
 pub mod traits;
 
-use std::collections::HashMap;
-use std::sync::Arc;
 use dracon_ai_runtime_contracts::traits::AiProvider;
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+use std::sync::Arc;
 
 pub use dracon_ai_contracts::{RoutingTask, SelectionConstraints};
 pub use routing::ServiceLevel;
@@ -93,12 +93,16 @@ impl<T: AiProvider + ?Sized> SmartRouter<T> {
         _messages: &[RoutingMessage],
         _constraints: dracon_ai_contracts::SelectionConstraints,
     ) -> anyhow::Result<(Arc<T>, RoutingTrace)> {
-        let model_id = self.active_models.first()
+        let model_id = self
+            .active_models
+            .first()
             .or_else(|| self.dev_models.first())
             .ok_or_else(|| anyhow::anyhow!("No models available"))?
             .clone();
 
-        let provider = self.registry.get(&model_id)
+        let provider = self
+            .registry
+            .get(&model_id)
             .ok_or_else(|| anyhow::anyhow!("Provider not found for model: {}", model_id))?
             .clone();
 
