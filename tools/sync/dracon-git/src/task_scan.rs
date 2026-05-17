@@ -1,22 +1,30 @@
+/// Task progress tracker — counts done/in-progress/pending items from blueprint files.
 use std::fs;
 use std::path::Path;
 
+/// Progress counts for tasks in a blueprint file.
 #[derive(Debug, Clone, Default)]
 pub struct TaskProgress {
+    /// Number of completed tasks.
     pub done: usize,
+    /// Number of in-progress tasks.
     pub in_progress: usize,
+    /// Number of pending tasks.
     pub pending: usize,
 }
 
 impl TaskProgress {
+    /// Total number of tasks (done + in_progress + pending).
     pub fn total(&self) -> usize {
         self.done + self.in_progress + self.pending
     }
 
+    /// Whether there are no tasks.
     pub fn is_empty(&self) -> bool {
         self.total() == 0
     }
 
+    /// Human-readable progress summary (e.g., "3/6 done (1 in progress)").
     pub fn summary(&self) -> String {
         let total = self.total();
         if total == 0 {
@@ -33,6 +41,9 @@ impl TaskProgress {
     }
 }
 
+/// Scan a blueprint file and count task progress.
+///
+/// Recognizes `- [x]` (done), `- [~]` (in progress), and `- [ ]` (pending) markers.
 pub fn scan_blueprint_tasks(blueprint_path: &Path) -> TaskProgress {
     let mut progress = TaskProgress::default();
     if let Ok(content) = fs::read_to_string(blueprint_path) {

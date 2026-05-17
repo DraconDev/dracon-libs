@@ -22,12 +22,19 @@
 //! - Default: uses libgit2 with CLI fallback for binary files
 //! - CLI fallback is automatic when libgit2 encounters nul-bytes
 
+/// CLI-based git snapshot provider.
 pub mod cli;
+/// Contracts for git snapshot and preview operations.
 pub mod contracts;
+/// Commit message generation from context.
 pub mod dracon_sync_commit;
+/// Error types for git operations.
 pub mod error;
+/// Intent extraction from plan files and branch names.
 pub mod intent;
+/// Task progress scanning from blueprint files.
 pub mod task_scan;
+/// Core types: RepoStatus, FileStatus, DiffFile.
 pub mod types;
 
 pub use cli::CliGitSnapshotProvider;
@@ -44,6 +51,7 @@ use std::io::Write;
 use std::path::{Path, PathBuf};
 use std::process::Stdio;
 
+/// Primary git service — provides async operations (status, pull, push, commit).
 #[derive(Clone)]
 pub struct GitService {
     root_path: PathBuf,
@@ -191,29 +199,45 @@ impl GitService {
     }
 
     /// Get diff as string
+    /// Get diff as string. Falls back to CLI on libgit2 errors (binary blobs, nul bytes).
     pub async fn get_diff(&self) -> Result<String> {
         let path = self.root_path.clone();
-        tokio::task::spawn_blocking(move || -> std::result::Result<String, git2::Error> {
-            let repo = git2::Repository::open(&path)?;
-            let mut diff_opts = git2::DiffOptions::new();
-            let diff = repo.diff_index_to_workdir(None, Some(&mut diff_opts))?;
+        tokio::task::spawn_blocking(move || -> std::result::Result<String, GitError> {
+            // Try libgit2 first (faster, richer output)
+            let result = (|| -> std::result::Result<String, git2::Error> {
+                let repo = git2::Repository::open(&path)?;
+                let mut diff_opts = git2::DiffOptions::new();
+                let diff = repo.diff_index_to_workdir(None, Some(&mut diff_opts))?;
 
-            let mut diff_str = String::new();
-            diff.print(git2::DiffFormat::Patch, |_delta, _hunk, line| {
-                let content = std::str::from_utf8(line.content()).unwrap_or("");
-                match line.origin() {
-                    '+' => diff_str.push_str(&format!("+{}", content)),
-                    '-' => diff_str.push_str(&format!("-{}", content)),
-                    ' ' => diff_str.push_str(&format!(" {}", content)),
-                    _ => diff_str.push_str(content),
+                let mut diff_str = String::new();
+                diff.print(git2::DiffFormat::Patch, |_delta, _hunk, line| {
+                    let content = std::str::from_utf8(line.content()).unwrap_or("");
+                    match line.origin() {
+                        '+' => diff_str.push_str(&format!("+{}", content)),
+                        '-' => diff_str.push_str(&format!("-{}", content)),
+                        ' ' => diff_str.push_str(&format!(" {}", content)),
+                        _ => diff_str.push_str(content),
+                    }
+                    true
+                })?;
+                Ok(diff_str)
+            })();
+
+            match result {
+                Ok(s) => Ok(s),
+                Err(_) => {
+                    // CLI fallback: handles binary files, nul bytes, etc.
+                    let output = std::process::Command::new("git")
+                        .args(["diff", "HEAD"])
+                        .current_dir(&path)
+                        .output()
+                        .map_err(|e| GitError::Other(e.to_string()))?;
+                    Ok(String::from_utf8_lossy(&output.stdout).to_string())
                 }
-                true
-            })?;
-            Ok(diff_str)
+            }
         })
         .await
         .map_err(|e| GitError::Other(e.to_string()))?
-        .map_err(GitError::LibGit2)
     }
 
     /// Fetch latest changes from remote

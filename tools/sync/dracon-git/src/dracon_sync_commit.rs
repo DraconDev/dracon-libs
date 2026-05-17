@@ -5,24 +5,37 @@ use crate::types::{DiffFile, FileStatus};
 /// Any tool can construct this — no tree-sitter dependency required.
 #[derive(Debug, Clone, serde::Serialize)]
 pub struct SemanticSummary {
+    /// List of symbols found in changed files.
     pub symbols: Vec<SymbolInfo>,
 }
 
+/// A single symbol (function, type, etc.) extracted from changed files.
 #[derive(Debug, Clone, serde::Serialize)]
 pub struct SymbolInfo {
+    /// Symbol name.
     pub name: String,
+    /// Symbol kind (function, struct, method, etc.).
     pub kind: String,
+    /// Source language.
     pub language: String,
 }
 
+/// Context for building a semantic commit message.
 #[derive(Debug, Clone)]
 pub struct CommitContext {
+    /// Intent label (e.g., "coding", "writing", "verify").
     pub intent: String,
+    /// Active track/branch name.
     pub track: Option<String>,
+    /// Whether this is a periodic checkpoint commit.
     pub is_checkpoint: bool,
+    /// List of changed files with their statuses.
     pub files: Vec<DiffFile>,
+    /// Task progress from blueprint scanning.
     pub task_progress: Option<TaskProgress>,
+    /// Git ref information.
     pub refs: Option<String>,
+    /// Seconds since last non-trivial activity.
     pub idle_seconds: u64,
     /// Override auto-detected category (fix, feat, refactor, security, perf, chore, docs)
     pub category: Option<String>,
@@ -37,6 +50,7 @@ pub struct CommitContext {
 }
 
 impl CommitContext {
+    /// Create a new commit context with intent, changed files, and checkpoint flag.
     pub fn new(intent: String, files: Vec<DiffFile>, is_checkpoint: bool) -> Self {
         Self {
             intent,
@@ -258,6 +272,9 @@ fn extract_focus_summary(description: Option<&str>) -> Option<String> {
     }
 }
 
+/// Build a semantic commit message from the given context.
+///
+/// Uses conventional commit format: `type(scope): description`
 pub fn build_commit_message(ctx: &CommitContext) -> String {
     let display_files: Vec<&DiffFile> = ctx
         .files

@@ -3,14 +3,20 @@ use std::path::{Path, PathBuf};
 
 use crate::task_scan::TaskProgress;
 
+/// Extracted intent information from a repository's plan files or changed files.
 #[derive(Debug, Clone, Default)]
 pub struct IntentInfo {
+    /// Detected intent label.
     pub intent: String,
+    /// Active track/branch name.
     pub track: Option<String>,
+    /// Path to the active blueprint file.
     pub blueprint: Option<PathBuf>,
+    /// Task progress counts from the blueprint.
     pub task_progress: Option<TaskProgress>,
 }
 
+/// Extract intent info from a repository by analyzing plan files and changed files.
 pub fn extract_intent(repo: &Path, changed_files: &[PathBuf], branch: Option<&str>) -> IntentInfo {
     let plan_dir = find_plan_dir(repo);
 
