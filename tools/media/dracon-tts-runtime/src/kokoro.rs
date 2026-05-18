@@ -4,6 +4,7 @@ use ort::session::Session;
 use rodio::{OutputStream, Sink, Source};
 use std::collections::HashMap;
 use std::fs::File;
+use std::io::Read;
 use std::path::PathBuf;
 use std::sync::atomic::{AtomicBool, AtomicU64, AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex};
@@ -119,7 +120,7 @@ pub struct KokoroTts {
 }
 
 impl KokoroTts {
-    pub async fn new(model_path: &str, voices_dir: &str) -> Self {
+    pub async fn new(model_path: &str, voices_dir: &str) -> Result<Self> {
         Self::new_with_voice(model_path, voices_dir, DEFAULT_VOICE).await
     }
 
@@ -598,7 +599,7 @@ impl KokoroTts {
     }
 
     pub async fn speak_impl(&self, text: &str) {
-        let voice = self.get_voice();
+        let voice = self.get_voice().unwrap_or_else(|_| DEFAULT_VOICE.to_string());
         let call_id = TTS_COUNTER.fetch_add(1, Ordering::SeqCst);
         let total_start = std::time::Instant::now();
         println!(
@@ -713,7 +714,7 @@ impl KokoroTts {
     }
 
     pub async fn speak_nowait(&self, text: &str) {
-        let voice = self.get_voice();
+        let voice = self.get_voice().unwrap_or_else(|_| DEFAULT_VOICE.to_string());
         let call_id = TTS_COUNTER.fetch_add(1, Ordering::SeqCst);
         println!(
             "\n[Kokoro-{}] speak_nowait: \"{}\" (voice: {})",

@@ -150,7 +150,7 @@ pub fn voice_info(name: &str) -> (&'static str, &'static str, &'static str) {
 }
 
 impl KittenTTS {
-    pub async fn new(model_path: &str, voices_path: &str) -> Self {
+    pub async fn new(model_path: &str, voices_path: &str) -> Result<Self> {
         Self::new_with_voice(model_path, voices_path, DEFAULT_VOICE).await
     }
 
@@ -692,12 +692,12 @@ impl KittenTTS {
     }
 
     pub async fn speak(&self, text: &str) {
-        let voice = self.get_voice();
+        let voice = self.get_voice().unwrap_or_else(|_| DEFAULT_VOICE.to_string());
         self.speak_with_voice(text, &voice).await
     }
 
     pub async fn speak_nowait(&self, text: &str) {
-        let voice = self.get_voice();
+        let voice = self.get_voice().unwrap_or_else(|_| DEFAULT_VOICE.to_string());
         self.speak_nowait_with_voice(text, &voice).await
     }
 
@@ -950,7 +950,7 @@ impl KittenTTS {
     }
 
     pub fn synthesize(&self, text: &str) -> Result<Vec<f32>, anyhow::Error> {
-        let voice = self.get_voice();
+        let voice = self.get_voice()?;
         let call_id = KITTEN_COUNTER.fetch_add(1, Ordering::SeqCst);
 
         if self.session.is_none() || self.voices.is_empty() {
