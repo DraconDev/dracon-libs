@@ -25,6 +25,8 @@ pub mod contracts;
 pub mod kitten;
 pub mod kokoro;
 
+use anyhow::Result;
+
 pub use contracts::{
     DynTtsEngine, Gender, SynthesisRequest, SynthesisResult, TextToSpeech, TtsConfig,
     TtsEngineBase, TtsResult, VoiceInfo, VoiceProvider,
@@ -40,14 +42,14 @@ pub enum TtsEngine {
 }
 
 impl TtsEngine {
-    pub fn speak(&self, text: &str) {
+    pub fn speak(&self, text: &str) -> Result<()> {
         match self {
             TtsEngine::Kitten(k) => TextToSpeech::speak(&**k, text),
             TtsEngine::Kokoro(k) => TextToSpeech::speak(&**k, text),
         }
     }
 
-    pub fn stop(&self) {
+    pub fn stop(&self) -> Result<()> {
         match self {
             TtsEngine::Kitten(k) => TextToSpeech::stop(&**k),
             TtsEngine::Kokoro(k) => TextToSpeech::stop(&**k),

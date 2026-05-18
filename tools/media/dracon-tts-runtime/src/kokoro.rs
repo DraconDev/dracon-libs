@@ -1,5 +1,5 @@
 use crate::contracts::{Gender, TextToSpeech, VoiceInfo, VoiceProvider};
-use anyhow::Context;
+use anyhow::{Context, Result};
 use ort::session::Session;
 use rodio::{OutputStream, Sink, Source};
 use std::collections::HashMap;
