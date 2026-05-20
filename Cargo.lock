@@ -33,7 +33,7 @@ dependencies = [
 
 [[package]]
 name = "ai-routing-runtime"
-version = "94.6.0"
+version = "94.7.0"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -44,7 +44,7 @@ dependencies = [
 
 [[package]]
 name = "ai-runtime-adapters"
-version = "94.6.0"
+version = "94.7.0"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -56,7 +56,7 @@ dependencies = [
 
 [[package]]
 name = "ai-runtime-config"
-version = "94.6.0"
+version = "94.7.0"
 dependencies = [
  "anyhow",
  "serde",
@@ -65,7 +65,7 @@ dependencies = [
 
 [[package]]
 name = "ai-service"
-version = "94.6.0"
+version = "94.7.0"
 dependencies = [
  "ai-routing-runtime",
  "ai-runtime-adapters",
@@ -1138,14 +1138,14 @@ checksum = "75b325c5dbd37f80359721ad39aca5a29fb04c89279657cffdda8736d0c0b9d2"
 
 [[package]]
 name = "dracon-ai-contracts"
-version = "94.6.0"
+version = "94.7.0"
 dependencies = [
  "serde",
 ]
 
 [[package]]
 name = "dracon-ai-runtime-contracts"
-version = "94.6.0"
+version = "94.7.0"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -1156,7 +1156,7 @@ dependencies = [
 
 [[package]]
 name = "dracon-files"
-version = "94.6.0"
+version = "94.7.0"
 dependencies = [
  "mime_guess",
  "serde",
@@ -1166,7 +1166,7 @@ dependencies = [
 
 [[package]]
 name = "dracon-git"
-version = "94.6.0"
+version = "94.7.0"
 dependencies = [
  "anyhow",
  "git2",
@@ -1178,7 +1178,7 @@ dependencies = [
 
 [[package]]
 name = "dracon-memory-contracts"
-version = "94.6.0"
+version = "94.7.0"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -1187,7 +1187,7 @@ dependencies = [
 
 [[package]]
 name = "dracon-memory-runtime"
-version = "94.6.0"
+version = "94.7.0"
 dependencies = [
  "anyhow",
  "chrono",
@@ -1202,7 +1202,7 @@ dependencies = [
 
 [[package]]
 name = "dracon-stt-runtime"
-version = "94.6.0"
+version = "94.7.0"
 dependencies = [
  "anyhow",
  "candle-core",
@@ -1219,7 +1219,7 @@ dependencies = [
 
 [[package]]
 name = "dracon-system-lib"
-version = "94.6.0"
+version = "94.7.0"
 dependencies = [
  "anyhow",
  "dirs",
@@ -1237,7 +1237,7 @@ dependencies = [
 
 [[package]]
 name = "dracon-tts-runtime"
-version = "94.6.0"
+version = "94.7.0"
 dependencies = [
  "anyhow",
  "futures",
@@ -1253,7 +1253,7 @@ dependencies = [
 
 [[package]]
 name = "dracon-video-runtime"
-version = "94.6.0"
+version = "94.7.0"
 dependencies = [
  "anyhow",
  "candle-core",
@@ -3315,9 +3315,9 @@ dependencies = [
 
 [[package]]
 name = "ort"
-version = "2.0.0-rc.12"
+version = "2.0.0-rc.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d7de3af33d24a745ffb8fab904b13478438d1cd52868e6f17735ef6e1f8bf133"
+checksum = "4a5df903c0d2c07b56950f1058104ab0c8557159f2741782223704de9be73c3c"
 dependencies = [
  "ndarray 0.17.2",
  "ort-sys",
@@ -3328,9 +3328,9 @@ dependencies = [
 
 [[package]]
 name = "ort-sys"
-version = "2.0.0-rc.12"
+version = "2.0.0-rc.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d7b497d21a8b6fbb4b5a544f8fadb77e801a09ae0add9e411d31c6f89e3c1e90"
+checksum = "06503bb33f294c5f1ba484011e053bfa6ae227074bdb841e9863492dc5960d4b"
 dependencies = [
  "hmac-sha256",
  "lzma-rust2",
@@ -3339,15 +3339,15 @@ dependencies = [
 
 [[package]]
 name = "parakeet-rs"
-version = "0.3.5"
+version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e2c54ec33ff53d2078cc6a48dcdd9c50c229905e392743375e29652a2b9a369e"
+checksum = "ffb8f3a2abb6cf36b9d431a25ead23d4e19294169f0d99bc7f4d4a1478233fdc"
 dependencies = [
  "eyre",
  "hound",
  "ndarray 0.17.2",
  "ort",
- "realfft",
+ "rustfft",
  "serde",
  "serde_json",
  "tokenizers 0.22.2",

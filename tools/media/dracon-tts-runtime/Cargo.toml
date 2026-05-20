@@ -15,7 +15,7 @@ kokoro = []
 [dependencies]
 anyhow = { workspace = true }
 tokio = { workspace = true }
-ort = { version = "2.0.0-rc.11", features = ["ndarray"] }
+ort = { version = "=2.0.0-rc.11", features = ["ndarray"] }
 rodio = { version = "0.19", default-features = false }
 ndarray = "0.17"
 zip = { version = "2", default-features = false, features = ["deflate"] }
