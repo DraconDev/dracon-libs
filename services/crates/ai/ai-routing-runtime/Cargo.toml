@@ -11,8 +11,8 @@ description = "AI routing runtime with SmartRouter and ProviderRegistry for mode
 serde = { version = "1", features = ["derive"] }
 anyhow = "1"
 async-trait = "0.1"
-dracon-ai-contracts = { path = "../../../../contracts/crates/ai/dracon-ai-contracts" }
-dracon-ai-runtime-contracts = { path = "../../../../contracts/crates/ai/dracon-ai-runtime-contracts" }
+dracon-ai-contracts = "94.7"
+dracon-ai-runtime-contracts = "94.7"
 
 [lib]
 name = "ai_routing_runtime"
