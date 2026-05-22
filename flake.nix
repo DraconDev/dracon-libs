@@ -21,6 +21,7 @@
             alsa-lib
             alsa-lib.dev
             pkg-config
+            libxcb
           ];
 
           buildInputs = with pkgs; [
