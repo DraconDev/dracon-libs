@@ -100,7 +100,7 @@ impl GitService {
                 status.branch = head
                     .as_ref()
                     .ok()
-                    .and_then(|h| h.shorthand())
+                    .and_then(|h| h.shorthand().ok())
                     .unwrap_or("detached")
                     .to_string();
 
@@ -129,13 +129,11 @@ impl GitService {
                 status.is_clean = status.modified_files == 0 && status.staged_files == 0;
 
                 if let Ok(head_ref) = head {
-                    if let Some(head_name) = head_ref.shorthand() {
+                    if let Ok(head_name) = head_ref.shorthand() {
                         if let Ok(upstream) =
                             repo.branch_upstream_name(&format!("refs/heads/{}", head_name))
                         {
-                            if let Ok(upstream_str) = upstream
-                                .as_str()
-                                .ok_or(git2::Error::from_str("Invalid upstream name"))
+                            if let Ok(upstream_str) = upstream.as_str()
                             {
                                 if let Ok(upstream_oid) = repo.refname_to_id(upstream_str) {
                                     if let Some(head_oid) = head_ref.target() {
@@ -152,7 +150,7 @@ impl GitService {
                     }
                     if let Ok(commit) = head_ref.peel_to_commit() {
                         status.last_commit_hash = Some(commit.id().to_string());
-                        status.last_commit_msg = commit.summary().map(|s| s.to_string());
+                        status.last_commit_msg = commit.summary().ok().flatten().map(|s| s.to_string());
                     }
                 }
 
@@ -259,7 +257,7 @@ impl GitService {
             let head = repo.head().ok();
             let refspec = head
                 .as_ref()
-                .and_then(|h| h.shorthand())
+                .and_then(|h| h.shorthand().ok())
                 .map(|name| format!("refs/heads/{name}:refs/remotes/origin/{name}"));
             let refspecs: Vec<&str> = match &refspec {
                 Some(r) => vec![r.as_str()],
@@ -290,7 +288,7 @@ impl GitService {
             let _head_oid = head
                 .target()
                 .ok_or(GitError::Other("HEAD invalid".into()))?;
-            let head_name = head.shorthand().unwrap_or("detached");
+            let head_name = head.shorthand().ok().unwrap_or("detached");
 
             let upstream_name = format!("origin/{}", head_name);
             let upstream_oid = repo
@@ -536,7 +534,7 @@ impl GitService {
                         uid: 0,
                         gid: 0,
                         file_size: encrypted.len() as u32,
-                        id: git2::Oid::zero(),
+                        id: git2::Oid::ZERO_SHA1,
                         flags: entry_path.len().min(0xFFF) as u16,
                         flags_extended: 0,
                         path: Vec::new(),
@@ -661,7 +659,7 @@ impl GitService {
         tokio::task::spawn_blocking(move || -> std::result::Result<usize, git2::Error> {
             let repo = git2::Repository::open(&path)?;
             let head = repo.head()?;
-            let head_name = head.shorthand().unwrap_or("detached");
+            let head_name = head.shorthand().ok().unwrap_or("detached");
             let upstream_name = format!("origin/{}", head_name);
 
             if let Ok(upstream_oid) = repo.refname_to_id(&format!("refs/remotes/{}", upstream_name))
@@ -709,7 +707,7 @@ impl GitService {
         tokio::task::spawn_blocking(move || -> std::result::Result<(), git2::Error> {
             let repo = git2::Repository::open(&path)?;
             if let Ok(remote) = repo.find_remote("origin") {
-                if let Some(url) = remote.url() {
+                if let Ok(url) = remote.url() {
                     if url.starts_with("https://github.com/") {
                         let new_url = url.replace("https://github.com/", "git@github.com:");
                         repo.remote_set_url("origin", &new_url)?;
@@ -938,7 +936,7 @@ fn parse_git2_statuses(
         } else {
             FileStatus::Modified
         };
-        if let Some(p) = entry.path() {
+        if let Ok(p) = entry.path() {
             diffs.push(DiffFile {
                 path: PathBuf::from(p),
                 status: file_status,
