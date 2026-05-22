@@ -8,7 +8,7 @@ repository.workspace = true
 description.workspace = true
 
 [dependencies]
-git2 = "0.18"
+git2 = "0.21"
 thiserror = { workspace = true }
 anyhow = { workspace = true }
 serde = { workspace = true }
