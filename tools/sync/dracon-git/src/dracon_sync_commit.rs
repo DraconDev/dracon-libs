@@ -144,16 +144,17 @@ fn detect_category(files: &[DiffFile], is_checkpoint: bool) -> &'static str {
         }
     }
 
-    // Check for chore files
-    for f in files {
+    // Check for chore files — only if EXCLUSIVELY cargo files
+    let all_cargo = files.iter().all(|f| {
         let name = f
             .path
             .file_name()
             .map(|n| n.to_string_lossy().to_lowercase())
             .unwrap_or_default();
-        if name == "cargo.lock" || name == "cargo.toml" {
-            return "chore";
-        }
+        name == "cargo.lock" || name == "cargo.toml"
+    });
+    if all_cargo {
+        return "chore";
     }
 
     // Check for docs
@@ -366,25 +367,65 @@ fn build_summary_line(
     added: usize,
     modified: usize,
     deleted: usize,
-    _files: &[&DiffFile],
+    files: &[&DiffFile],
 ) -> String {
     let total = added + modified + deleted;
     if total == 0 {
         return "no changes".to_string();
     }
 
+    // Extract unique file stems (up to 3) for a descriptive summary
+    let mut stems: Vec<&str> = Vec::new();
+    for f in files.iter().take(10) {
+        let stem = f
+            .path
+            .file_stem()
+            .and_then(|s| s.to_str())
+            .unwrap_or_else(|| {
+                f.path
+                    .file_name()
+                    .and_then(|n| n.to_str())
+                    .unwrap_or("")
+            });
+        if !stems.contains(&stem) && !stem.is_empty() {
+            stems.push(stem);
+            if stems.len() >= 3 {
+                break;
+            }
+        }
+    }
+
+    let file_desc = if stems.is_empty() {
+        String::new()
+    } else if stems.len() == 1 {
+        format!("update {}", stems[0])
+    } else if files.len() > stems.len() {
+        let extra = files.len() - stems.len();
+        format!("update {} and {} more", stems.join(", "), extra)
+    } else {
+        format!("update {}", stems.join(", "))
+    };
+
+    // Add change breakdown if it adds information beyond the file names
     let mut parts = Vec::new();
-    if added > 0 {
+    if !file_desc.is_empty() && total > stems.len() {
+        parts.push(file_desc);
+    }
+    if added > 0 && added >= files.len() {
         parts.push(format!("{} added", added));
     }
-    if modified > 0 {
+    if modified > 0 && modified >= files.len() {
         parts.push(format!("{} modified", modified));
     }
     if deleted > 0 {
         parts.push(format!("{} deleted", deleted));
     }
 
-    parts.join(", ")
+    if parts.is_empty() {
+        file_desc
+    } else {
+        parts.join(", ")
+    }
 }
 
 fn format_semantic_body(summary: &Option<SemanticSummary>) -> Option<String> {
