@@ -312,19 +312,20 @@ pub fn build_commit_message(ctx: &CommitContext) -> String {
             FileStatus::Unknown => modified += 1,
         }
     }
+    let total = added + modified + deleted;
 
     // Subject line: category(scope): summary
-    // For non-checkpoint commits: if a description exists (AI or local fallback),
-    // use it directly as the summary — parse_conventional_commit already extracted
-    // the semantic meaning from the subject, so ctx.description IS the summary.
-    // Only fall through to build_summary_line when description is genuinely absent.
+    // For non-checkpoint commits: if a description exists (task progress from diff),
+    // use it directly as the summary. Otherwise, just use category + scope —
+    // file names are noise for AI, it can read the diff for details.
     let summary = if ctx.is_checkpoint {
         extract_focus_summary(ctx.description.as_deref())
             .unwrap_or_else(|| "wip checkpoint".to_string())
     } else if ctx.description.is_some() {
         ctx.description.clone().unwrap()
     } else {
-        build_summary_line(added, modified, deleted, &display_files)
+        // No task progress — just show what kind of work this is
+        format!("{} files changed", total)
     };
     let subject = format!("{}({}): {}", category, scope, summary);
 
@@ -814,8 +815,8 @@ mod tests {
         let msg = build_commit_message(&ctx);
         let subject = msg.lines().next().unwrap();
         assert!(
-            subject.contains("git") && subject.contains("main"),
-            "no description should fall back to file stems, got: {}",
+            subject.contains("files changed"),
+            "no description should show file count, got: {}",
             subject
         );
     }
