@@ -814,8 +814,8 @@ mod tests {
         let msg = build_commit_message(&ctx);
         let subject = msg.lines().next().unwrap();
         assert!(
-            subject.contains("modified") && subject.contains("added"),
-            "no description should fall back to summary line with counts, got: {}",
+            subject.contains("git") && subject.contains("main"),
+            "no description should fall back to file stems, got: {}",
             subject
         );
     }
