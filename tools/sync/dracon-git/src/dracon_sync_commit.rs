@@ -409,7 +409,7 @@ fn build_summary_line(
     // Add change breakdown if it adds information beyond the file names
     let mut parts = Vec::new();
     if !file_desc.is_empty() && total > stems.len() {
-        parts.push(file_desc);
+        parts.push(file_desc.clone());
     }
     if added > 0 && added >= files.len() {
         parts.push(format!("{} added", added));
