@@ -91,7 +91,6 @@ tools/memory/dracon-memory-runtime/assets/bge-small-en-v1.5.onnx
 !*.ttf
 !*.woff
 !*.woff2
-!.cache/
 !.dracon/data/
 !.dracon/data/keys/
 !.dracon/data/keys/*.pub
@@ -103,8 +102,6 @@ tools/memory/dracon-memory-runtime/assets/bge-small-en-v1.5.onnx
 !events.jsonl
 !flake.lock
 !flake.nix
-!node_modules/
 !rust-toolchain.toml
 !rustfmt.toml
-!target/
 # --- END DRACON MANAGED BLOCK ---
