@@ -117,8 +117,12 @@ impl GitService {
                     {
                         status.staged_files += 1;
                     }
-                    if s.is_wt_new()
-                        || s.is_wt_modified()
+                    if s.is_wt_new() {
+                        // Untracked files are NOT counted as modified.
+                        // This prevents the report from showing 10k "modified"
+                        // entries when a repo has a large untracked target/ dir.
+                        status.untracked_files += 1;
+                    } else if s.is_wt_modified()
                         || s.is_wt_deleted()
                         || s.is_wt_renamed()
                         || s.is_wt_typechange()
@@ -126,7 +130,9 @@ impl GitService {
                         status.modified_files += 1;
                     }
                 }
-                status.is_clean = status.modified_files == 0 && status.staged_files == 0;
+                status.is_clean = status.modified_files == 0
+                    && status.staged_files == 0
+                    && status.untracked_files == 0;
 
                 if let Ok(head_ref) = head {
                     if let Ok(head_name) = head_ref.shorthand() {
@@ -990,19 +996,23 @@ fn cli_get_status(path: &Path) -> std::result::Result<RepoStatus, GitError> {
             if !idx.starts_with(' ') && !idx.starts_with('?') && idx != "  " {
                 status.staged_files += 1;
             }
-            if idx.contains('M')
+            if idx.starts_with("??") {
+                // Untracked files: count separately, NOT as modified.
+                status.untracked_files += 1;
+            } else if idx.contains('M')
                 || idx.contains('A')
                 || idx.contains('D')
                 || idx.contains('R')
                 || idx.contains('T')
-                || idx.contains('?')
             {
                 status.modified_files += 1;
             }
         }
     }
 
-    status.is_clean = status.modified_files == 0 && status.staged_files == 0;
+    status.is_clean = status.modified_files == 0
+        && status.staged_files == 0
+        && status.untracked_files == 0;
     Ok(status)
 }
 

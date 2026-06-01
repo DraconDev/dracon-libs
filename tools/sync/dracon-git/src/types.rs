@@ -12,6 +12,8 @@ pub struct RepoStatus {
     pub behind: usize,
     /// Number of modified (unstaged) files.
     pub modified_files: usize,
+    /// Number of untracked files.
+    pub untracked_files: usize,
     /// Number of staged files.
     pub staged_files: usize,
     /// Whether the working tree is clean.

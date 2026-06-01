@@ -298,7 +298,7 @@ mod tests {
     }
 
     #[test]
-    fn test_probability_exactly_at_silence_threshold() {
+    fn test_probability_exac[DRACON_SECRET:YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA1ZGgyUVlKV0NkMjVLd3FtL08rZG1BQnlHMUlyQ3l1R0FIazlqcVR0SDJBCjFYbmdtSmRKUjk2ck5rTjBESTJzT09QK0l4KzJhem43Y1N4aXJtbXB4em8KLT4gXy5qTC1ncmVhc2UKWk9YR2h0aVNQelhwOFhwdmlhWmVIUUNRbGpobmlsUzdDV0dUSklobDNBdlVRTDhBNlF6b3NZTzVBK1dwSkdvSQoKLS0tIEFrSW8wSHlvaEIraXNHNG8vckFNTU9wb0lwTUFoUUJKOU1TTU11VXY0ZnMKJTBhEljZ0E4pg84bauii+RkaZWG8QoPyOYJIzyMjb7Fa/5S/MNFHM5SV2oLcO02uSgyRtL0tNbg=]() {
         let mut sm = VadStateMachine::new();
 
         for _ in 0..3 {
@@ -922,7 +922,7 @@ mod tests {
     }
 
     #[test]
-    fn test_exactly_min_frames_minus_one() {
+    fn test_exac[DRACON_SECRET:YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBVb2pMYzFxbjQxUVI1M1IvV1ZzaUMzZktSdEVsbW1EWmtWUkNKNWNJYlFNCnhQZEUrbE5XS1hCVGhEcldlMEtiYmNmc09FVEthYXJrdlNpTG5sblZQKzAKLT4gJTl3eC1ncmVhc2UgMS9aYn0gTiA7Ck9VNzNKYTNkNk5nTG95SS9MQlRxYk9Eb1ZESWJ2OEEKLS0tIEtjWHdkTE5BUkhJdUpXc0lMT2NOUW5iUWhCNE1SRno2UlYwVGF1YzRxa1EKKeVdTYE/4S57OofvAx8ieDVwQv+7T+yJvFWgTZuEj17RzIJyZOV0EZgGeqFbHe1Nu7goUpSL1Fg=]() {
         let mut sm = VadStateMachine::new();
         sm.process(0.6);
         sm.process(0.6);
