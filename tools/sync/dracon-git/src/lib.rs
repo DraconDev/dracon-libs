@@ -139,8 +139,7 @@ impl GitService {
                         if let Ok(upstream) =
                             repo.branch_upstream_name(&format!("refs/heads/{}", head_name))
                         {
-                            if let Ok(upstream_str) = upstream.as_str()
-                            {
+                            if let Ok(upstream_str) = upstream.as_str() {
                                 if let Ok(upstream_oid) = repo.refname_to_id(upstream_str) {
                                     if let Some(head_oid) = head_ref.target() {
                                         if let Ok((ahead, behind)) =
@@ -156,7 +155,8 @@ impl GitService {
                     }
                     if let Ok(commit) = head_ref.peel_to_commit() {
                         status.last_commit_hash = Some(commit.id().to_string());
-                        status.last_commit_msg = commit.summary().ok().flatten().map(|s| s.to_string());
+                        status.last_commit_msg =
+                            commit.summary().ok().flatten().map(|s| s.to_string());
                     }
                 }
 
@@ -1010,9 +1010,8 @@ fn cli_get_status(path: &Path) -> std::result::Result<RepoStatus, GitError> {
         }
     }
 
-    status.is_clean = status.modified_files == 0
-        && status.staged_files == 0
-        && status.untracked_files == 0;
+    status.is_clean =
+        status.modified_files == 0 && status.staged_files == 0 && status.untracked_files == 0;
     Ok(status)
 }
 

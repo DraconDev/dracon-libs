@@ -599,7 +599,9 @@ impl KokoroTts {
     }
 
     pub async fn speak_impl(&self, text: &str) {
-        let voice = self.get_voice().unwrap_or_else(|_| DEFAULT_VOICE.to_string());
+        let voice = self
+            .get_voice()
+            .unwrap_or_else(|_| DEFAULT_VOICE.to_string());
         let call_id = TTS_COUNTER.fetch_add(1, Ordering::SeqCst);
         let total_start = std::time::Instant::now();
         println!(
@@ -714,7 +716,9 @@ impl KokoroTts {
     }
 
     pub async fn speak_nowait(&self, text: &str) {
-        let voice = self.get_voice().unwrap_or_else(|_| DEFAULT_VOICE.to_string());
+        let voice = self
+            .get_voice()
+            .unwrap_or_else(|_| DEFAULT_VOICE.to_string());
         let call_id = TTS_COUNTER.fetch_add(1, Ordering::SeqCst);
         println!(
             "\n[Kokoro-{}] speak_nowait: \"{}\" (voice: {})",

@@ -692,12 +692,16 @@ impl KittenTTS {
     }
 
     pub async fn speak(&self, text: &str) {
-        let voice = self.get_voice().unwrap_or_else(|_| DEFAULT_VOICE.to_string());
+        let voice = self
+            .get_voice()
+            .unwrap_or_else(|_| DEFAULT_VOICE.to_string());
         self.speak_with_voice(text, &voice).await
     }
 
     pub async fn speak_nowait(&self, text: &str) {
-        let voice = self.get_voice().unwrap_or_else(|_| DEFAULT_VOICE.to_string());
+        let voice = self
+            .get_voice()
+            .unwrap_or_else(|_| DEFAULT_VOICE.to_string());
         self.speak_nowait_with_voice(text, &voice).await
     }
 
