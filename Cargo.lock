@@ -38,7 +38,7 @@ dependencies = [
  "anyhow",
  "async-trait",
  "dracon-ai-contracts 94.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "dracon-ai-runtime-contracts 94.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "dracon-ai-runtime-contracts",
  "serde",
 ]
 
@@ -48,7 +48,7 @@ version = "94.7.0"
 dependencies = [
  "anyhow",
  "async-trait",
- "dracon-ai-runtime-contracts 94.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "dracon-ai-runtime-contracts",
  "reqwest",
  "serde",
  "serde_json",
@@ -72,7 +72,7 @@ dependencies = [
  "anyhow",
  "async-trait",
  "dracon-ai-contracts 94.7.0",
- "dracon-ai-runtime-contracts 94.7.0",
+ "dracon-ai-runtime-contracts",
  "reqwest",
  "serde",
  "serde_json",
@@ -1164,22 +1164,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "dracon-ai-runtime-contracts"
-version = "94.7.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3492b006408298ada4f15c0d856e608a8491aebadd6b611068a3800dfd7a66ea"
-dependencies = [
- "anyhow",
- "async-trait",
- "dracon-ai-contracts 94.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "serde",
- "serde_json",
-]
-
-[[package]]
 name = "dracon-files"
 version = "94.7.0"
 dependencies = [
+ "anyhow",
  "mime_guess",
  "serde",
  "tempfile",
