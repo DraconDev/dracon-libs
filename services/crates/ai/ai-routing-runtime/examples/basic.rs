@@ -1,31 +1,47 @@
 use std::sync::Arc;
 
-use ai_routing_runtime::{
-    ProviderRegistry, RoutingMessage, RoutingTask, SelectionConstraints, ServiceLevel, SmartRouter,
-};
-use ai_runtime_adapters::GenericOpenAIAdapter;
+use ai_routing_runtime::{AiProvider, ProviderRegistry, RoutingMessage, SmartRouter};
+use async_trait::async_trait;
+use dracon_ai_runtime_contracts::models::ChatRequest;
 
 struct DummyProvider;
 
+#[async_trait]
+impl AiProvider for DummyProvider {
+    async fn ask_and_collect(
+        &self,
+        _request: ChatRequest,
+    ) -> anyhow::Result<(String, Option<String>)> {
+        Ok(("dummy".to_string(), Some("stop".to_string())))
+    }
+}
+
 #[tokio::main]
 async fn main() {
-    let adapter: Arc<dyn ai_routing_runtime::AiModelStore> =
-        Arc::new(GenericOpenAIAdapter::new_with_auth(
-            "sk-test".into(),
-            "https://api.openai.com/v1".into(),
-            "gpt-4o-mini".into(),
-            "Authorization".into(),
-            "Bearer ".into(),
-        ));
+    let mut registry = ProviderRegistry::new();
+    registry.register("dummy", Arc::new(DummyProvider));
 
-    println!(
-        "RoutingTask lanes: General={:?}, Code={:?}, Research={:?}, Creative={:?}",
-        RoutingTask::General,
-        RoutingTask::Code,
-        RoutingTask::Research,
-        RoutingTask::Creative
+    let router = SmartRouter::new(
+        registry,
+        vec!["dummy".to_string()],
+        vec!["dummy".to_string()],
+        None,
     );
-    println!("ServiceLevel: {:?}", ServiceLevel::default());
 
-    println!("SmartRouter and ProviderRegistry ready");
+    let (provider, trace) = router
+        .route_with_trace(
+            "example",
+            None,
+            None,
+            &[RoutingMessage {
+                role: "user".to_string(),
+                content: "hello".to_string(),
+            }],
+            dracon_ai_contracts::SelectionConstraints::default(),
+        )
+        .await
+        .expect("route");
+
+    println!("routed to {}", trace.selected_model);
+    println!("provider registered");
 }

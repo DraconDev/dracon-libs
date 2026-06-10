@@ -24,7 +24,9 @@ async fn main() {
 
     for i in 1..=10 {
         println!("DSP sample {}...", i);
-        let tts = KokoroTts::new_with_voice(model_path, voices_dir, "af_skye").await.expect("load Kokoro TTS");
+        let tts = KokoroTts::new_with_voice(model_path, voices_dir, "af_skye")
+            .await
+            .expect("load Kokoro TTS");
         let text = format!("{} [test {}]", long_text, i);
         tts.speak_nowait(&text).await;
         tts.wait_until_done().await;
@@ -42,7 +44,9 @@ async fn main() {
 
     for i in 1..=10 {
         println!("NoDSP sample {}...", i);
-        let tts = KokoroTts::new_with_voice(model_path, voices_dir, "af_skye").await.expect("load Kokoro TTS");
+        let tts = KokoroTts::new_with_voice(model_path, voices_dir, "af_skye")
+            .await
+            .expect("load Kokoro TTS");
         let text = format!("{} [test {}]", long_text, i);
         tts.speak_nowait(&text).await;
         tts.wait_until_done().await;

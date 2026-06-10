@@ -37,9 +37,10 @@ version = "94.7.0"
 dependencies = [
  "anyhow",
  "async-trait",
- "dracon-ai-contracts 94.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "dracon-ai-contracts 94.7.0",
  "dracon-ai-runtime-contracts",
  "serde",
+ "tokio",
 ]
 
 [[package]]

@@ -11,13 +11,13 @@ async fn main() {
     // Longer test sentences
     let sentences = vec![
         "The ancient library stood at the edge of the village, its stone walls covered in centuries of moss and ivy. Inside, dust motes danced in the beams of light that filtered through tall windows, illuminating shelves that reached toward the ceiling like fingers grasping for knowledge.",
-        
+
         "Technology has fundamentally changed how we communicate, work, and live our daily lives. From smartphones that connect us to people across the globe, to artificial intelligence systems that can write poetry and solve complex mathematical problems, the pace of innovation continues to accelerate.",
-        
+
         "In the heart of the mountain range, where the air grows thin and crisp, there exists a hidden valley that few have ever seen. The meadow there blooms with flowers found nowhere else on Earth, and a crystal-clear stream winds its way through the grass, singing an eternal song.",
-        
+
         "The chef carefully selected each ingredient, knowing that the secret to a truly memorable dish lay not just in the recipe, but in the quality and freshness of every component. With practiced hands, she began to chop, slice, and prepare, transforming raw materials into culinary art.",
-        
+
         "Mathematics is often called the language of the universe, and for good reason. From the spiral patterns of galaxies to the intricate structures of snowflakes, mathematical principles govern the world around us in ways both visible and hidden, waiting to be discovered by curious minds.",
     ];
 
@@ -31,7 +31,9 @@ async fn main() {
         for (i, text) in sentences.iter().enumerate() {
             println!("Generating sentence {} for {}...", i + 1, friendly_name);
 
-            let tts = KittenTTS::new_with_voice(model_path, voices_path, internal_name).await.expect("load Kitten TTS");
+            let tts = KittenTTS::new_with_voice(model_path, voices_path, internal_name)
+                .await
+                .expect("load Kitten TTS");
 
             // Use speak_nowait to generate audio
             tts.speak_nowait(text).await;
