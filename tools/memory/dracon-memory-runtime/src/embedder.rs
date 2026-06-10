@@ -5,7 +5,10 @@ use tokenizers::Tokenizer;
 const EMBEDDING_DIM: usize = 384;
 
 enum EmbeddingBackend {
-    Onnx { session: Session, tokenizer: Tokenizer },
+    Onnx {
+        session: Session,
+        tokenizer: Tokenizer,
+    },
     Fallback,
 }
 
@@ -24,10 +27,7 @@ impl OnnxEmbedder {
         let disable_fallback = std::env::var("DRACON_DISABLE_EMBEDDING_FALLBACK")
             .is_ok_and(|value| value == "1" || value.eq_ignore_ascii_case("true"));
 
-        match (
-            std::fs::read(&model_path),
-            std::fs::read(&tokenizer_path),
-        ) {
+        match (std::fs::read(&model_path), std::fs::read(&tokenizer_path)) {
             (Ok(model_bytes), Ok(tokenizer_bytes)) => {
                 let session = Session::builder()?.commit_from_memory(&model_bytes)?;
                 let tokenizer = Tokenizer::from_bytes(tokenizer_bytes)
@@ -57,14 +57,13 @@ impl OnnxEmbedder {
 
     pub fn embed(&mut self, text: &str) -> Vec<f32> {
         match &mut self.backend {
-            EmbeddingBackend::Onnx { session, tokenizer } => {
-                self.embed_onnx(session, tokenizer, text)
-            }
+            EmbeddingBackend::Onnx { session, tokenizer } => embed_onnx(session, tokenizer, text),
             EmbeddingBackend::Fallback => fallback_embedding(text),
         }
     }
 
-    fn embed_onnx(&mut self, session: &Session, tokenizer: &Tokenizer, text: &str) -> Vec<f32> {
+    fn embed_onnx(session: &mut Session, tokenizer: &Tokenizer, text: &str) -> Vec<f32> {
+        let encoding = match tokenizer.encode(text, true) {
             Ok(enc) => enc,
             Err(_) => return vec![0.0f32; EMBEDDING_DIM],
         };
@@ -98,7 +97,7 @@ impl OnnxEmbedder {
             "token_type_ids" => token_type_value,
         ];
 
-        let outputs = match self.session.run(inputs) {
+        let outputs = match session.run(inputs) {
             Ok(o) => o,
             Err(_) => return vec![0.0f32; EMBEDDING_DIM],
         };
