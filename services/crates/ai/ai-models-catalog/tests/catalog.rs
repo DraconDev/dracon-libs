@@ -58,6 +58,7 @@ fn parses_models_dev_api_json() {
             .get_model("openai", "gpt-4o")
             .expect("model")
             .cost
+            .clone()
             .expect("cost")
             .input,
         Some(2.5)
