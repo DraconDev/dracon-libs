@@ -19,17 +19,11 @@ async fn main() {
         let tts = KokoroTts::new_with_voice(model_path, voices_dir, "af_skye")
             .await
             .expect("load Kokoro TTS");
-        let samples = tts.synthesize(long_text).expect("Failed to synthesize");
-        let path = format!(
-            "/home/dracon/Dev/Remi/test_extended_dsp/sample_{:02}.wav",
-            i
-        );
-        tts.save_wav(&samples, &path).expect("Failed to save");
-        println!("Saved: {} ({} samples)", path, samples.len());
+        tts.speak_nowait(long_text).await;
+        tts.wait_until_done().await;
     }
 
     println!("\nTesting Kokoro without DSP (10 long samples)...");
-    // SAFETY: example-only env var mutation
     unsafe {
         std::env::set_var("REMI_KOKORO_NO_DSP", "1");
     }
@@ -39,13 +33,8 @@ async fn main() {
         let tts = KokoroTts::new_with_voice(model_path, voices_dir, "af_skye")
             .await
             .expect("load Kokoro TTS");
-        let samples = tts.synthesize(long_text).expect("Failed to synthesize");
-        let path = format!(
-            "/home/dracon/Dev/Remi/test_extended_nodsp/sample_{:02}.wav",
-            i
-        );
-        tts.save_wav(&samples, &path).expect("Failed to save");
-        println!("Saved: {} ({} samples)", path, samples.len());
+        tts.speak_nowait(long_text).await;
+        tts.wait_until_done().await;
     }
 
     println!("\nDone! Check test_extended_dsp/ and test_extended_nodsp/");

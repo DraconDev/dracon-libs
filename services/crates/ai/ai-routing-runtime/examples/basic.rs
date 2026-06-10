@@ -1,8 +1,8 @@
 use std::sync::Arc;
 
-use ai_routing_runtime::{AiProvider, ProviderRegistry, RoutingMessage, SmartRouter};
+use ai_routing_runtime::{ProviderRegistry, RoutingMessage, SmartRouter};
 use async_trait::async_trait;
-use dracon_ai_runtime_contracts::models::ChatRequest;
+use dracon_ai_runtime_contracts::{models::ChatRequest, traits::AiProvider};
 
 struct DummyProvider;
 
