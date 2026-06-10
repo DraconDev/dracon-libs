@@ -1,9 +1,10 @@
 //! MiniMax native API.
 //!
-//! Stub: the public API is reserved for v0.2. MiniMax uses a
-//! custom protocol with its own auth header and message format.
+//! MiniMax uses a custom protocol with its own auth header and message
+//! format. A direct MiniMax adapter is planned for a future version of
+//! `ai-lib`.
 //!
-//! For v0.1, use the OpenAI adapter with MiniMax's OpenAI-compatible
+//! For now, use the OpenAI adapter with MiniMax's OpenAI-compatible
 //! endpoint if available, or call MiniMax directly via reqwest.
 
 #![allow(dead_code)]
