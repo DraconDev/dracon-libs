@@ -63,7 +63,7 @@ async fn test_git_service_status_clean() {
         .status()
         .unwrap();
     Command::new("git")
-        .args(["commit", "-m", "initial"])
+        .args(["commit", "--no-verify", "-m", "initial"])
         .current_dir(tmp.path())
         .status()
         .unwrap();

@@ -1045,20 +1045,23 @@ mod tests {
         let remote = TempDir::new().unwrap();
         let local = TempDir::new().unwrap();
 
-        // Init bare remote
+        // Init bare remote with main as the default branch.
         Command::new("git")
-            .args(["init", "--bare"])
+            .args(["init", "--bare", "-b", "main"])
             .current_dir(remote.path())
             .status()
             .unwrap();
 
-        // Clone
+        // Init local repo directly instead of cloning an unborn remote, so HEAD
+        // is unambiguously on main for pull_rebase().
         Command::new("git")
-            .args([
-                "clone",
-                remote.path().to_str().unwrap(),
-                local.path().to_str().unwrap(),
-            ])
+            .args(["init", "-b", "main"])
+            .current_dir(local.path())
+            .status()
+            .unwrap();
+        Command::new("git")
+            .args(["remote", "add", "origin", remote.path().to_str().unwrap()])
+            .current_dir(local.path())
             .status()
             .unwrap();
 
@@ -1082,12 +1085,12 @@ mod tests {
             .status()
             .unwrap();
         Command::new("git")
-            .args(["commit", "-m", "init"])
+            .args(["commit", "--no-verify", "-m", "init"])
             .current_dir(local.path())
             .status()
             .unwrap();
         Command::new("git")
-            .args(["push", "origin", "HEAD"])
+            .args(["push", "-u", "origin", "main"])
             .current_dir(local.path())
             .status()
             .unwrap();
@@ -1123,7 +1126,7 @@ mod tests {
             .status()
             .unwrap();
         Command::new("git")
-            .args(["commit", "-m", &format!("add {filename}")])
+            .args(["commit", "--no-verify", "-m", &format!("add {filename}")])
             .current_dir(tmp.path())
             .status()
             .unwrap();
