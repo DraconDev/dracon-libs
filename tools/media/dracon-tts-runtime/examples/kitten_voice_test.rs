@@ -31,7 +31,7 @@ async fn main() {
         for (i, text) in sentences.iter().enumerate() {
             println!("Generating sentence {} for {}...", i + 1, friendly_name);
 
-            let tts = KittenTTS::new_with_voice(model_path, voices_path, internal_name).await;
+            let tts = KittenTTS::new_with_voice(model_path, voices_path, internal_name).await.expect("load Kitten TTS");
 
             // Use speak_nowait to generate audio
             tts.speak_nowait(text).await;

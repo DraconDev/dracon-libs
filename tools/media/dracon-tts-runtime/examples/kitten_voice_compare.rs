@@ -47,7 +47,7 @@ async fn main() {
 
                 println!("  {} - {} - {}", model_name, friendly_name, sent_name);
 
-                let tts = KittenTTS::new_with_voice(model_path, voices_path, internal_name).await;
+                let tts = KittenTTS::new_with_voice(model_path, voices_path, internal_name).await.expect("load Kitten TTS");
                 let samples = tts.synthesize(text).expect("Failed to synthesize");
                 tts.save_wav(&samples, &filename).expect("Failed to save");
             }

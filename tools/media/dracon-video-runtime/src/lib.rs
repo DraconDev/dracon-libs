@@ -27,8 +27,7 @@
 // Protocol layer (traits)
 pub mod protocol;
 
-// Runtime implementations
-pub mod runtime;
+// Runtime implementations are not present in this crate yet; protocol and exporter modules compile independently.
 
 // Exporter utilities
 pub mod exporter;
@@ -36,7 +35,6 @@ pub mod exporter;
 // Re-exports for convenience
 pub use protocol::{AudioProcessor, TranscriptProcessor, VideoProcessor};
 pub use protocol::{SilenceSegment, TranscriptSegment, TrimSegment};
-pub use runtime::{AutoReframeProcessor, FfmpegVideoProcessor, WhisperTranscriptProcessor};
 
 #[cfg(test)]
 mod tests {
