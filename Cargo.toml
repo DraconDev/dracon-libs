@@ -19,6 +19,7 @@ members = [
   "services/crates/ai/ai-runtime-config",
   "services/crates/ai/ai-runtime-adapters",
   "services/crates/ai/ai-models-catalog",
+  "services/crates/ai/ai-lib",
 ]
 
 [workspace.package]
