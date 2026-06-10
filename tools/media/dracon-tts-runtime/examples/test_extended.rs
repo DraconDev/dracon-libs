@@ -16,7 +16,9 @@ async fn main() {
 
     for i in 1..=10 {
         println!("Generating DSP sample {}...", i);
-        let tts = KokoroTts::new_with_voice(model_path, voices_dir, "af_skye").await;
+        let tts = KokoroTts::new_with_voice(model_path, voices_dir, "af_skye")
+            .await
+            .expect("load Kokoro TTS");
         let samples = tts.synthesize(long_text).expect("Failed to synthesize");
         let path = format!(
             "/home/dracon/Dev/Remi/test_extended_dsp/sample_{:02}.wav",
@@ -34,7 +36,9 @@ async fn main() {
 
     for i in 1..=10 {
         println!("Generating NoDSP sample {}...", i);
-        let tts = KokoroTts::new_with_voice(model_path, voices_dir, "af_skye").await;
+        let tts = KokoroTts::new_with_voice(model_path, voices_dir, "af_skye")
+            .await
+            .expect("load Kokoro TTS");
         let samples = tts.synthesize(long_text).expect("Failed to synthesize");
         let path = format!(
             "/home/dracon/Dev/Remi/test_extended_nodsp/sample_{:02}.wav",
