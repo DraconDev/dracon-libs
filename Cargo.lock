@@ -32,6 +32,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "ai-models-catalog"
+version = "94.7.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tempfile",
+ "thiserror 1.0.69",
+]
+
+[[package]]
 name = "ai-routing-runtime"
 version = "94.7.0"
 dependencies = [

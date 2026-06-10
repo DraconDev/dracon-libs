@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 
 /// The full models.dev catalog.
-#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct Catalog {
     #[serde(flatten)]
     pub providers: BTreeMap<String, Provider>,
@@ -33,7 +33,7 @@ impl Catalog {
 }
 
 /// Provider metadata from models.dev.
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Provider {
     #[serde(default)]
     pub id: String,
@@ -52,7 +52,7 @@ pub struct Provider {
 }
 
 /// Model metadata from models.dev.
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Model {
     #[serde(default)]
     pub id: String,
@@ -102,7 +102,7 @@ pub struct Model {
     pub variants: Option<BTreeMap<String, serde_json::Value>>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Cost {
     #[serde(default)]
     pub input: Option<f64>,
@@ -116,7 +116,7 @@ pub struct Cost {
     pub context_over_200k: Option<ContextOver200k>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct ContextOver200k {
     #[serde(default)]
     pub input: Option<f64>,
@@ -128,7 +128,7 @@ pub struct ContextOver200k {
     pub cache_write: Option<f64>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Limit {
     #[serde(default)]
     pub context: Option<u64>,
@@ -138,7 +138,7 @@ pub struct Limit {
     pub output: Option<u64>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Modalities {
     #[serde(default)]
     pub input: Option<Vec<String>>,
@@ -146,7 +146,7 @@ pub struct Modalities {
     pub output: Option<Vec<String>>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Benchmark {
     #[serde(default)]
     pub name: Option<String>,
@@ -158,7 +158,7 @@ pub struct Benchmark {
     pub source: Option<String>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct ProviderDetails {
     #[serde(default)]
     pub npm: Option<String>,

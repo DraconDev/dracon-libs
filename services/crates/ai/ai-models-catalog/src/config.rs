@@ -24,14 +24,14 @@ use std::fs;
 use std::path::Path;
 
 /// Top-level config file.
-#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct AiModelsConfig {
     #[serde(default)]
     pub provider: BTreeMap<String, ProviderConfig>,
 }
 
 /// Provider config block.
-#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct ProviderConfig {
     #[serde(default)]
     pub name: Option<String>,
@@ -54,7 +54,7 @@ pub struct ProviderConfig {
 }
 
 /// Per-model override block.
-#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct ModelOverride {
     #[serde(default)]
     pub name: Option<String>,
