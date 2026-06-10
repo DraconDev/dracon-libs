@@ -57,7 +57,9 @@ impl OnnxEmbedder {
 
     pub fn embed(&mut self, text: &str) -> Vec<f32> {
         match &mut self.backend {
-            EmbeddingBackend::Onnx { session, tokenizer } => embed_onnx(session, tokenizer, text),
+            EmbeddingBackend::Onnx { session, tokenizer } => {
+                Self::embed_onnx(session, tokenizer, text)
+            }
             EmbeddingBackend::Fallback => fallback_embedding(text),
         }
     }
