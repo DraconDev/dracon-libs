@@ -16,6 +16,6 @@ pub mod env;
 
 pub use catalog::{Catalog, Cost, Limit, Modalities, Model, Provider};
 pub use config::{
-    load_config, parse_config, AiModelsConfig, ModelOverride, ProviderConfig,
+    load_config, merge_configs, parse_config, AiModelsConfig, ModelOverride, ProviderConfig,
 };
 pub use env::{builtin_env_vars, env_var_names_for, BuiltinProvider};
