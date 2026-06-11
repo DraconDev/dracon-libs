@@ -23,9 +23,9 @@ impl MemoryDb {
             rusqlite::ffi::sqlite3_auto_extension(Some(std::mem::transmute::<
                 unsafe extern "C" fn(),
                 unsafe extern "C" fn(
-                    *mut rusqlite::libsqlite3_sys::sqlite3,
+                    *mut rusqlite::ffi::sqlite3,
                     *mut *mut i8,
-                    *const rusqlite::libsqlite3_sys::sqlite3_api_routines,
+                    *const rusqlite::ffi::sqlite3_api_routines,
                 ) -> i32,
             >(init_fn)));
         }
