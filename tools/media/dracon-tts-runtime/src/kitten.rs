@@ -34,6 +34,7 @@ pub struct KittenTTS {
     speaking: Arc<AtomicBool>,
     session: Option<Arc<Mutex<Session>>>,
     voices: HashMap<String, Vec<f32>>,
+    voice_names: Vec<String>,
     current_voice: Arc<Mutex<String>>,
 }
 
@@ -215,6 +216,7 @@ impl KittenTTS {
             ));
         };
 
+        let voice_names: Vec<String> = voices.keys().cloned().collect();
         let current_voice = if voices.contains_key(voice) {
             voice.to_string()
         } else {
@@ -227,6 +229,7 @@ impl KittenTTS {
             speaking: Arc::new(AtomicBool::new(false)),
             session,
             voices,
+            voice_names,
             current_voice: Arc::new(Mutex::new(current_voice)),
         })
     }
