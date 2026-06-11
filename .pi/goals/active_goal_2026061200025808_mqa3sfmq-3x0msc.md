@@ -1,0 +1,84 @@
+{
+  "version": 3,
+  "id": "mqa3sfmq-3x0msc",
+  "objective": "Objective: Review dracon-libs from the perspective of external Rust crate/API consumers, identify public API/documentation/example/breaking-change/ergonomics issues, and deliver a prioritized improvement plan with concrete recommendations.\nSuccess criteria: A concise consumer-focused report exists that inventories the main public entry points, flags confusing or inconsistent API surfaces, checks READMEs/examples/rustdoc for downstream usability, identifies likely breaking-change risks, and provides prioritized remediation recommendations with file evidence where practical.\nBoundaries: In scope: public Rust APIs, crate READMEs, rustdoc examples/links, Cargo feature/API ergonomics, semver/breaking-change risk, and downstream developer experience. Out of scope: implementation changes, dependency upgrades, security fixes, internal runtime behavior changes, or changing public APIs without user approval.\nConstraints: Read-only analysis only; do not modify source, manifests, lockfile, CI, or README files; use existing audit findings as context but do not duplicate the whole workspace audit.\nIf blocked: Stop and ask the user which crate or API surface to focus on first.",
+  "status": "active",
+  "autoContinue": true,
+  "usage": {
+    "tokensUsed": 6107967,
+    "activeSeconds": 843
+  },
+  "sisyphus": false,
+  "createdAt": "2026-06-11T23:02:58.082Z",
+  "updatedAt": "2026-06-11T23:17:38.789Z",
+  "activePath": ".pi/goals/active_goal_2026061200025808_mqa3sfmq-3x0msc.md",
+  "taskList": {
+    "tasks": [
+      {
+        "id": "api-inventory",
+        "title": "Inventory public API surfaces",
+        "status": "complete",
+        "completedAt": "2026-06-11T23:16:05.050Z",
+        "evidence": "Inventoried public API entry points across workspace crates.",
+        "verificationContract": "Report lists the main public crates/types/traits/functions relevant to external Rust consumers."
+      },
+      {
+        "id": "docs-examples-review",
+        "title": "Review docs, READMEs, and examples",
+        "status": "complete",
+        "completedAt": "2026-06-11T23:16:56.482Z",
+        "evidence": "Reviewed READMEs, crate docs, examples, and cargo doc output for consumer-facing issues.",
+        "verificationContract": "Report identifies README/rustdoc/example mismatches or missing guidance for downstream users."
+      },
+      {
+        "id": "breaking-change-risk",
+        "title": "Assess breaking-change and semver risk",
+        "status": "complete",
+        "completedAt": "2026-06-11T23:17:16.116Z",
+        "evidence": "Assessed public API stability and semver risks from public structs/enums/traits/features.",
+        "verificationContract": "Report flags public API/API-contract risks that would affect downstream Rust users."
+      },
+      {
+        "id": "ergonomics-prioritization",
+        "title": "Prioritize ergonomics improvements",
+        "status": "pending",
+        "verificationContract": "Report provides a ranked list of recommended improvements with concrete remediation steps."
+      },
+      {
+        "id": "final-report",
+        "title": "Deliver consumer-focused findings report",
+        "status": "pending",
+        "verificationContract": "Report artifact exists and `git status --short` confirms no implementation changes were made."
+      }
+    ],
+    "blockCompletion": false,
+    "proposedAt": "2026-06-11T23:02:58.085Z"
+  },
+  "verificationContract": "Run `git status --short` and confirm only expected goal/report bookkeeping changes exist; verify the report contains sections for public API inventory, docs/examples review, breaking-change risk, ergonomics findings, and prioritized recommendations."
+}
+
+# Goal Prompt
+
+Objective: Review dracon-libs from the perspective of external Rust crate/API consumers, identify public API/documentation/example/breaking-change/ergonomics issues, and deliver a prioritized improvement plan with concrete recommendations.
+Success criteria: A concise consumer-focused report exists that inventories the main public entry points, flags confusing or inconsistent API surfaces, checks READMEs/examples/rustdoc for downstream usability, identifies likely breaking-change risks, and provides prioritized remediation recommendations with file evidence where practical.
+Boundaries: In scope: public Rust APIs, crate READMEs, rustdoc examples/links, Cargo feature/API ergonomics, semver/breaking-change risk, and downstream developer experience. Out of scope: implementation changes, dependency upgrades, security fixes, internal runtime behavior changes, or changing public APIs without user approval.
+Constraints: Read-only analysis only; do not modify source, manifests, lockfile, CI, or README files; use existing audit findings as context but do not duplicate the whole workspace audit.
+If blocked: Stop and ask the user which crate or API surface to focus on first.
+
+## Progress
+
+- Status: running
+- Auto-continue: on
+- Sisyphus mode: no
+- Time spent: 14m03s
+- Tokens used: 6.1M (6,107,967) tokens
+- Verification contract: Run `git status --short` and confirm only expected goal/report bookkeeping changes exist; verify the report contains sections for public API inventory, docs/examples review, breaking-change risk, ergonomics findings, and prioritized recommendations.
+## Tasks
+
+<!-- blockCompletion: false -->
+- [x] api-inventory: Inventory public API surfaces — evidence: Inventoried public API entry points across workspace crates.
+- [x] docs-examples-review: Review docs, READMEs, and examples — evidence: Reviewed READMEs, crate docs, examples, and cargo doc output for consumer-facing issues.
+- [x] breaking-change-risk: Assess breaking-change and semver risk — evidence: Assessed public API stability and semver risks from public structs/enums/traits/features.
+- [ ] ergonomics-prioritization: Prioritize ergonomics improvements — contract: Report provides a ranked list of recommended improvements with concrete remediation steps.
+- [ ] final-report: Deliver consumer-focused findings report — contract: Report artifact exists and `git status --short` confirms no implementation changes were made.
+
