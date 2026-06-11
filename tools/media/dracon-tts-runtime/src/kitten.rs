@@ -14,6 +14,8 @@ static KITTEN_COUNTER: AtomicU64 = AtomicU64::new(0);
 const KITTEN_SAMPLE_RATE: usize = 24000;
 const OUTPUT_SAMPLE_RATE: usize = 24000; // Most audio devices use 48kHz
 
+/// Default Kitten voice id.
+
 /// Runtime state for the Kitten backend.
 #[derive(Debug, Clone, PartialEq)]
 pub enum KittenState {
@@ -32,10 +34,10 @@ pub struct KittenTTS {
     speaking: Arc<AtomicBool>,
     session: Option<Arc<Mutex<Session>>>,
     voices: HashMap<String, Vec<f32>>,
-    voice_names: Vec<String>,
     current_voice: Arc<Mutex<String>>,
 }
 
+/// Default Kitten voice id.
 pub const DEFAULT_VOICE: &str = "expr-voice-3-m"; // Bruno
 /// Default female voice id.
 pub const DEFAULT_FEMALE_VOICE: &str = "expr-voice-5-f"; // Kiki
@@ -213,7 +215,6 @@ impl KittenTTS {
             ));
         };
 
-        let voice_names: Vec<String> = voices.keys().cloned().collect();
         let current_voice = if voices.contains_key(voice) {
             voice.to_string()
         } else {
@@ -226,7 +227,6 @@ impl KittenTTS {
             speaking: Arc::new(AtomicBool::new(false)),
             session,
             voices,
-            voice_names,
             current_voice: Arc::new(Mutex::new(current_voice)),
         })
     }
@@ -518,49 +518,6 @@ impl KittenTTS {
 
         tokens.push(0);
         tokens
-    }
-
-    fn tokenize_phonemes(phonemes: &str) -> String {
-        // Equivalent to Python: re.findall(r"\w+|[^\w\s]", text)
-        // Splits into word chunks and punctuation, then joins with spaces
-        let mut result = String::new();
-        let mut word = String::new();
-
-        for c in phonemes.chars() {
-            if c.is_alphanumeric() {
-                word.push(c);
-            } else if c.is_whitespace() {
-                if !word.is_empty() {
-                    if !result.is_empty() {
-                        result.push(' ');
-                    }
-                    result.push_str(&word);
-                    word.clear();
-                }
-            } else {
-                // Punctuation - flush word first, then add punctuation
-                if !word.is_empty() {
-                    if !result.is_empty() {
-                        result.push(' ');
-                    }
-                    result.push_str(&word);
-                    word.clear();
-                }
-                if !result.is_empty() {
-                    result.push(' ');
-                }
-                result.push(c);
-            }
-        }
-
-        if !word.is_empty() {
-            if !result.is_empty() {
-                result.push(' ');
-            }
-            result.push_str(&word);
-        }
-
-        result
     }
 
     fn clean_phonemes(phonemes: &str) -> String {

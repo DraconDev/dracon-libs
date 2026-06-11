@@ -28,7 +28,7 @@ async fn main() {
         None,
     );
 
-    let (provider, trace) = router
+    let (_provider, trace) = router
         .route_with_trace(
             "example",
             None,

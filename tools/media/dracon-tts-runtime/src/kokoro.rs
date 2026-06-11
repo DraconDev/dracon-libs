@@ -117,7 +117,6 @@ pub struct KokoroTts {
     queue_end_at: Arc<Mutex<Option<Instant>>>,
     session: Option<Arc<Mutex<Session>>>,
     voices: HashMap<String, Vec<f32>>,
-    voice_names: Vec<String>,
     current_voice: Arc<Mutex<String>>,
     output_channels: u16,
     queue_debug: bool,
@@ -180,7 +179,6 @@ impl KokoroTts {
         };
 
         let voices = Self::load_voices_from_dir(voices_dir);
-        let voice_names: Vec<String> = voices.keys().cloned().collect();
 
         let resolved_voice = resolve_voice(voice);
         let current_voice = if voices.contains_key(resolved_voice) {
@@ -200,7 +198,6 @@ impl KokoroTts {
             queue_end_at: Arc::new(Mutex::new(None)),
             session,
             voices,
-            voice_names,
             current_voice: Arc::new(Mutex::new(current_voice)),
             output_channels,
             queue_debug,

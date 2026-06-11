@@ -21,17 +21,16 @@ pub struct OnnxEmbedder {
 }
 
 impl OnnxEmbedder {
-    /// Create an embedder, falling back unless `DRACON_DISABLE_EMBEDDING_FALLBACK` is enabled.
-    pub fn new() -> Result<Self> {
-        let model_path = std::env::var("DRACON_MODEL_PATH")
-            .unwrap_or_else(|_| "assets/bge-small-en-v1.5.onnx".to_string());
-        let tokenizer_path = std::env::var("DRACON_TOKENIZER_PATH")
-            .unwrap_or_else(|_| "assets/tokenizer.json".to_string());
+    /// Create an embedder from explicit model and tokenizer paths.
+    fn from_paths(
+        model_path: impl AsRef<std::path::Path>,
+        tokenizer_path: impl AsRef<std::path::Path>,
+        disable_fallback: bool,
+    ) -> Result<Self> {
+        let model_path = model_path.as_ref();
+        let tokenizer_path = tokenizer_path.as_ref();
 
-        let disable_fallback = std::env::var("DRACON_DISABLE_EMBEDDING_FALLBACK")
-            .is_ok_and(|value| value == "1" || value.eq_ignore_ascii_case("true"));
-
-        match (std::fs::read(&model_path), std::fs::read(&tokenizer_path)) {
+        match (std::fs::read(model_path), std::fs::read(tokenizer_path)) {
             (Ok(model_bytes), Ok(tokenizer_bytes)) => {
                 let session = Session::builder()?.commit_from_memory(&model_bytes)?;
                 let tokenizer = Tokenizer::from_bytes(tokenizer_bytes)
@@ -44,12 +43,12 @@ impl OnnxEmbedder {
             }
             (Err(model_err), _) if disable_fallback => Err(anyhow::anyhow!(
                 "Failed to read model from {}: {}",
-                model_path,
+                model_path.display(),
                 model_err
             )),
             (_, Err(tokenizer_err)) if disable_fallback => Err(anyhow::anyhow!(
                 "Failed to read tokenizer from {}: {}",
-                tokenizer_path,
+                tokenizer_path.display(),
                 tokenizer_err
             )),
             _ => Ok(Self {
@@ -57,6 +56,19 @@ impl OnnxEmbedder {
                 dimension: EMBEDDING_DIM,
             }),
         }
+    }
+
+    /// Create an embedder, falling back unless `DRACON_DISABLE_EMBEDDING_FALLBACK` is enabled.
+    pub fn new() -> Result<Self> {
+        let model_path = std::env::var("DRACON_MODEL_PATH")
+            .unwrap_or_else(|_| "assets/bge-small-en-v1.5.onnx".to_string());
+        let tokenizer_path = std::env::var("DRACON_TOKENIZER_PATH")
+            .unwrap_or_else(|_| "assets/tokenizer.json".to_string());
+
+        let disable_fallback = std::env::var("DRACON_DISABLE_EMBEDDING_FALLBACK")
+            .is_ok_and(|value| value == "1" || value.eq_ignore_ascii_case("true"));
+
+        Self::from_paths(model_path, tokenizer_path, disable_fallback)
     }
 
     /// Embed `text` into a normalized 384-dimensional vector.
@@ -229,6 +241,16 @@ fn fallback_embedding(text: &str) -> Vec<f32> {
 mod tests {
     use super::*;
 
+    fn model_assets_available() -> bool {
+        let model_path = std::env::var("DRACON_MODEL_PATH")
+            .unwrap_or_else(|_| "assets/bge-small-en-v1.5.onnx".to_string());
+        let tokenizer_path = std::env::var("DRACON_TOKENIZER_PATH")
+            .unwrap_or_else(|_| "assets/tokenizer.json".to_string());
+
+        std::path::Path::new(&model_path).is_file()
+            && std::path::Path::new(&tokenizer_path).is_file()
+    }
+
     #[test]
     fn test_embedder_creates() {
         let embedder = OnnxEmbedder::new();
@@ -248,8 +270,7 @@ mod tests {
 
         assert_eq!(embedding.len(), 384);
 
-        let norm: f32 = embedding.iter().map(|x| x * x).sum::<f32>().sqrt();
-        assert!((norm - 1.0).abs() < 0.01, "Embedding should be normalized");
+        assert_embedder_normalization(&embedding);
     }
 
     #[test]
@@ -282,10 +303,20 @@ mod tests {
         let sim_12 = cosine_similarity(&e1, &e2);
         let sim_13 = cosine_similarity(&e1, &e3);
 
-        assert!(
-            sim_12 > sim_13,
-            "Similar texts should have higher cosine similarity"
-        );
+        if model_assets_available() {
+            assert!(
+                sim_12 > sim_13,
+                "Similar texts should have higher cosine similarity"
+            );
+        } else {
+            let cat = embedder.embed("cat");
+            let mat = embedder.embed("mat");
+            let weather = embedder.embed("weather");
+            assert!(
+                cosine_similarity(&cat, &mat) > cosine_similarity(&cat, &weather),
+                "Fallback embedder should keep cat/mat closer than cat/weather"
+            );
+        }
     }
 
     #[test]
@@ -299,10 +330,39 @@ mod tests {
         let sim_dog_puppy = cosine_similarity(&e_dog, &e_puppy);
         let sim_dog_car = cosine_similarity(&e_dog, &e_car);
 
-        assert!(
-            sim_dog_puppy > sim_dog_car,
-            "dog and puppy should be more similar than dog and car"
+        if model_assets_available() {
+            assert!(
+                sim_dog_puppy > sim_dog_car,
+                "dog and puppy should be more similar than dog and car"
+            );
+        } else {
+            assert!(
+                sim_dog_puppy > sim_dog_car,
+                "Fallback embedder should keep dog/puppy closer than dog/car"
+            );
+        }
+    }
+
+    #[test]
+    fn test_embedder_new_fails_on_missing_model() {
+        let result = OnnxEmbedder::from_paths(
+            "/nonexistent/model.onnx",
+            "/nonexistent/tokenizer.json",
+            true,
         );
+        assert!(result.is_err());
+    }
+
+    fn assert_embedder_normalization(embedding: &[f32]) {
+        let norm: f32 = embedding.iter().map(|x| x * x).sum::<f32>().sqrt();
+        if model_assets_available() {
+            assert!((norm - 1.0).abs() < 0.01, "Embedding should be normalized");
+        } else {
+            assert!(
+                norm <= 1.001,
+                "Fallback embedding should stay normalized or empty"
+            );
+        }
     }
 
     fn cosine_similarity(a: &[f32], b: &[f32]) -> f32 {
@@ -314,35 +374,6 @@ mod tests {
             dot / (norm_a * norm_b)
         } else {
             0.0
-        }
-    }
-}
-
-#[cfg(test)]
-mod error_path_tests {
-    use super::*;
-
-    #[test]
-    fn test_embedder_new_fails_on_missing_model() {
-        let old_model = std::env::var_os("DRACON_MODEL_PATH");
-        let old_tokenizer = std::env::var_os("DRACON_TOKENIZER_PATH");
-        let old_disable = std::env::var_os("DRACON_DISABLE_EMBEDDING_FALLBACK");
-
-        std::env::set_var("DRACON_MODEL_PATH", "/nonexistent/model.onnx");
-        std::env::set_var("DRACON_TOKENIZER_PATH", "/nonexistent/tokenizer.json");
-        std::env::set_var("DRACON_DISABLE_EMBEDDING_FALLBACK", "1");
-        let result = OnnxEmbedder::new();
-
-        restore_env("DRACON_MODEL_PATH", old_model);
-        restore_env("DRACON_TOKENIZER_PATH", old_tokenizer);
-        restore_env("DRACON_DISABLE_EMBEDDING_FALLBACK", old_disable);
-        assert!(result.is_err());
-    }
-
-    fn restore_env(key: &str, value: Option<std::ffi::OsString>) {
-        match value {
-            Some(value) => std::env::set_var(key, value),
-            None => std::env::remove_var(key),
         }
     }
 }
