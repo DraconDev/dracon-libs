@@ -7,18 +7,27 @@ use crate::memory_contracts::{Conversation, Role, UserFact};
 
 const EMBEDDING_DIM: usize = 384;
 
+/// SQLite-backed persistence layer for memory conversations and facts.
 pub struct MemoryDb {
     conn: Connection,
 }
 
 impl MemoryDb {
+    /// Open or create a SQLite database at `path`.
     pub fn new(path: &str) -> Result<Self> {
         let init_fn: unsafe extern "C" fn() = sqlite3_vec_init;
         // SAFETY: sqlite3_vec_init is a C function pointer with the correct signature
         // for sqlite3_auto_extension. It registers a valid SQLite extension and does not
-        // aliased mutable state or perform any operations requiring a specific runtime.
+        // create aliased mutable state or perform operations requiring a specific runtime.
         unsafe {
-            rusqlite::ffi::sqlite3_auto_extension(Some(std::mem::transmute(init_fn)));
+            rusqlite::ffi::sqlite3_auto_extension(Some(std::mem::transmute::<
+                unsafe extern "C" fn(),
+                unsafe extern "C" fn(
+                    *mut rusqlite::libsqlite3_sys::sqlite3,
+                    *mut *mut i8,
+                    *const rusqlite::libsqlite3_sys::sqlite3_api_routines,
+                ) -> i32,
+            >(init_fn)));
         }
 
         let conn = if path == ":memory:" {
@@ -77,6 +86,7 @@ impl MemoryDb {
         bytes
     }
 
+    /// Store a conversation and its embedding, returning the database row id.
     pub fn store_conversation(&self, role: Role, content: &str, embedding: &[f32]) -> Result<i64> {
         let tx = self.conn.unchecked_transaction()?;
 
@@ -97,6 +107,7 @@ impl MemoryDb {
         Ok(conversation_id)
     }
 
+    /// Search for conversations similar to `query_embedding`.
     pub fn search_similar(&self, query_embedding: &[f32], k: usize) -> Result<Vec<Conversation>> {
         let embedding_bytes = Self::embedding_to_bytes(query_embedding);
 
@@ -128,6 +139,7 @@ impl MemoryDb {
         Ok(conversations)
     }
 
+    /// Return the most recent conversations.
     pub fn get_recent(&self, limit: usize) -> Result<Vec<Conversation>> {
         let mut stmt = self.conn.prepare(
             "SELECT id, timestamp, role, content FROM conversations 
@@ -151,12 +163,14 @@ impl MemoryDb {
         Ok(conversations)
     }
 
+    /// Delete all stored conversations and vector rows.
     pub fn clear(&self) -> Result<()> {
         self.conn.execute("DELETE FROM conversations", [])?;
         self.conn.execute("DELETE FROM vec_conversations", [])?;
         Ok(())
     }
 
+    /// Store or update a user fact.
     pub fn store_fact(
         &self,
         category: &str,
@@ -178,6 +192,7 @@ impl MemoryDb {
         Ok(())
     }
 
+    /// Return one user fact by category and key.
     pub fn get_fact(&self, category: &str, key: &str) -> Result<Option<UserFact>> {
         let mut stmt = self.conn.prepare(
             "SELECT category, key, value, confidence, source 
@@ -201,6 +216,7 @@ impl MemoryDb {
         }
     }
 
+    /// Return all user facts in a category.
     pub fn get_facts_by_category(&self, category: &str) -> Result<Vec<UserFact>> {
         let mut stmt = self.conn.prepare(
             "SELECT category, key, value, confidence, source 
@@ -222,6 +238,7 @@ impl MemoryDb {
         Ok(facts)
     }
 
+    /// Return all stored user facts.
     pub fn get_all_facts(&self) -> Result<Vec<UserFact>> {
         let mut stmt = self.conn.prepare(
             "SELECT category, key, value, confidence, source 
@@ -245,6 +262,7 @@ impl MemoryDb {
 }
 
 impl MemoryDb {
+    /// Return a text summary of all stored user facts.
     pub fn get_all_facts_summary(&self) -> Result<String> {
         let facts = self.get_all_facts()?;
         if facts.is_empty() {

@@ -23,8 +23,11 @@
 //! mem.store_conversation(Role::User, "Hello").await?;
 //! ```
 
+/// SQLite-backed memory store with ONNX embedding support.
 pub mod db;
+/// ONNX and fallback embedding backend.
 pub mod embedder;
+/// Runtime-side memory contract types.
 pub mod memory_contracts;
 
 pub use crate::memory_contracts::{Conversation, MemoryStore, Role, TextEmbedder, UserFact};
@@ -34,12 +37,14 @@ pub use embedder::OnnxEmbedder;
 use std::sync::Arc;
 use tokio::sync::Mutex;
 
+/// High-level memory system combining the SQLite database and embedder.
 pub struct MemorySystem {
     db: Arc<Mutex<MemoryDb>>,
     embedder: Arc<Mutex<OnnxEmbedder>>,
 }
 
 impl MemorySystem {
+    /// Create a memory system using `db_path` for SQLite storage.
     pub fn new(db_path: &str) -> anyhow::Result<Self> {
         let db = MemoryDb::new(db_path)?;
         let embedder = OnnxEmbedder::new()?;
@@ -50,12 +55,14 @@ impl MemorySystem {
         })
     }
 
+    /// Store a conversation and return its database row id.
     pub async fn store_conversation(&self, role: Role, content: &str) -> anyhow::Result<i64> {
         let embedding = self.embedder.lock().await.embed(content);
         let db = self.db.lock().await;
         db.store_conversation(role, content, &embedding)
     }
 
+    /// Return conversations most similar to `query`.
     pub async fn recall_relevant(
         &self,
         query: &str,
@@ -66,16 +73,19 @@ impl MemorySystem {
         db.search_similar(&embedding, k)
     }
 
+    /// Return the most recent conversations.
     pub async fn get_recent(&self, limit: usize) -> anyhow::Result<Vec<Conversation>> {
         let db = self.db.lock().await;
         db.get_recent(limit)
     }
 
+    /// Delete stored conversations and vector rows.
     pub async fn clear(&self) -> anyhow::Result<()> {
         let db = self.db.lock().await;
         db.clear()
     }
 
+    /// Store or update a user fact.
     pub async fn store_fact(
         &self,
         category: &str,
@@ -87,26 +97,31 @@ impl MemorySystem {
         db.store_fact(category, key, value, source)
     }
 
+    /// Return a user fact by category and key.
     pub async fn get_fact(&self, category: &str, key: &str) -> anyhow::Result<Option<UserFact>> {
         let db = self.db.lock().await;
         db.get_fact(category, key)
     }
 
+    /// Return all user facts in a category.
     pub async fn get_facts_by_category(&self, category: &str) -> anyhow::Result<Vec<UserFact>> {
         let db = self.db.lock().await;
         db.get_facts_by_category(category)
     }
 
+    /// Return all stored user facts.
     pub async fn get_all_facts(&self) -> anyhow::Result<Vec<UserFact>> {
         let db = self.db.lock().await;
         db.get_all_facts()
     }
 
+    /// Return a text summary of all stored user facts.
     pub async fn get_user_summary(&self) -> anyhow::Result<String> {
         let db = self.db.lock().await;
         db.get_all_facts_summary()
     }
 
+    /// Store multiple facts with an extracted source marker.
     pub async fn store_facts(&self, facts: &[(String, String, String)]) -> anyhow::Result<()> {
         let db = self.db.lock().await;
         for (category, key, value) in facts {
