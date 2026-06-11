@@ -717,6 +717,7 @@ impl KittenTTS {
         }
     }
 
+    /// Speak text using the current voice.
     pub async fn speak(&self, text: &str) {
         let voice = self
             .get_voice()
@@ -724,6 +725,7 @@ impl KittenTTS {
         self.speak_with_voice(text, &voice).await
     }
 
+    /// Queue speech with the current voice without waiting for playback.
     pub async fn speak_nowait(&self, text: &str) {
         let voice = self
             .get_voice()
@@ -731,6 +733,7 @@ impl KittenTTS {
         self.speak_nowait_with_voice(text, &voice).await
     }
 
+    /// Queue speech with a specific voice without waiting for playback.
     pub async fn speak_nowait_with_voice(&self, text: &str, voice: &str) {
         let call_id = KITTEN_COUNTER.fetch_add(1, Ordering::SeqCst);
 
@@ -833,10 +836,12 @@ impl KittenTTS {
         tokio::time::sleep(tokio::time::Duration::from_millis(50)).await;
     }
 
+    /// Block until the current audio buffer finishes playing.
     pub async fn wait_until_done(&self) {
         self.sink.sleep_until_end();
     }
 
+    /// Speak text with a specific voice and wait for playback.
     pub async fn speak_with_voice(&self, text: &str, voice: &str) {
         let call_id = KITTEN_COUNTER.fetch_add(1, Ordering::SeqCst);
         self.speaking.store(true, Ordering::SeqCst);
@@ -971,6 +976,7 @@ impl KittenTTS {
         self.speaking.store(false, Ordering::SeqCst);
     }
 
+    /// Return loaded voice ids.
     pub fn available_voices(&self) -> &[String] {
         &self.voice_names
     }
