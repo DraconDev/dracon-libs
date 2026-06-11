@@ -87,6 +87,7 @@ pub const MODEL_DESCRIPTIONS: &[KittenModelConfig] = &[
     },
 ];
 
+/// Built-in Kitten voice descriptions.
 pub const VOICE_DESCRIPTIONS: &[(&str, &str, &str)] = &[
     // (internal_name, friendly_name, gender) - v0.8 aliases
     ("expr-voice-2-m", "Jasper", "male"),
@@ -99,6 +100,7 @@ pub const VOICE_DESCRIPTIONS: &[(&str, &str, &str)] = &[
     ("expr-voice-5-f", "Kiki", "female"),
 ];
 
+/// Resolve a Kitten model key from an alias.
 pub fn resolve_model(name: &str) -> &'static str {
     let name_lower = name.trim().to_ascii_lowercase();
     match name_lower.as_str() {
