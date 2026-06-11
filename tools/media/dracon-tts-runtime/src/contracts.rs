@@ -132,8 +132,10 @@ pub trait VoiceProvider: Send + Sync {
     }
 }
 
+/// Combined TTS engine marker trait.
 pub trait TtsEngineBase: TextToSpeech + VoiceProvider {}
 
+/// Type-erased TTS engine wrapper with optional async helpers.
 #[derive(Clone)]
 pub struct DynTtsEngine {
     inner: Arc<dyn TextToSpeech>,
@@ -142,6 +144,7 @@ pub struct DynTtsEngine {
 }
 
 impl DynTtsEngine {
+    /// Wrap a concrete text-to-speech engine.
     pub fn new<T: TextToSpeech + 'static>(engine: Arc<T>) -> Self {
         Self {
             inner: engine,
