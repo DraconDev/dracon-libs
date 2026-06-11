@@ -259,6 +259,10 @@ impl KokoroTts {
         let file_size = file.metadata()?.len() as usize;
         let num_floats = file_size / 4;
         let mut data = vec![0.0f32; num_floats];
+        // SAFETY: `data` is initialized with `num_floats` f32 values, and
+        // `file_size` is exactly `num_floats * size_of::<f32>()`. The mutable
+        // byte slice is used only for this call and is dropped before `data`
+        // is returned.
         unsafe {
             std::io::Read::read_exact(
                 &mut file,

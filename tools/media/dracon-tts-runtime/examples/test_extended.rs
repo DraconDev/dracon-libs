@@ -24,6 +24,7 @@ async fn main() {
     }
 
     println!("\nTesting Kokoro without DSP (10 long samples)...");
+    // SAFETY: example-only environment mutation; the process is a standalone demo.
     unsafe {
         std::env::set_var("REMI_KOKORO_NO_DSP", "1");
     }

@@ -23,7 +23,9 @@
 use crate::notification::NotificationConfig;
 use anyhow::Context;
 use serde::{Deserialize, Serialize};
+use std::collections::HashSet;
 use std::path::PathBuf;
+use std::sync::{Arc, Mutex};
 use tokio::process::Command;
 
 /// System contracts: data types and trait definitions for snapshots, processes, and remoting.
@@ -67,6 +69,8 @@ pub struct SystemAgent {
     home_nix_path: Option<PathBuf>,
     /// Desktop notification preferences.
     notification_config: NotificationConfig,
+    /// Exact local commands approved for execution by [`SystemAgent::run_command`].
+    approved_commands: Arc<Mutex<HashSet<String>>>,
 }
 
 impl SystemAgent {
@@ -84,6 +88,7 @@ impl SystemAgent {
         Self {
             home_nix_path,
             notification_config: NotificationConfig::default(),
+            approved_commands: Arc::new(Mutex::new(HashSet::new())),
         }
     }
 
@@ -159,19 +164,58 @@ impl SystemAgent {
         Ok(info)
     }
 
-    /// Execute an arbitrary command with arbitrary arguments.
+    /// Approve one exact local command for later execution.
+    ///
+    /// Approval is exact: the same program and argument list must be passed to
+    /// [`run_command`](Self::run_command). This is intentionally narrow so callers
+    /// cannot approve a broad shell prefix and then append unreviewed arguments.
+    pub fn approve_command(&self, command: &str, args: &[String]) -> anyhow::Result<()> {
+        if command.trim().is_empty() {
+            return Err(anyhow::anyhow!(
+                "Invalid command: program must not be empty"
+            ));
+        }
+
+        self.approved_commands
+            .lock()
+            .map_err(|_| anyhow::anyhow!("command approval lock poisoned"))?
+            .insert(command_key(command, args));
+        Ok(())
+    }
+
+    /// Execute an approved exact local command with exact arguments.
+    ///
+    /// # Safety
+    ///
+    /// Callers may only invoke this after [`approve_command`](Self::approve_command)
+    /// has approved the exact `(command, args)` pair. This method still returns an
+    /// error if approval is missing, but the `unsafe` boundary documents that
+    /// command execution is a privileged operation and must not be called with
+    /// untrusted input.
     ///
     /// # Security Warning
     ///
-    /// This method executes any command passed to it without restrictions.
-    /// **Never** call this with untrusted user input — it allows arbitrary
-    /// code execution. Prefer using specific methods like [`install_package()`]
-    /// or SSH-based remote execution instead.
-    ///
-    /// If you must use this, ensure the `command` and all `args` are validated
-    /// against a strict allowlist before calling.
-    pub async fn run_command(&self, command: &str, args: &[String]) -> anyhow::Result<String> {
-        let output = Command::new(command).args(args).output().await?;
+    /// This method executes an allowlisted command without a shell. Prefer specific
+    /// methods like [`install_package()`] or SSH-based remote execution when a
+    /// narrower API exists.
+    pub unsafe fn run_command(&self, command: &str, args: &[String]) -> anyhow::Result<String> {
+        self.run_command_checked(command, args)
+    }
+
+    fn run_command_checked(&self, command: &str, args: &[String]) -> anyhow::Result<String> {
+        if !self
+            .approved_commands
+            .lock()
+            .map_err(|_| anyhow::anyhow!("command approval lock poisoned"))?
+            .contains(&command_key(command, args))
+        {
+            return Err(anyhow::anyhow!(
+                "Command was not approved: {command} {}",
+                args.join(" ")
+            ));
+        }
+
+        let output = Command::new(command).args(args).output()?;
         Ok(String::from_utf8_lossy(&output.stdout).to_string())
     }
 
@@ -252,5 +296,48 @@ impl SystemAgent {
 impl Default for SystemAgent {
     fn default() -> Self {
         Self::new()
+    }
+}
+
+fn command_key(command: &str, args: &[String]) -> String {
+    let mut key = command.to_string();
+    for arg in args {
+        key.push('\0');
+        key.push_str(arg);
+    }
+    key
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[tokio::test]
+    async fn run_command_requires_prior_approval() {
+        let agent = SystemAgent::new();
+        let result = unsafe { agent.run_command("printf", &vec!["ok".to_string()]) }.await;
+        assert!(result.is_err());
+    }
+
+    #[tokio::test]
+    async fn run_command_executes_only_approved_exact_pair() {
+        let agent = SystemAgent::new();
+        agent
+            .approve_command("printf", &vec!["ok".to_string()])
+            .unwrap();
+
+        let output = unsafe { agent.run_command("printf", &vec!["ok".to_string()]) }
+            .await
+            .unwrap();
+        assert_eq!(output, "ok");
+
+        let rejected = unsafe { agent.run_command("printf", &vec!["other".to_string()]) }.await;
+        assert!(rejected.is_err());
+    }
+
+    #[test]
+    fn approve_command_rejects_empty_program() {
+        let agent = SystemAgent::new();
+        assert!(agent.approve_command("", &[]).is_err());
     }
 }

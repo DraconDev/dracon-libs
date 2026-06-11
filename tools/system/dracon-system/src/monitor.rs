@@ -18,6 +18,8 @@ fn get_process_uid(pid: u32) -> Option<libc::uid_t> {
 }
 
 fn current_uid() -> libc::uid_t {
+    // SAFETY: libc::getuid does not access invalid memory and does not require
+    // process state beyond the current process identity.
     unsafe { libc::getuid() }
 }
 
