@@ -115,6 +115,7 @@ pub fn resolve_model(name: &str) -> &'static str {
     }
 }
 
+/// Return model configuration for a model key or alias.
 pub fn model_info(name: &str) -> KittenModelConfig {
     let model = resolve_model(name);
     for info in MODEL_DESCRIPTIONS {
@@ -125,6 +126,7 @@ pub fn model_info(name: &str) -> KittenModelConfig {
     MODEL_DESCRIPTIONS[0]
 }
 
+/// Return existing model and voice asset paths for a model key or alias.
 pub fn model_paths(name: &str) -> (&'static str, &'static str) {
     let info = model_info(name);
     if std::path::Path::new(info.voices_path).exists() {
@@ -138,6 +140,7 @@ pub fn model_paths(name: &str) -> (&'static str, &'static str) {
     (info.model_path, info.voices_path)
 }
 
+/// Resolve a voice id from an internal name, friendly name, or gender alias.
 pub fn resolve_voice(name: &str) -> &'static str {
     let name_lower = name.to_lowercase();
 
@@ -157,6 +160,7 @@ pub fn resolve_voice(name: &str) -> &'static str {
     DEFAULT_VOICE
 }
 
+/// Return voice metadata for a voice id.
 pub fn voice_info(name: &str) -> (&'static str, &'static str, &'static str) {
     for info in VOICE_DESCRIPTIONS {
         if info.0 == name {
@@ -167,10 +171,12 @@ pub fn voice_info(name: &str) -> (&'static str, &'static str, &'static str) {
 }
 
 impl KittenTTS {
+    /// Create a Kitten backend with the default voice.
     pub async fn new(model_path: &str, voices_path: &str) -> Result<Self> {
         Self::new_with_voice(model_path, voices_path, DEFAULT_VOICE).await
     }
 
+    /// Create a Kitten backend with an explicit voice.
     pub async fn new_with_voice(model_path: &str, voices_path: &str, voice: &str) -> Result<Self> {
         let (stream, handle) =
             OutputStream::try_default().context("failed to initialize audio output")?;
@@ -225,6 +231,7 @@ impl KittenTTS {
         })
     }
 
+    /// Select a loaded voice by id.
     pub fn set_voice(&self, voice: &str) -> Result<bool> {
         if self.voices.contains_key(voice) {
             let mut current = self
@@ -238,6 +245,7 @@ impl KittenTTS {
         }
     }
 
+    /// Return the currently selected voice id.
     pub fn get_voice(&self) -> Result<String> {
         self.current_voice
             .lock()
@@ -245,6 +253,7 @@ impl KittenTTS {
             .map(|guard| guard.clone())
     }
 
+    /// Return the friendly description for a voice id.
     pub fn voice_description(voice: &str) -> &'static str {
         voice_info(voice).1
     }
