@@ -26,11 +26,15 @@ pub use dracon_ai_contracts::{RoutingTask, SelectionConstraints};
 pub use dracon_ai_runtime_contracts::models::{ChatMessage, ChatRequest};
 pub use dracon_ai_runtime_contracts::traits::AiProvider;
 
+/// Default provider id used by [`AiService`].
 pub const DEFAULT_PROVIDER: &str = "default";
 
+/// Routing lane policy controlling provider selection.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LaneModelPolicy {
+    /// Whether lane-based routing is enabled.
     pub enabled: bool,
+    /// Default lane name used when lane routing is enabled.
     pub default_lane: Option<String>,
 }
 
@@ -43,21 +47,25 @@ impl Default for LaneModelPolicy {
     }
 }
 
+/// Provider registry for AI backends.
 pub struct ProviderRegistry {
     providers: Vec<(String, Arc<dyn AiProvider>)>,
 }
 
 impl ProviderRegistry {
+    /// Create an empty provider registry.
     pub fn new() -> Self {
         Self {
             providers: Vec::new(),
         }
     }
 
+    /// Register a provider for `model_id`.
     pub fn register(&mut self, model_id: &str, provider: Arc<dyn AiProvider>) {
         self.providers.push((model_id.to_string(), provider));
     }
 
+    /// Return the provider registered for `model_id`.
     pub fn get(&self, model_id: &str) -> Option<Arc<dyn AiProvider>> {
         self.providers
             .iter()
@@ -66,6 +74,7 @@ impl ProviderRegistry {
     }
 }
 
+/// High-level AI service that sends requests through a registered provider.
 pub struct AiService {
     registry: ProviderRegistry,
     policy: LaneModelPolicy,
@@ -73,6 +82,7 @@ pub struct AiService {
 }
 
 impl AiService {
+    /// Create an AI service with a registry and lane policy.
     pub fn new(registry: ProviderRegistry, policy: LaneModelPolicy) -> Self {
         Self {
             registry,
@@ -81,11 +91,13 @@ impl AiService {
         }
     }
 
+    /// Override the provider id used by [`AiService::ask`].
     pub fn with_default_provider(mut self, provider: impl Into<String>) -> Self {
         self.default_provider = provider.into();
         self
     }
 
+    /// Send a chat request through the configured provider and return generated text.
     pub async fn ask(&self, request: ChatRequest) -> anyhow::Result<String> {
         let provider = self
             .registry
@@ -93,5 +105,10 @@ impl AiService {
             .ok_or_else(|| anyhow::anyhow!("No provider found for '{}'", self.default_provider))?;
         let (content, _) = provider.ask_and_collect(request).await?;
         Ok(content)
+    }
+
+    /// Return the configured lane policy.
+    pub fn lane_policy(&self) -> &LaneModelPolicy {
+        &self.policy
     }
 }

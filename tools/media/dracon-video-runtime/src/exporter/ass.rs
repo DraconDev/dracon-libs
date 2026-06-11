@@ -30,10 +30,7 @@ pub fn export_ass(transcript: &[TranscriptSegment], output_path: &Path) -> Resul
         }
         let start = format_ass_time(seg.start);
         let end = format_ass_time(seg.end);
-        let escaped = text
-            .replace('\\', "\\N")
-            .replace('\n', "\\N")
-            .replace('\r', "");
+        let escaped = text.replace(['\\', '\n'], "\\N").replace('\r', "");
         ass.push_str(&format!(
             "Dialogue: 0,{},{},Default,,0,0,0,,{}\n",
             start, end, escaped

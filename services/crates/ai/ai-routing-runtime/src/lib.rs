@@ -126,4 +126,9 @@ impl<T: AiProvider + ?Sized> SmartRouter<T> {
 
         Ok((provider, trace))
     }
+
+    /// Return the optional routing policy name.
+    pub fn policy(&self) -> Option<&str> {
+        self.policy.as_deref()
+    }
 }
