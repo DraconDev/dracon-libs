@@ -13,11 +13,15 @@
 //! - `parakeet` — enable Parakeet-STT (default)
 //! - `whisper` — enable Whisper backend (requires candle-core, candle-nn, candle-transformers)
 
+/// Speech-to-text module using the Parakeet engine.
 pub mod parakeet;
+/// Shared STT contracts and result types.
 pub mod stt_contracts;
+/// Voice activity detection state machine.
 pub mod vad_state;
 
 #[cfg(feature = "whisper")]
+/// Whisper speech-to-text backend.
 pub mod whisper;
 
 pub use parakeet::ParakeetStt;
@@ -32,14 +36,18 @@ pub use stt_contracts::{
 
 use std::sync::Arc;
 
+/// Runtime speech-to-text engine wrapper.
 #[derive(Clone)]
 pub enum SttEngine {
+    /// Parakeet-backed engine.
     Parakeet(Arc<ParakeetStt>),
+    /// Whisper-backed engine when the `whisper` feature is enabled.
     #[cfg(feature = "whisper")]
     Whisper(Arc<WhisperStt>),
 }
 
 impl SttEngine {
+    /// Transcribe audio synchronously.
     pub fn transcribe(
         &self,
         audio: &[f32],
@@ -52,6 +60,7 @@ impl SttEngine {
         }
     }
 
+    /// Transcribe audio asynchronously and return text when available.
     pub async fn transcribe_async(&self, audio: Vec<f32>) -> Option<String> {
         match self {
             SttEngine::Parakeet(p) => p.transcribe_audio(audio).await,
