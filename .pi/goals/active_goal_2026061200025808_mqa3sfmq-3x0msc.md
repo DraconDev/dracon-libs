@@ -5,12 +5,12 @@
   "status": "active",
   "autoContinue": true,
   "usage": {
-    "tokensUsed": 6107967,
-    "activeSeconds": 843
+    "tokensUsed": 6649341,
+    "activeSeconds": 899
   },
   "sisyphus": false,
   "createdAt": "2026-06-11T23:02:58.082Z",
-  "updatedAt": "2026-06-11T23:17:38.789Z",
+  "updatedAt": "2026-06-11T23:18:36.813Z",
   "activePath": ".pi/goals/active_goal_2026061200025808_mqa3sfmq-3x0msc.md",
   "taskList": {
     "tasks": [
@@ -41,7 +41,9 @@
       {
         "id": "ergonomics-prioritization",
         "title": "Prioritize ergonomics improvements",
-        "status": "pending",
+        "status": "complete",
+        "completedAt": "2026-06-11T23:18:33.667Z",
+        "evidence": "Produced ranked consumer/API remediation plan in report.",
         "verificationContract": "Report provides a ranked list of recommended improvements with concrete remediation steps."
       },
       {
@@ -70,8 +72,8 @@ If blocked: Stop and ask the user which crate or API surface to focus on first.
 - Status: running
 - Auto-continue: on
 - Sisyphus mode: no
-- Time spent: 14m03s
-- Tokens used: 6.1M (6,107,967) tokens
+- Time spent: 14m59s
+- Tokens used: 6.6M (6,649,341) tokens
 - Verification contract: Run `git status --short` and confirm only expected goal/report bookkeeping changes exist; verify the report contains sections for public API inventory, docs/examples review, breaking-change risk, ergonomics findings, and prioritized recommendations.
 ## Tasks
 
@@ -79,6 +81,6 @@ If blocked: Stop and ask the user which crate or API surface to focus on first.
 - [x] api-inventory: Inventory public API surfaces — evidence: Inventoried public API entry points across workspace crates.
 - [x] docs-examples-review: Review docs, READMEs, and examples — evidence: Reviewed READMEs, crate docs, examples, and cargo doc output for consumer-facing issues.
 - [x] breaking-change-risk: Assess breaking-change and semver risk — evidence: Assessed public API stability and semver risks from public structs/enums/traits/features.
-- [ ] ergonomics-prioritization: Prioritize ergonomics improvements — contract: Report provides a ranked list of recommended improvements with concrete remediation steps.
+- [x] ergonomics-prioritization: Prioritize ergonomics improvements — evidence: Produced ranked consumer/API remediation plan in report.
 - [ ] final-report: Deliver consumer-focused findings report — contract: Report artifact exists and `git status --short` confirms no implementation changes were made.
 
