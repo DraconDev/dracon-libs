@@ -14,6 +14,7 @@ use hf_hub::{api::sync::Api, Repo, RepoType};
 use std::sync::Arc;
 use tokenizers::Tokenizer;
 
+/// Whisper speech-to-text backend.
 pub struct WhisperStt {
     model: Arc<Mutex<WhisperState>>,
     tokenizer: Tokenizer,
@@ -26,6 +27,7 @@ struct WhisperState {
 }
 
 impl WhisperStt {
+    /// Create a Whisper backend using the default tiny model.
     pub fn new() -> Result<Self> {
         Self::from_model("openai/whisper-tiny")
     }
