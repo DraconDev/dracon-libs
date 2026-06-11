@@ -97,12 +97,7 @@ impl WhisperStt {
             .model
             .lock()
             .map_err(|_| anyhow::anyhow!("Whisper model mutex poisoned"))?;
-        let segments = decode_greedy(
-            &mut state.model,
-            &self.tokenizer,
-            &mel,
-            mel_len,
-        )?;
+        let segments = decode_greedy(&mut state.model, &self.tokenizer, &mel, mel_len)?;
 
         if segments.is_empty() {
             return Ok(None);
@@ -183,12 +178,7 @@ impl TimestampedTranscription for WhisperStt {
             .model
             .lock()
             .map_err(|_| anyhow::anyhow!("Whisper model mutex poisoned"))?;
-        let segments = decode_greedy(
-            &mut state.model,
-            &self.tokenizer,
-            &mel,
-            mel_len,
-        )?;
+        let segments = decode_greedy(&mut state.model, &self.tokenizer, &mel, mel_len)?;
 
         if segments.is_empty() {
             return Ok(None);

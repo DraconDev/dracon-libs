@@ -347,10 +347,11 @@ impl KittenTTS {
                 window: rubato::WindowFunction::BlackmanHarris2,
             };
 
-            let mut resampler = match SincFixedIn::<f32>::new(resample_ratio, 2.0, params, samples.len(), 1) {
-                Ok(resampler) => resampler,
-                Err(_) => return samples.to_vec(),
-            };
+            let mut resampler =
+                match SincFixedIn::<f32>::new(resample_ratio, 2.0, params, samples.len(), 1) {
+                    Ok(resampler) => resampler,
+                    Err(_) => return samples.to_vec(),
+                };
 
             let waves_in = vec![samples.to_vec()];
             match resampler.process(&waves_in, None) {
@@ -1039,7 +1040,9 @@ impl KittenTTS {
         "speed" => ort::value::Value::from_array(ndarray::Array1::from_vec(vec![speed]))?,
         ];
 
-        let mut sess = session.lock().map_err(|_| anyhow::anyhow!("mutex poisoned"))?;
+        let mut sess = session
+            .lock()
+            .map_err(|_| anyhow::anyhow!("mutex poisoned"))?;
         let outputs = sess.run(inputs)?;
 
         let samples = if let Some(output) = outputs.values().next() {

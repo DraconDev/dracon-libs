@@ -624,9 +624,10 @@ impl GitService {
                 let tree_id = index.write_tree()?;
                 let tree = repo.find_tree(tree_id)?;
 
-                let sig = repo
-                    .signature()
-                    .unwrap_or_else(|_| git2::Signature::now("Dracon", "dracon@void").unwrap());
+                let sig = match repo.signature() {
+                    Ok(sig) => sig,
+                    Err(_) => git2::Signature::now("Dracon", "dracon@void")?,
+                };
 
                 let mut parents = Vec::new();
                 if let Ok(head) = repo.head() {

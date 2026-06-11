@@ -111,6 +111,7 @@ pub fn voice_info(name: &str) -> (&'static str, &'static str, &'static str) {
 /// Kokoro text-to-speech backend.
 pub struct KokoroTts {
     sink: Arc<Sink>,
+    /// Atomic flag indicating whether playback is active.
     pub speaking: Arc<AtomicBool>,
     active_playbacks: Arc<AtomicUsize>,
     queue_end_at: Arc<Mutex<Option<Instant>>>,
@@ -678,7 +679,9 @@ impl KokoroTts {
                 ];
 
                 let infer_start = std::time::Instant::now();
-                let mut sess = session.lock().map_err(|_| anyhow::anyhow!("mutex poisoned"))?;
+                let mut sess = session
+                    .lock()
+                    .map_err(|_| anyhow::anyhow!("mutex poisoned"))?;
                 let outputs = sess.run(inputs)?;
                 let infer_time = infer_start.elapsed();
 
@@ -787,7 +790,9 @@ impl KokoroTts {
                     "speed" => ort::value::Value::from_array(speed)?,
                 ];
 
-                let mut sess = session.lock().map_err(|_| anyhow::anyhow!("mutex poisoned"))?;
+                let mut sess = session
+                    .lock()
+                    .map_err(|_| anyhow::anyhow!("mutex poisoned"))?;
                 let outputs = sess.run(inputs)?;
 
                 if let Some(output) = outputs.values().next() {

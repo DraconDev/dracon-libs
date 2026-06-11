@@ -88,15 +88,33 @@ impl OnnxEmbedder {
             return vec![0.0f32; EMBEDDING_DIM];
         }
 
-        let input_ids_array = ndarray::Array2::from_shape_vec((1, seq_len), input_ids).unwrap();
+        let input_ids_array = match ndarray::Array2::from_shape_vec((1, seq_len), input_ids) {
+            Ok(array) => array,
+            Err(_) => return vec![0.0f32; EMBEDDING_DIM],
+        };
         let attention_mask_array =
-            ndarray::Array2::from_shape_vec((1, seq_len), attention_mask).unwrap();
+            match ndarray::Array2::from_shape_vec((1, seq_len), attention_mask) {
+                Ok(array) => array,
+                Err(_) => return vec![0.0f32; EMBEDDING_DIM],
+            };
         let token_type_ids_array =
-            ndarray::Array2::from_shape_vec((1, seq_len), token_type_ids).unwrap();
+            match ndarray::Array2::from_shape_vec((1, seq_len), token_type_ids) {
+                Ok(array) => array,
+                Err(_) => return vec![0.0f32; EMBEDDING_DIM],
+            };
 
-        let input_value = ort::value::Value::from_array(input_ids_array).unwrap();
-        let attention_value = ort::value::Value::from_array(attention_mask_array).unwrap();
-        let token_type_value = ort::value::Value::from_array(token_type_ids_array).unwrap();
+        let input_value = match ort::value::Value::from_array(input_ids_array) {
+            Ok(value) => value,
+            Err(_) => return vec![0.0f32; EMBEDDING_DIM],
+        };
+        let attention_value = match ort::value::Value::from_array(attention_mask_array) {
+            Ok(value) => value,
+            Err(_) => return vec![0.0f32; EMBEDDING_DIM],
+        };
+        let token_type_value = match ort::value::Value::from_array(token_type_ids_array) {
+            Ok(value) => value,
+            Err(_) => return vec![0.0f32; EMBEDDING_DIM],
+        };
 
         let inputs = ort::inputs![
             "input_ids" => input_value,

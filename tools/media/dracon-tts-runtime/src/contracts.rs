@@ -302,6 +302,7 @@ pub struct SynthesisResult {
     pub voice_used: String,
 }
 
+/// Common TTS types for ergonomic imports.
 pub mod prelude {
     pub use crate::contracts::{
         DynTtsEngine, Gender, SynthesisRequest, SynthesisResult, TextToSpeech, TtsConfig,
