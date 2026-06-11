@@ -1,11 +1,17 @@
+//! AI routing primitives for service-level selection.
+
 use serde::{Deserialize, Serialize};
 
 pub use dracon_ai_contracts::SelectionConstraints;
 
+/// Service tier used to select model routing behavior.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum ServiceLevel {
+    /// Free-tier routing.
     Free,
+    /// Paid-tier routing.
     Paid,
+    /// Enterprise-tier routing.
     Enterprise,
 }
 

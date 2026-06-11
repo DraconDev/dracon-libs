@@ -31,38 +31,49 @@ pub use dracon_ai_contracts::{RoutingTask, SelectionConstraints};
 pub use routing::ServiceLevel;
 pub use traits::AiModelStore;
 
+/// Message envelope used by routing code.
 #[derive(Debug, Clone)]
 pub struct RoutingMessage {
+    /// Participant role label.
     pub role: String,
+    /// Message content.
     pub content: String,
 }
 
+/// Observability trace for a routing decision.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RoutingTrace {
+    /// Selected model identifier.
     pub selected_model: String,
+    /// Optional routing task or lane that influenced the decision.
     pub lane: Option<RoutingTask>,
 }
 
+/// Generic registry mapping model ids to provider implementations.
 pub struct ProviderRegistry<T: ?Sized> {
     providers: HashMap<String, Arc<T>>,
 }
 
 impl<T: AiProvider + ?Sized> ProviderRegistry<T> {
+    /// Create an empty provider registry.
     pub fn new() -> Self {
         Self {
             providers: HashMap::new(),
         }
     }
 
+    /// Register or replace a provider for `model_id`.
     pub fn register(&mut self, model_id: &str, provider: Arc<T>) {
         self.providers.insert(model_id.to_string(), provider);
     }
 
+    /// Return the provider registered for `model_id`.
     pub fn get(&self, model_id: &str) -> Option<&Arc<T>> {
         self.providers.get(model_id)
     }
 }
 
+/// Router that selects an active or development model from a provider registry.
 pub struct SmartRouter<T: ?Sized> {
     registry: ProviderRegistry<T>,
     dev_models: Vec<String>,
@@ -71,6 +82,7 @@ pub struct SmartRouter<T: ?Sized> {
 }
 
 impl<T: AiProvider + ?Sized> SmartRouter<T> {
+    /// Create a router with active models, development models, and optional policy.
     pub fn new(
         registry: ProviderRegistry<T>,
         dev_models: Vec<String>,
@@ -85,6 +97,7 @@ impl<T: AiProvider + ?Sized> SmartRouter<T> {
         }
     }
 
+    /// Select the first available active or development model and return its provider.
     pub async fn route_with_trace(
         &self,
         _project: &str,

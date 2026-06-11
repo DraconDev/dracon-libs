@@ -102,7 +102,7 @@ pub async fn analyze_workspace_storage(
         }
     }
 
-    project_usages.sort_by(|a, b| b.bytes.cmp(&a.bytes));
+    project_usages.sort_by_key(|usage| std::cmp::Reverse(usage.bytes));
     project_usages.truncate(top_n_projects);
 
     let mut hotspot_paths = Vec::new();
@@ -145,7 +145,7 @@ pub async fn analyze_workspace_storage(
         }
     }
 
-    hotspot_usages.sort_by(|a, b| b.bytes.cmp(&a.bytes));
+    hotspot_usages.sort_by_key(|usage| std::cmp::Reverse(usage.bytes));
     hotspot_usages.truncate(top_n_hotspots);
 
     Ok(WorkspaceStorageReport {

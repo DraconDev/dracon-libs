@@ -59,10 +59,11 @@ impl OnnxEmbedder {
         }
     }
 
+    /// Embed `text` into a normalized 384-dimensional vector.
     pub fn embed(&mut self, text: &str) -> Vec<f32> {
         match &mut self.backend {
-            EmbeddingBackend::Onnx { session, tokenizer } => {
-                Self::embed_onnx(session, tokenizer, text)
+            EmbeddingBackend::Onnx(backend) => {
+                Self::embed_onnx(&mut backend.session, &backend.tokenizer, text)
             }
             EmbeddingBackend::Fallback => fallback_embedding(text),
         }
@@ -148,6 +149,7 @@ impl OnnxEmbedder {
         embedding
     }
 
+    /// Return the embedding dimension.
     pub fn dimension(&self) -> usize {
         self.dimension
     }
@@ -155,7 +157,10 @@ impl OnnxEmbedder {
 
 impl Default for OnnxEmbedder {
     fn default() -> Self {
-        Self::new().expect("Failed to initialize OnnxEmbedder")
+        Self::new().unwrap_or_else(|_| Self {
+            backend: EmbeddingBackend::Fallback,
+            dimension: EMBEDDING_DIM,
+        })
     }
 }
 
