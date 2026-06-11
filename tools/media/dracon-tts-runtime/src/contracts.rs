@@ -3,10 +3,14 @@ use serde::{Deserialize, Serialize};
 use std::fmt;
 use std::sync::Arc;
 
+/// Voice gender metadata.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Gender {
+    /// Male voice.
     Male,
+    /// Female voice.
     Female,
+    /// Other or unspecified voice.
     Other,
 }
 
@@ -30,18 +34,25 @@ impl From<&str> for Gender {
     }
 }
 
+/// Metadata describing a TTS voice.
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct VoiceInfo {
+    /// Stable voice identifier.
     pub id: String,
+    /// Human-readable voice name.
     pub name: String,
+    /// Voice gender metadata.
     pub gender: Gender,
+    /// Optional language tag.
     #[serde(default)]
     pub language: Option<String>,
+    /// Optional voice description.
     #[serde(default)]
     pub description: Option<String>,
 }
 
 impl VoiceInfo {
+    /// Create a voice with required identity fields.
     pub fn new(id: impl Into<String>, name: impl Into<String>, gender: Gender) -> Self {
         Self {
             id: id.into(),
@@ -52,40 +63,54 @@ impl VoiceInfo {
         }
     }
 
+    /// Attach a language tag to this voice.
     pub fn with_language(mut self, language: impl Into<String>) -> Self {
         self.language = Some(language.into());
         self
     }
 
+    /// Attach a human-readable description to this voice.
     pub fn with_description(mut self, description: impl Into<String>) -> Self {
         self.description = Some(description.into());
         self
     }
 }
 
+/// TTS operation result type.
 pub type TtsResult<T> = anyhow::Result<T>;
 
+/// Synchronous text-to-speech backend contract.
 pub trait TextToSpeech: Send + Sync {
+    /// Speak `text` synchronously.
     fn speak(&self, text: &str) -> TtsResult<()>;
 
+    /// Stop any active playback.
     fn stop(&self) -> TtsResult<()>;
 
+    /// Return whether audio is currently playing.
     fn is_speaking(&self) -> bool;
 
+    /// Return the backend name.
     fn name(&self) -> &'static str;
 
+    /// Return the native sample rate in Hz.
     fn sample_rate(&self) -> u32 {
         24000
     }
 }
 
+/// Voice provider contract for listing and selecting voices.
 pub trait VoiceProvider: Send + Sync {
+    /// List all available voices.
     fn list_voices(&self) -> Vec<VoiceInfo>;
 
+    /// Select a voice by id or name.
     fn set_voice(&self, voice: &str) -> TtsResult<bool>;
 
+    /// Return the currently selected voice.
     fn current_voice(&self) -> TtsResult<VoiceInfo>;
 
+    /// Resolve a voice by id, display name, or gender alias.
     fn resolve_voice(&self, name: &str) -> Option<VoiceInfo> {
         let name_lower = name.to_lowercase();
 
