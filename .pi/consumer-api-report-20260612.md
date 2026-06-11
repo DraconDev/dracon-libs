@@ -40,6 +40,18 @@ The highest-priority consumer fixes are documentation/example correctness, featu
 | `ai-runtime-adapters` / crate `ai_runtime_adapters` | `GenericOpenAIAdapter` | Minimal OpenAI-compatible adapter. No crate README found. Example includes a fake API key and no redaction guidance. |
 | `ai-runtime-config` / crate `ai_runtime_config` | `OpenAIProviderSpec`, `AiRuntimeConfig`, `resolve_ai_runtime_config` | Docs claim config resolves from environment or file, but implementation only returns an empty default config. No crate README found. |
 
+## Docs/examples review
+
+Reviewed crate READMEs, crate-level rustdoc, representative examples, and `cargo doc` output. The main consumer blocker is non-compiling or misleading examples in TTS, STT, system, and video docs, plus broken rustdoc links for `WhisperStt` and `install_package`.
+
+## Breaking-change risk
+
+Reviewed public structs/enums/traits and feature gates. No `#[non_exhaustive]` was found on public structs/enums, so adding fields or variants is likely breaking for downstream struct literals or exhaustive matches. Feature default mismatches also create accidental breaking-change risk if defaults are changed.
+
+## Ergonomics findings
+
+Reviewed constructor shapes, async/sync conventions, Result/Option usage, contract/runtime alignment, and AI config/adapter ergonomics. The biggest consumer-friction areas are TTS/STT constructor and call-site confusion, memory contract/runtime mismatch, AI config lacking validation/builders, and video docs promising runtime implementations that are not exposed.
+
 ## Prioritized consumer-facing findings
 
 ### 1. README and rustdoc examples are not trustworthy for first-time consumers

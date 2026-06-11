@@ -5,12 +5,12 @@
   "status": "active",
   "autoContinue": true,
   "usage": {
-    "tokensUsed": 7925502,
-    "activeSeconds": 1241
+    "tokensUsed": 8481269,
+    "activeSeconds": 1359
   },
   "sisyphus": false,
   "createdAt": "2026-06-11T23:02:58.082Z",
-  "updatedAt": "2026-06-11T23:24:23.048Z",
+  "updatedAt": "2026-06-11T23:26:23.303Z",
   "activePath": ".pi/goals/active_goal_2026061200025808_mqa3sfmq-3x0msc.md",
   "taskList": {
     "tasks": [
@@ -74,8 +74,8 @@ If blocked: Stop and ask the user which crate or API surface to focus on first.
 - Status: running
 - Auto-continue: on
 - Sisyphus mode: no
-- Time spent: 20m41s
-- Tokens used: 7.9M (7,925,502) tokens
+- Time spent: 22m39s
+- Tokens used: 8.5M (8,481,269) tokens
 - Verification contract: Run `git status --short` and confirm only expected goal/report bookkeeping changes exist; verify the report contains sections for public API inventory, docs/examples review, breaking-change risk, ergonomics findings, and prioritized recommendations.
 ## Tasks
 
