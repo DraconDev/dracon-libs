@@ -347,9 +347,10 @@ impl KittenTTS {
                 window: rubato::WindowFunction::BlackmanHarris2,
             };
 
-            let mut resampler =
-                SincFixedIn::<f32>::new(resample_ratio, 2.0, params, samples.len(), 1)
-                    .expect("Failed to create resampler");
+            let mut resampler = match SincFixedIn::<f32>::new(resample_ratio, 2.0, params, samples.len(), 1) {
+                Ok(resampler) => resampler,
+                Err(_) => return samples.to_vec(),
+            };
 
             let waves_in = vec![samples.to_vec()];
             match resampler.process(&waves_in, None) {
@@ -741,7 +742,10 @@ impl KittenTTS {
             return;
         }
 
-        let session = self.session.as_ref().expect("session initialized").clone();
+        let Some(session) = self.session.as_ref() else {
+            return;
+        };
+        let session = session.clone();
         let sink = self.sink.clone();
 
         let voice_data = self
@@ -792,7 +796,7 @@ impl KittenTTS {
                     "speed" => ort::value::Value::from_array(ndarray::Array1::from_vec(vec![speed]))?,
                 ];
 
-                let mut sess = session.lock().expect("mutex poisoned");
+                let mut sess = session.lock().map_err(|_| anyhow::anyhow!("mutex poisoned"))?;
                 let outputs = sess.run(inputs)?;
                 if let Some(output) = outputs.values().next() {
                     let tensor = output.try_extract_tensor::<f32>()?;
@@ -856,7 +860,10 @@ impl KittenTTS {
             return;
         }
 
-        let session = self.session.as_ref().expect("session initialized").clone();
+        let Some(session) = self.session.as_ref() else {
+            return;
+        };
+        let session = session.clone();
         let sink = self.sink.clone();
 
         let voice_data = self
@@ -917,7 +924,7 @@ impl KittenTTS {
                 ];
 
                 let infer_start = std::time::Instant::now();
-                let mut sess = session.lock().expect("mutex poisoned");
+                let mut sess = session.lock().map_err(|_| anyhow::anyhow!("mutex poisoned"))?;
                 let outputs = sess.run(inputs)?;
                 let infer_time = infer_start.elapsed();
                 let result = if let Some(output) = outputs.values().next() {
@@ -986,6 +993,7 @@ impl KittenTTS {
         self.state.lock().await.clone()
     }
 
+    /// Synthesize speech samples without playing them.
     pub fn synthesize(&self, text: &str) -> Result<Vec<f32>, anyhow::Error> {
         let voice = self.get_voice()?;
         let call_id = KITTEN_COUNTER.fetch_add(1, Ordering::SeqCst);
@@ -994,7 +1002,10 @@ impl KittenTTS {
             return Err(anyhow::anyhow!("Kitten not initialized"));
         }
 
-        let session = self.session.as_ref().expect("session initialized").clone();
+        let Some(session) = self.session.as_ref() else {
+            return Err(anyhow::anyhow!("Kitten not initialized"));
+        };
+        let session = session.clone();
         let voice_data = self
             .voices
             .get(&voice)
@@ -1028,7 +1039,7 @@ impl KittenTTS {
         "speed" => ort::value::Value::from_array(ndarray::Array1::from_vec(vec![speed]))?,
         ];
 
-        let mut sess = session.lock().expect("mutex poisoned");
+        let mut sess = session.lock().map_err(|_| anyhow::anyhow!("mutex poisoned"))?;
         let outputs = sess.run(inputs)?;
 
         let samples = if let Some(output) = outputs.values().next() {
@@ -1045,6 +1056,7 @@ impl KittenTTS {
         Ok(processed)
     }
 
+    /// Save synthesized samples as a 16-bit mono WAV file.
     pub fn save_wav(&self, samples: &[f32], path: &str) -> Result<(), anyhow::Error> {
         let spec = hound::WavSpec {
             channels: 1,

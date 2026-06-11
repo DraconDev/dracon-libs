@@ -13,9 +13,12 @@ use std::time::{Duration, Instant};
 static TTS_COUNTER: AtomicU64 = AtomicU64::new(0);
 const KOKORO_SAMPLE_RATE: u32 = 24000;
 
+/// Default Kokoro voice id.
 pub const DEFAULT_VOICE: &str = "af_bella";
+/// Default Kokoro male voice id.
 pub const DEFAULT_MALE_VOICE: &str = "bm_lewis";
 
+/// Built-in Kokoro voice descriptions.
 pub const VOICE_DESCRIPTIONS: &[(&str, &str, &str)] = &[
     ("af", "Default", "female"),
     ("af_alloy", "Alloy", "female"),
@@ -105,6 +108,7 @@ pub fn voice_info(name: &str) -> (&'static str, &'static str, &'static str) {
     ("unknown", "Unknown", "unknown")
 }
 
+/// Kokoro text-to-speech backend.
 pub struct KokoroTts {
     sink: Arc<Sink>,
     pub speaking: Arc<AtomicBool>,
@@ -120,10 +124,12 @@ pub struct KokoroTts {
 }
 
 impl KokoroTts {
+    /// Create a Kokoro backend with the default voice.
     pub async fn new(model_path: &str, voices_dir: &str) -> Result<Self> {
         Self::new_with_voice(model_path, voices_dir, DEFAULT_VOICE).await
     }
 
+    /// Create a Kokoro backend with an explicit voice.
     pub async fn new_with_voice(
         model_path: &str,
         voices_dir: &str,
@@ -262,6 +268,7 @@ impl KokoroTts {
         Ok(data)
     }
 
+    /// Select a loaded voice by id.
     pub fn set_voice(&self, voice: &str) -> anyhow::Result<bool> {
         let resolved = resolve_voice(voice);
         if self.voices.contains_key(resolved) {
@@ -276,6 +283,7 @@ impl KokoroTts {
         }
     }
 
+    /// Return the currently selected voice id.
     pub fn get_voice(&self) -> anyhow::Result<String> {
         self.current_voice
             .lock()
@@ -372,7 +380,13 @@ impl KokoroTts {
         let chunk_duration =
             Duration::from_secs_f64(frame_count as f64 / KOKORO_SAMPLE_RATE as f64);
 
-        let mut queue_end = self.queue_end_at.lock().expect("mutex poisoned");
+        let mut queue_end = match self.queue_end_at.lock() {
+            Ok(guard) => guard,
+            Err(_) => {
+                eprintln!("[Kokoro-{call_id}][queue] mutex poisoned");
+                return;
+            }
+        };
         let previous_end = *queue_end;
 
         let lead_before_ms = previous_end
@@ -598,6 +612,7 @@ impl KokoroTts {
         }
     }
 
+    /// Synthesize and play text using the current voice.
     pub async fn speak_impl(&self, text: &str) {
         let voice = self
             .get_voice()
@@ -616,7 +631,10 @@ impl KokoroTts {
 
         self.begin_playback();
 
-        let session = self.session.as_ref().expect("session initialized").clone();
+        let Some(session) = self.session.as_ref() else {
+            return;
+        };
+        let session = session.clone();
         let sink = self.sink.clone();
         let voice_data = self
             .voices
@@ -660,7 +678,7 @@ impl KokoroTts {
                 ];
 
                 let infer_start = std::time::Instant::now();
-                let mut sess = session.lock().expect("mutex poisoned");
+                let mut sess = session.lock().map_err(|_| anyhow::anyhow!("mutex poisoned"))?;
                 let outputs = sess.run(inputs)?;
                 let infer_time = infer_start.elapsed();
 
@@ -715,6 +733,7 @@ impl KokoroTts {
         self.end_playback();
     }
 
+    /// Queue speech without waiting for playback to finish.
     pub async fn speak_nowait(&self, text: &str) {
         let voice = self
             .get_voice()
@@ -732,7 +751,10 @@ impl KokoroTts {
 
         self.begin_playback();
 
-        let session = self.session.as_ref().expect("session initialized").clone();
+        let Some(session) = self.session.as_ref() else {
+            return;
+        };
+        let session = session.clone();
         let sink = self.sink.clone();
         let voice_data = self
             .voices
@@ -765,7 +787,7 @@ impl KokoroTts {
                     "speed" => ort::value::Value::from_array(speed)?,
                 ];
 
-                let mut sess = session.lock().expect("mutex poisoned");
+                let mut sess = session.lock().map_err(|_| anyhow::anyhow!("mutex poisoned"))?;
                 let outputs = sess.run(inputs)?;
 
                 if let Some(output) = outputs.values().next() {
@@ -814,6 +836,7 @@ impl KokoroTts {
         });
     }
 
+    /// Block until active playback finishes.
     pub async fn wait_until_done(&self) {
         loop {
             if self.active_playbacks.load(Ordering::SeqCst) == 0 && self.sink.empty() {
