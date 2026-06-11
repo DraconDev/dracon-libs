@@ -5,9 +5,9 @@ This document provides guidance for agents working on the dracon-libs Rust works
 ## Repository
 
 - **URL**: https://github.com/DraconDev/dracon-libs
-- **License**: MIT OR Apache-2.0
+- **License**: AGPL-3.0-only
 - **Edition**: 2021 (all crates)
-- **Workspace version**: 29.1.0
+- **Workspace version**: 94.7.0
 
 ## Workspace Structure
 
@@ -15,7 +15,6 @@ This document provides guidance for agents working on the dracon-libs Rust works
 dracon-libs/
 ├── tools/
 │   ├── sync/dracon-git           # Git operations (libgit2 + CLI fallback)
-│   ├── tui/dracon-terminal-engine # Terminal compositor (z-index, TrueColor, SGR mouse)
 │   ├── system/dracon-system       # System monitoring, SSH, notifications
 │   ├── files/dracon-files         # File system operations and FsCatalog
 │   ├── media/dracon-tts-runtime  # Text-to-speech (Kitten, Kokoro)
@@ -26,7 +25,7 @@ dracon-libs/
 │   ├── dracon-memory-contracts  # MemoryStore + TextEmbedder traits
 │   ├── ai/dracon-ai-contracts   # RoutingTask, SelectionConstraints
 │   └── ai/dracon-ai-runtime-contracts # ChatMessage, AiProvider trait
-└── services/ai/
+└── services/crates/ai/
     ├── ai-service               # Provider registry and AI service layer
     ├── ai-routing-runtime      # SmartRouter for model selection
     ├── ai-runtime-config       # Runtime config types
@@ -76,7 +75,7 @@ edition.workspace = true
 
 ## P0 Security Rules
 
-1. **`SystemAgent::run_command()`** — marked `unsafe`, requires prior `approve_command()` call
+1. **`SystemAgent::run_command()`** — marked `async unsafe`, requires prior `approve_command()` call for the exact `(command, args)` pair
 2. **SSH paths** — program path must be shell-escaped; args are already escaped via `shell_escape()`
 3. **Path traversal** — use `canonicalize()` + prefix check; reject any path that escapes the repo root
 4. **PID operations** — verify ownership via `/proc/{pid}/status` `Uid:` field before signaling
@@ -88,10 +87,12 @@ edition.workspace = true
 # Check workspace compiles (excludes media crates that need system libs)
 cargo check --workspace --exclude dracon-tts-runtime --exclude dracon-stt-runtime
 
-# Full check (requires alsa-lib dev headers)
+# Full check (requires system libraries for media crates)
+# On NixOS: nix-shell -p pkg-config alsa-lib sqlite --run 'cargo check --workspace'
 cargo check --workspace
 
-# Run tests
+# Run tests (requires system libraries for media crates)
+# On NixOS: nix-shell -p pkg-config alsa-lib sqlite --run 'cargo test --workspace --all-targets'
 cargo test --workspace --all-targets
 
 # Lint
@@ -99,7 +100,7 @@ cargo clippy --workspace -- -D warnings
 cargo fmt --all -- --check
 ```
 
-**Note**: `dracon-tts-runtime` and `dracon-stt-runtime` require `alsa-lib` development headers and `pkg-config` to compile. On NixOS: `nix-shell -p alsaLib pkgconfig`.
+**Note**: media crates may require ALSA (`alsa-lib`), SQLite (`sqlite3`/`pkg-config`), and external tools such as `espeak-ng`. On this NixOS host, use `nix-shell -p pkg-config alsa-lib sqlite --run '...'`.
 
 ## Common Tasks
 
@@ -125,5 +126,5 @@ When making breaking API changes:
 
 ## Version History
 
-- **v29.1.0** (current) — P0 security hardening, P1 reliability (Result-based APIs), P2 workspace consistency
-- **v12.6.0**, **v11.0.0** — prior releases
+- **v94.7.0** (current) — P0 command approval hardening, P1 reliability (Result-based APIs), P2 workspace consistency
+- **v29.1.0**, **v12.6.0**, **v11.0.0** — prior releases

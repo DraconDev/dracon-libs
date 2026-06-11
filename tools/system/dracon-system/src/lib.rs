@@ -198,7 +198,11 @@ impl SystemAgent {
     /// This method executes an allowlisted command without a shell. Prefer specific
     /// methods like [`install_package()`] or SSH-based remote execution when a
     /// narrower API exists.
-    pub unsafe fn run_command(&self, command: &str, args: &[String]) -> anyhow::Result<String> {
+    pub async unsafe fn run_command(
+        &self,
+        command: &str,
+        args: &[String],
+    ) -> anyhow::Result<String> {
         self.run_command_checked(command, args)
     }
 
