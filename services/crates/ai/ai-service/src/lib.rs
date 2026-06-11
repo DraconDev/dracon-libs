@@ -30,21 +30,12 @@ pub use dracon_ai_runtime_contracts::traits::AiProvider;
 pub const DEFAULT_PROVIDER: &str = "default";
 
 /// Routing lane policy controlling provider selection.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct LaneModelPolicy {
     /// Whether lane-based routing is enabled.
     pub enabled: bool,
     /// Default lane name used when lane routing is enabled.
     pub default_lane: Option<String>,
-}
-
-impl Default for LaneModelPolicy {
-    fn default() -> Self {
-        Self {
-            enabled: false,
-            default_lane: None,
-        }
-    }
 }
 
 /// Provider registry for AI backends.
@@ -71,6 +62,12 @@ impl ProviderRegistry {
             .iter()
             .find(|(id, _)| id == model_id)
             .map(|(_, p)| p.clone())
+    }
+}
+
+impl Default for ProviderRegistry {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

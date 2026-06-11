@@ -73,6 +73,12 @@ impl<T: AiProvider + ?Sized> ProviderRegistry<T> {
     }
 }
 
+impl<T: AiProvider + ?Sized> Default for ProviderRegistry<T> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 /// Router that selects an active or development model from a provider registry.
 pub struct SmartRouter<T: ?Sized> {
     registry: ProviderRegistry<T>,

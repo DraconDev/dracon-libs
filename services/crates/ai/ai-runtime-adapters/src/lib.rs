@@ -85,7 +85,7 @@ impl AiProvider for GenericOpenAIAdapter {
 
         let resp = self
             .client
-            .post(&format!("{}/chat/completions", self.endpoint))
+            .post(format!("{}/chat/completions", self.endpoint))
             .header(
                 &self.auth_header_name,
                 format!("{}{}", self.auth_header_prefix, self.api_key),

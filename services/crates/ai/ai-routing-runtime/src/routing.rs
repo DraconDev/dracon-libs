@@ -15,9 +15,3 @@ pub enum ServiceLevel {
     /// Enterprise-tier routing.
     Enterprise,
 }
-
-impl Default for ServiceLevel {
-    fn default() -> Self {
-        Self::Free
-    }
-}
