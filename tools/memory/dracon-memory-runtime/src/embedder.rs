@@ -4,20 +4,24 @@ use tokenizers::Tokenizer;
 
 const EMBEDDING_DIM: usize = 384;
 
+struct OnnxBackend {
+    session: Session,
+    tokenizer: Tokenizer,
+}
+
 enum EmbeddingBackend {
-    Onnx {
-        session: Session,
-        tokenizer: Tokenizer,
-    },
+    Onnx(Box<OnnxBackend>),
     Fallback,
 }
 
+/// ONNX-backed embedder with deterministic fallback when model assets are unavailable.
 pub struct OnnxEmbedder {
     backend: EmbeddingBackend,
     dimension: usize,
 }
 
 impl OnnxEmbedder {
+    /// Create an embedder, falling back unless `DRACON_DISABLE_EMBEDDING_FALLBACK` is enabled.
     pub fn new() -> Result<Self> {
         let model_path = std::env::var("DRACON_MODEL_PATH")
             .unwrap_or_else(|_| "assets/bge-small-en-v1.5.onnx".to_string());
@@ -34,7 +38,7 @@ impl OnnxEmbedder {
                     .map_err(|e| anyhow::anyhow!("Failed to load tokenizer: {}", e))?;
 
                 Ok(Self {
-                    backend: EmbeddingBackend::Onnx { session, tokenizer },
+                    backend: EmbeddingBackend::Onnx(Box::new(OnnxBackend { session, tokenizer })),
                     dimension: EMBEDDING_DIM,
                 })
             }
