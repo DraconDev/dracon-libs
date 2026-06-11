@@ -215,7 +215,7 @@ impl SystemAgent {
             ));
         }
 
-        let output = Command::new(command).args(args).output()?;
+        let output = std::process::Command::new(command).args(args).output()?;
         Ok(String::from_utf8_lossy(&output.stdout).to_string())
     }
 
