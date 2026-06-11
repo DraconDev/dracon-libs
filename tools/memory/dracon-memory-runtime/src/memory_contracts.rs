@@ -91,37 +91,48 @@ impl UserFact {
         }
     }
 
+    /// Set an explicit confidence score.
     pub fn with_confidence(mut self, confidence: f32) -> Self {
         self.confidence = confidence;
         self
     }
 
+    /// Set the fact source.
     pub fn with_source(mut self, source: impl Into<String>) -> Self {
         self.source = Some(source.into());
         self
     }
 }
 
+/// Synchronous text embedding contract implemented by runtime embedders.
 pub trait TextEmbedder: Send + Sync {
+    /// Embed `text` into a fixed-dimensional vector.
     fn embed(&self, text: &str) -> Vec<f32>;
+    /// Return the embedding dimension.
     fn dimension(&self) -> usize;
 }
 
+/// Synchronous storage contract implemented by runtime databases.
 pub trait MemoryStore: Send + Sync {
+    /// Store one conversation with a precomputed embedding.
     fn store_conversation(
         &self,
         role: Role,
         content: &str,
         embedding: &[f32],
     ) -> anyhow::Result<i64>;
+    /// Search for conversations similar to `query_embedding`.
     fn search_similar(
         &self,
         query_embedding: &[f32],
         k: usize,
     ) -> anyhow::Result<Vec<Conversation>>;
+    /// Return the most recent conversation rows.
     fn get_recent(&self, limit: usize) -> anyhow::Result<Vec<Conversation>>;
+    /// Delete all stored conversations and vector rows.
     fn clear(&self) -> anyhow::Result<()>;
 
+    /// Store or update a user fact.
     fn store_fact(
         &self,
         category: &str,
@@ -129,8 +140,11 @@ pub trait MemoryStore: Send + Sync {
         value: &str,
         source: Option<&str>,
     ) -> anyhow::Result<()>;
+    /// Return one user fact by category and key.
     fn get_fact(&self, category: &str, key: &str) -> anyhow::Result<Option<UserFact>>;
+    /// Return all user facts in a category.
     fn get_facts_by_category(&self, category: &str) -> anyhow::Result<Vec<UserFact>>;
+    /// Return all stored user facts.
     fn get_all_facts(&self) -> anyhow::Result<Vec<UserFact>>;
 }
 
