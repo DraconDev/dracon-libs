@@ -981,6 +981,7 @@ impl KittenTTS {
         &self.voice_names
     }
 
+    /// Return the current backend state.
     pub async fn get_state(&self) -> KittenState {
         self.state.lock().await.clone()
     }
