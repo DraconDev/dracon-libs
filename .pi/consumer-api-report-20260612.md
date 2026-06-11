@@ -19,7 +19,7 @@ The highest-priority consumer fixes are documentation/example correctness, featu
   - broken link to `install_package` in `tools/system/dracon-system/src/lib.rs:199`
 - `rg -n 'non_exhaustive|^pub (struct|enum)' tools services contracts`: no `#[non_exhaustive]` found on public structs/enums.
 - `rg -n 'MIT|Apache|AGPL' README.md tools services contracts -g 'README.md'`: crate README license text conflicts with workspace/package AGPL metadata in multiple crates.
-- `git status --short`: only `?? .pi/`, confirming no implementation changes.
+- `git status --short`: only `.pi/` goal/report bookkeeping changes (`M .pi/goals/active_goal_2026061200025808_mqa3sfmq-3x0msc.md` and `?? .pi/consumer-api-report-20260612.md`), confirming no implementation changes to source, manifests, lockfile, or CI.
 
 ## Public API inventory
 

@@ -5,12 +5,12 @@
   "status": "active",
   "autoContinue": true,
   "usage": {
-    "tokensUsed": 6649341,
-    "activeSeconds": 899
+    "tokensUsed": 7375792,
+    "activeSeconds": 1065
   },
   "sisyphus": false,
   "createdAt": "2026-06-11T23:02:58.082Z",
-  "updatedAt": "2026-06-11T23:18:36.813Z",
+  "updatedAt": "2026-06-11T23:21:25.547Z",
   "activePath": ".pi/goals/active_goal_2026061200025808_mqa3sfmq-3x0msc.md",
   "taskList": {
     "tasks": [
@@ -49,7 +49,9 @@
       {
         "id": "final-report",
         "title": "Deliver consumer-focused findings report",
-        "status": "pending",
+        "status": "complete",
+        "completedAt": "2026-06-11T23:21:13.472Z",
+        "evidence": "Verified consumer report sections and read-only status.",
         "verificationContract": "Report artifact exists and `git status --short` confirms no implementation changes were made."
       }
     ],
@@ -72,8 +74,8 @@ If blocked: Stop and ask the user which crate or API surface to focus on first.
 - Status: running
 - Auto-continue: on
 - Sisyphus mode: no
-- Time spent: 14m59s
-- Tokens used: 6.6M (6,649,341) tokens
+- Time spent: 17m45s
+- Tokens used: 7.4M (7,375,792) tokens
 - Verification contract: Run `git status --short` and confirm only expected goal/report bookkeeping changes exist; verify the report contains sections for public API inventory, docs/examples review, breaking-change risk, ergonomics findings, and prioritized recommendations.
 ## Tasks
 
@@ -82,5 +84,5 @@ If blocked: Stop and ask the user which crate or API surface to focus on first.
 - [x] docs-examples-review: Review docs, READMEs, and examples — evidence: Reviewed READMEs, crate docs, examples, and cargo doc output for consumer-facing issues.
 - [x] breaking-change-risk: Assess breaking-change and semver risk — evidence: Assessed public API stability and semver risks from public structs/enums/traits/features.
 - [x] ergonomics-prioritization: Prioritize ergonomics improvements — evidence: Produced ranked consumer/API remediation plan in report.
-- [ ] final-report: Deliver consumer-focused findings report — contract: Report artifact exists and `git status --short` confirms no implementation changes were made.
+- [x] final-report: Deliver consumer-focused findings report — evidence: Verified consumer report sections and read-only status.
 
