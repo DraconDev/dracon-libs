@@ -32,6 +32,7 @@ impl WhisperStt {
         Self::from_model("openai/whisper-tiny")
     }
 
+    /// Create a Whisper backend from a HuggingFace model id.
     pub fn from_model(model_id: &str) -> Result<Self> {
         let device = Device::Cpu;
 
@@ -78,6 +79,7 @@ impl WhisperStt {
         })
     }
 
+    /// Transcribe raw 16kHz PCM samples without timestamp segmentation.
     pub fn transcribe_raw(&self, audio: &[f32]) -> Result<Option<TranscriptionResult>> {
         if audio.len() < 16000 {
             return Ok(None);
@@ -91,8 +93,12 @@ impl WhisperStt {
         let mel = pcm_to_mel(&self.config, audio, &Device::Cpu)?;
         let mel_len = mel.dims()[2];
 
+        let mut state = self
+            .model
+            .lock()
+            .map_err(|_| anyhow::anyhow!("Whisper model mutex poisoned"))?;
         let segments = decode_greedy(
-            &mut self.model.lock().unwrap().model,
+            &mut state.model,
             &self.tokenizer,
             &mel,
             mel_len,
@@ -173,8 +179,12 @@ impl TimestampedTranscription for WhisperStt {
         let mel = pcm_to_mel(&self.config, audio, &Device::Cpu)?;
         let mel_len = mel.dims()[2];
 
+        let mut state = self
+            .model
+            .lock()
+            .map_err(|_| anyhow::anyhow!("Whisper model mutex poisoned"))?;
         let segments = decode_greedy(
-            &mut self.model.lock().unwrap().model,
+            &mut state.model,
             &self.tokenizer,
             &mel,
             mel_len,
