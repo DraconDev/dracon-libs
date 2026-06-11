@@ -21,8 +21,11 @@
 //! tts.speak("Hello world").await;
 //! ```
 
+/// TTS contracts and type aliases.
 pub mod contracts;
+/// Kitten TTS backend.
 pub mod kitten;
+/// Kokoro TTS backend.
 pub mod kokoro;
 
 use anyhow::Result;
@@ -35,13 +38,17 @@ pub use contracts::{
 pub use kitten::KittenTTS;
 pub use kokoro::KokoroTts;
 
+/// Enum dispatching to supported TTS backends.
 #[derive(Clone)]
 pub enum TtsEngine {
+    /// Kitten backend.
     Kitten(std::sync::Arc<KittenTTS>),
+    /// Kokoro backend.
     Kokoro(std::sync::Arc<KokoroTts>),
 }
 
 impl TtsEngine {
+    /// Speak text synchronously.
     pub fn speak(&self, text: &str) -> Result<()> {
         match self {
             TtsEngine::Kitten(k) => TextToSpeech::speak(&**k, text),
@@ -49,6 +56,7 @@ impl TtsEngine {
         }
     }
 
+    /// Stop active playback.
     pub fn stop(&self) -> Result<()> {
         match self {
             TtsEngine::Kitten(k) => TextToSpeech::stop(&**k),
@@ -56,6 +64,7 @@ impl TtsEngine {
         }
     }
 
+    /// Return whether audio is currently playing.
     pub fn is_speaking(&self) -> bool {
         match self {
             TtsEngine::Kitten(k) => TextToSpeech::is_speaking(&**k),
@@ -63,6 +72,7 @@ impl TtsEngine {
         }
     }
 
+    /// Return the backend name.
     pub fn name(&self) -> &'static str {
         match self {
             TtsEngine::Kitten(k) => TextToSpeech::name(&**k),
@@ -70,6 +80,7 @@ impl TtsEngine {
         }
     }
 
+    /// Queue speech without waiting for playback to finish.
     pub async fn speak_nowait(&self, text: &str) {
         match self {
             TtsEngine::Kitten(k) => k.speak_nowait(text).await,
@@ -77,6 +88,7 @@ impl TtsEngine {
         }
     }
 
+    /// Wait until active playback finishes.
     pub async fn wait_until_done(&self) {
         match self {
             TtsEngine::Kitten(k) => k.wait_until_done().await,

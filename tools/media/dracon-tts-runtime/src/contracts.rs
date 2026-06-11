@@ -153,6 +153,7 @@ impl DynTtsEngine {
         }
     }
 
+    /// Add an asynchronous fire-and-forget speak helper.
     pub fn with_speak_nowait<F>(mut self, f: F) -> Self
     where
         F: Fn(&str) + Send + 'static,
@@ -161,6 +162,7 @@ impl DynTtsEngine {
         self
     }
 
+    /// Add an asynchronous wait helper.
     pub fn with_wait_until_done<F>(mut self, f: F) -> Self
     where
         F: Fn() + Send + 'static,
@@ -169,26 +171,32 @@ impl DynTtsEngine {
         self
     }
 
+    /// Speak synchronously through the wrapped engine.
     pub fn speak(&self, text: &str) -> TtsResult<()> {
         self.inner.speak(text)
     }
 
+    /// Stop playback through the wrapped engine.
     pub fn stop(&self) -> TtsResult<()> {
         self.inner.stop()
     }
 
+    /// Return whether the wrapped engine is speaking.
     pub fn is_speaking(&self) -> bool {
         self.inner.is_speaking()
     }
 
+    /// Return the wrapped engine name.
     pub fn name(&self) -> &'static str {
         self.inner.name()
     }
 
+    /// Return the wrapped engine sample rate.
     pub fn sample_rate(&self) -> u32 {
         self.inner.sample_rate()
     }
 
+    /// Speak asynchronously using the configured helper or a blocking task.
     pub async fn speak_nowait(&self, text: &str) -> TtsResult<()> {
         if let Some(f) = &self.speak_nowait_fn {
             f(text);
@@ -202,6 +210,7 @@ impl DynTtsEngine {
         }
     }
 
+    /// Wait until playback is no longer active.
     pub async fn wait_until_done(&self) {
         if let Some(f) = &self.wait_until_done_fn {
             f();
@@ -213,13 +222,20 @@ impl DynTtsEngine {
     }
 }
 
+/// TTS runtime configuration.
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct TtsConfig {
+    /// Backend name (`kitten` or `kokoro`).
     pub engine: String,
+    /// ONNX model path.
     pub model_path: String,
+    /// Voice data path or directory.
     pub voices_path: String,
+    /// Default voice id.
     pub default_voice: String,
+    /// Native sample rate in Hz.
     pub sample_rate: u32,
+    /// Playback volume multiplier.
     pub volume: f32,
 }
 
@@ -236,15 +252,21 @@ impl Default for TtsConfig {
     }
 }
 
+/// Request for synthesizing speech.
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct SynthesisRequest {
+    /// Text to synthesize.
     pub text: String,
+    /// Optional voice id.
     pub voice_id: Option<String>,
+    /// Optional speed multiplier.
     pub speed: Option<f32>,
+    /// Optional pitch adjustment.
     pub pitch: Option<f32>,
 }
 
 impl SynthesisRequest {
+    /// Create a synthesis request for `text`.
     pub fn new(text: impl Into<String>) -> Self {
         Self {
             text: text.into(),
@@ -254,22 +276,29 @@ impl SynthesisRequest {
         }
     }
 
+    /// Set the voice id for synthesis.
     pub fn with_voice(mut self, voice_id: impl Into<String>) -> Self {
         self.voice_id = Some(voice_id.into());
         self
     }
 
+    /// Set the speed multiplier.
     pub fn with_speed(mut self, speed: f32) -> Self {
         self.speed = Some(speed);
         self
     }
 }
 
+/// Synthesized audio result.
 #[derive(Clone, Debug)]
 pub struct SynthesisResult {
+    /// Audio samples.
     pub samples: Vec<f32>,
+    /// Sample rate in Hz.
     pub sample_rate: u32,
+    /// Duration in milliseconds.
     pub duration_ms: u64,
+    /// Voice id used for synthesis.
     pub voice_used: String,
 }
 

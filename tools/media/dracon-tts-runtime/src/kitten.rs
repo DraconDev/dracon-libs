@@ -14,13 +14,18 @@ static KITTEN_COUNTER: AtomicU64 = AtomicU64::new(0);
 const KITTEN_SAMPLE_RATE: usize = 24000;
 const OUTPUT_SAMPLE_RATE: usize = 24000; // Most audio devices use 48kHz
 
+/// Runtime state for the Kitten backend.
 #[derive(Debug, Clone, PartialEq)]
 pub enum KittenState {
+    /// Backend is idle.
     Idle,
+    /// Backend is currently speaking.
     Speaking,
+    /// Backend encountered an error.
     Error(String),
 }
 
+/// Kitten text-to-speech backend.
 pub struct KittenTTS {
     sink: Arc<Sink>,
     state: Arc<AsyncMutex<KittenState>>,
