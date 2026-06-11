@@ -1,13 +1,17 @@
 use chrono::{DateTime, Utc};
 use std::fmt;
 
+/// Runtime-side conversation role.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Role {
+    /// User-authored message.
     User,
+    /// Assistant-authored message.
     Assistant,
 }
 
 impl Role {
+    /// Return the stable database string for this role.
     pub fn as_str(&self) -> &'static str {
         match self {
             Role::User => "user",
@@ -15,6 +19,7 @@ impl Role {
         }
     }
 
+    /// Parse a role from its stable database string.
     pub fn parse(s: &str) -> Option<Self> {
         match s {
             "user" => Some(Role::User),
@@ -30,15 +35,21 @@ impl fmt::Display for Role {
     }
 }
 
+/// Stored conversation row returned by the runtime.
 #[derive(Debug, Clone)]
 pub struct Conversation {
+    /// Database row id.
     pub id: i64,
+    /// Timestamp assigned when the row is materialized.
     pub timestamp: DateTime<Utc>,
+    /// Conversation participant role.
     pub role: Role,
+    /// Message text.
     pub content: String,
 }
 
 impl Conversation {
+    /// Create a new conversation with the current timestamp.
     pub fn new(id: i64, role: Role, content: String) -> Self {
         Self {
             id,
@@ -49,16 +60,23 @@ impl Conversation {
     }
 }
 
+/// User fact stored outside the conversation stream.
 #[derive(Debug, Clone)]
 pub struct UserFact {
+    /// Fact category.
     pub category: String,
+    /// Fact key within its category.
     pub key: String,
+    /// Fact value.
     pub value: String,
+    /// Confidence score for the fact.
     pub confidence: f32,
+    /// Optional source describing where the fact came from.
     pub source: Option<String>,
 }
 
 impl UserFact {
+    /// Create a new fact with default confidence and no source.
     pub fn new(
         category: impl Into<String>,
         key: impl Into<String>,

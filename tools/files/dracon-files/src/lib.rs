@@ -70,12 +70,13 @@ fn get_file_category_from_extension(path: &Path) -> FileCategory {
 fn is_binary_file(path: &Path) -> bool {
     if let Ok(content) = fs::read(path) {
         let sample = &content[..content.len().min(8192)];
-        sample.iter().any(|&b| b == 0)
+        sample.contains(&0)
     } else {
         false
     }
 }
 
+/// Main file-system catalog implementing all file contracts.
 pub struct FsCatalog;
 
 impl FileInspectContract for FsCatalog {

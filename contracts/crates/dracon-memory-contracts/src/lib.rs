@@ -20,35 +20,53 @@
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 
+/// Conversation participant role.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum Role {
+    /// User-authored message.
     User,
+    /// Assistant-authored message.
     Assistant,
+    /// System or policy-authored message.
     System,
 }
 
+/// Stored conversation entry shared by memory consumers and runtimes.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Conversation {
+    /// Participant role for the message.
     pub role: Role,
+    /// Message text.
     pub content: String,
+    /// Optional timestamp string supplied by the caller.
     pub timestamp: Option<String>,
 }
 
+/// Extracted user fact with a confidence score.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UserFact {
+    /// Fact text.
     pub fact: String,
+    /// Confidence score in the range expected by callers.
     pub confidence: f32,
 }
 
+/// Async storage contract for conversations and semantic recall.
 #[async_trait]
 pub trait MemoryStore: Send + Sync {
+    /// Persist one conversation entry.
     async fn store_conversation(&self, conversation: &Conversation) -> anyhow::Result<()>;
+    /// Search for conversations similar to `query`.
     async fn search_similar(&self, query: &str, limit: usize) -> anyhow::Result<Vec<Conversation>>;
+    /// Return the most recent conversation entries.
     async fn get_recent(&self, limit: usize) -> anyhow::Result<Vec<Conversation>>;
 }
 
+/// Async text embedding contract.
 #[async_trait]
 pub trait TextEmbedder: Send + Sync {
+    /// Embed `text` into a fixed-dimensional vector.
     async fn embed(&self, text: &str) -> anyhow::Result<Vec<f32>>;
+    /// Return the embedding dimension.
     fn dimension(&self) -> usize;
 }
