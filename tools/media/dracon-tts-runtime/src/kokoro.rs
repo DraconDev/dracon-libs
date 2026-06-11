@@ -218,7 +218,7 @@ impl KokoroTts {
             if let Ok(entries) = std::fs::read_dir(&dir) {
                 for entry in entries.flatten() {
                     let path = entry.path();
-                    if path.extension().map_or(false, |ext| ext == "bin") {
+                    if path.extension().is_some_and(|ext| ext == "bin") {
                         if let Some(name) = path.file_stem() {
                             let voice_name = name.to_string_lossy().to_string();
                             let prefix = voice_name.split('_').next().unwrap_or("");
@@ -228,10 +228,12 @@ impl KokoroTts {
                             ]
                             .contains(&prefix)
                             {
-                                if !voices.contains_key(&voice_name) {
+                                use std::collections::hash_map::Entry;
+
+                                if let Entry::Vacant(entry) = voices.entry(voice_name) {
                                     match Self::load_voice(&path.to_string_lossy()) {
                                         Ok(v) => {
-                                            voices.insert(voice_name, v);
+                                            entry.insert(v);
                                         }
                                         Err(e) => {
                                             eprintln!(
@@ -832,10 +834,10 @@ impl KokoroTts {
         let sink_for_wait = sink.clone();
         let active = self.active_playbacks.clone();
         let speaking = self.speaking.clone();
-        let _ = tokio::task::spawn_blocking(move || {
+        drop(tokio::task::spawn_blocking(move || {
             sink_for_wait.sleep_until_end();
             Self::finish_playback_state(active.as_ref(), speaking.as_ref());
-        });
+        }));
     }
 
     /// Block until active playback finishes.

@@ -135,12 +135,18 @@ pub trait VoiceProvider: Send + Sync {
 /// Combined TTS engine marker trait.
 pub trait TtsEngineBase: TextToSpeech + VoiceProvider {}
 
+/// Type-erased text callback used by [`DynTtsEngine`].
+type SpeakNowaitCallback = dyn Fn(&str) + Send + 'static;
+
+/// Type-erased wait callback used by [`DynTtsEngine`].
+type WaitUntilDoneCallback = dyn Fn() + Send + 'static;
+
 /// Type-erased TTS engine wrapper with optional async helpers.
 #[derive(Clone)]
 pub struct DynTtsEngine {
     inner: Arc<dyn TextToSpeech>,
-    speak_nowait_fn: Option<Arc<dyn Fn(&str) + Send + 'static>>,
-    wait_until_done_fn: Option<Arc<dyn Fn() + Send + 'static>>,
+    speak_nowait_fn: Option<Arc<SpeakNowaitCallback>>,
+    wait_until_done_fn: Option<Arc<WaitUntilDoneCallback>>,
 }
 
 impl DynTtsEngine {

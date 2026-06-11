@@ -14,8 +14,6 @@ static KITTEN_COUNTER: AtomicU64 = AtomicU64::new(0);
 const KITTEN_SAMPLE_RATE: usize = 24000;
 const OUTPUT_SAMPLE_RATE: usize = 24000; // Most audio devices use 48kHz
 
-/// Default Kitten voice id.
-
 /// Runtime state for the Kitten backend.
 #[derive(Debug, Clone, PartialEq)]
 pub enum KittenState {
@@ -525,8 +523,7 @@ impl KittenTTS {
 
     fn clean_phonemes(phonemes: &str) -> String {
         phonemes
-            .replace('\n', " ")
-            .replace('\r', " ")
+            .replace(['\n', '\r'], " ")
             .chars()
             .filter(|c| {
                 matches!(c,
