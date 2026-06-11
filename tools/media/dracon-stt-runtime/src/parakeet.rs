@@ -6,12 +6,14 @@ use std::path::Path;
 use std::sync::Arc;
 use tokio::sync::Mutex;
 
+/// Parakeet speech-to-text backend.
 pub struct ParakeetStt {
     model: Arc<Mutex<Parakeet>>,
     ready: bool,
 }
 
 impl ParakeetStt {
+    /// Create a Parakeet backend from a model directory or bundled assets path.
     pub fn new(model_dir: &str) -> anyhow::Result<Self> {
         let model_path = Path::new(model_dir);
         let model = if model_path.exists() {
@@ -48,6 +50,7 @@ impl ParakeetStt {
         })
     }
 
+    /// Transcribe audio samples asynchronously and return text when available.
     pub async fn transcribe_audio(&self, audio_data: Vec<f32>) -> Option<String> {
         println!("STT: Transcribing {} samples...", audio_data.len());
 

@@ -1,18 +1,31 @@
+/// Voice activity detector state.
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum VadState {
+    /// No speech is currently detected.
     Idle,
+    /// Speech may be starting.
     SpeechDetected,
+    /// Speech has been confirmed.
     SpeechConfirmed,
+    /// Silence has been detected after speech.
     SilenceDetected,
 }
 
+/// Voice activity detection state machine.
 pub struct VadStateMachine {
+    /// Current detector state.
     pub state: VadState,
+    /// Consecutive speech frames observed.
     pub speech_frames: usize,
+    /// Consecutive silence frames observed.
     pub silence_frames: usize,
+    /// Probability threshold for entering speech detection.
     pub speech_threshold: f32,
+    /// Probability threshold for entering silence detection.
     pub silence_threshold: f32,
+    /// Speech frames required to confirm recording.
     pub min_speech_frames: usize,
+    /// Silence frames required to end recording.
     pub min_silence_frames: usize,
 }
 
@@ -30,18 +43,24 @@ impl Default for VadStateMachine {
     }
 }
 
+/// Transition emitted by the VAD state machine.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum VadTransition {
+    /// No state transition occurred.
     None,
+    /// Speech start was detected.
     SpeechStart,
+    /// Speech end was detected.
     SpeechEnd,
 }
 
 impl VadStateMachine {
+    /// Create a VAD state machine with default thresholds.
     pub fn new() -> Self {
         Self::default()
     }
 
+    /// Process one VAD probability sample and return any transition.
     pub fn process(&mut self, probability: f32) -> VadTransition {
         match self.state {
             VadState::Idle | VadState::SilenceDetected => {
@@ -90,6 +109,7 @@ impl VadStateMachine {
         VadTransition::None
     }
 
+    /// Reset the state machine to idle.
     pub fn reset(&mut self) {
         self.state = VadState::Idle;
         self.speech_frames = 0;
@@ -298,7 +318,7 @@ mod tests {
     }
 
     #[test]
-    fn test_probability_exac[DRACON_SECRET:YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBSYW9ha1Uwa0tLbzBVM0l1SmNGUjd2aFNEZ1pzZzIycVRKTVgvOHFLL2s0Ck4rZDdsd0M2M21IazZlYmxIWjQwYkZ6MVBjcWhCMlhnL1AzUmVWbkdHbmsKLT4gTEdBRC1ncmVhc2UgR2lOJEk4IFYgOWJRPCZ2ID8jQyxDCi8yVEFGdFZSbWE3OFc2c3IrVElqb2dsckFjYTNocXdRVENqbmVEQ0xJdmg1eXRJck5VeXcrR1gvOXpWOGdRbm8KU2xpTUdjanRkSjhYTjBwNGZxZURwTVJWUll3NUpKSlhncU5pVmNhVTZBCi0tLSAxRG9hS2RlalpUZ1ZLS1ZSUFVtWHB6bk1nbW5FcDdsK3hETG9BZ2dKQjZvCijQQsZuw7arxBigDAgfsowKXptv/hB5Xi181BGH5TY5UKNqZ5Lq7tDZOiTcUXiJRsN03S6qlG84]() {
+    fn test_probability_exac[DRACON_SECRET:YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBFbHNYSXc4V0JFeVpNRTlvTnRSMnM1TGtHYmVkbllXWHplK21GbllpV21nCkxkQ1h2TjRhaXl5QVYwTmFQNm84d0gwZFMrMTZ1UGtsVkRlaGpqWUFWK1EKLT4gWDI1NTE5IEFDRHNPN1AwQjBOVWhRazJDaXRRUFJQZDFXU2FOUlVSQW96c1dwNmhSVTAKVGE5YXFnY0lqTzA5NlBVNHlRb0c0UGgrUjN2RTVvL0VPSnhMeGRPaDhoRQotPiBYMjU1MTkgOFlkT28vZitMT0hGbm5uRUo0enpRa1htZTZpcUo2TnJoVzNYN3k1eUpCcwo1d0VVTGdjQk0xVTdhNmRMYVkyWUdtM1NwQ1owZTYwMkEwL2d5cGlWcGdZCi0+IFgyNTUxOSAvV1c0V0RvUHdhZENNSjMzQTBtc3cyWmhUN3c2QmZIZkdNYTZrN0cyRlhnCi85cWZoazc0VXBDcGdsRVlZcEFBRk9LRjNHRkRHRmVTTE45MmZqNUVPUjgKLT4gWDI1NTE5IGVNTWJMd3V3aW5HR0J3YkN6Z3A0RWRTeDFUUUJoaEFtVDdtMjg4U0Nyak0KMlkvaG04RWVvaFczWTJoTktEbzRjaktYVEVDNUczUG5KalhSeVBWMlpBZwotPiBydy0tZ3JlYXNlIG0pIGtvMjp6e10KTmhOMU93S2dXU3VsOUtESDhwZzlxc1dWR1EKLS0tIG96ZjMvdUxORG13Ym9ZZVVNQ3hmOHhoMzY1Q1JwL1lKWDcrSTRXVFoyQjAKO9MQ/BBN8WytS0UzzKxXWtkKgj4sHC2icHFrUOUs2uktEaloqT31tfR3blT6lQMSBF7sho60+mg=]() {
         let mut sm = VadStateMachine::new();
 
         for _ in 0..3 {
@@ -922,7 +942,7 @@ mod tests {
     }
 
     #[test]
-    fn test_exac[DRACON_SECRET:YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBnMmxya2FydWFSV1ZpV1hFQk1OVjByVXpvdlZ5d3FiWWtNaXN6d3NCQWtZCnJwalN0bU9jR21qSzlZbWczd1U0TXc5MWtFdkZ4K0wwWkFOd2x0ZlUyekEKLT4gXm5eZig6LWdyZWFzZQo3ZWFOcnpkOTkxanpZN1F5VWFKT0IrZ0ZsQW9nOVBsSUo2MTVvbVUxL1FRS1AxZkljNHlhQnB6OHBFVEZ4Sk9QClFCSERxa0lSaEZsd1Q5YVBlVk01SEhFCi0tLSBPMks3M01VN0RlU1V3Uk1ZZXVOczJoTGg4NmxiMVZZeXVycEliT2VjTWFNChgJU68zCUhV0s5zKg2vkdI82U5Igbfx0KR4andobhwX5+mSMllJS6Qhl5611uflaQOiweLWl5bJ]() {
+    fn test_exac[DRACON_SECRET:YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB4YVdOYnBEYy9pSjJrbm9JbUMzb1lXblRSZWpJZWlWT0hqQnRZeWFjNDJZCnN5UlpUNGVlUjhQTXRwcmRGeW83ZFUyOUY3WGs5UndEaU56OU1DUGhKTWsKLT4gWDI1NTE5IG5vZXE4cnlPaEtEZ2dLbHhkbkdTNjhrVGRUREdBbnlLVlBWdFRjVGNQV2MKTkNycjVEczFHNlc4ZkhqUEJKczBLY0cwdjRTRk9GZWRUdTdVZGJ4emZpYwotPiBYMjU1MTkgV3Zac011cnlFSmNJM2EvS0lNZzdjVk9XL0kyT3RPbDd2RzVmVTdMZ2hTawpGUEFSSWxJTXBWZEY4dWVQUlVLUk1vVFhScFBpSjFsclpqbWxSTUllUjU0Ci0+IFgyNTUxOSB3d0ZGaXFNMllPSGdaTGxtR3NLdjVoWjJXOGZlT1QzVk1sZm1wTUx1elc4CmpiZDM2RFI5SGJZWkwwWGJUMkZqcnIxaGRnb0V6N0RucDI3WWJva2s3ZVUKLT4gWDI1NTE5IGlRVnhxLzQrNTJ1NGk3UlFRZjkzd1hDV2JtSEJ2SzFYNVRHb0JDUldJMmsKd1hTNzM5TGdlNEp3amY0SkpkZzFZaWhsM1VrUzhmOVFzb094emxDK2QyWQotPiBxLWdyZWFzZSBldyAveSBCVD8iYzQiLSB8L1tpNgpNaFlKVlhCQ3Q5YWJOK2NPOXM0K1BRdFhVdm1EcU8yc2ROS3VWN0VOOTdTUDVsSVlRcEVia2ZhNC9ReFV6WjFqCmQ2OWRKKzB5b0U4eldXZlNUNlVxK0JTWThwMW1BWmhYOStoeFZ5bXhNS2hIb0EKLS0tIG01NnNqQjZXT3A0YWFabzhZQjF2c2lMTHpsM2VnbE9VZXBDMVA3WXFYWVUKZRUQDmEL+xJi6TGPTkAGOYVuTFDM9/Pwi//tjsyJS1Pl/PsBOUII/Xz/0EoSLMdINgbQ64WdwyI=]() {
         let mut sm = VadStateMachine::new();
         sm.process(0.6);
         sm.process(0.6);

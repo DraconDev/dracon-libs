@@ -72,6 +72,7 @@ impl SttEngine {
         }
     }
 
+    /// Return the engine name.
     pub fn name(&self) -> &'static str {
         match self {
             SttEngine::Parakeet(p) => SpeechToText::name(p.as_ref()),
@@ -80,6 +81,7 @@ impl SttEngine {
         }
     }
 
+    /// Return whether the underlying model is ready.
     pub fn is_ready(&self) -> bool {
         match self {
             SttEngine::Parakeet(p) => SpeechToText::is_ready(p.as_ref()),
@@ -88,6 +90,7 @@ impl SttEngine {
         }
     }
 
+    /// Return engine capability flags.
     pub fn capabilities(&self) -> EngineCapabilities {
         match self {
             SttEngine::Parakeet(p) => SpeechToText::capabilities(p.as_ref()),
@@ -96,10 +99,12 @@ impl SttEngine {
         }
     }
 
+    /// Return whether timestamped transcription is supported.
     pub fn supports_timestamps(&self) -> bool {
         self.capabilities().supports_timestamps
     }
 
+    /// Transcribe audio and return timestamped segments when supported.
     pub fn transcribe_with_timestamps(
         &self,
         _audio: &[f32],
