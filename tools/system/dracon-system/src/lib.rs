@@ -203,10 +203,10 @@ impl SystemAgent {
         command: &str,
         args: &[String],
     ) -> anyhow::Result<String> {
-        self.run_command_checked(command, args)
+        self.run_command_checked(command, args).await
     }
 
-    fn run_command_checked(&self, command: &str, args: &[String]) -> anyhow::Result<String> {
+    async fn run_command_checked(&self, command: &str, args: &[String]) -> anyhow::Result<String> {
         if !self
             .approved_commands
             .lock()
@@ -219,7 +219,7 @@ impl SystemAgent {
             ));
         }
 
-        let output = std::process::Command::new(command).args(args).output()?;
+        let output = Command::new(command).args(args).output().await?;
         Ok(String::from_utf8_lossy(&output.stdout).to_string())
     }
 
@@ -319,7 +319,9 @@ mod tests {
     #[tokio::test]
     async fn run_command_requires_prior_approval() {
         let agent = SystemAgent::new();
-        let result = unsafe { agent.run_command("printf", &vec!["ok".to_string()]) }.await;
+        let result = agent
+            .run_command_checked("printf", &vec!["ok".to_string()])
+            .await;
         assert!(result.is_err());
     }
 
@@ -330,12 +332,15 @@ mod tests {
             .approve_command("printf", &vec!["ok".to_string()])
             .unwrap();
 
-        let output = unsafe { agent.run_command("printf", &vec!["ok".to_string()]) }
+        let output = agent
+            .run_command_checked("printf", &vec!["ok".to_string()])
             .await
             .unwrap();
         assert_eq!(output, "ok");
 
-        let rejected = unsafe { agent.run_command("printf", &vec!["other".to_string()]) }.await;
+        let rejected = agent
+            .run_command_checked("printf", &vec!["other".to_string()])
+            .await;
         assert!(rejected.is_err());
     }
 

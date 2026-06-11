@@ -108,7 +108,7 @@ fn detect_scope(files: &[DiffFile]) -> &'static str {
     }
 
     if scopes.len() == 1 {
-        scopes.into_iter().next().unwrap()
+        scopes.into_iter().next().unwrap_or("misc")
     } else if scopes.is_empty() {
         "misc"
     } else {
@@ -321,8 +321,8 @@ pub fn build_commit_message(ctx: &CommitContext) -> String {
     let summary = if ctx.is_checkpoint {
         extract_focus_summary(ctx.description.as_deref())
             .unwrap_or_else(|| "wip checkpoint".to_string())
-    } else if ctx.description.is_some() {
-        ctx.description.clone().unwrap()
+    } else if let Some(description) = ctx.description.as_ref() {
+        description.clone()
     } else {
         // No task progress — just show what kind of work this is
         format!("{} files changed", total)
