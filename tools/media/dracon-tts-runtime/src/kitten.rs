@@ -37,19 +37,29 @@ pub struct KittenTTS {
 }
 
 pub const DEFAULT_VOICE: &str = "expr-voice-3-m"; // Bruno
+/// Default female voice id.
 pub const DEFAULT_FEMALE_VOICE: &str = "expr-voice-5-f"; // Kiki
+/// Default model key.
 pub const DEFAULT_MODEL: &str = "nano";
 
+/// Kitten model file configuration.
 #[derive(Debug, Clone, Copy)]
 pub struct KittenModelConfig {
+    /// Stable model key.
     pub key: &'static str,
+    /// Human-readable model label.
     pub label: &'static str,
+    /// ONNX model path.
     pub model_path: &'static str,
+    /// Voice data path.
     pub voices_path: &'static str,
+    /// Optional alternate voice data path.
     pub fallback_voices_path: Option<&'static str>,
+    /// Human-readable note about this model.
     pub note: &'static str,
 }
 
+/// Built-in Kitten model descriptions.
 pub const MODEL_DESCRIPTIONS: &[KittenModelConfig] = &[
     KittenModelConfig {
         key: "nano",
