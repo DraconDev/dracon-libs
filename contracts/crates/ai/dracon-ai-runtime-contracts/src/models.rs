@@ -101,3 +101,13 @@ pub struct ChatResponse {
     /// Optional finish reason from the model.
     pub finish_reason: Option<String>,
 }
+
+impl ChatResponse {
+    /// Create a chat completion response.
+    pub fn new(content: impl Into<String>, finish_reason: Option<String>) -> Self {
+        Self {
+            content: content.into(),
+            finish_reason,
+        }
+    }
+}

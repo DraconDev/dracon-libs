@@ -2,6 +2,8 @@
 
 OpenAI-compatible AI provider adapters.
 
+See the AI crates consumer guide for compatibility expectations for library and AI API consumers.
+
 This crate currently provides `GenericOpenAIAdapter`, a non-streaming adapter for OpenAI Chat Completions-compatible endpoints.
 
 ## Usage

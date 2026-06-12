@@ -61,6 +61,16 @@ pub struct RoutingTrace {
     pub lane: Option<RoutingTask>,
 }
 
+impl RoutingTrace {
+    /// Create a routing trace for a selected model.
+    pub fn new(selected_model: impl Into<String>, lane: Option<RoutingTask>) -> Self {
+        Self {
+            selected_model: selected_model.into(),
+            lane,
+        }
+    }
+}
+
 /// Generic registry mapping model ids to provider implementations.
 #[non_exhaustive]
 pub struct ProviderRegistry<T: ?Sized> {
@@ -139,10 +149,7 @@ impl<T: AiProvider + ?Sized> SmartRouter<T> {
             .ok_or_else(|| anyhow::anyhow!("Provider not found for model: {}", model_id))?
             .clone();
 
-        let trace = RoutingTrace {
-            selected_model: model_id,
-            lane,
-        };
+        let trace = RoutingTrace::new(model_id, lane);
 
         Ok((provider, trace))
     }

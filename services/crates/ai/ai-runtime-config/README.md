@@ -2,6 +2,8 @@
 
 Configuration types for AI runtime providers.
 
+See the AI crates consumer guide for compatibility expectations for library and AI API consumers.
+
 This crate defines `OpenAIProviderSpec` and `AiRuntimeConfig`, plus `resolve_ai_runtime_config()`.
 
 ## Usage
@@ -12,21 +14,21 @@ use ai_runtime_config::{resolve_ai_runtime_config, AiRuntimeConfig, OpenAIProvid
 let config = resolve_ai_runtime_config();
 assert!(config.openai_providers.is_empty());
 
-let provider = OpenAIProviderSpec {
-    model_id: "example-model".to_string(),
-    endpoint: "https://api.example.com/v1".to_string(),
-    payload_model: "example-model".to_string(),
-    api_keys: Vec::new(),
-    auth_header_name: "Authorization".to_string(),
-    auth_header_prefix: "Bearer ".to_string(),
-};
+let provider = OpenAIProviderSpec::new(
+    "example-model",
+    "https://api.example.com/v1",
+    "example-model",
+    Vec::new(),
+    "Authorization",
+    "Bearer ",
+);
 
-let config = AiRuntimeConfig {
-    openai_providers: vec![provider],
-    active_model_ids: vec!["example-model".to_string()],
-    dev_model_ids: Vec::new(),
-    lane_model_policy: None,
-};
+let config = AiRuntimeConfig::new(
+    vec![provider],
+    vec!["example-model".to_string()],
+    Vec::new(),
+    None,
+);
 ```
 
 ## Configuration resolution

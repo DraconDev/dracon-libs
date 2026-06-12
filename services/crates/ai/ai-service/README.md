@@ -2,6 +2,8 @@
 
 High-level AI service layer for `dracon-libs`.
 
+See the AI crates consumer guide for compatibility expectations for library and AI API consumers.
+
 `ai-service` combines a provider registry with a simple lane model policy and exposes `AiService::ask()` for OpenAI-compatible providers.
 
 ## Usage
@@ -24,7 +26,11 @@ let mut registry = ProviderRegistry::new();
 registry.register(DEFAULT_PROVIDER, Arc::new(adapter));
 let service = AiService::new(registry, Default::default());
 
-let request = ai_service::ChatRequest::default();
+let request = ai_service::ChatRequest::new(
+    "example-project",
+    vec![ai_service::ChatMessage::new("user", "What is 2+2?")],
+)
+.with_max_tokens(Some(50));
 let text = service.ask(request).await?;
 # Ok(())
 # }

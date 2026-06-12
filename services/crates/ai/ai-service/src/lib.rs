@@ -39,6 +39,21 @@ pub struct LaneModelPolicy {
     pub default_lane: Option<String>,
 }
 
+impl LaneModelPolicy {
+    /// Create a lane model policy.
+    pub fn new(enabled: bool, default_lane: Option<String>) -> Self {
+        Self {
+            enabled,
+            default_lane,
+        }
+    }
+
+    /// Enable lane-based routing with an optional default lane.
+    pub fn enabled_with_default_lane(default_lane: impl Into<String>) -> Self {
+        Self::new(true, Some(default_lane.into()))
+    }
+}
+
 /// Provider registry for AI backends.
 #[non_exhaustive]
 pub struct ProviderRegistry {

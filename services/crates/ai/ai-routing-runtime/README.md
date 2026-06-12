@@ -2,6 +2,8 @@
 
 Generic AI provider routing utilities.
 
+See the AI crates consumer guide for compatibility expectations for library and AI API consumers.
+
 This crate provides `ProviderRegistry<T>` and `SmartRouter<T>` for selecting providers by active/dev model lists and optional lane policy.
 
 ## Usage
