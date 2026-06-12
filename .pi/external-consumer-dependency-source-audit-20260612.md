@@ -37,11 +37,13 @@ Updated `/home/dracon/Dev/dracon-utilities/Cargo.toml` workspace dependencies:
 | Consumer manifest scan | `python3` scan of `/home/dracon/Dev/**/Cargo.toml` for `dracon-libs`, `DraconDev/dracon-libs`, and Dracon crate names | Found only the documented consumers. |
 | `dracon-utilities` build/type check | `cargo check --manifest-path /home/dracon/Dev/dracon-utilities/Cargo.toml --workspace` | Pass |
 | `dracon-utilities` full tests | `cargo test --manifest-path /home/dracon/Dev/dracon-utilities/Cargo.toml --workspace --no-fail-fast` | Failed for unrelated environment/pre-existing issues: missing git author identity in git tests, SSH/mock SSH failures, and security tests reporting no master identities. |
-| Current workspace validation | `cargo fmt --all -- --check`, `cargo check --workspace --all-targets --all-features`, `cargo clippy --workspace --all-targets -- -D warnings`, `RUSTDOCFLAGS="-D warnings" cargo doc --workspace --no-deps`, `nix-shell -p pkg-config alsa-lib sqlite --run 'cargo test --workspace --all-targets --no-fail-fast'` | Pass |
+| `dracon-utilities` remote sync | `git push codeberg HEAD:main` and `git push gitlab HEAD:main` | Pass; both now point at `b66ac345040ce6d4609504ed9f0753c5f22151f6`. |
+| `dracon-utilities` GitHub remote sync | `git push github HEAD:main` | Blocked: rejected as non-fast-forward because GitHub main is `e5619fc636fb2cb39c403e260e8feb308060d1dc`; requires either pulling/integrating remote changes or explicit `--force-with-lease` approval. |
+| Current workspace validation | `cargo fmt --all -- --check`, `cargo check --workspace --all-targets --all-features`, `cargo clippy --workspace --all-targets -- -D warnings`, `RUSTDOCFLAGS="-D warnings" cargo doc --workspace --no-deps`, `nix-shell -p pkg-config alsa-lib sqlite bash --run 'cargo test --workspace --all-targets --no-fail-fast'` | Pass |
 
 ## Takeaway
 
-The only active local sibling consumer of `dracon-libs` was `dracon-utilities`, and it now consumes `dracon-libs` from the Git repository rather than local `../dracon-libs` paths. Other local consumers either use crates.io, use a different AI library boundary, or have only commented/local-development dependencies.
+The only active local sibling consumer of `dracon-libs` was `dracon-utilities`, and it now consumes `dracon-libs` from the Git repository rather than local `../dracon-libs` paths. The `dracon-utilities` change is pushed to Codeberg and GitLab. GitHub remains blocked by a non-fast-forward remote main. Other local consumers either use crates.io, use a different AI library boundary, or have only commented/local-development dependencies.
 
 ## Remaining notes
 
