@@ -162,14 +162,55 @@ impl SpeechToText for ParakeetStt {
 
     fn capabilities(&self) -> EngineCapabilities {
         EngineCapabilities {
-            supports_timestamps: false,
+            supports_timestamps: true,
             supports_streaming: true,
             supports_language_detection: false,
         }
     }
 }
 
-impl TimestampedTranscription for ParakeetStt {}
+impl TimestampedTranscription for ParakeetStt {
+    fn transcribe_with_timestamps(
+        &self,
+        audio: &[f32],
+        sample_rate: u32,
+    ) -> SttResult<Option<Vec<TimestampedSegment>>> {
+        if audio.len() < 16000 {
+            return Ok(None);
+        }
+
+        let rms: f32 = (audio.iter().map(|x| x * x).sum::<f32>() / audio.len() as f32).sqrt();
+        if rms < 0.001 {
+            return Ok(None);
+        }
+
+        let model = self.model.clone();
+        let audio = audio.to_vec();
+        let result = std::thread::spawn(move || {
+            let mut model = model.blocking_lock();
+            model.transcribe_samples(audio, sample_rate, 1, Some(TimestampMode::Sentences))
+        })
+        .join();
+
+        match result {
+            Ok(Ok(transcription)) => {
+                let segments = transcription
+                    .tokens
+                    .iter()
+                    .map(|token| TimestampedSegment {
+                        start_secs: f64::from(token.start),
+                        end_secs: f64::from(token.end),
+                        text: token.text.clone(),
+                        confidence: 0.0,
+                    })
+                    .collect();
+                Ok(Some(segments))
+            }
+            Ok(Err(e)) => Err(anyhow::anyhow!("STT Error: {e}")),
+            Err(_) => Err(anyhow::anyhow!("STT Task Error")),
+        }
+    }
+}
 
 // SAFETY: ParakeetStt is Send because the Parakeet model is wrapped in Arc<Mutex<Parakeet>>,
 // which provides shared ownership and interior mutability. All access is gated by the Mutex,
