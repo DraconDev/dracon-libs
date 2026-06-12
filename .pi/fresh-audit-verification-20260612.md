@@ -6,9 +6,10 @@ Goal: double-check the updated `dracon-libs` workspace and documented consumer/d
 
 ## Current repository state
 
-- `dracon-libs` HEAD: `957c6af`
-- Working tree: clean (`git status --porcelain=v1 -uall` returned no paths).
+- `dracon-libs` HEAD: `b387807`
+- Working tree: clean (`git status --porcelain=v1 -uall` returned no paths after validation and report commit).
 - Recent audited changes are committed in the current history:
+  - `b387807` — fresh end-to-end audit verification report.
   - `957c6af` — updated external consumer dependency-source audit report.
   - `4c4ebdc` — updated README external/local consumer takeaway.
   - `436049d` — updated local AI consumer takeaway.
