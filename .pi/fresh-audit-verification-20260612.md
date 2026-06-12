@@ -80,10 +80,10 @@ Evidence:
 
 Remote sync evidence for `dracon-utilities`:
 
-- Local HEAD: `b66ac345040ce6d4609504ed9f0753c5f22151f6`.
-- Codeberg `main`: `b66ac345040ce6d4609504ed9f0753c5f22151f6`.
-- GitLab `main`: `b66ac345040ce6d4609504ed9f0753c5f22151f6`.
-- GitHub `main`: `9ca1a5804ee7091d3d7fd1f4a00569cb7c0323e6`, divergent from local. After `git fetch github main`, local is 8 commits ahead and GitHub is 7 commits ahead of their merge base. Pushing this manifest change to GitHub would require integrating remote changes or an explicit force-with-lease decision.
+- Local HEAD: `4c51b95bc20810047925f321d3df2d5a59cd6543`.
+- Codeberg `main`: `4c51b95bc20810047925f321d3df2d5a59cd6543`.
+- GitLab `main`: `4c51b95bc20810047925f321d3df2d5a59cd6543`.
+- GitHub `main`: `9ca1a5804ee7091d3d7fd1f4a00569cb7c0323e6`, divergent from local. After `git fetch github main`, local is 8 commits ahead and GitHub is 7 commits ahead of their merge base. Pushing these manifest changes to GitHub would require integrating remote changes or an explicit force-with-lease decision.
 
 ## Documentation and report audit
 
