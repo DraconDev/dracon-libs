@@ -101,8 +101,9 @@ async fn test_git_service_protected_filter_failure_is_fail_closed() {
     perms.set_mode(0o755);
     std::fs::set_permissions(&warden, perms).unwrap();
 
-    let old_path = std::env::var_os("PATH");
-    std::env::set_var("PATH", bin_dir);
+    let old_path = std::env::var_os("PATH").unwrap_or_default();
+    let combined_path = format!("{}:{}", bin_dir.display(), old_path.to_string_lossy());
+    std::env::set_var("PATH", combined_path);
     let svc = dracon_git::GitService::new(tmp.path()).unwrap();
     let err = svc.add_paths(&["secret.txt".to_string()]).await;
     match old_path {
