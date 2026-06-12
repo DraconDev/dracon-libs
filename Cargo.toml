@@ -31,11 +31,11 @@ description = "Dracon multi-language Rust libraries for AI, system, media, and d
 [workspace.dependencies]
 anyhow = "1.0"
 bytes = "1.0"
-tokio = { version = "1.38.0", features = ["full"] }
+tokio = { version = "1.52.3", features = ["full"] }
 tracing = "0.1"
 chrono = { version = "0.4", features = ["serde"] }
 serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
+serde_json = "1.0.150"
 uuid = { version = "1.8", features = ["v4", "serde"] }
 futures = "0.3"
 async-trait = "0.1"

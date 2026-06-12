@@ -41,6 +41,16 @@ pub struct RoutingMessage {
     pub content: String,
 }
 
+impl RoutingMessage {
+    /// Create a routing message envelope.
+    pub fn new(role: impl Into<String>, content: impl Into<String>) -> Self {
+        Self {
+            role: role.into(),
+            content: content.into(),
+        }
+    }
+}
+
 /// Observability trace for a routing decision.
 #[non_exhaustive]
 #[derive(Debug, Clone, Serialize, Deserialize)]

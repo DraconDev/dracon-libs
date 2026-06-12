@@ -3,7 +3,7 @@ use std::path::Path;
 use dracon_files::{FileInspectContract, FileSuitabilityContract, FsCatalog};
 
 fn main() -> anyhow::Result<()> {
-    let catalog = FsCatalog;
+    let catalog = FsCatalog::new();
 
     let test_file = Path::new("/tmp/test.txt");
     std::fs::write(test_file, "hello world")?;

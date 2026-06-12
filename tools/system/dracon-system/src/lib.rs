@@ -505,6 +505,32 @@ mod tests {
         assert!(rejected.is_err());
     }
 
+    #[tokio::test]
+    async fn privileged_operations_require_specific_approval() {
+        let agent = SystemAgent::new();
+        assert!(agent.apply_config().await.is_err());
+        assert!(agent.install_package("hello").await.is_err());
+    }
+
+    #[test]
+    fn package_name_sanitizer_rejects_shell_metacharacters() {
+        let agent = SystemAgent::new();
+        assert!(agent.install_package("hello;rm -rf /").is_err());
+    }
+
+    #[tokio::test]
+    async fn run_command_checked_surfaces_non_zero_exit() {
+        let agent = SystemAgent::new();
+        agent
+            .approve_command("sh", &["-c".to_string(), "printf partial >&2; exit 7".to_string()])
+            .unwrap();
+
+        let result = agent
+            .run_command_checked("sh", &["-c".to_string(), "printf partial >&2; exit 7".to_string()])
+            .await;
+        assert!(result.is_err());
+    }
+
     #[test]
     fn approve_command_rejects_empty_program() {
         let agent = SystemAgent::new();

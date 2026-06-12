@@ -18,17 +18,12 @@ async fn main() -> anyhow::Result<()> {
 
     let svc = AiService::new(registry, LaneModelPolicy::default());
 
-    let request = ai_service::ChatRequest {
-        project_id: "example".into(),
-        messages: vec![ai_service::ChatMessage {
-            role: "user".into(),
-            content: "What is 2+2?".into(),
-        }],
-        client_intent: None,
-        max_tokens: Some(50),
-        temperature: Some(0.7),
-        stream: false,
-    };
+    let request = ai_service::ChatRequest::new(
+        "example",
+        vec![ai_service::ChatMessage::new("user", "What is 2+2?")],
+    )
+    .with_max_tokens(Some(50))
+    .with_temperature(Some(0.7));
 
     let response = svc.ask(request).await?;
     println!("Response: {}", response);

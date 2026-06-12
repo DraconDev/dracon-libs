@@ -33,10 +33,7 @@ async fn main() {
             "example",
             None,
             None,
-            &[RoutingMessage {
-                role: "user".to_string(),
-                content: "hello".to_string(),
-            }],
+            &[RoutingMessage::new("user", "hello")],
             dracon_ai_contracts::SelectionConstraints::default(),
         )
         .await

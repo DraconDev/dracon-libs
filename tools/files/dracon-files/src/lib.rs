@@ -80,6 +80,19 @@ fn is_binary_file(path: &Path) -> bool {
 #[non_exhaustive]
 pub struct FsCatalog;
 
+impl FsCatalog {
+    /// Create the default filesystem catalog implementation.
+    pub fn new() -> Self {
+        Self
+    }
+}
+
+impl Default for FsCatalog {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl FileInspectContract for FsCatalog {
     fn get_file_category(&self, path: &Path) -> FileCategory {
         get_file_category_from_extension(path)

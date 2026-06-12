@@ -31,6 +31,27 @@ pub struct OpenAIProviderSpec {
     pub auth_header_prefix: String,
 }
 
+impl OpenAIProviderSpec {
+    /// Create an OpenAI-compatible provider specification.
+    pub fn new(
+        model_id: impl Into<String>,
+        endpoint: impl Into<String>,
+        payload_model: impl Into<String>,
+        api_keys: Vec<String>,
+        auth_header_name: impl Into<String>,
+        auth_header_prefix: impl Into<String>,
+    ) -> Self {
+        Self {
+            model_id: model_id.into(),
+            endpoint: endpoint.into(),
+            payload_model: payload_model.into(),
+            api_keys,
+            auth_header_name: auth_header_name.into(),
+            auth_header_prefix: auth_header_prefix.into(),
+        }
+    }
+}
+
 /// Top-level AI runtime configuration.
 #[non_exhaustive]
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -43,6 +64,23 @@ pub struct AiRuntimeConfig {
     pub dev_model_ids: Vec<String>,
     /// Optional lane policy name used by routing code.
     pub lane_model_policy: Option<String>,
+}
+
+impl AiRuntimeConfig {
+    /// Create an AI runtime configuration.
+    pub fn new(
+        openai_providers: Vec<OpenAIProviderSpec>,
+        active_model_ids: Vec<String>,
+        dev_model_ids: Vec<String>,
+        lane_model_policy: Option<String>,
+    ) -> Self {
+        Self {
+            openai_providers,
+            active_model_ids,
+            dev_model_ids,
+            lane_model_policy,
+        }
+    }
 }
 
 /// Resolve an empty AI runtime configuration.

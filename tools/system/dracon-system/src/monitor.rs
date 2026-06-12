@@ -264,3 +264,21 @@ impl ProcessControlContract for ProcessController {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn process_controller_rejects_unknown_uid() {
+        let err = ProcessController.kill_process(u32::MAX, None).unwrap_err();
+        assert!(err.to_string().contains("unable to verify ownership"));
+    }
+
+    #[test]
+    fn process_controller_rejects_invalid_signal_before_uid_match() {
+        let pid = std::process::id();
+        let err = ProcessController.kill_process(pid, Some(999)).unwrap_err();
+        assert!(err.to_string().contains("Invalid signal"));
+    }
+}

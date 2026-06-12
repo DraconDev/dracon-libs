@@ -161,13 +161,18 @@ impl KokoroTts {
 
         let session = if std::path::Path::new(model_path).exists() {
             match Session::builder() {
-                Ok(builder) => match builder
-                    .with_intra_threads(4)
-                    .and_then(|b| b.commit_from_file(model_path))
-                {
-                    Ok(s) => Some(Arc::new(Mutex::new(s))),
+                Ok(builder) => match builder.with_intra_threads(4) {
+                    Ok(mut builder) => match builder.commit_from_file(model_path) {
+                        Ok(s) => Some(Arc::new(Mutex::new(s))),
+                        Err(e) => {
+                            return Err(anyhow::anyhow!("failed to load Kokoro ONNX model: {}", e));
+                        }
+                    },
                     Err(e) => {
-                        return Err(anyhow::anyhow!("failed to load Kokoro ONNX model: {}", e));
+                        return Err(anyhow::anyhow!(
+                            "failed to configure Kokoro session builder: {}",
+                            e
+                        ));
                     }
                 },
                 Err(e) => {

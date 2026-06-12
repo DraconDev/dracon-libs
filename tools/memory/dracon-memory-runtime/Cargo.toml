@@ -13,7 +13,7 @@ tokio = { workspace = true, features = ["sync", "rt-multi-thread", "macros"] }
 rusqlite = { version = "0.32", features = [] }
 sqlite-vec = "0.1"
 chrono = { workspace = true }
-ort = { version = "2.0.0-rc.11", features = ["ndarray"] }
+ort = { version = "2.0.0-rc.12", features = ["ndarray"] }
 ndarray = "0.17"
 tokenizers = "0.19"
 tracing = { workspace = true }
