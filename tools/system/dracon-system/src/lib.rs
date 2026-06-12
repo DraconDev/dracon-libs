@@ -522,11 +522,17 @@ mod tests {
     async fn run_command_checked_surfaces_non_zero_exit() {
         let agent = SystemAgent::new();
         agent
-            .approve_command("sh", &["-c".to_string(), "printf partial >&2; exit 7".to_string()])
+            .approve_command(
+                "sh",
+                &["-c".to_string(), "printf partial >&2; exit 7".to_string()],
+            )
             .unwrap();
 
         let result = agent
-            .run_command_checked("sh", &["-c".to_string(), "printf partial >&2; exit 7".to_string()])
+            .run_command_checked(
+                "sh",
+                &["-c".to_string(), "printf partial >&2; exit 7".to_string()],
+            )
             .await;
         assert!(result.is_err());
     }

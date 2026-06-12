@@ -180,6 +180,12 @@ impl KittenTTS {
         Self::new_with_voice(model_path, voices_path, DEFAULT_VOICE).await
     }
 
+    /// Create a Kitten backend from a built-in model alias.
+    pub async fn new_with_model(model_name: &str, voice: &str) -> Result<Self> {
+        let (model_path, voices_path) = model_paths(model_name);
+        Self::new_with_voice(model_path, voices_path, voice).await
+    }
+
     /// Create a Kitten backend with an explicit voice.
     pub async fn new_with_voice(model_path: &str, voices_path: &str, voice: &str) -> Result<Self> {
         let (stream, handle) =
