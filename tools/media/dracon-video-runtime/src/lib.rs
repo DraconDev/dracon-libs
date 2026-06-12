@@ -39,7 +39,7 @@ mod tests {
 
     #[test]
     fn test_crate_exists() {
-        let segments = vec![TranscriptSegment {
+        let segments = [TranscriptSegment {
             start: 0.0,
             end: 1.0,
             text: "Example subtitle".to_string(),
