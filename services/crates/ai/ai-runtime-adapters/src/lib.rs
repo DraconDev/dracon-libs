@@ -17,6 +17,7 @@
 //! let (content, _) = adapter.ask_and_collect(request).await?;
 //! ```
 
+use std::fmt;
 use std::time::Duration;
 
 use anyhow::Context;
