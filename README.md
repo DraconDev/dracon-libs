@@ -61,6 +61,8 @@ dracon-libs (workspace root, version 94.7.0)
 
 The local workspace has no non-AI consumer of the AI crates yet. Current local consumers are internal AI crates only: `dracon-ai-runtime-contracts` depends on `dracon-ai-contracts`; `ai-routing-runtime` depends on the AI contracts; `ai-runtime-adapters` depends on `dracon-ai-runtime-contracts`; and `ai-service` depends on the AI contracts plus routing/adapters. `ai-runtime-config` is currently a standalone config crate with no local dependents. For migration notes and consumer guidance, see [`services/crates/ai/README.md`](services/crates/ai/README.md).
 
+External/local consumer checks show `dracon-utilities` previously depended on local `../dracon-libs` paths for `dracon-git`, `dracon-system-lib`, and AI runtime crates. Those dependencies were changed to `git = "https://github.com/DraconDev/dracon-libs"` so that consumer resolves the library from the repository instead of a sibling checkout. `kiki-sassy-desktop-announcer` consumes `dracon-tts-runtime` from crates.io, and `avid` only has a commented-out local STT path.
+
 ## Importing
 
 Add individual crates to your `Cargo.toml`:
