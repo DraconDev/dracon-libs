@@ -8,6 +8,7 @@ use crate::memory_contracts::{Conversation, Role, UserFact};
 const EMBEDDING_DIM: usize = 384;
 
 /// SQLite-backed persistence layer for memory conversations and facts.
+#[non_exhaustive]
 pub struct MemoryDb {
     conn: Connection,
 }

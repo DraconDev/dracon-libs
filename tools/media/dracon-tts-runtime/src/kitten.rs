@@ -15,6 +15,7 @@ const KITTEN_SAMPLE_RATE: usize = 24000;
 const OUTPUT_SAMPLE_RATE: usize = 24000; // Most audio devices use 48kHz
 
 /// Runtime state for the Kitten backend.
+#[non_exhaustive]
 #[derive(Debug, Clone, PartialEq)]
 pub enum KittenState {
     /// Backend is idle.
@@ -26,6 +27,7 @@ pub enum KittenState {
 }
 
 /// Kitten text-to-speech backend.
+#[non_exhaustive]
 pub struct KittenTTS {
     sink: Arc<Sink>,
     state: Arc<AsyncMutex<KittenState>>,
@@ -44,6 +46,7 @@ pub const DEFAULT_FEMALE_VOICE: &str = "expr-voice-5-f"; // Kiki
 pub const DEFAULT_MODEL: &str = "nano";
 
 /// Kitten model file configuration.
+#[non_exhaustive]
 #[derive(Debug, Clone, Copy)]
 pub struct KittenModelConfig {
     /// Stable model key.

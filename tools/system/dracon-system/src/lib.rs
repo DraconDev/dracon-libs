@@ -49,6 +49,7 @@ pub use remote::{SshRemoteConnector, SshRemoteExecProvider, SshRemoteFsProvider}
 pub use storage::{analyze_workspace_storage, DirUsage, HotspotUsage, WorkspaceStorageReport};
 
 /// Application-level notification variants dispatched through the system agent.
+#[non_exhaustive]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum AppNotification {
     /// A background task has completed successfully.
@@ -75,6 +76,7 @@ struct ApprovedCommand {
 }
 
 /// Top-level agent for system diagnostics, configuration, and notifications.
+#[non_exhaustive]
 #[derive(Clone)]
 pub struct SystemAgent {
     /// Path to the user's home-manager or nixpkgs home.nix, if found.

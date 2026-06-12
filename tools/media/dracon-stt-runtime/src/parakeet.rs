@@ -8,6 +8,7 @@ use std::sync::Arc;
 use tokio::sync::Mutex;
 
 /// Parakeet speech-to-text backend.
+#[non_exhaustive]
 pub struct ParakeetStt {
     model: Arc<Mutex<Parakeet>>,
     ready: bool,

@@ -25,6 +25,7 @@
 use serde::{Deserialize, Serialize};
 
 /// Task category for AI routing decisions.
+#[non_exhaustive]
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum RoutingTask {
     /// General-purpose tasks
@@ -51,6 +52,7 @@ impl RoutingTask {
 }
 
 /// Constraints for model selection during routing.
+#[non_exhaustive]
 #[derive(Debug, Clone, Default)]
 pub struct SelectionConstraints {
     /// Maximum number of tokens in the response.

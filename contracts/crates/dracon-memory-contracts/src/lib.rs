@@ -21,6 +21,7 @@ use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 
 /// Conversation participant role.
+#[non_exhaustive]
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum Role {
     /// User-authored message.
@@ -32,6 +33,7 @@ pub enum Role {
 }
 
 /// Stored conversation entry shared by memory consumers and runtimes.
+#[non_exhaustive]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Conversation {
     /// Participant role for the message.
@@ -43,6 +45,7 @@ pub struct Conversation {
 }
 
 /// Extracted user fact with a confidence score.
+#[non_exhaustive]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UserFact {
     /// Fact text.

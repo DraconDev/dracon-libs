@@ -108,6 +108,7 @@ pub fn voice_info(name: &str) -> (&'static str, &'static str, &'static str) {
 }
 
 /// Kokoro text-to-speech backend.
+#[non_exhaustive]
 pub struct KokoroTts {
     sink: Arc<Sink>,
     /// Atomic flag indicating whether playback is active.

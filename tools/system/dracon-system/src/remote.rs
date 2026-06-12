@@ -11,10 +11,13 @@ use std::path::{Path, PathBuf};
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 /// SSH implementation of [`RemoteConnectContract`].
+#[non_exhaustive]
 pub struct SshRemoteConnector;
 /// SSH/SFTP implementation of [`RemoteFsContract`].
+#[non_exhaustive]
 pub struct SshRemoteFsProvider;
 /// SSH implementation of [`RemoteExecContract`].
+#[non_exhaustive]
 pub struct SshRemoteExecProvider;
 
 impl RemoteConnectContract for SshRemoteConnector {

@@ -24,6 +24,7 @@ fn current_uid() -> libc::uid_t {
 }
 
 /// Provider that captures system snapshots using `sysinfo` and `lsblk`.
+#[non_exhaustive]
 pub struct SystemSnapshotProvider {
     /// Underlying sysinfo system state.
     sys: System,
@@ -226,6 +227,7 @@ impl SystemSnapshotContract for SystemSnapshotProvider {
 }
 
 /// Process control implementation using the `kill` command.
+#[non_exhaustive]
 pub struct ProcessController;
 
 impl ProcessControlContract for ProcessController {

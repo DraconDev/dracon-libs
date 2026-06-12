@@ -1,6 +1,7 @@
 use thiserror::Error;
 
 /// Errors that can occur during git operations.
+#[non_exhaustive]
 #[derive(Error, Debug)]
 pub enum GitError {
     /// A libgit2 operation failed.

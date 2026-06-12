@@ -38,6 +38,7 @@ use std::sync::Arc;
 use tokio::sync::Mutex;
 
 /// High-level memory system combining the SQLite database and embedder.
+#[non_exhaustive]
 pub struct MemorySystem {
     db: Arc<Mutex<MemoryDb>>,
     embedder: Arc<Mutex<OnnxEmbedder>>,

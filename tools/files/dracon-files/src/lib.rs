@@ -77,6 +77,7 @@ fn is_binary_file(path: &Path) -> bool {
 }
 
 /// Main file-system catalog implementing all file contracts.
+#[non_exhaustive]
 pub struct FsCatalog;
 
 impl FileInspectContract for FsCatalog {

@@ -30,6 +30,7 @@ pub use dracon_ai_runtime_contracts::traits::AiProvider;
 pub const DEFAULT_PROVIDER: &str = "default";
 
 /// Routing lane policy controlling provider selection.
+#[non_exhaustive]
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct LaneModelPolicy {
     /// Whether lane-based routing is enabled.
@@ -39,6 +40,7 @@ pub struct LaneModelPolicy {
 }
 
 /// Provider registry for AI backends.
+#[non_exhaustive]
 pub struct ProviderRegistry {
     providers: Vec<(String, Arc<dyn AiProvider>)>,
 }
@@ -72,6 +74,7 @@ impl Default for ProviderRegistry {
 }
 
 /// High-level AI service that sends requests through a registered provider.
+#[non_exhaustive]
 pub struct AiService {
     registry: ProviderRegistry,
     policy: LaneModelPolicy,

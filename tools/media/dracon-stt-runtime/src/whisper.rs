@@ -15,6 +15,7 @@ use std::sync::Arc;
 use tokenizers::Tokenizer;
 
 /// Whisper speech-to-text backend.
+#[non_exhaustive]
 pub struct WhisperStt {
     model: Arc<Mutex<WhisperState>>,
     tokenizer: Tokenizer,

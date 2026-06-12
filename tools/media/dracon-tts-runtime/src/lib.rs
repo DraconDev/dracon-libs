@@ -39,6 +39,7 @@ pub use kitten::KittenTTS;
 pub use kokoro::KokoroTts;
 
 /// Enum dispatching to supported TTS backends.
+#[non_exhaustive]
 #[derive(Clone)]
 pub enum TtsEngine {
     /// Kitten backend.

@@ -4,6 +4,7 @@ use anyhow::Result;
 use std::path::{Path, PathBuf};
 
 /// Represents a silence segment in the video
+#[non_exhaustive]
 #[derive(Debug, Clone, PartialEq)]
 pub struct SilenceSegment {
     pub start: f32,
@@ -11,6 +12,7 @@ pub struct SilenceSegment {
 }
 
 /// Represents a processed segment (after silence removal)
+#[non_exhaustive]
 #[derive(Debug, Clone)]
 pub struct TrimSegment {
     pub start: f32,
@@ -19,6 +21,7 @@ pub struct TrimSegment {
 }
 
 /// Face detection result
+#[non_exhaustive]
 #[derive(Debug, Clone)]
 pub struct FaceRegion {
     pub x: f32,
@@ -101,6 +104,7 @@ pub trait VideoProcessor: Send + Sync {
 }
 
 /// How to handle detected silences
+#[non_exhaustive]
 #[derive(Debug, Clone, Copy, PartialEq, Default)]
 pub enum SilenceMode {
     /// Cut out silences completely

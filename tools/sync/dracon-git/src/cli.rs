@@ -24,6 +24,7 @@ fn git_cmd() -> std::process::Command {
 }
 
 /// CLI-based git snapshot provider — uses `git log` and `git status` commands.
+#[non_exhaustive]
 #[derive(Default, Debug, Clone, Copy)]
 pub struct CliGitSnapshotProvider;
 

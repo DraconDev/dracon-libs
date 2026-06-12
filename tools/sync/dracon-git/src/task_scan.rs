@@ -3,6 +3,7 @@ use std::fs;
 use std::path::Path;
 
 /// Progress counts for tasks in a blueprint file.
+#[non_exhaustive]
 #[derive(Debug, Clone, Default)]
 pub struct TaskProgress {
     /// Number of completed tasks.

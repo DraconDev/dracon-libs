@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 pub type SttResult<T> = anyhow::Result<T>;
 
 /// Plain transcription result without timestamps.
+#[non_exhaustive]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TranscriptionResult {
     /// Recognized text.
@@ -29,6 +30,7 @@ impl TranscriptionResult {
 }
 
 /// One timestamped transcription segment.
+#[non_exhaustive]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TimestampedSegment {
     /// Segment start time in seconds.
@@ -42,6 +44,7 @@ pub struct TimestampedSegment {
 }
 
 /// Capability flags describing a speech-to-text backend.
+#[non_exhaustive]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub struct EngineCapabilities {
     /// Whether the backend can return timestamped segments.

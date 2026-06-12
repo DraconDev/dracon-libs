@@ -3,6 +3,7 @@ use crate::types::{DiffFile, FileStatus};
 
 /// Lightweight semantic summary of changed files.
 /// Any tool can construct this — no tree-sitter dependency required.
+#[non_exhaustive]
 #[derive(Debug, Clone, serde::Serialize)]
 pub struct SemanticSummary {
     /// List of symbols found in changed files.
@@ -10,6 +11,7 @@ pub struct SemanticSummary {
 }
 
 /// A single symbol (function, type, etc.) extracted from changed files.
+#[non_exhaustive]
 #[derive(Debug, Clone, serde::Serialize)]
 pub struct SymbolInfo {
     /// Symbol name.
@@ -21,6 +23,7 @@ pub struct SymbolInfo {
 }
 
 /// Context for building a semantic commit message.
+#[non_exhaustive]
 #[derive(Debug, Clone)]
 pub struct CommitContext {
     /// Intent label (e.g., "coding", "writing", "verify").

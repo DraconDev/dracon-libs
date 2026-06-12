@@ -15,6 +15,7 @@ enum EmbeddingBackend {
 }
 
 /// ONNX-backed embedder with deterministic fallback when model assets are unavailable.
+#[non_exhaustive]
 pub struct OnnxEmbedder {
     backend: EmbeddingBackend,
     dimension: usize,

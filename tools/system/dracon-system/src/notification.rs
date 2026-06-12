@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 /// Configuration for desktop notification behavior per event type.
+#[non_exhaustive]
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct NotificationConfig {
     /// Whether notifications are enabled at all.

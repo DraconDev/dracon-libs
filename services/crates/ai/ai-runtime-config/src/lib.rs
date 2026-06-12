@@ -14,6 +14,7 @@
 use serde::{Deserialize, Serialize};
 
 /// OpenAI-compatible provider configuration.
+#[non_exhaustive]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct OpenAIProviderSpec {
     /// Model identifier exposed to callers.
@@ -31,6 +32,7 @@ pub struct OpenAIProviderSpec {
 }
 
 /// Top-level AI runtime configuration.
+#[non_exhaustive]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AiRuntimeConfig {
     /// Configured OpenAI-compatible providers.

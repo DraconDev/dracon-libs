@@ -60,6 +60,7 @@ fn git_cmd() -> Command {
 }
 
 /// Primary git service — provides async operations (status, pull, push, commit).
+#[non_exhaustive]
 #[derive(Clone)]
 pub struct GitService {
     root_path: PathBuf,

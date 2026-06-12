@@ -4,6 +4,7 @@ use std::path::PathBuf;
 use std::time::SystemTime;
 
 /// Snapshot of a single disk device or mount point.
+#[non_exhaustive]
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct DiskSnapshot {
     /// Mount point or display name of the disk.
@@ -21,6 +22,7 @@ pub struct DiskSnapshot {
 }
 
 /// Snapshot of a single running process.
+#[non_exhaustive]
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct ProcessSnapshot {
     /// Process identifier.
@@ -38,6 +40,7 @@ pub struct ProcessSnapshot {
 }
 
 /// Full system snapshot aggregating CPU, memory, disk, network, and process data.
+#[non_exhaustive]
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct SystemSnapshot {
     /// Global CPU usage percentage.
@@ -88,6 +91,7 @@ pub trait ProcessControlContract {
 }
 
 /// Bookmark for a remote SSH connection target.
+#[non_exhaustive]
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct RemoteBookmark {
     /// Human-readable bookmark name.
@@ -103,6 +107,7 @@ pub struct RemoteBookmark {
 }
 
 /// Request to establish a remote connection using a bookmark.
+#[non_exhaustive]
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct RemoteConnectRequest {
     /// The bookmark describing the remote target.
@@ -112,6 +117,7 @@ pub struct RemoteConnectRequest {
 }
 
 /// Established remote connection metadata.
+#[non_exhaustive]
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct RemoteConnection {
     /// Bookmark name of the connection.
@@ -135,6 +141,7 @@ pub trait RemoteConnectContract {
 }
 
 /// Metadata for a single remote filesystem entry.
+#[non_exhaustive]
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct RemoteEntryMetadata {
     /// File size in bytes.

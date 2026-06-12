@@ -37,6 +37,7 @@ pub use stt_contracts::{
 use std::sync::Arc;
 
 /// Runtime speech-to-text engine wrapper.
+#[non_exhaustive]
 #[derive(Clone)]
 pub enum SttEngine {
     /// Parakeet-backed engine.

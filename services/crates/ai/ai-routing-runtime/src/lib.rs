@@ -32,6 +32,7 @@ pub use routing::ServiceLevel;
 pub use traits::AiModelStore;
 
 /// Message envelope used by routing code.
+#[non_exhaustive]
 #[derive(Debug, Clone)]
 pub struct RoutingMessage {
     /// Participant role label.
@@ -41,6 +42,7 @@ pub struct RoutingMessage {
 }
 
 /// Observability trace for a routing decision.
+#[non_exhaustive]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RoutingTrace {
     /// Selected model identifier.
@@ -50,6 +52,7 @@ pub struct RoutingTrace {
 }
 
 /// Generic registry mapping model ids to provider implementations.
+#[non_exhaustive]
 pub struct ProviderRegistry<T: ?Sized> {
     providers: HashMap<String, Arc<T>>,
 }
@@ -80,6 +83,7 @@ impl<T: AiProvider + ?Sized> Default for ProviderRegistry<T> {
 }
 
 /// Router that selects an active or development model from a provider registry.
+#[non_exhaustive]
 pub struct SmartRouter<T: ?Sized> {
     registry: ProviderRegistry<T>,
     dev_models: Vec<String>,

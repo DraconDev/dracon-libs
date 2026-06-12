@@ -4,6 +4,7 @@ use std::path::{Path, PathBuf};
 use crate::task_scan::TaskProgress;
 
 /// Extracted intent information from a repository's plan files or changed files.
+#[non_exhaustive]
 #[derive(Debug, Clone, Default)]
 pub struct IntentInfo {
     /// Detected intent label.

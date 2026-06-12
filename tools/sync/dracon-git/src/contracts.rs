@@ -1,6 +1,7 @@
 use std::path::Path;
 
 /// A single commit record from `git log` output.
+#[non_exhaustive]
 #[derive(Debug, Clone)]
 pub struct GitCommitRecord {
     /// Commit hash (short or full).
@@ -22,6 +23,7 @@ pub struct GitCommitRecord {
 }
 
 /// A pending (unstaged or staged) change record.
+#[non_exhaustive]
 #[derive(Debug, Clone)]
 pub struct GitPendingRecord {
     /// Status code (e.g., "M", "A", "D").
@@ -35,6 +37,7 @@ pub struct GitPendingRecord {
 }
 
 /// A complete snapshot of a repository's current state.
+#[non_exhaustive]
 #[derive(Debug, Clone)]
 pub struct GitRepoSnapshot {
     /// Recent commit history.

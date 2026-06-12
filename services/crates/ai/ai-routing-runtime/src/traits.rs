@@ -6,6 +6,7 @@ use serde::{Deserialize, Serialize};
 use crate::routing::SelectionConstraints;
 
 /// Request parameters for fetching a model leaderboard.
+#[non_exhaustive]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LeaderboardRequest {
     /// Optional task filter.
@@ -15,6 +16,7 @@ pub struct LeaderboardRequest {
 }
 
 /// Model leaderboard response.
+#[non_exhaustive]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LeaderboardResponse {
     /// Ranked model entries.
@@ -26,6 +28,7 @@ pub struct LeaderboardResponse {
 }
 
 /// Ranked model entry in a leaderboard response.
+#[non_exhaustive]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LeaderboardEntry {
     /// Model identifier.

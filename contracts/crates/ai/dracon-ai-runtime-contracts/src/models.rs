@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 /// A single message in a chat conversation.
+#[non_exhaustive]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ChatMessage {
     /// The role sending this message (e.g. "user", "assistant").
@@ -10,6 +11,7 @@ pub struct ChatMessage {
 }
 
 /// A chat completion request.
+#[non_exhaustive]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ChatRequest {
     /// Project this request belongs to.
@@ -40,6 +42,7 @@ impl Default for ChatRequest {
 }
 
 /// A chat completion response.
+#[non_exhaustive]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ChatResponse {
     /// The generated text content.

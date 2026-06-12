@@ -26,6 +26,7 @@ use dracon_ai_runtime_contracts::models::ChatRequest;
 use dracon_ai_runtime_contracts::traits::AiProvider;
 
 /// Adapter for OpenAI-compatible Chat Completions API endpoints.
+#[non_exhaustive]
 pub struct GenericOpenAIAdapter {
     api_key: String,
     endpoint: String,

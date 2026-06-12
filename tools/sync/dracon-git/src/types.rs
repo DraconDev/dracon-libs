@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 
 /// Status summary for a git repository.
+#[non_exhaustive]
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct RepoStatus {
     /// Current branch name.
@@ -32,6 +33,7 @@ impl RepoStatus {
 }
 
 /// Status of a file in a git diff.
+#[non_exhaustive]
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum FileStatus {
     /// File was modified.
@@ -49,6 +51,7 @@ pub enum FileStatus {
 }
 
 /// A single file entry in a diff, with its path and change status.
+#[non_exhaustive]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DiffFile {
     /// Path of the changed file (relative to repo root).

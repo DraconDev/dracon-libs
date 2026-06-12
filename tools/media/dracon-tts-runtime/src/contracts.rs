@@ -4,6 +4,7 @@ use std::fmt;
 use std::sync::Arc;
 
 /// Voice gender metadata.
+#[non_exhaustive]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Gender {
     /// Male voice.
@@ -35,6 +36,7 @@ impl From<&str> for Gender {
 }
 
 /// Metadata describing a TTS voice.
+#[non_exhaustive]
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct VoiceInfo {
     /// Stable voice identifier.
@@ -142,6 +144,7 @@ type SpeakNowaitCallback = dyn Fn(&str) + Send + 'static;
 type WaitUntilDoneCallback = dyn Fn() + Send + 'static;
 
 /// Type-erased TTS engine wrapper with optional async helpers.
+#[non_exhaustive]
 #[derive(Clone)]
 pub struct DynTtsEngine {
     inner: Arc<dyn TextToSpeech>,
@@ -229,6 +232,7 @@ impl DynTtsEngine {
 }
 
 /// TTS runtime configuration.
+#[non_exhaustive]
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct TtsConfig {
     /// Backend name (`kitten` or `kokoro`).
@@ -259,6 +263,7 @@ impl Default for TtsConfig {
 }
 
 /// Request for synthesizing speech.
+#[non_exhaustive]
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct SynthesisRequest {
     /// Text to synthesize.
@@ -296,6 +301,7 @@ impl SynthesisRequest {
 }
 
 /// Synthesized audio result.
+#[non_exhaustive]
 #[derive(Clone, Debug)]
 pub struct SynthesisResult {
     /// Audio samples.

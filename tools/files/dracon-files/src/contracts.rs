@@ -4,6 +4,7 @@ use std::path::Path;
 use std::time::SystemTime;
 
 /// Metadata captured for a file entry during search.
+#[non_exhaustive]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EntryMetadata {
     /// File size in bytes.
@@ -19,6 +20,7 @@ pub struct EntryMetadata {
 }
 
 /// Coarse file category inferred from extension.
+#[non_exhaustive]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum FileCategory {
     /// Archive or compressed file.
@@ -40,6 +42,7 @@ pub enum FileCategory {
 }
 
 /// Suitability result used to decide whether a file should be read.
+#[non_exhaustive]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct FileSearchResult {
     /// Whether a binary marker was detected.

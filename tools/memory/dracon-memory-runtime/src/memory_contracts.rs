@@ -2,6 +2,7 @@ use chrono::{DateTime, Utc};
 use std::fmt;
 
 /// Runtime-side conversation role.
+#[non_exhaustive]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Role {
     /// User-authored message.
@@ -36,6 +37,7 @@ impl fmt::Display for Role {
 }
 
 /// Stored conversation row returned by the runtime.
+#[non_exhaustive]
 #[derive(Debug, Clone)]
 pub struct Conversation {
     /// Database row id.
@@ -61,6 +63,7 @@ impl Conversation {
 }
 
 /// User fact stored outside the conversation stream.
+#[non_exhaustive]
 #[derive(Debug, Clone)]
 pub struct UserFact {
     /// Fact category.

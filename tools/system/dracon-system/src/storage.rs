@@ -7,6 +7,7 @@ use tokio::process::Command;
 use walkdir::WalkDir;
 
 /// Disk usage for a single directory.
+#[non_exhaustive]
 #[derive(Debug, Clone, Serialize)]
 pub struct DirUsage {
     /// Directory path.
@@ -16,6 +17,7 @@ pub struct DirUsage {
 }
 
 /// Disk usage for a recognized hotspot directory (e.g. node_modules, target).
+#[non_exhaustive]
 #[derive(Debug, Clone, Serialize)]
 pub struct HotspotUsage {
     /// Hotspot directory path.
@@ -27,6 +29,7 @@ pub struct HotspotUsage {
 }
 
 /// Aggregated storage report for a workspace root.
+#[non_exhaustive]
 #[derive(Debug, Clone, Serialize)]
 pub struct WorkspaceStorageReport {
     /// Workspace root directory.

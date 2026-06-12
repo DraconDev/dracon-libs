@@ -4,6 +4,7 @@ use anyhow::Result;
 use std::path::Path;
 
 /// A segment of transcribed speech
+#[non_exhaustive]
 #[derive(Debug, Clone)]
 pub struct TranscriptSegment {
     pub start: f32,
