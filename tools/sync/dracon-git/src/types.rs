@@ -34,7 +34,7 @@ impl RepoStatus {
 
 /// Status of a file in a git diff.
 #[non_exhaustive]
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub enum FileStatus {
     /// File was modified.
     Modified,
@@ -47,6 +47,7 @@ pub enum FileStatus {
     /// File type changed (e.g., symlink to regular file).
     TypeChange,
     /// Unknown or unparseable status.
+    #[default]
     Unknown,
 }
 
