@@ -52,7 +52,7 @@ pub enum FileStatus {
 
 /// A single file entry in a diff, with its path and change status.
 #[non_exhaustive]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct DiffFile {
     /// Path of the changed file (relative to repo root).
     pub path: PathBuf,
