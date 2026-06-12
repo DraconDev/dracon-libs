@@ -36,7 +36,7 @@ pub struct GenericOpenAIAdapter {
 }
 
 impl GenericOpenAIAdapter {
-    /// Create a new adapter with the given auth header configuration.
+    /// Create a new adapter with validated auth header configuration.
     pub fn new_with_auth(
         api_key: String,
         endpoint: String,
@@ -44,6 +44,33 @@ impl GenericOpenAIAdapter {
         auth_header_name: String,
         auth_header_prefix: String,
     ) -> anyhow::Result<Self> {
+        if api_key.trim().is_empty() {
+            anyhow::bail!("api_key must not be empty");
+        }
+        if model.trim().is_empty() {
+            anyhow::bail!("model must not be empty");
+        }
+        if auth_header_name.trim().is_empty() {
+            anyhow::bail!("auth_header_name must not be empty");
+        }
+        if auth_header_prefix.trim().is_empty() {
+            anyhow::bail!("auth_header_prefix must not be empty");
+        }
+
+        let parsed = reqwest::Url::parse(&endpoint)
+            .with_context(|| format!("invalid OpenAI-compatible endpoint: {endpoint}"))?;
+        if !matches!(parsed.scheme(), "http" | "https") {
+            anyhow::bail!("endpoint URL must use http or https: {endpoint}");
+        }
+        if parsed.host_str().is_none() || parsed.host_str().is_some_and(str::is_empty) {
+            anyhow::bail!("endpoint URL must include a host: {endpoint}");
+        }
+
+        let normalized_endpoint = parsed
+            .as_str()
+            .trim_end_matches('/')
+            .to_string();
+
         let client = reqwest::Client::builder()
             .timeout(Duration::from_secs(60))
             .connect_timeout(Duration::from_secs(10))
@@ -51,12 +78,25 @@ impl GenericOpenAIAdapter {
             .context("reqwest client should build")?;
         Ok(Self {
             api_key,
-            endpoint,
+            endpoint: normalized_endpoint,
             model,
             auth_header_name,
             auth_header_prefix,
             client,
         })
+    }
+}
+
+impl fmt::Debug for GenericOpenAIAdapter {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("GenericOpenAIAdapter")
+            .field("api_key", &"<redacted>")
+            .field("endpoint", &self.endpoint)
+            .field("model", &self.model)
+            .field("auth_header_name", &self.auth_header_name)
+            .field("auth_header_prefix", &self.auth_header_prefix)
+            .field("client", &self.client)
+            .finish()
     }
 }
 
@@ -66,6 +106,10 @@ impl AiProvider for GenericOpenAIAdapter {
         &self,
         request: ChatRequest,
     ) -> anyhow::Result<(String, Option<String>)> {
+        if request.stream {
+            anyhow::bail!("GenericOpenAIAdapter does not support streaming responses; use a streaming provider implementation");
+        }
+
         let messages: Vec<serde_json::Value> = request
             .messages
             .iter()
