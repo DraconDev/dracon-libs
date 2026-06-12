@@ -56,7 +56,7 @@ impl ParakeetStt {
 
         if audio_data.len() < 16000 {
             println!("STT: Audio too short, skipping");
-            return None;
+            return Ok(None);
         }
 
         let rms: f32 =
@@ -65,7 +65,7 @@ impl ParakeetStt {
 
         if rms < 0.001 {
             println!("STT: Audio appears to be silence (RMS too low), skipping");
-            return None;
+            return Ok(None);
         }
 
         let model = self.model.clone();
@@ -86,20 +86,14 @@ impl ParakeetStt {
                 let text = transcription.text.trim().to_string();
                 if text.is_empty() {
                     println!("STT: Transcription returned empty string");
-                    None
+                    Ok(None)
                 } else {
                     println!("STT: Transcribed: \"{}\"", text);
-                    Some(text)
+                    Ok(Some(text))
                 }
             }
-            Ok(Err(e)) => {
-                eprintln!("STT Error: {}", e);
-                None
-            }
-            Err(e) => {
-                eprintln!("STT Task Error: {:?}", e);
-                None
-            }
+            Ok(Err(e)) => Err(anyhow::anyhow!("STT Error: {e}")),
+            Err(e) => Err(anyhow::anyhow!("STT Task Error: {e:?}")),
         }
     }
 }

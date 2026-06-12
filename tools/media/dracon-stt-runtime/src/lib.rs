@@ -61,14 +61,11 @@ impl SttEngine {
     }
 
     /// Transcribe audio asynchronously and return text when available.
-    pub async fn transcribe_async(&self, audio: Vec<f32>) -> Option<String> {
+    pub async fn transcribe_async(&self, audio: Vec<f32>) -> anyhow::Result<Option<String>> {
         match self {
             SttEngine::Parakeet(p) => p.transcribe_audio(audio).await,
             #[cfg(feature = "whisper")]
-            SttEngine::Whisper(_) => {
-                tracing::warn!("Whisper does not support async transcription yet");
-                None
-            }
+            SttEngine::Whisper(w) => w.transcribe_raw(&audio).map(|result| result.map(|r| r.text)),
         }
     }
 
