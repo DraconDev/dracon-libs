@@ -286,10 +286,8 @@ impl SystemAgent {
     pub async fn list_processes(&self, filter: Option<String>) -> anyhow::Result<String> {
         let _ = filter;
         tokio::task::spawn_blocking(move || -> anyhow::Result<String> {
-            use sysinfo::{ProcessRefreshKind, ProcessesToUpdate, RefreshKind, System};
-            let mut sys = System::new_with_specifics(
-                RefreshKind::new().with_processes(ProcessRefreshKind::everything()),
-            );
+            use sysinfo::{ProcessesToUpdate, RefreshKind, System};
+            let mut sys = System::new_with_specifics(RefreshKind::everything());
             sys.refresh_processes(ProcessesToUpdate::All, true);
             let mut output = String::new();
             for proc in sys.processes().values().take(10) {

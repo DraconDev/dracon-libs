@@ -18,7 +18,7 @@ tokio = { workspace = true }
 ort = { version = "=2.0.0-rc.12", features = ["ndarray"] }
 rodio = { version = "0.19", default-features = false }
 ndarray = "0.17"
-zip = { version = "2.4", default-features = false, features = ["deflate"] }
+zip = { version = "8", default-features = false, features = ["deflate"] }
 hound = "3.5"
 futures = { workspace = true }
 serde = { workspace = true }

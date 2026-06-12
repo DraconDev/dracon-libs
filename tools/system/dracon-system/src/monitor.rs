@@ -172,9 +172,9 @@ impl SystemSnapshotContract for SystemSnapshotProvider {
         self.sys.refresh_cpu_usage();
         self.sys.refresh_memory();
         self.sys.refresh_processes(ProcessesToUpdate::All, true);
-        self.disks.refresh_list();
-        self.networks.refresh_list();
-        self.users.refresh_list();
+        self.disks.refresh(true);
+        self.networks.refresh(true);
+        self.users.refresh();
 
         let mut processes = Vec::new();
         for (pid, process) in self.sys.processes() {
