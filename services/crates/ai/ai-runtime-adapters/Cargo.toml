@@ -12,7 +12,7 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 anyhow = "1"
 async-trait = "0.1"
-reqwest = { version = "0.12", features = ["json"] }
+reqwest = { workspace = true }
 dracon-ai-runtime-contracts = { path = "../../../../contracts/crates/ai/dracon-ai-runtime-contracts" }
 
 [lib]
