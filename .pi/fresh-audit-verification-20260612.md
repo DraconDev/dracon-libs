@@ -54,7 +54,7 @@ Evidence: Python scan of `/home/dracon/Dev/**/Cargo.toml` for `dracon-libs`, `Dr
 
 | Consumer | Current source | Result |
 |---|---|---|
-| `/home/dracon/Dev/dracon-utilities` | Git deps to `https://github.com/DraconDev/dracon-libs` | No active `../dracon-libs` path deps remain. |
+| `/home/dracon/Dev/dracon-utilities` | Used deps moved from local sibling paths to Git; unused AI workspace deps removed | No active `../dracon-libs` path deps remain. |
 | `/home/dracon/Dev/kiki-sassy-desktop-announcer` | `dracon-tts-runtime = "94.7"` | `cargo metadata` reports `registry+https://github.com/rust-lang/crates.io-index`. |
 | `/home/dracon/Dev/avid` | STT dep is commented out | `cargo metadata` found no active `dracon-stt-runtime`. |
 | `/home/dracon/Dev/dracon-platform/apis/services/ai-api` | `ai-lib = { path = "../../../../dracon-ai-lib/crates/ai-lib" }` | Different AI library boundary (`DraconDev/dracon-ai-lib`), not `dracon-libs`. |
@@ -65,21 +65,18 @@ Evidence: Python scan of `/home/dracon/Dev/**/Cargo.toml` for `dracon-libs`, `Dr
 
 Evidence:
 
-- `rg -n "dracon-libs|DraconDev/dracon-libs|path\\s*=\\s*\"\\.\\./dracon-libs" /home/dracon/Dev/dracon-utilities -g Cargo.toml` found only six Git deps and no local path deps.
-- Current `Cargo.toml` declares:
-  - `ai-routing-runtime = { git = "https://github.com/DraconDev/dracon-libs" }`
-  - `ai-runtime-adapters = { git = "https://github.com/DraconDev/dracon-libs" }`
-  - `ai-runtime-config = { git = "https://github.com/DraconDev/dracon-libs" }`
-  - `dracon-ai-runtime-contracts = { git = "https://github.com/DraconDev/dracon-libs" }`
+- `rg -n "dracon-libs|DraconDev/dracon-libs|path\\s*=\\s*\"\\.\\./dracon-libs" /home/dracon/Dev/dracon-utilities -g Cargo.toml` found only two active Git deps and no local path deps.
+- Current `Cargo.toml` declares the used `dracon-libs` deps as:
   - `dracon-git = { git = "https://github.com/DraconDev/dracon-libs" }`
   - `dracon-system-lib = { git = "https://github.com/DraconDev/dracon-libs" }`
+- Unused AI workspace dependencies that previously pointed at local `../dracon-libs` paths were removed because `rg` found no active references to them in `dracon-utilities` crates.
 - `cargo metadata --manifest-path /home/dracon/Dev/dracon-utilities/Cargo.toml --format-version 1` reports used deps:
   - `dracon-sync -> dracon-git source=git+https://github.com/DraconDev/dracon-libs path=None`
   - `dracon-system -> dracon-system-lib source=git+https://github.com/DraconDev/dracon-libs path=None`
 - `cargo tree --manifest-path /home/dracon/Dev/dracon-utilities/Cargo.toml --workspace -i dracon-git --prefix none` reports `dracon-git v94.7.0 (https://github.com/DraconDev/dracon-libs#436049dd)`.
 - `cargo tree --manifest-path /home/dracon/Dev/dracon-utilities/Cargo.toml --workspace -i dracon-system-lib --prefix none` reports `dracon-system-lib v94.7.0 (https://github.com/DraconDev/dracon-libs#436049dd)`.
-- `cargo check --manifest-path /home/dracon/Dev/dracon-utilities/Cargo.toml --workspace` passed.
-- `cargo check --manifest-path /home/dracon/Dev/dracon-utilities/Cargo.toml --workspace --locked` passed.
+- `cargo check --manifest-path /home/dracon/Dev/dracon-utilities/Cargo.toml --workspace` passed before the unused-dep cleanup.
+- `cargo check --manifest-path /home/dracon/Dev/dracon-utilities/Cargo.toml --workspace --locked` passed after the unused-dep cleanup.
 
 Remote sync evidence for `dracon-utilities`:
 
@@ -108,7 +105,7 @@ Findings:
   - video runtime implementation scope,
   - high-blast-radius ML/audio dependency migrations,
   - unmaintained `paste` through the ML/video dependency chain,
-  - GitHub mirror sync for `dracon-utilities` if that mirror must receive the manifest change.
+  - GitHub mirror sync for `dracon-utilities` if that mirror must receive the manifest changes.
 
 ## Hygiene checks
 
@@ -125,8 +122,8 @@ Findings:
 | Strict clippy | `nix-shell -p pkg-config alsa-lib sqlite bash --run 'cargo clippy --workspace --all-targets -- -D warnings'` | Pass, exit 0 |
 | Strict rustdoc | `nix-shell -p pkg-config alsa-lib sqlite bash --run 'RUSTDOCFLAGS="-D warnings" cargo doc --workspace --no-deps'` | Pass, exit 0 |
 | Workspace tests | `nix-shell -p pkg-config alsa-lib sqlite bash --run 'cargo test --workspace --all-targets --no-fail-fast'` | Pass, exit 0 |
-| Consumer build/type check | `cargo check --manifest-path /home/dracon/Dev/dracon-utilities/Cargo.toml --workspace` | Pass, exit 0 |
-| Consumer locked build/type check | `cargo check --manifest-path /home/dracon/Dev/dracon-utilities/Cargo.toml --workspace --locked` | Pass, exit 0 |
+| Consumer build/type check before cleanup | `cargo check --manifest-path /home/dracon/Dev/dracon-utilities/Cargo.toml --workspace` | Pass, exit 0 |
+| Consumer locked build/type check after cleanup | `cargo check --manifest-path /home/dracon/Dev/dracon-utilities/Cargo.toml --workspace --locked` | Pass, exit 0 |
 | Security advisories | `cargo audit --no-fetch --stale` | Pass with one allowed warning: unmaintained `paste 1.0.15` |
 | Dependency freshness | `cargo outdated --root-deps-only --exit-code 1` | Expected failure for remaining major updates: `rodio`, `rubato`, `candle-core`, `candle-nn`, `candle-transformers`, `tract-onnx` |
 | Duplicate deps | `cargo tree -d --locked --prefix none` | Pass, exit 0; known transitive duplicates remain in ML/video stack |
@@ -137,7 +134,7 @@ Findings:
 |---|---|
 | Updated `dracon-libs` workspace is audited | Fresh status, metadata, manifest scan, docs/reports inspected. |
 | Every local/path/git dependency involving `dracon-libs` or documented consumers is re-scanned | Python manifest scan, `cargo metadata`, `cargo tree`, `rg` checks. |
-| `dracon-utilities` consumes `dracon-libs` from repo, not local path overrides | `Cargo.toml` has Git deps; metadata/tree show Git sources; no `../dracon-libs` paths; locked check passes. |
+| `dracon-utilities` consumes `dracon-libs` from repo, not local path overrides | `Cargo.toml` has only two active Git deps; metadata/tree show Git sources; no `../dracon-libs` paths; locked check passes. |
 | Local AI consumers and external/local consumers re-mapped | `cargo metadata`, reverse `cargo tree`, README/report evidence. |
 | No unapproved shortcuts/TODOs/dead code/hidden assumptions remain in changed files | `rg` for TODO/FIXME/unwrap/expect/panic found no matches; docs record known blockers. |
 | Required validation run | All required commands passed except advisory/freshness checks with documented expected warnings/failures. |
@@ -145,4 +142,4 @@ Findings:
 
 ## Final takeaway
 
-The fresh audit confirms the dependency-source fix is present and verified: the active local sibling consumer (`dracon-utilities`) no longer uses local `../dracon-libs` paths for `dracon-libs` crates and resolves the used `dracon-git`/`dracon-system-lib` dependencies from `https://github.com/DraconDev/dracon-libs`. Other local consumers are either crates.io consumers, separate AI library boundaries, or commented/local-development-only cases. The only remaining decision is whether the divergent GitHub mirror of `dracon-utilities` must also receive the manifest change via integration or an explicit force-with-lease push.
+The fresh audit confirms the dependency-source fix is present and verified: the active local sibling consumer (`dracon-utilities`) no longer uses local `../dracon-libs` paths for `dracon-libs` crates and resolves the used `dracon-git`/`dracon-system-lib` dependencies from `https://github.com/DraconDev/dracon-libs`. Unused AI workspace dependencies that previously pointed at local sibling paths were removed. Other local consumers are either crates.io consumers, separate AI library boundaries, or commented/local-development-only cases. The only remaining decision is whether the divergent GitHub mirror of `dracon-utilities` must also receive the manifest changes via integration or an explicit force-with-lease push.
