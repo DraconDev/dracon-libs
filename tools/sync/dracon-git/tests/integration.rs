@@ -106,9 +106,9 @@ async fn test_git_service_protected_filter_failure_is_fail_closed() {
     std::env::set_var("PATH", combined_path);
     let svc = dracon_git::GitService::new(tmp.path()).unwrap();
     let err = svc.add_paths(&["secret.txt".to_string()]).await;
-    match old_path {
-        Some(path) => std::env::set_var("PATH", path),
-        None => std::env::remove_var("PATH"),
+    match old_path.is_empty() {
+        true => std::env::remove_var("PATH"),
+        false => std::env::set_var("PATH", old_path),
     }
 
     assert!(err.is_err());
