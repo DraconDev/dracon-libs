@@ -8,7 +8,7 @@ Goal: verify whether other consumers use `dracon-libs` from the repository or fr
 
 | Consumer | Before | After | Evidence |
 |---|---|---|---|
-| `/home/dracon/Dev/dracon-utilities` | Local sibling path deps for `dracon-git`, `dracon-system-lib`, `ai-routing-runtime`, `ai-runtime-adapters`, `ai-runtime-config`, `dracon-ai-runtime-contracts` | Git deps to `https://github.com/DraconDev/dracon-libs` | `Cargo.toml` changed; `cargo check --manifest-path ... --workspace` passed and `Cargo.lock` now records `git+https://github.com/DraconDev/dracon-libs#436049dd...`. |
+| `/home/dracon/Dev/dracon-utilities` | Local sibling path deps for `dracon-git` and `dracon-system-lib`; unused workspace deps for AI runtime crates | Used deps now use Git; unused AI workspace deps removed | `Cargo.toml` changed; `cargo check --manifest-path ... --workspace --locked` passed and metadata/tree now record only `dracon-git` and `dracon-system-lib` from `git+https://github.com/DraconDev/dracon-libs#436049dd...`. |
 | `/home/dracon/Dev/kiki-sassy-desktop-announcer` | `dracon-tts-runtime = "94.7"` | Unchanged crates.io dependency | `Cargo.toml` and `Cargo.lock` show `registry+https://github.com/rust-lang/crates.io-index`. |
 | `/home/dracon/Dev/avid` | Only a commented-out local STT path | Unchanged; no active local `dracon-libs` dependency | `Cargo.toml` has the STT dep commented out; `Cargo.lock` has no active `dracon-stt-runtime`. |
 | `/home/dracon/Dev/dracon-platform` | `ai-api` consumes `ai-lib` as a path dep inside the platform repo | Out of scope for `dracon-libs`; it is a different library boundary (`DraconDev/dracon-ai-lib` / `ai-api`) | `apis/services/ai-api/Cargo.toml` documents intentional path dep for in-repo `ai-lib`. |
@@ -18,14 +18,12 @@ Goal: verify whether other consumers use `dracon-libs` from the repository or fr
 
 Updated `/home/dracon/Dev/dracon-utilities/Cargo.toml` workspace dependencies:
 
-- `ai-routing-runtime = { git = "https://github.com/DraconDev/dracon-libs" }`
-- `ai-runtime-adapters = { git = "https://github.com/DraconDev/dracon-libs" }`
-- `ai-runtime-config = { git = "https://github.com/DraconDev/dracon-libs" }`
-- `dracon-ai-runtime-contracts = { git = "https://github.com/DraconDev/dracon-libs" }`
-- `dracon-git = { git = "https://github.com/DraconDev/dracon-libs" }`
-- `dracon-system-lib = { git = "https://github.com/DraconDev/dracon-libs" }`
+- Removed unused AI workspace dependencies that previously pointed at local `../dracon-libs` paths.
+- Kept the active dependencies on `dracon-libs` as Git deps:
+  - `dracon-git = { git = "https://github.com/DraconDev/dracon-libs" }`
+  - `dracon-system-lib = { git = "https://github.com/DraconDev/dracon-libs" }`
 
-`cargo check --manifest-path /home/dracon/Dev/dracon-utilities/Cargo.toml --workspace` regenerated `Cargo.lock` and resolved:
+`cargo check --manifest-path /home/dracon/Dev/dracon-utilities/Cargo.toml --workspace --locked` passed and metadata/tree now resolve only the used `dracon-libs` dependencies:
 
 - `dracon-git v94.7.0 (https://github.com/DraconDev/dracon-libs#436049dd32b681cccdef37054260fd324e7e32c0)`
 - `dracon-system-lib v94.7.0 (https://github.com/DraconDev/dracon-libs#436049dd32b681cccdef37054260fd324e7e32c0)`
@@ -36,6 +34,8 @@ Updated `/home/dracon/Dev/dracon-utilities/Cargo.toml` workspace dependencies:
 |---|---|---:|
 | Consumer manifest scan | `python3` scan of `/home/dracon/Dev/**/Cargo.toml` for `dracon-libs`, `DraconDev/dracon-libs`, and Dracon crate names | Found only the documented consumers. |
 | `dracon-utilities` build/type check | `cargo check --manifest-path /home/dracon/Dev/dracon-utilities/Cargo.toml --workspace` | Pass |
+| `dracon-utilities` locked build/type check after unused-dep cleanup | `cargo check --manifest-path /home/dracon/Dev/dracon-utilities/Cargo.toml --workspace --locked` | Pass |
+| `dracon-utilities` metadata/tree after cleanup | `cargo metadata --manifest-path ... --format-version 1`; `cargo tree ... -i dracon-git`; `cargo tree ... -i dracon-system-lib` | Only `dracon-sync -> dracon-git` and `dracon-system -> dracon-system-lib` remain, both from `git+https://github.com/DraconDev/dracon-libs`.
 | `dracon-utilities` full tests | `cargo test --manifest-path /home/dracon/Dev/dracon-utilities/Cargo.toml --workspace --no-fail-fast` | Failed for unrelated environment/pre-existing issues: missing git author identity in git tests, SSH/mock SSH failures, and security tests reporting no master identities. |
 | `dracon-utilities` remote sync | `git push codeberg HEAD:main` and `git push gitlab HEAD:main` | Pass; both now point at `b66ac345040ce6d4609504ed9f0753c5f22151f6`. |
 | `dracon-utilities` GitHub remote sync | `git push github HEAD:main` | Blocked: rejected as non-fast-forward because GitHub main is `e5619fc636fb2cb39c403e260e8feb308060d1dc`; requires either pulling/integrating remote changes or explicit `--force-with-lease` approval. |
@@ -43,7 +43,7 @@ Updated `/home/dracon/Dev/dracon-utilities/Cargo.toml` workspace dependencies:
 
 ## Takeaway
 
-The only active local sibling consumer of `dracon-libs` was `dracon-utilities`, and it now consumes `dracon-libs` from the Git repository rather than local `../dracon-libs` paths. The `dracon-utilities` change is pushed to Codeberg and GitLab. GitHub remains blocked by a non-fast-forward remote main. Other local consumers either use crates.io, use a different AI library boundary, or have only commented/local-development dependencies.
+The only active local sibling consumer of `dracon-libs` was `dracon-utilities`, and it now consumes the used `dracon-libs` crates from the Git repository rather than local `../dracon-libs` paths. Unused AI workspace dependencies that previously pointed at local sibling paths were removed. The `dracon-utilities` change is pushed to Codeberg and GitLab. GitHub remains blocked by a non-fast-forward remote main. Other local consumers either use crates.io, use a different AI library boundary, or have only commented/local-development dependencies.
 
 ## Remaining notes
 
