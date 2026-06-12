@@ -28,7 +28,7 @@ Implementation was not performed because the user task requested audit/checking 
 | Security advisories | `cargo audit --no-fetch --stale` | Pass with warnings | `number_prefix 0.4.0` and `paste 1.0.15` unmaintained |
 | Dependency freshness | `cargo outdated --root-deps-only --exit-code 1` | Fail as expected | Many outdated root deps: `sysinfo`, `candle-*`, `parakeet-rs`, `tokenizers`, `ort`, `zip`, `rubato`, `rodio`, `reqwest`, `tokio` |
 | Duplicate deps | `cargo tree -d --locked --prefix none` | Pass with duplicates | `tokenizers` 0.19.1/0.22.2, `reqwest` feature split, `ort`, ML/tokenizer families |
-| Working tree | `git status --porcelain=v1 -uall` | Clean | No source/report changes from this audit |
+| Working tree | `git status --porcelain=v1 -uall` | No unstaged/untracked source changes | Generated audit report is staged as the deliverable; no source, manifest, lockfile, CI, or README changes were made. |
 
 ## Backlog item status
 
@@ -117,6 +117,6 @@ Legend: **Confirmed** = still present in current repo; **Partially confirmed** =
 - Read and audited `.pi/actionable-audit-backlog-20260612.md` completely.
 - Cross-checked every backlog item against current files and fresh command output.
 - Verified workspace metadata, formatting, clippy, check, tests, docs, dependency health, and working tree state.
-- Produced this findings/action-plan report.
+- Produced this findings/action-plan report and staged it as the audit deliverable.
 - Did not modify source, manifests, lockfiles, CI, or READMEs.
 - No backlog item is marked complete without fresh evidence; stale evidence is explicitly called out for QW-04 and SEC-02.
