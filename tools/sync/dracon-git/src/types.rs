@@ -60,3 +60,10 @@ pub struct DiffFile {
     /// Change status of the file.
     pub status: FileStatus,
 }
+
+impl DiffFile {
+    /// Create a diff file entry.
+    pub fn new(path: PathBuf, status: FileStatus) -> Self {
+        Self { path, status }
+    }
+}
