@@ -8,6 +8,7 @@ use std::path::Path;
 /// This prevents per-subprocess overhead from shell integrations.
 fn git_cmd() -> std::process::Command {
     let mut cmd = std::process::Command::new("git");
+    cmd.args(["-c", "core.hooksPath=/dev/null"]);
     // Block direnv, zsh hooks, and other shell integrations from spawning
     cmd.env_remove("DIRENV_DIR")
         .env_remove("DIRENV_FILE")

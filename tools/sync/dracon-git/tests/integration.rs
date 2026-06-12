@@ -85,6 +85,42 @@ async fn test_git_service_status_dirty() {
 }
 
 #[tokio::test]
+async fn test_git_service_protected_filter_failure_is_fail_closed() {
+    use std::os::unix::fs::PermissionsExt;
+
+    let tmp = TempDir::new().unwrap();
+    setup_repo(tmp.path());
+    std::fs::write(tmp.path().join(".gitattributes"), "*.txt filter=dracon\n").unwrap();
+    std::fs::write(tmp.path().join("secret.txt"), "plaintext").unwrap();
+
+    let bin_dir = tmp.path().join("bin");
+    std::fs::create_dir(&bin_dir).unwrap();
+    let warden = bin_dir.join("dracon-warden");
+    std::fs::write(&warden, "#!/bin/sh\necho fake warden failure >&2\nexit 1\n").unwrap();
+    let mut perms = std::fs::metadata(&warden).unwrap().permissions();
+    perms.set_mode(0o755);
+    std::fs::set_permissions(&warden, perms).unwrap();
+
+    let old_path = std::env::var_os("PATH");
+    std::env::set_var("PATH", bin_dir);
+    let svc = dracon_git::GitService::new(tmp.path()).unwrap();
+    let err = svc.add_paths(&["secret.txt".to_string()]).await;
+    match old_path {
+        Some(path) => std::env::set_var("PATH", path),
+        None => std::env::remove_var("PATH"),
+    }
+
+    assert!(err.is_err());
+    let status = Command::new("git")
+        .args(["status", "--porcelain"])
+        .current_dir(tmp.path())
+        .output()
+        .unwrap();
+    let stdout = String::from_utf8_lossy(&status.stdout);
+    assert!(stdout.contains("secret.txt"));
+}
+
+#[tokio::test]
 async fn test_git_service_get_diff_entries() {
     let tmp = TempDir::new().unwrap();
     setup_repo(tmp.path());

@@ -2,6 +2,10 @@
 
 SQLite + ONNX embeddings for conversation storage and semantic search.
 
+## Privacy and retention
+
+`MemoryDb` stores conversations and facts in SQLite. File-backed databases are plaintext unless the deployment places them on encrypted storage or applies OS-level permissions/backups. Use `delete_conversation(id)`, `delete_fact(category, key)`, `delete_facts_by_category(category)`, or `delete_conversations_before(timestamp)` to remove individual records instead of relying only on `clear()`.
+
 ## Usage
 
 ```rust
@@ -19,6 +23,10 @@ let results = mem.recall_relevant("display settings?", 3).await?;
 mem.store_fact("preferences", "theme", "dark", None).await?;
 let fact = mem.get_fact("preferences", "theme").await?;
 ```
+
+## Contract/runtime alignment
+
+The runtime exposes synchronous, embedding-aware methods such as `store_conversation(role, content)` and `OnnxEmbedder::embed(&mut self)`. The separate `dracon-memory-contracts` crate exposes async traits for consumers that should not depend on ONNX/SQLite. Prefer the runtime API for direct use and the contract crate for trait-based integration.
 
 ## Environment Variables
 

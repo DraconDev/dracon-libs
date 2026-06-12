@@ -28,7 +28,7 @@ let output = conn.exec("htop").await?;
 
 ## Feature Flags
 
-None. The crate currently depends on `sysinfo`, `ssh2`, and `notify-rust` directly; no optional Cargo features are declared.
+- `unsafe-remote-shell` — opts into the deprecated raw remote shell execution API. Prefer structured `exec_program()` calls for remote execution.
 
 ## License
 

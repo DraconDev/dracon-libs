@@ -49,7 +49,15 @@ pub use types::{DiffFile, FileStatus, RepoStatus};
 use crate::error::{GitError, Result};
 use std::io::Write;
 use std::path::{Path, PathBuf};
-use std::process::Stdio;
+use std::process::{Command, Stdio};
+
+/// Create a `git` command with hooks and interactive prompts disabled.
+fn git_cmd() -> Command {
+    let mut cmd = Command::new("git");
+    cmd.args(["-c", "core.hooksPath=/dev/null"])
+        .env("GIT_TERMINAL_PROMPT", "0");
+    cmd
+}
 
 /// Primary git service — provides async operations (status, pull, push, commit).
 #[derive(Clone)]
@@ -70,7 +78,7 @@ impl GitService {
         tokio::task::spawn_blocking(move || -> Result<bool> {
             // Use git CLI instead of libgit2::Repository::open() which
             // reads the index on open and fails on repos with binary blobs.
-            let output = std::process::Command::new("git")
+            let output = git_cmd()
                 .args(["rev-parse", "--git-dir"])
                 .current_dir(&path)
                 .output();
@@ -181,7 +189,7 @@ impl GitService {
         tokio::task::spawn_blocking(move || -> std::result::Result<Vec<DiffFile>, GitError> {
             // Use git CLI which respects .gitattributes binary markers,
             // avoiding libgit2's "nul byte" errors on binary files.
-            let output = std::process::Command::new("git")
+            let output = git_cmd()
                 .args(["status", "--porcelain", "-z"])
                 .current_dir(&path)
                 .output()
@@ -231,7 +239,7 @@ impl GitService {
                 Ok(s) => Ok(s),
                 Err(_) => {
                     // CLI fallback: handles binary files, nul bytes, etc.
-                    let output = std::process::Command::new("git")
+                    let output = git_cmd()
                         .args(["diff", "HEAD"])
                         .current_dir(&path)
                         .output()
@@ -387,7 +395,7 @@ impl GitService {
     /// CLI fallback for pull --rebase --autostash.
     /// Used when libgit2 fast-forward would overwrite uncommitted changes.
     fn cli_pull_rebase(path: &Path) -> std::result::Result<(), GitError> {
-        let output = std::process::Command::new("git")
+        let output = git_cmd()
             .args(["pull", "--rebase", "--autostash"])
             .current_dir(path)
             .output()
@@ -400,7 +408,7 @@ impl GitService {
         let stderr = String::from_utf8_lossy(&output.stderr);
         if stderr.contains("CONFLICT") || stderr.contains("conflict") {
             // Abort the rebase to leave repo in a clean state
-            let _ = std::process::Command::new("git")
+            let _ = git_cmd()
                 .args(["rebase", "--abort"])
                 .current_dir(path)
                 .status();
@@ -423,7 +431,7 @@ impl GitService {
         let path = self.root_path.clone();
 
         tokio::task::spawn_blocking(move || -> std::result::Result<(), GitError> {
-            let output = std::process::Command::new("git")
+            let output = git_cmd()
                 .args(["pull", "--no-rebase"])
                 .current_dir(&path)
                 .output()
@@ -436,7 +444,7 @@ impl GitService {
             let stderr = String::from_utf8_lossy(&output.stderr);
             if stderr.contains("CONFLICT") || stderr.contains("conflict") {
                 // Abort the merge to leave repo in a clean state
-                let _ = std::process::Command::new("git")
+                let _ = git_cmd()
                     .args(["merge", "--abort"])
                     .current_dir(&path)
                     .status();
@@ -529,7 +537,7 @@ impl GitService {
                         }
                     };
                     let encrypted = run_clean_filter(rel_path, &plaintext)
-                        .unwrap_or_else(|_| plaintext.clone());
+                        .map_err(|e| git2::Error::from_str(&e.to_string()))?;
                     let entry_path = rel_path.as_bytes();
                     let mut entry = git2::IndexEntry {
                         ctime: git2::IndexTime::new(0, 0),
@@ -564,9 +572,10 @@ impl GitService {
                 Err(_) => {
                     // Fallback: use git CLI for everything
                     let paths: Vec<&str> = concrete.iter().map(|s| s.as_str()).collect();
-                    let status = std::process::Command::new("git")
+                    let status = git_cmd()
                         .arg("add")
                         .arg("-f")
+                        .arg("--")
                         .args(&paths)
                         .current_dir(&root)
                         .status();
@@ -645,8 +654,8 @@ impl GitService {
                 Ok(()) => Ok(()),
                 Err(e) => {
                     // Fallback: git CLI handles binary files, nul bytes, etc.
-                    let status = std::process::Command::new("git")
-                        .args(["commit", "-m", &message])
+                    let status = git_cmd()
+                        .args(["commit", "-m", &message, "--no-verify"])
                         .current_dir(&path)
                         .status();
                     match status {
@@ -690,7 +699,7 @@ impl GitService {
     pub async fn push(&self) -> Result<()> {
         let path = self.root_path.clone();
         tokio::task::spawn_blocking(move || -> std::result::Result<(), GitError> {
-            let output = std::process::Command::new("git")
+            let output = git_cmd()
                 .arg("push")
                 .arg("origin")
                 .arg("HEAD")
@@ -849,29 +858,45 @@ fn resolve_concrete_paths(repo_root: &Path, paths: &[String]) -> Vec<String> {
     }
 
     // Use git status to enumerate relevant files.
-    let Ok(output) = std::process::Command::new("git")
-        .args(["diff", "--name-only", "--cached"])
+    let Ok(output) = git_cmd()
+        .args(["diff", "--name-only", "-z", "--cached"])
         .current_dir(repo_root)
         .output()
     else {
         return paths.to_vec();
     };
 
-    let mut result: Vec<String> = String::from_utf8_lossy(&output.stdout)
-        .lines()
-        .filter(|l| !l.is_empty())
-        .map(|s| s.to_string())
+    let mut result: Vec<String> = output
+        .stdout
+        .split(|b| *b == 0)
+        .filter_map(|bytes| {
+            if bytes.is_empty() {
+                None
+            } else {
+                Some(String::from_utf8_lossy(bytes).to_string())
+            }
+        })
         .collect();
 
     // Also include untracked/modified files.
-    if let Ok(output) = std::process::Command::new("git")
-        .args(["ls-files", "--others", "--exclude-standard", "--modified"])
+    if let Ok(output) = git_cmd()
+        .args([
+            "ls-files",
+            "-z",
+            "--others",
+            "--exclude-standard",
+            "--modified",
+        ])
         .current_dir(repo_root)
         .output()
     {
-        for line in String::from_utf8_lossy(&output.stdout).lines() {
-            if !line.is_empty() && !result.contains(&line.to_string()) {
-                result.push(line.to_string());
+        for bytes in output.stdout.split(|b| *b == 0) {
+            if bytes.is_empty() {
+                continue;
+            }
+            let line = String::from_utf8_lossy(bytes).to_string();
+            if !result.contains(&line) {
+                result.push(line);
             }
         }
     }
@@ -958,7 +983,7 @@ fn cli_get_status(path: &Path) -> std::result::Result<RepoStatus, GitError> {
     let mut status = RepoStatus::new();
 
     // Branch
-    if let Ok(o) = std::process::Command::new("git")
+    if let Ok(o) = git_cmd()
         .args(["branch", "--show-current"])
         .current_dir(path)
         .output()
@@ -972,7 +997,7 @@ fn cli_get_status(path: &Path) -> std::result::Result<RepoStatus, GitError> {
     }
 
     // Ahead/behind
-    if let Ok(o) = std::process::Command::new("git")
+    if let Ok(o) = git_cmd()
         .args(["rev-list", "--left-right", "--count", "HEAD...@{u}"])
         .current_dir(path)
         .output()
@@ -984,7 +1009,7 @@ fn cli_get_status(path: &Path) -> std::result::Result<RepoStatus, GitError> {
     }
 
     // File counts
-    if let Ok(o) = std::process::Command::new("git")
+    if let Ok(o) = git_cmd()
         .args(["status", "--porcelain"])
         .current_dir(path)
         .output()
@@ -1038,7 +1063,7 @@ pub fn read_blueprint_content(repo: &Path) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::process::Command;
+    use std::path::Path;
     use tempfile::TempDir;
 
     /// Helper: init a bare repo, clone it, commit a file, and return (remote, local) dirs.
@@ -1047,7 +1072,7 @@ mod tests {
         let local = TempDir::new().unwrap();
 
         // Init bare remote with main as the default branch.
-        Command::new("git")
+        git_cmd()
             .args(["init", "--bare", "-b", "main"])
             .current_dir(remote.path())
             .status()
@@ -1055,24 +1080,24 @@ mod tests {
 
         // Init local repo directly instead of cloning an unborn remote, so HEAD
         // is unambiguously on main for pull_rebase().
-        Command::new("git")
+        git_cmd()
             .args(["init", "-b", "main"])
             .current_dir(local.path())
             .status()
             .unwrap();
-        Command::new("git")
+        git_cmd()
             .args(["remote", "add", "origin", remote.path().to_str().unwrap()])
             .current_dir(local.path())
             .status()
             .unwrap();
 
         // Configure git identity
-        Command::new("git")
+        git_cmd()
             .args(["config", "user.email", "test@test.com"])
             .current_dir(local.path())
             .status()
             .unwrap();
-        Command::new("git")
+        git_cmd()
             .args(["config", "user.name", "Test"])
             .current_dir(local.path())
             .status()
@@ -1080,17 +1105,17 @@ mod tests {
 
         // Create and push initial file
         std::fs::write(local.path().join("keep.txt"), "keep me").unwrap();
-        Command::new("git")
+        git_cmd()
             .args(["add", "."])
             .current_dir(local.path())
             .status()
             .unwrap();
-        Command::new("git")
+        git_cmd()
             .args(["commit", "--no-verify", "-m", "init"])
             .current_dir(local.path())
             .status()
             .unwrap();
-        Command::new("git")
+        git_cmd()
             .args(["push", "-u", "origin", "main"])
             .current_dir(local.path())
             .status()
@@ -1102,7 +1127,7 @@ mod tests {
     /// Helper: add a commit to the bare remote (via a temp clone).
     fn push_new_file_to_remote(remote: &Path, filename: &str, content: &str) {
         let tmp = TempDir::new().unwrap();
-        Command::new("git")
+        git_cmd()
             .args([
                 "clone",
                 remote.to_str().unwrap(),
@@ -1110,28 +1135,28 @@ mod tests {
             ])
             .status()
             .unwrap();
-        Command::new("git")
+        git_cmd()
             .args(["config", "user.email", "test@test.com"])
             .current_dir(tmp.path())
             .status()
             .unwrap();
-        Command::new("git")
+        git_cmd()
             .args(["config", "user.name", "Test"])
             .current_dir(tmp.path())
             .status()
             .unwrap();
         std::fs::write(tmp.path().join(filename), content).unwrap();
-        Command::new("git")
+        git_cmd()
             .args(["add", "."])
             .current_dir(tmp.path())
             .status()
             .unwrap();
-        Command::new("git")
+        git_cmd()
             .args(["commit", "--no-verify", "-m", &format!("add {filename}")])
             .current_dir(tmp.path())
             .status()
             .unwrap();
-        Command::new("git")
+        git_cmd()
             .args(["push", "origin", "HEAD"])
             .current_dir(tmp.path())
             .status()
@@ -1156,7 +1181,7 @@ mod tests {
         push_new_file_to_remote(remote.path(), "upstream.txt", "from remote");
 
         // Fetch to update remote tracking branch
-        Command::new("git")
+        git_cmd()
             .args(["fetch", "origin"])
             .current_dir(local.path())
             .status()

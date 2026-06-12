@@ -66,10 +66,7 @@ impl GenericOpenAIAdapter {
             anyhow::bail!("endpoint URL must include a host: {endpoint}");
         }
 
-        let normalized_endpoint = parsed
-            .as_str()
-            .trim_end_matches('/')
-            .to_string();
+        let normalized_endpoint = parsed.as_str().trim_end_matches('/').to_string();
 
         let client = reqwest::Client::builder()
             .timeout(Duration::from_secs(60))

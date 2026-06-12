@@ -219,10 +219,7 @@ fn fallback_embedding(text: &str) -> Vec<f32> {
         }
     }
 
-    let mut hasher = std::collections::hash_map::DefaultHasher::new();
-    use std::hash::{Hash, Hasher};
-    lower.hash(&mut hasher);
-    let hash = hasher.finish();
+    let hash = stable_hash(&lower);
     for byte in hash.to_le_bytes() {
         let idx = (byte as usize) % EMBEDDING_DIM;
         embedding[idx] += 0.25;
@@ -235,6 +232,15 @@ fn fallback_embedding(text: &str) -> Vec<f32> {
         }
     }
     embedding
+}
+
+fn stable_hash(text: &str) -> u64 {
+    let mut hash = 0xcbf29ce484222325u64;
+    for byte in text.as_bytes() {
+        hash ^= u64::from(*byte);
+        hash = hash.wrapping_mul(0x100000001b3);
+    }
+    hash
 }
 
 #[cfg(test)]

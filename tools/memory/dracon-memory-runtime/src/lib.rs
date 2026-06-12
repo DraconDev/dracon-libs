@@ -85,6 +85,21 @@ impl MemorySystem {
         db.clear()
     }
 
+    /// Delete one conversation and its vector row by database id.
+    pub async fn delete_conversation(&self, id: i64) -> anyhow::Result<usize> {
+        let db = self.db.lock().await;
+        db.delete_conversation(id)
+    }
+
+    /// Delete conversations created before `timestamp` and their vector rows.
+    pub async fn delete_conversations_before(
+        &self,
+        timestamp: chrono::DateTime<chrono::Utc>,
+    ) -> anyhow::Result<usize> {
+        let db = self.db.lock().await;
+        db.delete_conversations_before(timestamp)
+    }
+
     /// Store or update a user fact.
     pub async fn store_fact(
         &self,
@@ -95,6 +110,18 @@ impl MemorySystem {
     ) -> anyhow::Result<()> {
         let db = self.db.lock().await;
         db.store_fact(category, key, value, source)
+    }
+
+    /// Delete one user fact by category and key.
+    pub async fn delete_fact(&self, category: &str, key: &str) -> anyhow::Result<usize> {
+        let db = self.db.lock().await;
+        db.delete_fact(category, key)
+    }
+
+    /// Delete all user facts in a category.
+    pub async fn delete_facts_by_category(&self, category: &str) -> anyhow::Result<usize> {
+        let db = self.db.lock().await;
+        db.delete_facts_by_category(category)
     }
 
     /// Return a user fact by category and key.
@@ -190,6 +217,45 @@ mod tests {
         let fact = memory.get_fact("personal", "name").await.unwrap();
         assert!(fact.is_some());
         assert_eq!(fact.unwrap().value, "Alice");
+    }
+
+    #[tokio::test]
+    async fn test_memory_system_deletes_individual_records() {
+        let memory = MemorySystem::new(":memory:").unwrap();
+
+        let id = memory
+            .store_conversation(Role::User, "delete me")
+            .await
+            .unwrap();
+        memory
+            .store_conversation(Role::User, "keep me")
+            .await
+            .unwrap();
+        memory
+            .store_fact("personal", "name", "Alice", None)
+            .await
+            .unwrap();
+        memory
+            .store_fact("personal", "theme", "dark", None)
+            .await
+            .unwrap();
+
+        assert_eq!(memory.delete_conversation(id).await.unwrap(), 1);
+        assert_eq!(memory.delete_fact("personal", "name").await.unwrap(), 1);
+
+        let recent = memory.get_recent(10).await.unwrap();
+        assert_eq!(recent.len(), 1);
+        assert_eq!(recent[0].content, "keep me");
+        assert!(memory.get_fact("personal", "name").await.unwrap().is_none());
+        assert_eq!(
+            memory
+                .get_fact("personal", "theme")
+                .await
+                .unwrap()
+                .unwrap()
+                .value,
+            "dark"
+        );
     }
 
     #[tokio::test]

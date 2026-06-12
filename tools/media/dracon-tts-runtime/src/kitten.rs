@@ -484,32 +484,38 @@ impl KittenTTS {
         Ok(data)
     }
 
-    fn text_to_tokens(text: &str) -> Vec<i64> {
+    fn text_to_tokens(text: &str) -> anyhow::Result<Vec<i64>> {
         let mut child = std::process::Command::new("espeak-ng")
             .args(["--ipa", "-q", "--stdin"])
             .stdin(std::process::Stdio::piped())
             .stdout(std::process::Stdio::piped())
+            .stderr(std::process::Stdio::piped())
             .spawn()
-            .ok();
+            .context("failed to spawn espeak-ng for phoneme extraction")?;
 
-        let phonemes = if let Some(ref mut c) = child {
-            if let Some(mut stdin) = c.stdin.take() {
-                use std::io::Write;
-                let _ = stdin.write_all(text.as_bytes());
-            }
-            c.stdout
-                .as_mut()
-                .map(|o| {
-                    let mut buf = String::new();
-                    o.read_to_string(&mut buf).unwrap_or(0);
-                    buf
-                })
-                .unwrap_or_else(|| text.to_string())
+        if let Some(mut stdin) = child.stdin.take() {
+            use std::io::Write;
+            stdin
+                .write_all(text.as_bytes())
+                .context("failed to write text to espeak-ng stdin")?;
         } else {
-            text.to_string()
-        };
+            anyhow::bail!("failed to open espeak-ng stdin");
+        }
 
-        let cleaned = Self::clean_phonemes(&phonemes.chars().collect::<String>());
+        let output = child
+            .wait_with_output()
+            .context("failed to wait for espeak-ng")?;
+        if !output.status.success() {
+            let stderr = String::from_utf8_lossy(&output.stderr).trim().to_string();
+            anyhow::bail!(
+                "espeak-ng failed with exit code {:?}: {stderr}",
+                output.status.code()
+            );
+        }
+        let phonemes =
+            String::from_utf8(output.stdout).context("espeak-ng returned non-UTF8 phonemes")?;
+
+        let cleaned = Self::clean_phonemes(&phonemes);
         let mut tokens = vec![0i64];
 
         for c in cleaned.chars() {
@@ -518,7 +524,7 @@ impl KittenTTS {
         }
 
         tokens.push(0);
-        tokens
+        Ok(tokens)
     }
 
     fn clean_phonemes(phonemes: &str) -> String {
@@ -716,7 +722,7 @@ impl KittenTTS {
 
         let result = async {
             tokio::task::spawn_blocking(move || -> anyhow::Result<Vec<f32>> {
-                let tokens: Vec<i64> = Self::text_to_tokens(&text);
+                let tokens: Vec<i64> = Self::text_to_tokens(&text)?;
                 if tokens.len() < 2 {
                     return Ok(Vec::new());
                 }
@@ -767,26 +773,29 @@ impl KittenTTS {
         }
         .await;
 
-        if let Ok(samples) = result {
-            if let Some((samples, trim_start)) =
-                Self::process_samples_for_playback(call_id, samples)
-            {
-                // Resample from 24000 Hz to 48000 Hz for better device compatibility
-                let resampled = Self::resample_to_output_rate(&samples);
-                let sample_count = resampled.len();
-                let source =
-                    rodio::buffer::SamplesBuffer::new(1, OUTPUT_SAMPLE_RATE as u32, resampled);
-                sink.append(source.convert_samples::<f32>());
-                if std::env::var_os("REMI_KITTEN_DEBUG").is_some() {
-                    println!(
-                        "[Kitten-{}] Playing {} samples ({} resampled, trimmed {} leading)",
-                        call_id,
-                        sample_count,
-                        samples.len(),
-                        trim_start
-                    );
+        match result {
+            Ok(samples) => {
+                if let Some((samples, trim_start)) =
+                    Self::process_samples_for_playback(call_id, samples)
+                {
+                    // Resample from 24000 Hz to 48000 Hz for better device compatibility
+                    let resampled = Self::resample_to_output_rate(&samples);
+                    let sample_count = resampled.len();
+                    let source =
+                        rodio::buffer::SamplesBuffer::new(1, OUTPUT_SAMPLE_RATE as u32, resampled);
+                    sink.append(source.convert_samples::<f32>());
+                    if std::env::var_os("REMI_KITTEN_DEBUG").is_some() {
+                        println!(
+                            "[Kitten-{}] Playing {} samples ({} resampled, trimmed {} leading)",
+                            call_id,
+                            sample_count,
+                            samples.len(),
+                            trim_start
+                        );
+                    }
                 }
             }
+            Err(err) => eprintln!("[Kitten-{}] synthesis failed: {err}", call_id),
         }
 
         // Wait for audio to finish playing (prevents truncation)
@@ -835,7 +844,7 @@ impl KittenTTS {
         let result = async {
             tokio::task::spawn_blocking(move || -> anyhow::Result<Vec<f32>> {
                 let token_start = std::time::Instant::now();
-                let tokens: Vec<i64> = Self::text_to_tokens(&text);
+                let tokens: Vec<i64> = Self::text_to_tokens(&text)?;
                 let token_time = token_start.elapsed();
                 println!(
                     "[Kitten-{}] Tokens: {} ({:.1}ms)",
@@ -970,7 +979,7 @@ impl KittenTTS {
             .cloned()
             .unwrap_or_else(|| self.voices.values().next().cloned().unwrap_or_default());
 
-        let tokens: Vec<i64> = Self::text_to_tokens(text);
+        let tokens: Vec<i64> = Self::text_to_tokens(text)?;
         if tokens.len() < 2 {
             return Ok(Vec::new());
         }
@@ -1123,6 +1132,17 @@ impl VoiceProvider for KittenTTS {
 #[cfg(test)]
 mod tests {
     use super::{model_info, resolve_model, KittenTTS};
+    use std::sync::Mutex as StdMutex;
+
+    static PATH_LOCK: StdMutex<()> = StdMutex::new(());
+
+    #[cfg(unix)]
+    fn make_executable(path: &std::path::Path) {
+        use std::os::unix::fs::PermissionsExt;
+        let mut perms = std::fs::metadata(path).unwrap().permissions();
+        perms.set_mode(0o755);
+        std::fs::set_permissions(path, perms).unwrap();
+    }
 
     #[test]
     fn style_index_stays_in_bounds() {
@@ -1168,5 +1188,32 @@ mod tests {
         let micro = model_info("micro");
         assert_eq!(micro.model_path, "assets/models/kitten_micro.onnx");
         assert_eq!(micro.voices_path, "assets/models/kitten_voices.npz");
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn text_to_tokens_surfaces_espeak_failures() {
+        let _guard = PATH_LOCK.lock().unwrap();
+        let old_path = std::env::var_os("PATH");
+        let temp_dir =
+            std::env::temp_dir().join(format!("dracon-tts-espeak-test-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&temp_dir);
+        std::fs::create_dir_all(&temp_dir).unwrap();
+        let script = temp_dir.join("espeak-ng");
+        std::fs::write(&script, "#!/bin/sh\ncat >/dev/null\nprintf 'ah'\n").unwrap();
+        make_executable(&script);
+
+        std::env::set_var("PATH", &temp_dir);
+        let tokens = KittenTTS::text_to_tokens("hello").unwrap();
+        assert!(tokens.len() > 2);
+
+        std::env::set_var("PATH", "");
+        assert!(KittenTTS::text_to_tokens("hello").is_err());
+
+        match old_path {
+            Some(path) => std::env::set_var("PATH", path),
+            None => std::env::remove_var("PATH"),
+        }
+        let _ = std::fs::remove_dir_all(&temp_dir);
     }
 }

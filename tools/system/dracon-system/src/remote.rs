@@ -135,6 +135,7 @@ impl RemoteFsContract for SshRemoteFsProvider {
 }
 
 impl RemoteExecContract for SshRemoteExecProvider {
+    #[cfg(feature = "unsafe-remote-shell")]
     #[allow(deprecated)]
     fn run_command(&self, connection: &RemoteConnection, command: &str) -> io::Result<String> {
         let bookmark = crate::contracts::RemoteBookmark {

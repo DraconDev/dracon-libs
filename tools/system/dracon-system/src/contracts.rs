@@ -221,6 +221,7 @@ pub trait RemoteFsContract {
 /// Contract for remote command execution over SSH.
 pub trait RemoteExecContract {
     /// Executes a raw shell command on the remote host.
+    #[cfg(feature = "unsafe-remote-shell")]
     #[deprecated(note = "Use exec_program() instead to avoid shell injection")]
     fn run_command(&self, connection: &RemoteConnection, command: &str) -> std::io::Result<String>;
 

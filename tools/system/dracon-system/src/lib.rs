@@ -18,7 +18,7 @@
 //!
 //! ## Feature Flags
 //!
-//! - `notify` — enables desktop notification support via `notify-rust`
+//! - `unsafe-remote-shell` — opts into the deprecated raw remote shell execution API.
 
 use crate::notification::NotificationConfig;
 use anyhow::Context;
@@ -179,8 +179,9 @@ impl SystemAgent {
     /// Approve one exact local command for later execution.
     ///
     /// Approval is exact: the same program and argument list must be passed to
-    /// [`run_command`](Self::run_command). This is intentionally narrow so callers
-    /// cannot approve a broad shell prefix and then append unreviewed arguments.
+    /// [`run_command`](Self::run_command). The executable is resolved to an
+    /// absolute path at approval time and re-checked before execution so `PATH`
+    /// changes cannot redirect an approved command.
     pub fn approve_command(&self, command: &str, args: &[String]) -> anyhow::Result<()> {
         if command.trim().is_empty() {
             return Err(anyhow::anyhow!(
@@ -188,11 +189,31 @@ impl SystemAgent {
             ));
         }
 
+        let path = resolve_command_path(command)?;
+        let approved = ApprovedCommand {
+            program: command.to_string(),
+            path,
+            args: args.to_vec(),
+        };
         self.approved_commands
             .lock()
             .map_err(|_| anyhow::anyhow!("command approval lock poisoned"))?
-            .insert(command_key(command, args));
+            .insert(command_key(command, args), approved);
         Ok(())
+    }
+
+    /// Approve `home-manager switch` for later execution through [`Self::apply_config`].
+    pub fn approve_config_apply(&self) -> anyhow::Result<()> {
+        self.approve_command("home-manager", &["switch".to_string()])
+    }
+
+    /// Approve a sanitized `nix profile install nixpkgs#<name>` command.
+    pub fn approve_package_install(&self, name: &str) -> anyhow::Result<()> {
+        let package_ref = package_ref(name)?;
+        self.approve_command(
+            "nix",
+            &["profile".to_string(), "install".to_string(), package_ref],
+        )
     }
 
     /// Execute an approved exact local command with exact arguments.
@@ -219,19 +240,43 @@ impl SystemAgent {
     }
 
     async fn run_command_checked(&self, command: &str, args: &[String]) -> anyhow::Result<String> {
-        if !self
-            .approved_commands
-            .lock()
-            .map_err(|_| anyhow::anyhow!("command approval lock poisoned"))?
-            .contains(&command_key(command, args))
-        {
+        let approved = {
+            self.approved_commands
+                .lock()
+                .map_err(|_| anyhow::anyhow!("command approval lock poisoned"))?
+                .get(&command_key(command, args))
+                .cloned()
+                .ok_or_else(|| {
+                    anyhow::anyhow!("Command was not approved: {command} {}", args.join(" "))
+                })?
+        };
+
+        if approved.program != command || approved.args != args {
+            return Err(anyhow::anyhow!("Command approval key mismatch"));
+        }
+
+        let execution_path = match resolve_command_path(command) {
+            Ok(path) => path,
+            Err(_) if approved.path.exists() => approved.path.clone(),
+            Err(err) => return Err(err),
+        };
+        if execution_path != approved.path {
             return Err(anyhow::anyhow!(
-                "Command was not approved: {command} {}",
-                args.join(" ")
+                "Approved command path changed: expected {}, resolved {}",
+                approved.path.display(),
+                execution_path.display()
             ));
         }
 
-        let output = Command::new(command).args(args).output().await?;
+        let output = Command::new(&approved.path).args(args).output().await?;
+        if !output.status.success() {
+            let stderr = String::from_utf8_lossy(&output.stderr).trim().to_string();
+            return Err(anyhow::anyhow!(
+                "Command failed with exit code {:?}: {}",
+                output.status.code(),
+                stderr
+            ));
+        }
         Ok(String::from_utf8_lossy(&output.stdout).to_string())
     }
 
@@ -281,31 +326,35 @@ impl SystemAgent {
     }
 
     /// Applies the current home-manager configuration by running `home-manager switch`.
+    ///
+    /// Callers must first approve this exact command with [`Self::approve_config_apply`].
     pub async fn apply_config(&self) -> anyhow::Result<String> {
-        let output = Command::new("home-manager").arg("switch").output().await?;
-        Ok(String::from_utf8_lossy(&output.stdout).to_string())
+        ensure_approved(self, "home-manager", &["switch".to_string()])?;
+        self.run_command_checked("home-manager", &["switch".to_string()])
+            .await
     }
 
     /// Install a package via nix profile.
     ///
     /// The package name is sanitized: only alphanumeric characters and hyphens
-    /// are allowed, with a maximum length of 100 characters.
+    /// are allowed, with a maximum length of 100 characters. Callers must first
+    /// approve the resulting command with [`Self::approve_package_install`].
     pub async fn install_package(&self, name: &str) -> anyhow::Result<String> {
-        if name.is_empty() || name.len() > 100 {
-            return Err(anyhow::anyhow!(
-                "Invalid package name: length must be 1-100"
-            ));
-        }
-        if !name.chars().all(|c| c.is_alphanumeric() || c == '-') {
-            return Err(anyhow::anyhow!(
-                "Invalid package name: only alphanumeric and hyphen allowed"
-            ));
-        }
-        let output = Command::new("nix")
-            .args(["profile", "install", &format!("nixpkgs#{}", name)])
-            .output()
-            .await?;
-        Ok(String::from_utf8_lossy(&output.stdout).to_string())
+        let package_ref = package_ref(name)?;
+        ensure_approved(
+            self,
+            "nix",
+            &[
+                "profile".to_string(),
+                "install".to_string(),
+                package_ref.clone(),
+            ],
+        )?;
+        self.run_command_checked(
+            "nix",
+            &["profile".to_string(), "install".to_string(), package_ref],
+        )
+        .await
     }
 }
 
@@ -324,9 +373,108 @@ fn command_key(command: &str, args: &[String]) -> String {
     key
 }
 
+fn ensure_approved(agent: &SystemAgent, command: &str, args: &[String]) -> anyhow::Result<()> {
+    agent
+        .approved_commands
+        .lock()
+        .map_err(|_| anyhow::anyhow!("command approval lock poisoned"))?
+        .get(&command_key(command, args))
+        .map(|_| ())
+        .ok_or_else(|| anyhow::anyhow!("Command was not approved: {command} {}", args.join(" ")))
+}
+
+fn resolve_command_path(command: &str) -> anyhow::Result<PathBuf> {
+    let candidate = Path::new(command);
+    if candidate.components().count() > 1 {
+        return candidate
+            .canonicalize()
+            .with_context(|| format!("failed to resolve command path: {}", candidate.display()));
+    }
+
+    let Some(paths) = env::var_os("PATH") else {
+        anyhow::bail!("PATH is not set; cannot resolve command: {command}");
+    };
+    for dir in env::split_paths(&paths) {
+        let candidate = dir.join(command);
+        if candidate.is_file() {
+            return candidate.canonicalize().with_context(|| {
+                format!(
+                    "failed to canonicalize command path: {}",
+                    candidate.display()
+                )
+            });
+        }
+    }
+    anyhow::bail!("command not found on PATH: {command}")
+}
+
+fn package_ref(name: &str) -> anyhow::Result<String> {
+    if name.is_empty() || name.len() > 100 {
+        return Err(anyhow::anyhow!(
+            "Invalid package name: length must be 1-100"
+        ));
+    }
+    if !name.chars().all(|c| c.is_alphanumeric() || c == '-') {
+        return Err(anyhow::anyhow!(
+            "Invalid package name: only alphanumeric and hyphen allowed"
+        ));
+    }
+    Ok(format!("nixpkgs#{name}"))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::sync::Mutex as StdMutex;
+
+    static PATH_LOCK: StdMutex<()> = StdMutex::new(());
+
+    #[cfg(unix)]
+    fn make_executable(path: &std::path::Path) {
+        use std::os::unix::fs::PermissionsExt;
+        let mut perms = std::fs::metadata(path).unwrap().permissions();
+        perms.set_mode(0o755);
+        std::fs::set_permissions(path, perms).unwrap();
+    }
+
+    #[cfg(unix)]
+    #[tokio::test]
+    async fn approved_command_uses_approved_path_when_path_changes() {
+        let old_path = std::env::var_os("PATH");
+        let temp_dir = std::env::temp_dir().join(format!(
+            "dracon-system-approved-path-{}",
+            std::process::id()
+        ));
+        let _ = std::fs::remove_dir_all(&temp_dir);
+        std::fs::create_dir_all(&temp_dir).unwrap();
+        let script = temp_dir.join("dracon-approved-path-test");
+        std::fs::write(&script, "#!/bin/sh\nprintf ok\n").unwrap();
+        make_executable(&script);
+
+        {
+            let _guard = PATH_LOCK.lock().unwrap();
+            std::env::set_var("PATH", &temp_dir);
+            let agent = SystemAgent::new();
+            agent
+                .approve_command("dracon-approved-path-test", &[])
+                .unwrap();
+
+            std::env::set_var("PATH", "");
+        }
+
+        let agent = SystemAgent::new();
+        let output = agent
+            .run_command_checked("dracon-approved-path-test", &[])
+            .await
+            .unwrap();
+        assert_eq!(output, "ok");
+
+        match old_path {
+            Some(path) => std::env::set_var("PATH", path),
+            None => std::env::remove_var("PATH"),
+        }
+        let _ = std::fs::remove_dir_all(&temp_dir);
+    }
 
     #[tokio::test]
     async fn run_command_requires_prior_approval() {

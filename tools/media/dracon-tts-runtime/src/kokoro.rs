@@ -4,7 +4,6 @@ use ort::session::Session;
 use rodio::{OutputStream, Sink, Source};
 use std::collections::HashMap;
 use std::fs::File;
-use std::io::Read;
 use std::path::PathBuf;
 use std::sync::atomic::{AtomicBool, AtomicU64, AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex};
@@ -257,12 +256,17 @@ impl KokoroTts {
     fn load_voice(path: &str) -> Result<Vec<f32>, std::io::Error> {
         let mut file = File::open(path)?;
         let file_size = file.metadata()?.len() as usize;
-        let num_floats = file_size / 4;
+        if !file_size.is_multiple_of(std::mem::size_of::<f32>()) {
+            return Err(std::io::Error::other(format!(
+                "voice file {} size {} is not aligned to 4 bytes",
+                path, file_size
+            )));
+        }
+        let num_floats = file_size / std::mem::size_of::<f32>();
         let mut data = vec![0.0f32; num_floats];
         // SAFETY: `data` is initialized with `num_floats` f32 values, and
-        // `file_size` is exactly `num_floats * size_of::<f32>()`. The mutable
-        // byte slice is used only for this call and is dropped before `data`
-        // is returned.
+        // `file_size` was checked to be exactly `num_floats * size_of::<f32>()`.
+        // The mutable byte slice is used only for this call and is dropped before `data` is returned.
         unsafe {
             std::io::Read::read_exact(
                 &mut file,
@@ -505,30 +509,36 @@ impl KokoroTts {
         Some((processed, trim_start))
     }
 
-    fn text_to_phonemes(text: &str) -> Vec<i64> {
+    fn text_to_phonemes(text: &str) -> anyhow::Result<Vec<i64>> {
         let mut child = std::process::Command::new("espeak-ng")
             .args(["--ipa", "-q", "--stdin"])
             .stdin(std::process::Stdio::piped())
             .stdout(std::process::Stdio::piped())
+            .stderr(std::process::Stdio::piped())
             .spawn()
-            .ok();
+            .context("failed to spawn espeak-ng for phoneme extraction")?;
 
-        let phonemes = if let Some(ref mut c) = child {
-            if let Some(mut stdin) = c.stdin.take() {
-                use std::io::Write;
-                let _ = stdin.write_all(text.as_bytes());
-            }
-            c.stdout
-                .as_mut()
-                .map(|o| {
-                    let mut buf = String::new();
-                    o.read_to_string(&mut buf).unwrap_or(0);
-                    buf
-                })
-                .unwrap_or_else(|| text.to_string())
+        if let Some(mut stdin) = child.stdin.take() {
+            use std::io::Write;
+            stdin
+                .write_all(text.as_bytes())
+                .context("failed to write text to espeak-ng stdin")?;
         } else {
-            text.to_string()
-        };
+            anyhow::bail!("failed to open espeak-ng stdin");
+        }
+
+        let output = child
+            .wait_with_output()
+            .context("failed to wait for espeak-ng")?;
+        if !output.status.success() {
+            let stderr = String::from_utf8_lossy(&output.stderr).trim().to_string();
+            anyhow::bail!(
+                "espeak-ng failed with exit code {:?}: {stderr}",
+                output.status.code()
+            );
+        }
+        let phonemes =
+            String::from_utf8(output.stdout).context("espeak-ng returned non-UTF8 phonemes")?;
 
         let mut tokens = vec![0i64];
 
@@ -538,7 +548,7 @@ impl KokoroTts {
         }
 
         tokens.push(0);
-        tokens
+        Ok(tokens)
     }
 
     fn phoneme_to_token(c: char) -> i64 {
@@ -650,7 +660,7 @@ impl KokoroTts {
         let result = async {
             tokio::task::spawn_blocking(move || -> anyhow::Result<Vec<f32>> {
                 let token_start = std::time::Instant::now();
-                let tokens = Self::text_to_phonemes(&text);
+                let tokens = Self::text_to_phonemes(&text)?;
                 let token_time = token_start.elapsed();
                 println!(
                     "[Kokoro-{}] Tokens: {} ({:.1}ms)",
@@ -771,7 +781,7 @@ impl KokoroTts {
 
         let result = async {
             tokio::task::spawn_blocking(move || -> anyhow::Result<Vec<f32>> {
-                let tokens = Self::text_to_phonemes(&text);
+                let tokens = Self::text_to_phonemes(&text)?;
                 if tokens.len() < 2 {
                     return Ok(Vec::new());
                 }

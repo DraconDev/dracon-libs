@@ -230,17 +230,26 @@ pub struct ProcessController;
 
 impl ProcessControlContract for ProcessController {
     fn kill_process(&self, pid: u32, signal: Option<i32>) -> io::Result<()> {
-        if let Some(target_uid) = get_process_uid(pid) {
-            if target_uid != current_uid() {
-                return Err(io::Error::other(format!(
-                    "Permission denied: process {pid} is owned by uid {} (not {})",
-                    target_uid,
-                    current_uid()
-                )));
-            }
+        let Some(target_uid) = get_process_uid(pid) else {
+            return Err(io::Error::other(format!(
+                "Permission denied: unable to verify ownership of process {pid}"
+            )));
+        };
+        if target_uid != current_uid() {
+            return Err(io::Error::other(format!(
+                "Permission denied: process {pid} is owned by uid {} (not {})",
+                target_uid,
+                current_uid()
+            )));
         }
 
-        let sig = signal.unwrap_or(9).to_string();
+        let sig = signal.unwrap_or(9);
+        if !(1..=64).contains(&sig.abs()) {
+            return Err(io::Error::other(format!(
+                "Invalid signal for pid {pid}: {sig}"
+            )));
+        }
+        let sig = sig.to_string();
         let status = Command::new("kill")
             .args([format!("-{sig}"), pid.to_string()])
             .status()?;

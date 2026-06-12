@@ -1,5 +1,5 @@
 use anyhow::Result;
-use chrono::Utc;
+use chrono::{DateTime, Utc};
 use rusqlite::Connection;
 use sqlite_vec::sqlite3_vec_init;
 
@@ -170,6 +170,32 @@ impl MemoryDb {
         Ok(())
     }
 
+    /// Delete one conversation and its vector row by database id.
+    pub fn delete_conversation(&self, id: i64) -> Result<usize> {
+        let tx = self.conn.unchecked_transaction()?;
+        let deleted = tx.execute("DELETE FROM conversations WHERE id = ?1", [id])?;
+        tx.execute("DELETE FROM vec_conversations WHERE rowid = ?1", [id])?;
+        tx.commit()?;
+        Ok(deleted)
+    }
+
+    /// Delete all conversations created before `timestamp` and their vector rows.
+    pub fn delete_conversations_before(&self, timestamp: DateTime<Utc>) -> Result<usize> {
+        let tx = self.conn.unchecked_transaction()?;
+        let deleted = tx.execute(
+            "DELETE FROM conversations WHERE timestamp < ?1",
+            [timestamp.to_rfc3339()],
+        )?;
+        tx.execute(
+            "DELETE FROM vec_conversations WHERE rowid IN (
+                SELECT id FROM conversations WHERE timestamp < ?1
+            )",
+            [timestamp.to_rfc3339()],
+        )?;
+        tx.commit()?;
+        Ok(deleted)
+    }
+
     /// Store or update a user fact.
     pub fn store_fact(
         &self,
@@ -190,6 +216,23 @@ impl MemoryDb {
             rusqlite::params![category, key, value, source],
         )?;
         Ok(())
+    }
+
+    /// Delete one user fact by category and key.
+    pub fn delete_fact(&self, category: &str, key: &str) -> Result<usize> {
+        self.conn
+            .execute(
+                "DELETE FROM user_facts WHERE category = ?1 AND key = ?2",
+                rusqlite::params![category, key],
+            )
+            .map_err(Into::into)
+    }
+
+    /// Delete all user facts in a category.
+    pub fn delete_facts_by_category(&self, category: &str) -> Result<usize> {
+        self.conn
+            .execute("DELETE FROM user_facts WHERE category = ?1", [category])
+            .map_err(Into::into)
     }
 
     /// Return one user fact by category and key.
