@@ -65,7 +65,9 @@ impl SttEngine {
         match self {
             SttEngine::Parakeet(p) => p.transcribe_audio(audio).await,
             #[cfg(feature = "whisper")]
-            SttEngine::Whisper(w) => w.transcribe_raw(&audio).map(|result| result.map(|r| r.text)),
+            SttEngine::Whisper(w) => w
+                .transcribe_raw(&audio)
+                .map(|result| result.map(|r| r.text)),
         }
     }
 
