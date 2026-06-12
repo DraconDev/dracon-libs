@@ -512,10 +512,10 @@ mod tests {
         assert!(agent.install_package("hello").await.is_err());
     }
 
-    #[test]
-    fn package_name_sanitizer_rejects_shell_metacharacters() {
+    #[tokio::test]
+    async fn package_name_sanitizer_rejects_shell_metacharacters() {
         let agent = SystemAgent::new();
-        assert!(agent.install_package("hello;rm -rf /").is_err());
+        assert!(agent.install_package("hello;rm -rf /").await.is_err());
     }
 
     #[tokio::test]
