@@ -1,5 +1,6 @@
 use crate::stt_contracts::{
-    EngineCapabilities, SpeechToText, TimestampedTranscription, TranscriptionResult,
+    EngineCapabilities, SpeechToText, SttResult, TimestampedSegment, TimestampedTranscription,
+    TranscriptionResult,
 };
 use parakeet_rs::{Parakeet, TimestampMode, Transcriber};
 use std::path::Path;
@@ -51,7 +52,7 @@ impl ParakeetStt {
     }
 
     /// Transcribe audio samples asynchronously and return text when available.
-    pub async fn transcribe_audio(&self, audio_data: Vec<f32>) -> Option<String> {
+    pub async fn transcribe_audio(&self, audio_data: Vec<f32>) -> anyhow::Result<Option<String>> {
         println!("STT: Transcribing {} samples...", audio_data.len());
 
         if audio_data.len() < 16000 {
