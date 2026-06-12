@@ -6,10 +6,10 @@ Goal: double-check the updated `dracon-libs` workspace and documented consumer/d
 
 ## Current repository state
 
-- `dracon-libs` HEAD: `b387807`
+- Validation ran against `dracon-libs` HEAD `b387807`; the audit report itself is committed after validation.
 - Working tree: clean (`git status --porcelain=v1 -uall` returned no paths after validation and report commit).
 - Recent audited changes are committed in the current history:
-  - `b387807` — fresh end-to-end audit verification report.
+  - fresh end-to-end audit verification report (`.pi/fresh-audit-verification-20260612.md`).
   - `957c6af` — updated external consumer dependency-source audit report.
   - `4c4ebdc` — updated README external/local consumer takeaway.
   - `436049d` — updated local AI consumer takeaway.
