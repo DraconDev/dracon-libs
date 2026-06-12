@@ -8,7 +8,7 @@ System diagnostics, SSH remote execution, and desktop notifications.
 use dracon_system::{SystemSnapshotProvider, SshRemoteConnector};
 
 // Local system info
-let provider = SystemSnapshotProvider::new()?;
+let provider = SystemSnapshotProvider::new();
 let snap = provider.get_snapshot().await?;
 println!("CPU: {}%", snap.cpu_usage);
 println!("Memory: {}%", snap.memory_usage);
@@ -28,8 +28,8 @@ let output = conn.exec("htop").await?;
 
 ## Feature Flags
 
-None (uses `sysinfo`, `ssh2`, `notify-rust`).
+None. The crate currently depends on `sysinfo`, `ssh2`, and `notify-rust` directly; no optional Cargo features are declared.
 
 ## License
 
-MIT OR Apache-2.0
+AGPL-3.0-only

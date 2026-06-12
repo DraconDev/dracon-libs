@@ -1062,57 +1062,6 @@ impl TextToSpeech for KittenTTS {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::{model_info, resolve_model, KittenTTS};
-
-    #[test]
-    fn style_index_stays_in_bounds() {
-        let idx = KittenTTS::style_index("hello", 256 * 32);
-        assert!(idx < 32);
-    }
-
-    #[test]
-    fn soft_limiter_caps_peak() {
-        let mut samples = vec![0.2, 0.8, 1.6, -1.4];
-        KittenTTS::apply_soft_limiter(&mut samples, 0.78);
-        let peak = samples.iter().map(|s| s.abs()).fold(0.0f32, f32::max);
-        assert!(peak <= 0.78 + 0.0001);
-    }
-
-    #[test]
-    fn process_samples_trims_and_keeps_body() {
-        let mut samples = vec![0.0; 300];
-        samples.extend(vec![0.04; 2000]);
-        samples.extend(vec![0.0; 300]);
-
-        let (processed, trim_start) = KittenTTS::process_samples_for_playback(0, samples).unwrap();
-        assert!(trim_start > 0);
-        assert!(processed.len() > 1200);
-    }
-
-    #[test]
-    fn kitten_model_aliases_resolve() {
-        assert_eq!(resolve_model("nano"), "nano");
-        assert_eq!(resolve_model("mini"), "nano");
-        assert_eq!(resolve_model("micro"), "micro");
-        // int8 falls back to nano due to instability
-        assert_eq!(resolve_model("int8"), "nano");
-        assert_eq!(resolve_model("unknown"), "nano");
-    }
-
-    #[test]
-    fn kitten_model_info_matches_expected_assets() {
-        let nano = model_info("nano");
-        assert_eq!(nano.model_path, "assets/models/kitten_tts_nano_v0_8.onnx");
-        assert_eq!(nano.voices_path, "assets/models/voices_v0_8.npz");
-
-        let micro = model_info("micro");
-        assert_eq!(micro.model_path, "assets/models/kitten_micro.onnx");
-        assert_eq!(micro.voices_path, "assets/models/kitten_voices.npz");
-    }
-}
-
 impl VoiceProvider for KittenTTS {
     fn list_voices(&self) -> Vec<VoiceInfo> {
         VOICE_DESCRIPTIONS
@@ -1168,5 +1117,56 @@ impl VoiceProvider for KittenTTS {
             }
         }
         Ok(VoiceInfo::new(DEFAULT_VOICE, "Bruno", Gender::Male))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{model_info, resolve_model, KittenTTS};
+
+    #[test]
+    fn style_index_stays_in_bounds() {
+        let idx = KittenTTS::style_index("hello", 256 * 32);
+        assert!(idx < 32);
+    }
+
+    #[test]
+    fn soft_limiter_caps_peak() {
+        let mut samples = vec![0.2, 0.8, 1.6, -1.4];
+        KittenTTS::apply_soft_limiter(&mut samples, 0.78);
+        let peak = samples.iter().map(|s| s.abs()).fold(0.0f32, f32::max);
+        assert!(peak <= 0.78 + 0.0001);
+    }
+
+    #[test]
+    fn process_samples_trims_and_keeps_body() {
+        let mut samples = vec![0.0; 300];
+        samples.extend(vec![0.04; 2000]);
+        samples.extend(vec![0.0; 300]);
+
+        let (processed, trim_start) = KittenTTS::process_samples_for_playback(0, samples).unwrap();
+        assert!(trim_start > 0);
+        assert!(processed.len() > 1200);
+    }
+
+    #[test]
+    fn kitten_model_aliases_resolve() {
+        assert_eq!(resolve_model("nano"), "nano");
+        assert_eq!(resolve_model("mini"), "nano");
+        assert_eq!(resolve_model("micro"), "micro");
+        // int8 falls back to nano due to instability
+        assert_eq!(resolve_model("int8"), "nano");
+        assert_eq!(resolve_model("unknown"), "nano");
+    }
+
+    #[test]
+    fn kitten_model_info_matches_expected_assets() {
+        let nano = model_info("nano");
+        assert_eq!(nano.model_path, "assets/models/kitten_tts_nano_v0_8.onnx");
+        assert_eq!(nano.voices_path, "assets/models/voices_v0_8.npz");
+
+        let micro = model_info("micro");
+        assert_eq!(micro.model_path, "assets/models/kitten_micro.onnx");
+        assert_eq!(micro.voices_path, "assets/models/kitten_voices.npz");
     }
 }

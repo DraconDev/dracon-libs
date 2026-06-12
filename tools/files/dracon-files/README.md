@@ -19,4 +19,4 @@ let result = catalog.check_file_suitability(path, 10 * 1024 * 1024); // 10MB
 
 ## License
 
-MIT OR Apache-2.0
+AGPL-3.0-only

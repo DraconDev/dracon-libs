@@ -1,25 +1,22 @@
 //! Dracon Video Runtime
 //!
-//! A Rust-native video processing library with:
-//! - FFmpeg-based video/audio processing
-//! - Whisper-based speech transcription
-//! - ML-powered face detection for auto-reframe
+//! Protocol traits and exporter utilities for video workflows.
+//! Runtime implementations such as FFmpeg processors, Whisper transcription, and auto-reframe are not included in this crate yet.
 //!
 //! ## Example
 //!
 //! ```rust,ignore
-//! use dracon_video_runtime::{FfmpegVideoProcessor, WhisperTranscriptProcessor};
-//! use dracon_video_runtime::protocol::{VideoProcessor, TranscriptProcessor};
+//! use dracon_video_runtime::exporter::srt::export_srt;
+//! use dracon_video_runtime::protocol::transcript::TranscriptSegment;
 //! use std::path::Path;
 //!
-//! // Process a video
-//! let processor = FfmpegVideoProcessor::new();
-//! let input_path = Path::new("input.mp4");
-//! let silences = processor.detect_silence(input_path, -30.0, 0.5).unwrap();
-//!
-//! // Transcribe a video
-//! let transcriber = WhisperTranscriptProcessor::new();
-//! let transcript = transcriber.transcribe(input_path).unwrap();
+//! let segments = vec![TranscriptSegment {
+//!     start_secs: 0.0,
+//!     end_secs: 1.0,
+//!     text: "Example subtitle".to_string(),
+//!     confidence: 1.0,
+//! }];
+//! export_srt(&segments, Path::new("output.srt"))?;
 //! ```
 
 // === Public API ===
@@ -38,9 +35,16 @@ pub use protocol::{SilenceSegment, TranscriptSegment, TrimSegment};
 
 #[cfg(test)]
 mod tests {
+    use crate::TranscriptSegment;
+
     #[test]
     fn test_crate_exists() {
-        // Basic smoke test
-        assert!(true);
+        let segments = vec![TranscriptSegment {
+            start_secs: 0.0,
+            end_secs: 1.0,
+            text: "Example subtitle".to_string(),
+            confidence: 1.0,
+        }];
+        assert_eq!(segments.len(), 1);
     }
 }

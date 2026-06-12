@@ -33,4 +33,4 @@ let fact = mem.get_fact("preferences", "theme").await?;
 
 ## License
 
-MIT OR Apache-2.0
+AGPL-3.0-only

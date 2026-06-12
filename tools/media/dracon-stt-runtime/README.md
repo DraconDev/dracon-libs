@@ -5,15 +5,15 @@ Speech-to-text with Parakeet and Whisper backends.
 ## Usage
 
 ```rust
-use dracon_stt_runtime::{ParakeetStt, VadStateMachine};
+use dracon_stt_runtime::{ParakeetStt, SpeechToText, VadStateMachine};
 
 // Voice activity detection
 let mut vad = VadStateMachine::new(0.5);
 vad.process_audio(audio_samples)?;
 
 // STT
-let stt = ParakeetStt::new(model_path).await?;
-let result = stt.transcribe(audio_samples).await?;
+let stt = ParakeetStt::new(model_path)?;
+let result = stt.transcribe(audio_samples, 16000)?;
 ```
 
 ## Feature Flags
@@ -29,4 +29,4 @@ let result = stt.transcribe(audio_samples).await?;
 
 ## License
 
-MIT OR Apache-2.0
+AGPL-3.0-only

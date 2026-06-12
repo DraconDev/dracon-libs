@@ -196,7 +196,7 @@ impl SystemAgent {
     /// # Security Warning
     ///
     /// This method executes an allowlisted command without a shell. Prefer specific
-    /// methods like [`install_package()`] or SSH-based remote execution when a
+    /// methods like [`Self::install_package`] or SSH-based remote execution when a
     /// narrower API exists.
     pub async unsafe fn run_command(
         &self,
@@ -320,7 +320,7 @@ mod tests {
     async fn run_command_requires_prior_approval() {
         let agent = SystemAgent::new();
         let result = agent
-            .run_command_checked("printf", &vec!["ok".to_string()])
+            .run_command_checked("printf", &["ok".to_string()])
             .await;
         assert!(result.is_err());
     }
@@ -329,17 +329,17 @@ mod tests {
     async fn run_command_executes_only_approved_exact_pair() {
         let agent = SystemAgent::new();
         agent
-            .approve_command("printf", &vec!["ok".to_string()])
+            .approve_command("printf", &["ok".to_string()])
             .unwrap();
 
         let output = agent
-            .run_command_checked("printf", &vec!["ok".to_string()])
+            .run_command_checked("printf", &["ok".to_string()])
             .await
             .unwrap();
         assert_eq!(output, "ok");
 
         let rejected = agent
-            .run_command_checked("printf", &vec!["other".to_string()])
+            .run_command_checked("printf", &["other".to_string()])
             .await;
         assert!(rejected.is_err());
     }

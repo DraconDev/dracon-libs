@@ -889,22 +889,6 @@ impl TextToSpeech for KokoroTts {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::KokoroTts;
-
-    #[test]
-    fn trim_silence_keeps_audio_body() {
-        let mut samples = vec![0.0; 300];
-        samples.extend(vec![0.02; 2000]);
-        samples.extend(vec![0.0; 200]);
-
-        let (trimmed, trim_start) = KokoroTts::trim_silence(samples);
-        assert!(trim_start > 0);
-        assert!(trimmed.len() > 1500);
-    }
-}
-
 impl VoiceProvider for KokoroTts {
     fn list_voices(&self) -> Vec<VoiceInfo> {
         VOICE_DESCRIPTIONS
@@ -960,5 +944,21 @@ impl VoiceProvider for KokoroTts {
             }
         }
         Ok(VoiceInfo::new(DEFAULT_VOICE, "Heart", Gender::Female))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::KokoroTts;
+
+    #[test]
+    fn trim_silence_keeps_audio_body() {
+        let mut samples = vec![0.0; 300];
+        samples.extend(vec![0.02; 2000]);
+        samples.extend(vec![0.0; 200]);
+
+        let (trimmed, trim_start) = KokoroTts::trim_silence(samples);
+        assert!(trim_start > 0);
+        assert!(trimmed.len() > 1500);
     }
 }

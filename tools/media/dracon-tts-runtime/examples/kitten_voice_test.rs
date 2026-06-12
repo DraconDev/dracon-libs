@@ -9,7 +9,7 @@ async fn main() {
     let voices_path = "/home/dracon/Dev/Remi/assets/models/voices_v0_8.npz";
 
     // Longer test sentences
-    let sentences = vec![
+    let sentences = [
         "The ancient library stood at the edge of the village, its stone walls covered in centuries of moss and ivy. Inside, dust motes danced in the beams of light that filtered through tall windows, illuminating shelves that reached toward the ceiling like fingers grasping for knowledge.",
 
         "Technology has fundamentally changed how we communicate, work, and live our daily lives. From smartphones that connect us to people across the globe, to artificial intelligence systems that can write poetry and solve complex mathematical problems, the pace of innovation continues to accelerate.",

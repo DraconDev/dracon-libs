@@ -8,22 +8,28 @@ Text-to-speech with Kitten (espeak-ng) and Kokoro (ONNX) backends.
 use dracon_tts_runtime::{KittenTTS, KokoroTts};
 
 // Lightweight TTS
-let kitten = KittenTTS::new().await?;
-kitten.speak("Hello world")?;
+let kitten = KittenTTS::new(
+    "assets/models/kitten_tts_nano_v0_8.onnx",
+    "assets/models/voices_v0_8.npz",
+)
+.await?;
+kitten.speak("Hello world").await;
 
 // Neural TTS (higher quality)
 let kokoro = KokoroTts::new(model_path, voices_dir).await?;
-kokoro.speak("Hello world")?;
+kokoro.speak("Hello world").await;
 ```
 
 ## Feature Flags
 
-- `kitten` — espeak-ng-based TTS (default, no GPU required)
+- `kitten` — espeak-ng-based TTS
 - `kokoro` — ONNX neural TTS (requires `ort` ONNX runtime)
+
+The default feature set enables both `kitten` and `kokoro`.
 
 ## API Notes
 
-All public methods that can fail return `anyhow::Result<T>`. Constructors (`new`, `new_with_voice`) are `async` and must be awaited with `?` or `.await?`.
+Concrete Kitten/Kokoro backends expose async `speak()` methods. The shared `TextToSpeech` trait exposes synchronous `speak()`/`stop()` methods for `TtsEngine` dispatch.
 
 ## Key Types
 
@@ -35,4 +41,4 @@ All public methods that can fail return `anyhow::Result<T>`. Constructors (`new`
 
 ## License
 
-MIT OR Apache-2.0
+AGPL-3.0-only

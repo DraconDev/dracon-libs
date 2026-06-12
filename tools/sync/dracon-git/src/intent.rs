@@ -559,18 +559,18 @@ mod tests {
         let active_board = plan_dir.join("ACTIVE_BOARD.md");
         let mut file = fs::File::create(&active_board).unwrap();
         writeln!(file, "# Active Board").unwrap();
-        writeln!(file, "").unwrap();
+        writeln!(file).unwrap();
         writeln!(file, "Path: plan/blueprint-test-feature-2026-02-27.md").unwrap();
 
         let blueprint = plan_dir.join("blueprint-test-feature-2026-02-27.md");
         let mut file = fs::File::create(&blueprint).unwrap();
         writeln!(file, "# Test Feature").unwrap();
-        writeln!(file, "").unwrap();
+        writeln!(file).unwrap();
         writeln!(file, "### Track V1: Implementation").unwrap();
         writeln!(file, "- [x] Setup project").unwrap();
         writeln!(file, "- [~] Add feature").unwrap();
         writeln!(file, "- [ ] Write tests").unwrap();
-        writeln!(file, "").unwrap();
+        writeln!(file).unwrap();
         writeln!(file, "Files: src/feature.rs, src/lib.rs").unwrap();
 
         let changed_files = vec![PathBuf::from("src/feature.rs")];

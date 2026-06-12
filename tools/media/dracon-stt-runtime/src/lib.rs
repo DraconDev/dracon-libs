@@ -5,7 +5,7 @@
 //! ## Engines
 //!
 //! - [`ParakeetStt`] — Parakeet-CTC model (default, CPU-friendly)
-//! - [`WhisperStt`] — Whisper model via Candle (enable with `whisper` feature)
+//! - `WhisperStt` — Whisper model via Candle (enable with `whisper` feature)
 //! - [`VadStateMachine`] — voice activity detection state machine
 //!
 //! ## Feature Flags

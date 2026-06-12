@@ -32,4 +32,4 @@ None required — libgit2 with automatic CLI fallback for binary file handling.
 
 ## License
 
-MIT OR Apache-2.0
+AGPL-3.0-only

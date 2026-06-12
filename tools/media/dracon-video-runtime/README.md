@@ -1,62 +1,34 @@
 # Dracon Video Runtime
 
-A Rust-native video processing runtime providing:
-
-- **Video Processing** - Silence detection/removal, trimming, stabilization, color correction
-- **Audio Processing** - Loudnorm normalization, noise reduction, music mixing with auto-ducking
-- **Transcription** - Whisper-based speech-to-text
-- **ML Features** - Face detection for auto-reframe, person segmentation for background blur
+A Rust crate for video-processing protocols and subtitle/chapter exporters. Runtime implementations such as FFmpeg processors, Whisper transcription, and auto-reframe are not included in this crate yet.
 
 ## Architecture
 
-This crate is designed with a **protocol-first** architecture:
+This crate currently exposes protocol traits and exporter utilities:
 
-```
-┌─────────────────────────────────────┐
-│      Application Layer               │
-│  (depends on traits, not impl)      │
-└─────────────────────────────────────┘
-              │
-              ▼
-┌─────────────────────────────────────┐
-│      Protocol Layer (traits)         │
-│  VideoProcessor, AudioProcessor,     │
-│  TranscriptProcessor                │
-└─────────────────────────────────────┘
-              │
-              ▼
-┌─────────────────────────────────────┐
-│      Runtime Implementations         │
-│  - FfmpegVideoProcessor             │
-│  - WhisperTranscriptProcessor       │
-│  - AutoReframeProcessor            │
-└─────────────────────────────────────┘
-```
+- `VideoProcessor`, `AudioProcessor`, and `TranscriptProcessor` protocol traits
+- silence/trim/transcript segment types
+- SRT, ASS, and YouTube chapter exporters
+
+Runtime implementations are intentionally not present yet. Planned implementations may include FFmpeg-backed video processing, Whisper transcription, and auto-reframe support after product scope is confirmed.
 
 ## Usage
 
-```rust
-use dracon_video_runtime::{FfmpegVideoProcessor, WhisperTranscriptProcessor};
-use dracon_video_runtime::protocol::{VideoProcessor, TranscriptProcessor};
+```rust,ignore
+use dracon_video_runtime::exporter::srt::export_srt;
+use dracon_video_runtime::protocol::transcript::{TranscriptProcessor, TranscriptSegment};
 
-// Video processing
-let processor = FfmpegVideoProcessor::new();
-let silences = processor.detect_silence("input.mp4", -30.0, 0.5)?;
-
-// Transcription
-let transcriber = WhisperTranscriptProcessor::new();
-let transcript = transcriber.transcribe("input.mp4")?;
-
-// Export subtitles
-transcriber.to_srt(&transcript, "output.srt")?;
+// Runtime processors are not included in this crate yet.
+// Implementations can adopt TranscriptProcessor and use export_srt(&segments, path)?
+// once a concrete transcript is available.
 ```
 
 ## Features
 
 | Feature | Description |
 |---------|-------------|
-| `ffmpeg` | Enable FFmpeg-based processing (default) |
+| `ffmpeg` | Reserved for future FFmpeg-backed processing; not enabled by default |
 
 ## License
 
-MIT
+AGPL-3.0-only

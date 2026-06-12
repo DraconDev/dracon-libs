@@ -10,14 +10,14 @@
 //!
 //! ## Feature Flags
 //!
-//! - `kitten` — enable Kitten TTS (default)
+//! - `kitten` — enable Kitten TTS
 //! - `kokoro` — enable Kokoro TTS (requires ort ONNX runtime)
 //!
 //! ## Example
 //!
 //! ```ignore
-//! use dracon_tts_runtime::{TtsEngine, KokoroTts};
-//! let tts = KokoroTts::new(model_path, voices_dir). await?;
+//! use dracon_tts_runtime::{KokoroTts, TtsEngine};
+//! let tts = KokoroTts::new(model_path, voices_dir).await?;
 //! tts.speak("Hello world").await;
 //! ```
 

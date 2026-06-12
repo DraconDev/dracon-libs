@@ -35,9 +35,9 @@ dracon-libs (workspace root, version 94.7.0)
 | `dracon-git` | Git operations with libgit2 and CLI fallback | — |
 | `dracon-system` | System monitoring, SSH remoting, notifications | — |
 | `dracon-files` | File categorization, search, recursive copy | — |
-| `dracon-tts-runtime` | Text-to-speech (Kitten/Kokoro) | `kitten`, `kokoro` |
+| `dracon-tts-runtime` | Text-to-speech (Kitten/Kokoro) | `kitten`, `kokoro` (both default) |
 | `dracon-stt-runtime` | Speech-to-text (Parakeet/Whisper) | `parakeet`, `whisper` |
-| `dracon-video-runtime` | Video processing with FFmpeg + ML | `ffmpeg` |
+| `dracon-video-runtime` | Video protocol traits and exporters; runtime processors are not included yet | `ffmpeg` reserved, not default |
 | `dracon-memory-runtime` | SQLite + ONNX embeddings for semantic search | — |
 
 ### Contract Crates
