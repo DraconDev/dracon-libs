@@ -450,11 +450,11 @@ mod tests {
         let script = temp_dir.join("dracon-approved-path-test");
         std::fs::write(&script, "#!/bin/sh\nprintf ok\n").unwrap();
         make_executable(&script);
+        let agent = SystemAgent::new();
 
         {
             let _guard = PATH_LOCK.lock().unwrap();
             std::env::set_var("PATH", &temp_dir);
-            let agent = SystemAgent::new();
             agent
                 .approve_command("dracon-approved-path-test", &[])
                 .unwrap();
@@ -462,7 +462,6 @@ mod tests {
             std::env::set_var("PATH", "");
         }
 
-        let agent = SystemAgent::new();
         let output = agent
             .run_command_checked("dracon-approved-path-test", &[])
             .await
@@ -480,7 +479,7 @@ mod tests {
     async fn run_command_requires_prior_approval() {
         let agent = SystemAgent::new();
         let result = agent
-            .run_command_checked("printf", &["ok".to_string()])
+            .run_command_checked("sh", &["-c".to_string(), "printf ok".to_string()])
             .await;
         assert!(result.is_err());
     }
@@ -489,17 +488,17 @@ mod tests {
     async fn run_command_executes_only_approved_exact_pair() {
         let agent = SystemAgent::new();
         agent
-            .approve_command("printf", &["ok".to_string()])
+            .approve_command("sh", &["-c".to_string(), "printf ok".to_string()])
             .unwrap();
 
         let output = agent
-            .run_command_checked("printf", &["ok".to_string()])
+            .run_command_checked("sh", &["-c".to_string(), "printf ok".to_string()])
             .await
             .unwrap();
         assert_eq!(output, "ok");
 
         let rejected = agent
-            .run_command_checked("printf", &["other".to_string()])
+            .run_command_checked("sh", &["-c".to_string(), "printf other".to_string()])
             .await;
         assert!(rejected.is_err());
     }
