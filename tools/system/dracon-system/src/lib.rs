@@ -23,8 +23,9 @@
 use crate::notification::NotificationConfig;
 use anyhow::Context;
 use serde::{Deserialize, Serialize};
-use std::collections::HashSet;
-use std::path::PathBuf;
+use std::collections::HashMap;
+use std::env;
+use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
 use tokio::process::Command;
 
@@ -62,6 +63,17 @@ pub enum AppNotification {
     Error(String),
 }
 
+/// Exact local command approved for execution by [`SystemAgent::run_command`].
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct ApprovedCommand {
+    /// Program string supplied by the caller.
+    program: String,
+    /// Absolute executable path resolved at approval time.
+    path: PathBuf,
+    /// Exact argument list approved with the command.
+    args: Vec<String>,
+}
+
 /// Top-level agent for system diagnostics, configuration, and notifications.
 #[derive(Clone)]
 pub struct SystemAgent {
@@ -70,7 +82,7 @@ pub struct SystemAgent {
     /// Desktop notification preferences.
     notification_config: NotificationConfig,
     /// Exact local commands approved for execution by [`SystemAgent::run_command`].
-    approved_commands: Arc<Mutex<HashSet<String>>>,
+    approved_commands: Arc<Mutex<HashMap<String, ApprovedCommand>>>,
 }
 
 impl SystemAgent {
@@ -88,7 +100,7 @@ impl SystemAgent {
         Self {
             home_nix_path,
             notification_config: NotificationConfig::default(),
-            approved_commands: Arc::new(Mutex::new(HashSet::new())),
+            approved_commands: Arc::new(Mutex::new(HashMap::new())),
         }
     }
 

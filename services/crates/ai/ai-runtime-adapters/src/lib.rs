@@ -153,3 +153,48 @@ impl AiProvider for GenericOpenAIAdapter {
         Ok((content, finish_reason))
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::GenericOpenAIAdapter;
+
+    #[test]
+    fn rejects_empty_api_key() {
+        let err = GenericOpenAIAdapter::new_with_auth(
+            String::new(),
+            "https://api.example.com/v1".to_string(),
+            "model".to_string(),
+            "Authorization".to_string(),
+            "Bearer ".to_string(),
+        );
+        assert!(err.is_err());
+    }
+
+    #[test]
+    fn rejects_invalid_endpoint_scheme() {
+        let err = GenericOpenAIAdapter::new_with_auth(
+            "secret".to_string(),
+            "ftp://api.example.com/v1".to_string(),
+            "model".to_string(),
+            "Authorization".to_string(),
+            "Bearer ".to_string(),
+        );
+        assert!(err.is_err());
+    }
+
+    #[test]
+    fn debug_redacts_api_key() {
+        let adapter = GenericOpenAIAdapter::new_with_auth(
+            "secret-key".to_string(),
+            "https://api.example.com/v1/".to_string(),
+            "model".to_string(),
+            "Authorization".to_string(),
+            "Bearer ".to_string(),
+        )
+        .unwrap();
+        let debug = format!("{adapter:?}");
+        assert!(debug.contains("<redacted>"));
+        assert!(!debug.contains("secret-key"));
+        assert!(debug.contains("https://api.example.com/v1"));
+    }
+}
