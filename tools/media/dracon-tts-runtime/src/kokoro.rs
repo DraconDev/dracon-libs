@@ -692,7 +692,7 @@ impl KokoroTts {
                 let speed = ndarray::Array1::from_vec(vec![1.0f32]);
 
                 let inputs = ort::inputs![
-                    "input_ids" => ort::value::Value::from_array(input_arr)?,
+                    "tokens" => ort::value::Value::from_array(input_arr)?,
                     "style" => ort::value::Value::from_array(style_arr)?,
                     "speed" => ort::value::Value::from_array(speed)?,
                 ];
@@ -804,7 +804,7 @@ impl KokoroTts {
                 let speed = ndarray::Array1::from_vec(vec![1.0f32]);
 
                 let inputs = ort::inputs![
-                    "input_ids" => ort::value::Value::from_array(input_arr)?,
+                    "tokens" => ort::value::Value::from_array(input_arr)?,
                     "style" => ort::value::Value::from_array(style_arr)?,
                     "speed" => ort::value::Value::from_array(speed)?,
                 ];
