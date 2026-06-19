@@ -94,6 +94,7 @@ tools/memory/dracon-memory-runtime/assets/bge-small-en-v1.5.onnx
 !.dracon/data/keys/
 !.dracon/data/keys/*.pub
 !.dracon/keys/*.pub
+!.dracon/project-state.md
 !Cargo.lock
 !Cargo.toml
 !clippy.toml
