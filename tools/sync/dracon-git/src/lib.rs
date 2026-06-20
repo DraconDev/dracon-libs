@@ -1024,7 +1024,10 @@ fn cli_get_status(path: &Path) -> std::result::Result<RepoStatus, GitError> {
                 status.staged_files += 1;
             }
             if idx.starts_with("??") {
-                // Untracked files: count separately, NOT as modified.
+                // Top-level untracked entries only — we use a
+                // separate `git ls-files` call below to count
+                // ALL untracked files (including nested ones in
+                // untracked directories).
                 status.untracked_files += 1;
             } else if idx.contains('M')
                 || idx.contains('A')
@@ -1035,6 +1038,29 @@ fn cli_get_status(path: &Path) -> std::result::Result<RepoStatus, GitError> {
                 status.modified_files += 1;
             }
         }
+    }
+
+    // CHANGED 2026-06-20 (goal 38142891-839f-4569-b566-3ace1d5be354):
+    // override the untracked count with the accurate count from
+    // `git ls-files --others --exclude-standard -z`, which lists
+    // ALL untracked files (including those nested inside
+    // untracked directories). `git status --porcelain` above only
+    // counts the top-level paths, so a directory of 30 untracked
+    // files would report as 1, hiding the real count from the
+    // operator and from `dracon-sync repos`. The `-z` flag
+    // NUL-separates paths so files with spaces / newlines /
+    // unicode (e.g. `web/test-results/ai-hub-...-0dcab-.../`)
+    // are counted correctly. We count NUL bytes in the output —
+    // every entry is NUL-terminated, so the count of NULs equals
+    // the count of untracked files. This handles paths with
+    // embedded newlines / unicode correctly.
+    if let Ok(o) = git_cmd()
+        .args(["ls-files", "--others", "--exclude-standard", "-z"])
+        .current_dir(path)
+        .output()
+    {
+        let nul_count = o.stdout.iter().filter(|&&b| b == 0).count();
+        status.untracked_files = nul_count;
     }
 
     status.is_clean =
