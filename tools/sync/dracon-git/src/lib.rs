@@ -130,6 +130,12 @@ impl GitService {
                         // Untracked files are NOT counted as modified.
                         // This prevents the report from showing 10k "modified"
                         // entries when a repo has a large untracked target/ dir.
+                        // Note: libgit2 also collapses nested untracked files
+                        // to a top-level directory entry (matching
+                        // `git status --porcelain` behaviour), so we
+                        // override the count with the accurate value
+                        // from `git ls-files --others --exclude-standard -z`
+                        // below.
                         status.untracked_files += 1;
                     } else if s.is_wt_modified()
                         || s.is_wt_deleted()
@@ -142,6 +148,32 @@ impl GitService {
                 status.is_clean = status.modified_files == 0
                     && status.staged_files == 0
                     && status.untracked_files == 0;
+
+                // CHANGED 2026-06-20 (goal 38142891-839f-4569-b566-3ace1d5be354):
+                // override the untracked count with the accurate count
+                // from `git ls-files --others --exclude-standard -z`,
+                // which lists ALL untracked files (including those
+                // nested inside untracked directories). libgit2's
+                // `repo.statuses()` and `git status --porcelain` both
+                // collapse nested untracked files to a top-level
+                // directory entry (e.g. 30 files inside an
+                // untracked `node_modules/` would show as 1). This
+                // shell-out fixes the undercount.
+                if let Ok(output) = std::process::Command::new("git")
+                    .args(["ls-files", "--others", "--exclude-standard", "-z"])
+                    .current_dir(&path)
+                    .output()
+                {
+                    if output.status.success() {
+                        let nul_count =
+                            output.stdout.iter().filter(|&&b| b == 0).count();
+                        status.untracked_files = nul_count;
+                        // Recompute is_clean with the corrected count.
+                        status.is_clean = status.modified_files == 0
+                            && status.staged_files == 0
+                            && status.untracked_files == 0;
+                    }
+                }
 
                 if let Ok(head_ref) = head {
                     if let Ok(head_name) = head_ref.shorthand() {
@@ -1258,5 +1290,52 @@ mod tests {
         // New file should be present
         assert!(local.path().join("new.txt").exists());
         assert!(local.path().join("keep.txt").exists());
+    }
+
+    /// Regression test for goal 38142891-839f-4569-b566-3ace1d5be354:
+    /// `untracked_files` in RepoStatus must count ALL untracked files,
+    /// including those nested inside untracked directories. The previous
+    /// implementation only counted top-level `??`-prefixed entries from
+    /// `git status --porcelain` (and libgit2's `repo.statuses()`), which
+    /// collapses 30 nested files into a single top-level dir entry. The
+    /// fix overrides the count with `git ls-files --others
+    /// --exclude-standard -z` byte-count.
+    #[tokio::test]
+    async fn test_untracked_files_count_includes_nested() {
+        let (_remote, local) = setup_remote_and_local();
+
+        // Create 3 files nested inside an untracked directory.
+        // `git status --porcelain` would report this as 1 untracked
+        // entry (the dir); the correct count is 3.
+        let untracked = local.path().join("untracked_dir");
+        std::fs::create_dir_all(untracked.join("sub1")).unwrap();
+        std::fs::write(untracked.join("x.txt"), b"x").unwrap();
+        std::fs::write(untracked.join("sub1").join("y.txt"), b"y").unwrap();
+        std::fs::write(untracked.join("sub1").join("z.txt"), b"z").unwrap();
+
+        // Sanity: `git status --porcelain` shows 1 untracked dir.
+        let porcelain = std::process::Command::new("git")
+            .args(["status", "--porcelain"])
+            .current_dir(local.path())
+            .output()
+            .unwrap();
+        let porcelain_text = String::from_utf8_lossy(&porcelain.stdout);
+        let porcelain_untracked = porcelain_text
+            .lines()
+            .filter(|l| l.starts_with("??"))
+            .count();
+        assert_eq!(
+            porcelain_untracked, 1,
+            "sanity: git status --porcelain should show 1 untracked dir, got: {porcelain_text}"
+        );
+
+        // The fix: RepoStatus should report 3, not 1.
+        let svc = GitService::new(local.path()).unwrap();
+        let status = svc.get_status().await.unwrap();
+        assert_eq!(
+            status.untracked_files, 3,
+            "untracked_files should count all nested files, got {} (status: {:?})",
+            status.untracked_files, status
+        );
     }
 }
