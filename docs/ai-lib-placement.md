@@ -1,53 +1,82 @@
 # ai-lib placement decision
 
 Date: 2026-06-12
+Last reviewed: 2026-06-21
 
-Decision: keep `dracon-ai-lib` as a standalone repository and do not move or copy it into this `dracon-libs` workspace.
+## Decision
+
+Keep `dracon-ai-lib` out of this `dracon-libs` workspace. Do not add it as a local path dependency, and do not copy it into this repository.
+
+Current state: this workspace is not using `dracon-ai-lib` locally. Searches found no Cargo dependency, lockfile entry, or source reference for `dracon-ai-lib`, `ai-lib`, or `ai-models-catalog`; the only references were this decision document. The local checkout path previously shown as an example, `/home/dracon/Dev/dracon-ai-lib`, is also absent on this machine.
+
+If a consumer needs the replacement AI client/engine functionality, use the archived `dracon-ai-lib` successor packages from `DraconDev/dracon-platform` instead of a local `dracon-ai-lib` checkout.
+
+## Current status
+
+- `dracon-ai-lib` is archived as of 2026-06-20.
+- The AI engine source moved to `DraconDev/dracon-platform` at `apis/services/ai-api/ai-engine/` as package `ai-engine v0.2.0+`.
+- The HTTP client SDK moved to `DraconDev/dracon-platform` at `apis/services/ai-api/dracon-ai-sdk/` as package `dracon-ai-sdk v0.3.0+`.
+- The models catalog moved to `DraconDev/dracon-platform` at `apis/libs/ai-models-catalog/` as package `ai-models-catalog v0.2.0+`.
+- The checked remote for `DraconDev/dracon-platform` currently exposes `dracon-ai-sdk-v0.3.0`; no dedicated `ai-engine` or `ai-models-catalog` tag was found during this review.
 
 ## Rationale
 
-1. **Different runtime boundary**
-   - `dracon-ai-lib` owns the standalone BYOK provider client surface: direct provider calls where the caller supplies API keys, base URLs, and model IDs.
+1. **No local usage in `dracon-libs`**
+   - `grep` found no `ai-lib`, `dracon-ai-lib`, or `ai-models-catalog` references outside this document.
+   - `Cargo.toml` and `Cargo.lock` contain no dependency on those packages.
+   - The example local path `/home/dracon/Dev/dracon-ai-lib` does not exist locally.
+
+2. **Different runtime boundary**
+   - The old `dracon-ai-lib` owned the standalone BYOK provider client/engine surface: direct provider calls where the caller supplies API keys, base URLs, and model IDs.
    - `dracon-libs` already owns local AI runtime/service crates: `dracon-ai-contracts`, `dracon-ai-runtime-contracts`, `ai-runtime-adapters`, `ai-routing-runtime`, `ai-runtime-config`, and `ai-service`.
-   - Merging the two would blur the direct-BYOK client boundary with this workspace's runtime/service boundary.
+   - Merging the old standalone repo into this workspace would blur the direct-BYOK client boundary with this workspace's runtime/service boundary.
 
-2. **Existing ownership in `dracon-libs`**
-   - `dracon-libs` already has AI contracts, routing, config, adapter, and service crates.
-   - It does not currently have `ai-lib` or `ai-models-catalog`, but adding them would create a third AI surface in the same workspace instead of clarifying ownership.
+3. **Avoid duplicating deprecated legacy crates**
+   - The archived `dracon-ai-lib` still contains deprecated legacy crates such as `dracon-ai-client`, `dracon-ai-contracts`, `dracon-ai-core`, `dracon-ai-providers`, and `extract-keys`.
+   - Copying the old repo would duplicate or conflict with `dracon-libs` crates, especially `dracon-ai-contracts`.
 
-3. **Version and publishing mismatch**
-   - `dracon-ai-lib` is currently versioned at `0.2.0` and published from `DraconDev/dracon-ai-lib`.
-   - `dracon-libs` uses workspace version `94.7.0` and `AGPL-3.0-only` workspace defaults.
-   - Moving `ai-lib` or `ai-models-catalog` into `dracon-libs` would require a deliberate versioning/publishing decision rather than a mechanical move.
+4. **Use the platform repo for replacement packages**
+   - The platform repository is the current source for the replacement engine and SDK.
+   - If a consumer needs a local development override, prefer a `[patch]` or path dependency to the platform checkout paths, not the archived `dracon-ai-lib` checkout.
 
-4. **Avoid duplicating deprecated legacy crates**
-   - `dracon-ai-lib` still contains deprecated legacy crates (`dracon-ai-client`, `dracon-ai-contracts`, `dracon-ai-core`, `dracon-ai-providers`, `extract-keys`).
-   - Moving the whole workspace would duplicate or conflict with `dracon-libs` crates, especially `dracon-ai-contracts`.
-   - Moving only `ai-lib` and `ai-models-catalog` would split the workspace and require path/dependency cleanup.
+## Recommended dependency guidance
 
-5. **Consumers can depend on the standalone repo**
-   - Direct BYOK consumers can use `ai-lib = { git = "https://github.com/DraconDev/dracon-ai-lib", tag = "v0.2.0" }`.
-   - Local development can use a path dependency or `[patch]` without merging repositories.
+For consumers that need the SDK replacement:
+
+```toml
+dracon-ai-sdk = { git = "https://github.com/DraconDev/dracon-platform.git", tag = "dracon-ai-sdk-v0.3.0" }
+```
+
+For consumers that need the engine or models catalog, pin an explicit platform revision or future tag after confirming the required package is available:
+
+```toml
+ai-engine = { git = "https://github.com/DraconDev/dracon-platform.git", rev = "<pinned-platform-rev>" }
+ai-models-catalog = { git = "https://github.com/DraconDev/dracon-platform.git", rev = "<pinned-platform-rev>" }
+```
+
+For local development overrides, use the platform checkout paths if present:
+
+```toml
+ai-engine = { path = "/home/dracon/Dev/dracon-platform/apis/services/ai-api/ai-engine" }
+ai-models-catalog = { path = "/home/dracon/Dev/dracon-platform/apis/libs/ai-models-catalog" }
+```
+
+Do not use the archived `/home/dracon/Dev/dracon-ai-lib` path for new work.
 
 ## Recommended follow-up
 
-Do not merge repositories unless there is a new requirement that `dracon-libs` must publish `ai-lib`/`ai-models-catalog` under the `dracon-libs` workspace version and release process.
-
-If local development needs a local checkout, prefer one of these lower-risk options:
-
-```toml
-# In a consuming workspace:
-ai-lib = { path = "/home/dracon/Dev/dracon-ai-lib/crates/ai-lib" }
-ai-models-catalog = { path = "/home/dracon/Dev/dracon-ai-lib/crates/ai-models-catalog" }
-```
-
-or use Cargo `[patch]` for local overrides while keeping the published source repo separate.
+Do not merge `dracon-ai-lib` into `dracon-libs` unless there is a new requirement that `dracon-libs` must publish the AI engine/catalog under the `dracon-libs` workspace version and release process.
 
 ## Evidence inspected
 
-- `/home/dracon/Dev/dracon-ai-lib/Cargo.toml`
-- `/home/dracon/Dev/dracon-ai-lib/README.md`
-- `/home/dracon/Dev/dracon-ai-lib/docs/STRATEGY.md`
-- `/home/dracon/Dev/dracon-libs/Cargo.toml`
-- `/home/dracon/Dev/dracon-libs/README.md`
-- Existing `dracon-libs` AI crates under `contracts/crates/ai/` and `services/crates/ai/`
+- `git status --short --branch` in `dracon-libs`: clean workspace.
+- `grep -RIn "/home/dracon/Dev/dracon-ai-lib\\|dracon-ai-lib\\|ai-models-catalog\\|ai-lib ="` in `dracon-libs`: references only in this document.
+- `grep -n "ai-lib\\|models-catalog\\|dracon-ai-lib" Cargo.lock Cargo.toml services contracts tools docs`: no dependency entries outside this document.
+- `/home/dracon/Dev/dracon-ai-lib`: absent.
+- `git ls-remote https://github.com/DraconDev/dracon-ai-lib.git refs/tags/v0.2.0 refs/heads/main`: tag and main exist.
+- `git clone --depth 1 --branch main https://github.com/DraconDev/dracon-ai-lib.git`: README says archived and points to `DraconDev/dracon-platform`.
+- `git ls-remote --tags https://github.com/DraconDev/dracon-platform.git`: only `dracon-ai-sdk-v0.3.0` was found for the AI package tags checked.
+- Local platform checkout:
+  - `/home/dracon/Dev/dracon-platform/apis/services/ai-api/ai-engine/Cargo.toml`: `ai-engine v0.2.0`.
+  - `/home/dracon/Dev/dracon-platform/apis/services/ai-api/dracon-ai-sdk/Cargo.toml`: `dracon-ai-sdk v0.3.0`.
+  - `/home/dracon/Dev/dracon-platform/apis/libs/ai-models-catalog/Cargo.toml`: `ai-models-catalog v0.2.0`.
