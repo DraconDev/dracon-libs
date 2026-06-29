@@ -632,8 +632,14 @@ impl KokoroTts {
         }
     }
 
-    /// Synthesize and play text using the current voice.
+    /// Synthesize and play text using the current voice at inference speed.
     pub async fn speak_impl(&self, text: &str) {
+        self.speak_impl_with_speed(text, 1.0).await;
+    }
+
+    /// Synthesize and play text with a model-inference speed factor.
+    /// Unlike post-processing atempo, this affects the model's prosody directly.
+    pub async fn speak_impl_with_speed(&self, text: &str, speed: f32) {
         let voice = self
             .get_voice()
             .unwrap_or_else(|_| DEFAULT_VOICE.to_string());
@@ -695,12 +701,12 @@ impl KokoroTts {
                 };
                 let style_arr = ndarray::Array2::from_shape_vec((1, style_dim), style)?;
 
-                let speed = ndarray::Array1::from_vec(vec![1.0f32]);
+                let speed_arr = ndarray::Array1::from_vec(vec![speed]);
 
                 let inputs = ort::inputs![
                     "tokens" => ort::value::Value::from_array(input_arr)?,
                     "style" => ort::value::Value::from_array(style_arr)?,
-                    "speed" => ort::value::Value::from_array(speed)?,
+                    "speed" => ort::value::Value::from_array(speed_arr)?,
                 ];
 
                 let infer_start = std::time::Instant::now();
@@ -763,13 +769,18 @@ impl KokoroTts {
 
     /// Queue speech without waiting for playback to finish.
     pub async fn speak_nowait(&self, text: &str) {
+        self.speak_nowait_with_speed(text, 1.0).await;
+    }
+
+    /// Queue speech with a model-inference speed factor.
+    pub async fn speak_nowait_with_speed(&self, text: &str, speed: f32) {
         let voice = self
             .get_voice()
             .unwrap_or_else(|_| DEFAULT_VOICE.to_string());
         let call_id = TTS_COUNTER.fetch_add(1, Ordering::SeqCst);
         println!(
-            "\n[Kokoro-{}] speak_nowait: \"{}\" (voice: {})",
-            call_id, text, voice
+            "\n[Kokoro-{}] speak_nowait: \"{}\" (voice: {}, speed: {})",
+            call_id, text, voice, speed
         );
 
         if self.session.is_none() || self.voices.is_empty() {
@@ -814,12 +825,12 @@ impl KokoroTts {
                     vec![0.0; style_dim]
                 };
                 let style_arr = ndarray::Array2::from_shape_vec((1, style_dim), style)?;
-                let speed = ndarray::Array1::from_vec(vec![1.0f32]);
+                let speed_arr = ndarray::Array1::from_vec(vec![speed]);
 
                 let inputs = ort::inputs![
                     "tokens" => ort::value::Value::from_array(input_arr)?,
                     "style" => ort::value::Value::from_array(style_arr)?,
-                    "speed" => ort::value::Value::from_array(speed)?,
+                    "speed" => ort::value::Value::from_array(speed_arr)?,
                 ];
 
                 let mut sess = session
