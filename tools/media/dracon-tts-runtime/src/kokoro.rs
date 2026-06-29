@@ -682,8 +682,14 @@ impl KokoroTts {
                 let input_arr = ndarray::Array2::from_shape_vec((1, tokens.len()), tokens.clone())?;
 
                 let style_dim = 256;
+                // Voice data is a 2D array laid out as
+                // [style_for_0_phonemes, style_for_1_phoneme, ...] each
+                // style_dim floats wide. Pick the style for this batch's
+                // phoneme count (matches the reference kokoro-onnx impl).
+                let max_idx = voice_data.len() / style_dim;
+                let idx = (tokens.len()).min(max_idx.saturating_sub(1));
                 let style: Vec<f32> = if voice_data.len() >= style_dim {
-                    voice_data[0..style_dim].to_vec()
+                    voice_data[idx * style_dim..(idx + 1) * style_dim].to_vec()
                 } else {
                     vec![0.0; style_dim]
                 };
@@ -792,11 +798,18 @@ impl KokoroTts {
                     return Ok(Vec::new());
                 }
 
-                let input_arr = ndarray::Array2::from_shape_vec((1, tokens.len()), tokens)?;
+                let tokens_len = tokens.len();
+                let input_arr = ndarray::Array2::from_shape_vec((1, tokens_len), tokens)?;
 
                 let style_dim = 256;
+                // Voice data is a 2D array laid out as
+                // [style_for_0_phonemes, style_for_1_phoneme, ...] each
+                // style_dim floats wide. Pick the style for this batch's
+                // phoneme count (matches the reference kokoro-onnx impl).
+                let max_idx = voice_data.len() / style_dim;
+                let idx = (tokens_len).min(max_idx.saturating_sub(1));
                 let style: Vec<f32> = if voice_data.len() >= style_dim {
-                    voice_data[0..style_dim].to_vec()
+                    voice_data[idx * style_dim..(idx + 1) * style_dim].to_vec()
                 } else {
                     vec![0.0; style_dim]
                 };
