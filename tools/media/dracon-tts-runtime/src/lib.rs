@@ -83,9 +83,14 @@ impl TtsEngine {
 
     /// Queue speech without waiting for playback to finish.
     pub async fn speak_nowait(&self, text: &str) {
+        self.speak_nowait_with_speed(text, 1.0).await;
+    }
+
+    /// Queue speech with model-inference speed factor.
+    pub async fn speak_nowait_with_speed(&self, text: &str, speed: f32) {
         match self {
             TtsEngine::Kitten(k) => k.speak_nowait(text).await,
-            TtsEngine::Kokoro(k) => k.speak_nowait(text).await,
+            TtsEngine::Kokoro(k) => k.speak_nowait_with_speed(text, speed).await,
         }
     }
 
