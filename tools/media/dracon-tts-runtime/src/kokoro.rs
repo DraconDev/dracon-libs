@@ -516,6 +516,82 @@ impl KokoroTts {
     }
 
     fn text_to_phonemes(text: &str) -> anyhow::Result<Vec<i64>> {
+        // Try kokorog2p first (higher quality), fall back to espeak-ng.
+        match Self::text_to_phonemes_kokorog2p(text) {
+            Ok(tokens) => {
+                eprintln!("  phonemizer: kokorog2p ({} tokens)", tokens.len() - 2);
+                return Ok(tokens);
+            }
+            Err(e) => {
+                eprintln!("  kokorog2p unavailable ({e}), falling back to espeak-ng");
+            }
+        }
+        Self::text_to_phonemes_espeak(text)
+    }
+
+    /// Use kokorog2p (Python) for phonemization — matches the model's training data.
+    fn text_to_phonemes_kokorog2p(text: &str) -> anyhow::Result<Vec<i64>> {
+        // Look for kokoro_phonemizer.py next to the binary or in common locations
+        let script_paths = [
+            "kokoro_phonemizer.sh",
+            "kokoro_phonemizer.py",
+            // Next to the executable
+            &{
+                let exe = std::env::current_exe().ok();
+                exe.map(|e| {
+                    let dir = e.parent().unwrap_or(std::path::Path::new("."));
+                    dir.join("kokoro_phonemizer.sh").to_string_lossy().into_owned()
+                }).unwrap_or_default()
+            },
+        ];
+
+        let script_path = script_paths.iter().find(|p| std::path::Path::new(p).exists());
+        let Some(script) = script_path else {
+            anyhow::bail!("kokoro_phonemizer.py not found");
+        };
+
+        let (cmd, arg) = if script.ends_with(".sh") {
+            ("bash", script as &str)
+        } else {
+            ("python3", script as &str)
+        };
+        let mut child = std::process::Command::new(cmd)
+            .arg(arg)
+            .stdin(std::process::Stdio::piped())
+            .stdout(std::process::Stdio::piped())
+            .stderr(std::process::Stdio::piped())
+            .spawn()
+            .context("failed to spawn kokorog2p phonemizer")?;
+
+        if let Some(mut stdin) = child.stdin.take() {
+            use std::io::Write;
+            stdin.write_all(text.as_bytes())?;
+        } else {
+            anyhow::bail!("failed to open python3 stdin");
+        }
+
+        let output = child.wait_with_output()?;
+        if !output.status.success() {
+            let stderr = String::from_utf8_lossy(&output.stderr).trim().to_string();
+            anyhow::bail!("kokorog2p failed: {stderr}");
+        }
+
+        let stdout = String::from_utf8(output.stdout)?;
+        let mut tokens = vec![0i64];
+        for id_str in stdout.trim().split(',') {
+            if let Ok(id) = id_str.trim().parse::<i64>() {
+                tokens.push(id);
+            }
+        }
+        tokens.push(0);
+        if tokens.len() < 3 {
+            anyhow::bail!("kokorog2p produced too few tokens");
+        }
+        Ok(tokens)
+    }
+
+    /// Use espeak-ng for phonemization (fallback).
+    fn text_to_phonemes_espeak(text: &str) -> anyhow::Result<Vec<i64>> {
         let mut child = std::process::Command::new("espeak-ng")
             .args(["--ipa", "-q", "--stdin"])
             .stdin(std::process::Stdio::piped())
