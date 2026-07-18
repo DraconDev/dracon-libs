@@ -286,8 +286,55 @@ impl GitService {
     }
 
     /// Fetch latest changes from remote
+    ///
+    /// Uses the `git` CLI by default (which respects `~/.ssh/config` and the
+    /// `IdentitiesOnly yes` + explicit `IdentityFile ~/.ssh/id_ed25519`
+    /// pattern). Falls back to libgit2 for repos that the CLI can't handle
+    /// (e.g. binary blob edge cases). The libgit2 path uses
+    /// `git2::Cred::ssh_key_from_agent`, which requires a running ssh-agent
+    /// — if no agent is available, the libgit2 fallback fails with
+    /// "unsupported URL protocol" (the §F5 / 2026-07-18 audit bug that left
+    /// endless-td + neonbreak in 53-ahead push-stuck and 4-behind pending).
+    /// In practice the CLI path almost always succeeds because operators
+    /// configure their SSH keys via `~/.ssh/config`, not via ssh-agent.
     pub async fn fetch(&self) -> Result<()> {
         let path = self.root_path.clone();
+
+        // CLI fetch (primary): respects SSH config, no ssh-agent required.
+        // We invoke `git fetch origin` (no refspec) so git updates ALL remote
+        // tracking refs, matching the previous libgit2 behavior of
+        // "fetch all if detached or unborn". The std::process Command sees
+        // the user's `SSH_AUTH_SOCK` (wezterm socket) but won't use it unless
+        // ssh-agent has the key — `IdentitiesOnly yes` + `IdentityFile
+        // ~/.ssh/id_ed25519` in `~/.ssh/config` makes ssh use the file
+        // directly.
+        let cli_result = tokio::task::spawn_blocking({
+            let path = path.clone();
+            move || -> std::result::Result<(), GitError> {
+                let output = git_cmd()
+                    .args(["fetch", "origin"])
+                    .current_dir(&path)
+                    .output()
+                    .map_err(|e| GitError::Other(format!("git fetch spawn failed: {}", e)))?;
+                if !output.status.success() {
+                    let stderr = String::from_utf8_lossy(&output.stderr);
+                    return Err(GitError::Other(format!(
+                        "git fetch failed: {}",
+                        stderr.trim()
+                    )));
+                }
+                Ok(())
+            }
+        })
+        .await
+        .map_err(|e| GitError::Other(e.to_string()))?;
+
+        if cli_result.is_ok() {
+            return Ok(());
+        }
+
+        // CLI failed (network error, repo corruption, binary blob edge case).
+        // Try libgit2 as a fallback for repos the CLI can't handle.
         tokio::task::spawn_blocking(move || -> std::result::Result<(), git2::Error> {
             let repo = git2::Repository::open(&path)?;
             let mut remote = repo.find_remote("origin")?;
